@@ -1,0 +1,94 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>가계부</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <main class="app">
+      <header>
+        <h1>컴퓨터용 가계부</h1>
+        <p>수입/지출을 기록하고 월별 합계를 확인하세요.</p>
+      </header>
+
+      <section class="summary" aria-label="요약">
+        <article>
+          <h2>총 수입</h2>
+          <p id="total-income">₩0</p>
+        </article>
+        <article>
+          <h2>총 지출</h2>
+          <p id="total-expense">₩0</p>
+        </article>
+        <article>
+          <h2>잔액</h2>
+          <p id="balance">₩0</p>
+        </article>
+      </section>
+
+      <section class="panel">
+        <h2>내역 추가</h2>
+        <form id="entry-form">
+          <label>
+            날짜
+            <input type="date" id="date" required />
+          </label>
+
+          <label>
+            유형
+            <select id="type" required>
+              <option value="income">수입</option>
+              <option value="expense">지출</option>
+            </select>
+          </label>
+
+          <label>
+            카테고리
+            <input type="text" id="category" placeholder="예: 식비, 급여" required />
+          </label>
+
+          <label>
+            금액
+            <input type="number" id="amount" min="1" step="1" required />
+          </label>
+
+          <label>
+            메모
+            <input type="text" id="memo" placeholder="선택사항" />
+          </label>
+
+          <button type="submit">추가</button>
+        </form>
+      </section>
+
+      <section class="panel">
+        <div class="panel-header">
+          <h2>내역</h2>
+          <div class="actions">
+            <button id="export-csv" type="button">CSV 내보내기</button>
+            <button id="clear-all" type="button" class="danger">전체 삭제</button>
+          </div>
+        </div>
+
+        <table>
+          <thead>
+            <tr>
+              <th>날짜</th>
+              <th>유형</th>
+              <th>카테고리</th>
+              <th>금액</th>
+              <th>메모</th>
+              <th>삭제</th>
+            </tr>
+          </thead>
+          <tbody id="entry-table-body"></tbody>
+        </table>
+        <p id="empty-message" class="empty">아직 내역이 없습니다.</p>
+      </section>
+    </main>
+
+    <script src="script.js"></script>
+  </body>
+</html>
