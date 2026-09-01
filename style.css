@@ -1,23 +1,13 @@
 :root {
-  color-scheme: light dark;
+  color-scheme: dark;
   font-family: "Pretendard", "Noto Sans KR", system-ui, sans-serif;
-  --bg: #f5f7fb;
-  --panel: #ffffff;
-  --text: #1f2937;
-  --muted: #6b7280;
-  --primary: #2563eb;
-  --danger: #dc2626;
-  --border: #d1d5db;
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --bg: #111827;
-    --panel: #1f2937;
-    --text: #f3f4f6;
-    --muted: #9ca3af;
-    --border: #374151;
-  }
+  --bg: #0f1117;
+  --panel: #1a1d29;
+  --text: #f3f4f6;
+  --muted: #9ca3af;
+  --primary: #6366f1;
+  --border: #2d3040;
+  --board-bg: #05060a;
 }
 
 * {
@@ -28,144 +18,157 @@ body {
   margin: 0;
   background: var(--bg);
   color: var(--text);
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .app {
-  max-width: 960px;
+  max-width: 720px;
+  width: 100%;
   margin: 0 auto;
   padding: 24px;
   display: grid;
   gap: 16px;
 }
 
+header {
+  text-align: center;
+}
+
 header h1 {
-  margin-bottom: 8px;
-}
-
-header p {
   margin: 0;
-  color: var(--muted);
+  letter-spacing: 0.05em;
 }
 
-.summary {
+.layout {
+  display: flex;
+  gap: 16px;
+  justify-content: center;
+  align-items: flex-start;
+  flex-wrap: wrap;
+}
+
+.side-panel {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
   gap: 12px;
+  width: 120px;
 }
 
-.summary article,
-.panel {
+.box {
   background: var(--panel);
   border: 1px solid var(--border);
   border-radius: 12px;
-  padding: 16px;
+  padding: 12px;
+  text-align: center;
 }
 
-.summary h2 {
-  margin: 0;
-  font-size: 0.9rem;
+.box h2 {
+  margin: 0 0 8px;
+  font-size: 0.75rem;
   color: var(--muted);
+  letter-spacing: 0.05em;
 }
 
-.summary p {
-  margin: 8px 0 0;
-  font-size: 1.25rem;
+.stats p {
+  margin: 0 0 12px;
+  font-size: 1.1rem;
   font-weight: 700;
 }
 
-form {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 12px;
+.stats p:last-child {
+  margin-bottom: 0;
 }
 
-label {
-  display: grid;
-  gap: 6px;
-  font-size: 0.9rem;
-}
-
-input,
-select,
-button {
-  border: 1px solid var(--border);
+canvas {
+  background: var(--board-bg);
   border-radius: 8px;
-  padding: 10px;
-  font: inherit;
+  display: block;
+  margin: 0 auto;
+  image-rendering: pixelated;
+}
+
+.board-wrap {
+  position: relative;
+  border: 2px solid var(--border);
+  border-radius: 12px;
+  overflow: hidden;
+  line-height: 0;
+}
+
+#board {
+  border-radius: 0;
+}
+
+.overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(5, 6, 10, 0.85);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+}
+
+.overlay[hidden] {
+  display: none;
+}
+
+.overlay-content {
+  padding: 16px;
+}
+
+.overlay-content h2 {
+  margin: 0 0 8px;
+}
+
+.overlay-content p {
+  color: var(--muted);
+  margin: 0 0 16px;
+  font-size: 0.85rem;
 }
 
 button {
   background: var(--primary);
   color: white;
   border: none;
+  border-radius: 8px;
+  padding: 10px 20px;
+  font: inherit;
+  font-weight: 600;
   cursor: pointer;
 }
 
-button.danger {
-  background: var(--danger);
+button:hover {
+  filter: brightness(1.1);
 }
 
-#entry-form button {
-  grid-column: 1 / -1;
+.controls-info {
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 12px 16px;
 }
 
-.panel-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 12px;
-}
-
-.actions {
-  display: flex;
-  gap: 8px;
-}
-
-table {
-  width: 100%;
-  border-collapse: collapse;
-  margin-top: 12px;
-}
-
-th,
-td {
-  border-bottom: 1px solid var(--border);
-  text-align: left;
-  padding: 10px 6px;
-  font-size: 0.92rem;
-}
-
-tbody tr:hover {
-  background: rgba(37, 99, 235, 0.08);
-}
-
-.empty {
-  text-align: center;
+.controls-info h2 {
+  margin: 0 0 8px;
+  font-size: 0.9rem;
   color: var(--muted);
 }
 
-.delete-btn {
-  background: transparent;
-  color: var(--danger);
-  border: 1px solid var(--danger);
-  padding: 6px 10px;
+.controls-info ul {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 6px;
+  font-size: 0.85rem;
 }
 
-@media (max-width: 760px) {
-  .summary {
+@media (max-width: 600px) {
+  .controls-info ul {
     grid-template-columns: 1fr;
-  }
-
-  form {
-    grid-template-columns: 1fr;
-  }
-
-  .panel-header {
-    flex-direction: column;
-    align-items: flex-start;
-  }
-
-  table {
-    font-size: 0.85rem;
   }
 }
