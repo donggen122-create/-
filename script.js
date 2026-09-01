@@ -12,31 +12,37 @@ const COLORS = {
   L: "#fb923c",
 };
 
+const SPECIAL_COLORS = {
+  bomb: "#ff3b3b",
+  laser: "#e2f8ff",
+};
+
+const SPECIAL_ICONS = {
+  bomb: "\u{1F4A3}",
+  laser: "⚡",
+};
+
 const SHAPES = {
-  I: [
-    [0, 1], [1, 1], [2, 1], [3, 1],
-  ],
-  O: [
-    [1, 0], [2, 0], [1, 1], [2, 1],
-  ],
-  T: [
-    [1, 0], [0, 1], [1, 1], [2, 1],
-  ],
-  S: [
-    [1, 0], [2, 0], [0, 1], [1, 1],
-  ],
-  Z: [
-    [0, 0], [1, 0], [1, 1], [2, 1],
-  ],
-  J: [
-    [0, 0], [0, 1], [1, 1], [2, 1],
-  ],
-  L: [
-    [2, 0], [0, 1], [1, 1], [2, 1],
-  ],
+  I: [[0, 1], [1, 1], [2, 1], [3, 1]],
+  O: [[1, 0], [2, 0], [1, 1], [2, 1]],
+  T: [[1, 0], [0, 1], [1, 1], [2, 1]],
+  S: [[1, 0], [2, 0], [0, 1], [1, 1]],
+  Z: [[0, 0], [1, 0], [1, 1], [2, 1]],
+  J: [[0, 0], [0, 1], [1, 1], [2, 1]],
+  L: [[2, 0], [0, 1], [1, 1], [2, 1]],
 };
 
 const PIECE_TYPES = Object.keys(SHAPES);
+
+// Player-level perks: each unlocks a special rule on top of vanilla Tetris.
+const PERK_INFO = [
+  { level: 2, name: "무제한 홀드", desc: "한 조각에서 홀드를 여러 번 바꿀 수 있어요" },
+  { level: 3, name: "폭탄 조각", desc: "가끔 폭탄 조각이 등장해 주변 3x3을 날려요" },
+  { level: 4, name: "콤보 실드", desc: "콤보 중 실수해도 한 번은 콤보가 끊기지 않아요" },
+  { level: 5, name: "넥스트 확장", desc: "다음 조각을 6개까지 미리 볼 수 있어요" },
+  { level: 6, name: "레이저 조각", desc: "가끔 레이저 조각이 등장해 놓인 줄을 바로 지워요" },
+  { level: 7, name: "점수 배율 상승", desc: "레벨이 오를 때마다 점수 배율이 10%씩 늘어나요" },
+];
 
 const boardCanvas = document.getElementById("board");
 const ctx = boardCanvas.getContext("2d");
@@ -46,12 +52,32 @@ const holdCanvas = document.getElementById("hold-canvas");
 const holdCtx = holdCanvas.getContext("2d");
 
 const scoreEl = document.getElementById("score");
-const levelEl = document.getElementById("level");
+const stageEl = document.getElementById("stage");
 const linesEl = document.getElementById("lines");
+const comboEl = document.getElementById("combo");
+const playerLevelEl = document.getElementById("player-level");
+const expFillEl = document.getElementById("exp-fill");
+const expTextEl = document.getElementById("exp-text");
+const perksListEl = document.getElementById("perks-list");
 const overlay = document.getElementById("overlay");
 const overlayTitle = document.getElementById("overlay-title");
 const overlayMessage = document.getElementById("overlay-message");
 const startBtn = document.getElementById("start-btn");
+
+function buildPerksList() {
+  perksListEl.innerHTML = "";
+  PERK_INFO.forEach((perk) => {
+    const li = document.createElement("li");
+    li.className = "perk";
+    li.dataset.level = perk.level;
+    li.innerHTML = `
+      <span class="perk-name">${perk.name}</span>
+      <span class="perk-desc">${perk.desc}</span>
+      <span class="perk-level">Lv.${perk.level}</span>
+    `;
+    perksListEl.appendChild(li);
+  });
+}
 
 function createBoard() {
   return Array.from({ length: ROWS }, () => Array(COLS).fill(null));
@@ -92,11 +118,11 @@ function rotateCells(cells, times) {
 }
 
 class Piece {
-  constructor(type) {
+  constructor(type, special = null) {
     this.type = type;
+    this.special = special;
     this.rotation = 0;
-    this.cells = SHAPES[type].map((c) => [...c]);
-    this.x = type === "I" ? 3 : 3;
+    this.x = 3;
     this.y = 0;
   }
   getCells(rotation = this.rotation) {
@@ -116,7 +142,7 @@ class Game {
     this.hold = null;
     this.canHold = true;
     this.score = 0;
-    this.level = 1;
+    this.stage = 1;
     this.lines = 0;
     this.dropInterval = 1000;
     this.dropCounter = 0;
@@ -125,17 +151,58 @@ class Game {
     this.paused = false;
     this.gameOver = false;
     this.rafId = null;
+
+    // RPG-style progression, separate from the drop-speed "stage".
+    this.playerLevel = 1;
+    this.exp = 0;
+    this.expToNext = 100;
+    this.comboCount = 0;
+    this.comboShieldUsed = false;
+    this.toasts = [];
+    this.screenFlash = 0;
+  }
+
+  get unlimitedHold() {
+    return this.playerLevel >= 2;
+  }
+  get bombChance() {
+    return this.playerLevel >= 3 ? 0.06 : 0;
+  }
+  get comboShieldPerk() {
+    return this.playerLevel >= 4;
+  }
+  get nextPreviewCount() {
+    return this.playerLevel >= 5 ? 6 : 4;
+  }
+  get laserChance() {
+    return this.playerLevel >= 6 ? 0.05 : 0;
+  }
+  get scoreMultiplier() {
+    return 1 + Math.max(0, this.playerLevel - 6) * 0.1;
+  }
+
+  addToast(text) {
+    this.toasts.push({ text, expiresAt: performance.now() + 1600 });
   }
 
   spawn() {
     const type = this.queue.next();
-    const piece = new Piece(type);
+    let special = null;
+    if (this.laserChance > 0 && Math.random() < this.laserChance) {
+      special = "laser";
+    } else if (this.bombChance > 0 && Math.random() < this.bombChance) {
+      special = "bomb";
+    }
+    const piece = new Piece(type, special);
     if (this.collides(piece, piece.x, piece.y, piece.rotation)) {
       this.endGame();
       return;
     }
     this.current = piece;
     this.canHold = true;
+    if (special) {
+      this.addToast(special === "bomb" ? "\u{1F4A3} 폭탄 조각 등장!" : "⚡ 레이저 조각 등장!");
+    }
   }
 
   collides(piece, x, y, rotation) {
@@ -193,7 +260,8 @@ class Game {
   }
 
   holdPiece() {
-    if (!this.current || this.gameOver || this.paused || !this.canHold) return;
+    if (!this.current || this.gameOver || this.paused) return;
+    if (!this.canHold && !this.unlimitedHold) return;
     const currentType = this.current.type;
     if (this.hold) {
       this.current = new Piece(this.hold);
@@ -201,7 +269,25 @@ class Game {
       this.spawn();
     }
     this.hold = currentType;
-    this.canHold = false;
+    if (!this.unlimitedHold) this.canHold = false;
+  }
+
+  detonateBomb(piece) {
+    const cells = piece.absoluteCells();
+    const [coreX, coreY] = cells[Math.floor(cells.length / 2)];
+    let cleared = 0;
+    for (let dy = -1; dy <= 1; dy++) {
+      for (let dx = -1; dx <= 1; dx++) {
+        const x = coreX + dx;
+        const y = coreY + dy;
+        if (x < 0 || x >= COLS || y < 0 || y >= ROWS) continue;
+        if (this.board[y][x]) cleared += 1;
+        this.board[y][x] = null;
+      }
+    }
+    this.addToast("\u{1F4A5} 폭탄 폭발!");
+    this.screenFlash = 1;
+    return cleared;
   }
 
   lockPiece() {
@@ -213,26 +299,98 @@ class Game {
       }
       this.board[cy][cx] = this.current.type;
     }
-    this.clearLines();
+
+    let forcedRows = [];
+    let bombBonusCells = 0;
+    if (this.current.special === "bomb") {
+      bombBonusCells = this.detonateBomb(this.current);
+    } else if (this.current.special === "laser") {
+      forcedRows = [...new Set(cells.map(([, cy]) => cy).filter((cy) => cy >= 0))];
+      this.addToast("⚡ 레이저 발동!");
+      this.screenFlash = 1;
+    }
+
+    const clearedCount = this.clearLines(forcedRows);
+    this.applyProgress(clearedCount, bombBonusCells);
+    this.checkPerfectClear(clearedCount);
     this.spawn();
   }
 
-  clearLines() {
+  clearLines(forcedRows = []) {
+    const forced = new Set(forcedRows);
+    const remaining = [];
     let cleared = 0;
-    for (let y = ROWS - 1; y >= 0; y--) {
-      if (this.board[y].every((cell) => cell)) {
-        this.board.splice(y, 1);
-        this.board.unshift(Array(COLS).fill(null));
+    for (let y = 0; y < ROWS; y++) {
+      const full = this.board[y].every((cell) => cell);
+      if (full || forced.has(y)) {
         cleared += 1;
-        y += 1;
+      } else {
+        remaining.push(this.board[y]);
       }
     }
-    if (cleared > 0) {
-      const points = [0, 100, 300, 500, 800][cleared] * this.level;
-      this.score += points;
-      this.lines += cleared;
-      this.level = Math.floor(this.lines / 10) + 1;
-      this.dropInterval = Math.max(100, 1000 - (this.level - 1) * 75);
+    for (let i = 0; i < cleared; i++) {
+      remaining.unshift(Array(COLS).fill(null));
+    }
+    this.board = remaining;
+    return cleared;
+  }
+
+  applyProgress(clearedCount, bombBonusCells = 0) {
+    let expGain = 0;
+    let scoreGain = 0;
+
+    if (clearedCount > 0) {
+      this.comboCount += 1;
+      this.comboShieldUsed = false;
+      const baseExp = [0, 15, 40, 90, 160];
+      const basePoints = [0, 100, 300, 500, 800];
+      const idx = Math.min(clearedCount, 4);
+      const comboMult = 1 + (this.comboCount - 1) * 0.15;
+      expGain += Math.round(baseExp[idx] * comboMult);
+      scoreGain += Math.round(basePoints[idx] * this.stage * comboMult * this.scoreMultiplier);
+      if (this.comboCount >= 2) {
+        this.addToast(`COMBO x${this.comboCount}`);
+      }
+    } else if (this.comboShieldPerk && this.comboCount > 0 && !this.comboShieldUsed) {
+      this.comboShieldUsed = true;
+      this.addToast("\u{1F6E1} 콤보 실드 발동");
+    } else {
+      this.comboCount = 0;
+      this.comboShieldUsed = false;
+    }
+
+    if (bombBonusCells > 0) {
+      expGain += 20 + bombBonusCells * 3;
+      scoreGain += bombBonusCells * 15;
+    }
+
+    this.lines += clearedCount;
+    this.stage = Math.floor(this.lines / 10) + 1;
+    this.dropInterval = Math.max(100, 1000 - (this.stage - 1) * 75);
+
+    this.score += scoreGain;
+    this.gainExp(expGain);
+  }
+
+  gainExp(amount) {
+    if (amount <= 0) return;
+    this.exp += amount;
+    while (this.exp >= this.expToNext) {
+      this.exp -= this.expToNext;
+      this.playerLevel += 1;
+      this.expToNext = 100 + (this.playerLevel - 1) * 60;
+      const perk = PERK_INFO.find((p) => p.level === this.playerLevel);
+      this.addToast(`⭐ LEVEL UP! Lv.${this.playerLevel}` + (perk ? ` - ${perk.name} 해금!` : ""));
+    }
+  }
+
+  checkPerfectClear(clearedCount) {
+    if (clearedCount === 0) return;
+    const empty = this.board.every((row) => row.every((cell) => !cell));
+    if (empty) {
+      this.score += 2000;
+      this.gainExp(500);
+      this.addToast("\u{1F31F} PERFECT CLEAR! +2000");
     }
   }
 
@@ -240,7 +398,7 @@ class Game {
     this.gameOver = true;
     this.running = false;
     if (this.rafId) cancelAnimationFrame(this.rafId);
-    showOverlay("게임 오버", `점수: ${this.score} — 다시 시작하려면 버튼을 누르세요`);
+    showOverlay("게임 오버", `점수: ${this.score} (Lv.${this.playerLevel}) — 다시 시작하려면 버튼을 누르세요`);
   }
 
   togglePause() {
@@ -279,13 +437,20 @@ class Game {
     this.hold = null;
     this.canHold = true;
     this.score = 0;
-    this.level = 1;
+    this.stage = 1;
     this.lines = 0;
     this.dropInterval = 1000;
     this.dropCounter = 0;
     this.gameOver = false;
     this.paused = false;
     this.running = true;
+    this.playerLevel = 1;
+    this.exp = 0;
+    this.expToNext = 100;
+    this.comboCount = 0;
+    this.comboShieldUsed = false;
+    this.toasts = [];
+    this.screenFlash = 0;
     this.spawn();
     hideOverlay();
     this.lastTime = performance.now();
@@ -339,6 +504,37 @@ function drawGrid() {
   }
 }
 
+function pieceColor(piece) {
+  return SPECIAL_COLORS[piece.special] || COLORS[piece.type];
+}
+
+function renderScreenFlash() {
+  if (game.screenFlash > 0) {
+    ctx.fillStyle = `rgba(255,120,60,${game.screenFlash * 0.35})`;
+    ctx.fillRect(0, 0, boardCanvas.width, boardCanvas.height);
+    game.screenFlash = Math.max(0, game.screenFlash - 0.06);
+  }
+}
+
+function renderToasts() {
+  const now = performance.now();
+  game.toasts = game.toasts.filter((t) => t.expiresAt > now);
+  game.toasts.forEach((t, i) => {
+    const remain = (t.expiresAt - now) / 1600;
+    ctx.save();
+    ctx.globalAlpha = Math.max(0, Math.min(1, remain * 1.6));
+    ctx.font = 'bold 13px "Pretendard", sans-serif';
+    ctx.textAlign = "center";
+    ctx.fillStyle = "#fbbf24";
+    ctx.strokeStyle = "rgba(0,0,0,0.75)";
+    ctx.lineWidth = 3;
+    const ty = 20 + i * 18;
+    ctx.strokeText(t.text, boardCanvas.width / 2, ty);
+    ctx.fillText(t.text, boardCanvas.width / 2, ty);
+    ctx.restore();
+  });
+}
+
 function render() {
   ctx.clearRect(0, 0, boardCanvas.width, boardCanvas.height);
   drawGrid();
@@ -351,25 +547,45 @@ function render() {
   }
 
   if (game.current) {
+    const color = pieceColor(game.current);
     const ghostY = game.getGhostY();
     const ghostCells = game.current.absoluteCells(game.current.rotation, game.current.x, ghostY);
     ctx.globalAlpha = 0.25;
     for (const [cx, cy] of ghostCells) {
-      if (cy >= 0) drawCell(ctx, cx, cy, COLORS[game.current.type]);
+      if (cy >= 0) drawCell(ctx, cx, cy, color);
     }
     ctx.globalAlpha = 1;
 
     const cells = game.current.absoluteCells();
     for (const [cx, cy] of cells) {
-      if (cy >= 0) drawCell(ctx, cx, cy, COLORS[game.current.type]);
+      if (cy >= 0) drawCell(ctx, cx, cy, color);
+    }
+
+    if (game.current.special) {
+      const [coreX, coreY] = cells[Math.floor(cells.length / 2)];
+      ctx.font = `${CELL - 4}px sans-serif`;
+      ctx.textAlign = "center";
+      ctx.textBaseline = "middle";
+      ctx.fillText(SPECIAL_ICONS[game.current.special], coreX * CELL + CELL / 2, coreY * CELL + CELL / 2);
     }
   }
 
+  renderScreenFlash();
+  renderToasts();
   renderNext();
   renderHold();
+
   scoreEl.textContent = game.score;
-  levelEl.textContent = game.level;
+  stageEl.textContent = game.stage;
   linesEl.textContent = game.lines;
+  comboEl.textContent = game.comboCount >= 2 ? `x${game.comboCount}` : "-";
+  comboEl.classList.toggle("active", game.comboCount >= 2);
+  playerLevelEl.textContent = game.playerLevel;
+  expFillEl.style.width = `${Math.min(100, (game.exp / game.expToNext) * 100)}%`;
+  expTextEl.textContent = `${game.exp} / ${game.expToNext}`;
+  perksListEl.querySelectorAll(".perk").forEach((el) => {
+    el.classList.toggle("unlocked", game.playerLevel >= Number(el.dataset.level));
+  });
 }
 
 function renderMiniPiece(context, type, offsetY, cellSize) {
@@ -385,7 +601,7 @@ function renderMiniPiece(context, type, offsetY, cellSize) {
 
 function renderNext() {
   nextCtx.clearRect(0, 0, nextCanvas.width, nextCanvas.height);
-  const upcoming = game.queue.peek(4);
+  const upcoming = game.queue.peek(game.nextPreviewCount);
   upcoming.forEach((type, i) => {
     renderMiniPiece(nextCtx, type, i * 2, 24);
   });
@@ -398,6 +614,7 @@ function renderHold() {
   }
 }
 
+buildPerksList();
 const game = new Game();
 
 function keyHandler(e) {

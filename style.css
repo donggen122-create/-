@@ -6,6 +6,7 @@
   --text: #f3f4f6;
   --muted: #9ca3af;
   --primary: #6366f1;
+  --accent: #fbbf24;
   --border: #2d3040;
   --board-bg: #05060a;
 }
@@ -40,6 +41,12 @@ header {
 header h1 {
   margin: 0;
   letter-spacing: 0.05em;
+}
+
+.tagline {
+  margin: 6px 0 0;
+  color: var(--muted);
+  font-size: 0.85rem;
 }
 
 .layout {
@@ -79,6 +86,39 @@ header h1 {
 
 .stats p:last-child {
   margin-bottom: 0;
+}
+
+#combo.active {
+  color: var(--accent);
+  text-shadow: 0 0 10px rgba(251, 191, 36, 0.6);
+}
+
+.level-box .lv-value {
+  margin: 0 0 8px;
+  font-size: 1.4rem;
+  font-weight: 800;
+  color: var(--accent);
+}
+
+.exp-bar {
+  height: 8px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.08);
+  overflow: hidden;
+  border: 1px solid var(--border);
+}
+
+.exp-fill {
+  height: 100%;
+  width: 0%;
+  background: linear-gradient(90deg, #f59e0b, var(--accent));
+  transition: width 0.25s ease;
+}
+
+.exp-text {
+  margin: 6px 0 0;
+  font-size: 0.7rem;
+  color: var(--muted);
 }
 
 canvas {
@@ -144,14 +184,16 @@ button:hover {
   filter: brightness(1.1);
 }
 
-.controls-info {
+.controls-info,
+.perks-info {
   background: var(--panel);
   border: 1px solid var(--border);
   border-radius: 12px;
   padding: 12px 16px;
 }
 
-.controls-info h2 {
+.controls-info h2,
+.perks-info h2 {
   margin: 0 0 8px;
   font-size: 0.9rem;
   color: var(--muted);
@@ -167,8 +209,62 @@ button:hover {
   font-size: 0.85rem;
 }
 
-@media (max-width: 600px) {
+.perks-info ul {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: grid;
+  gap: 8px;
+}
+
+.perk {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  padding: 8px 10px;
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid transparent;
+  color: var(--muted);
+  font-size: 0.82rem;
+}
+
+.perk .perk-name {
+  font-weight: 700;
+  color: var(--muted);
+}
+
+.perk .perk-level {
+  margin-left: auto;
+  font-size: 0.72rem;
+  color: var(--muted);
+}
+
+.perk.unlocked {
+  background: rgba(251, 191, 36, 0.08);
+  border-color: rgba(251, 191, 36, 0.35);
+  color: var(--text);
+}
+
+.perk.unlocked .perk-name {
+  color: var(--accent);
+}
+
+.perk.unlocked .perk-level {
+  color: var(--accent);
+}
+
+@media (max-width: 760px) {
+  .summary {
+    grid-template-columns: 1fr;
+  }
+
   .controls-info ul {
     grid-template-columns: 1fr;
+  }
+
+  .panel-header {
+    flex-direction: column;
+    align-items: flex-start;
   }
 }
