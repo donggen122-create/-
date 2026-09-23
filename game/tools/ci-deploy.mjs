@@ -50,8 +50,8 @@ function check(force) {
   console.log(`마지막 배포: ${live.version} (${live.created}) 메시지: ${live.message}`);
   console.log(`저장소 기록: ${mine || '(없음)'}`);
   if (live.version === mine) { console.log('OK — 마지막 배포가 저장소 기록과 같아요.'); return; }
-  const note = '마지막 배포가 저장소 기록과 달라요. 다른 PC 배포라면 그 기록을 먼저 올리고, Codex 배포라면 check-live.ps1 -Pull로 받아 합친 뒤 deploy-force- 태그로 배포하세요.';
-  if (force) { console.log(`주의 — ${note} (강제 배포 태그라 계속합니다)`); return; }
+  const note = '마지막 배포가 저장소 기록과 달라요. 다른 PC 배포라면 그 기록을 먼저 올리고, Codex 배포라면 check-live.ps1 -Pull로 받아 합친 뒤 deploy-force/ 브랜치로 배포하세요.';
+  if (force) { console.log(`주의 — ${note} (강제 배포라 계속합니다)`); return; }
   console.error(`::error::${note}`); process.exit(1);
 }
 

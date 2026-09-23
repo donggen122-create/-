@@ -4,7 +4,7 @@
 - docs/23 최종안(사용자 선택)의 2차 보급 규칙과 3차 금 메달 기능을 구현했다. 이름: 보급·보급권·동/은/금 메달·레벨 올리기. 규칙·검증·배포 절차: `docs/26_2차_3차_개편_구현_기록.md`. 아래 "뽑기·파츠 강화 개편(구현 전)"과 "두 안 중 확인" 안내는 끝난 일이다.
 - 성공 보급권: 쉬움·보통 1장, 어려움 2장, 같은 단계는 하루 2번 성공까지만(사용자 요청).
 - 태블릿 해상도 자동 조절 수리 포함. 검사 92/92, 브라우저 PC 1280·폰 375 통과(격리 서버). 배포는 `seoho-game`에 합친 뒤 배포 PC에서 check-live → deploy.ps1.
-- 휴대폰·원격 배포(2026-09-23): `seoho-game` 최신 커밋에 `deploy-YYYYMMDD-HHMM` 태그를 올리면 GitHub Actions(`.github/workflows/seoho-deploy.yml`)가 검사 → check-live → dist_web 동기화 → wrangler deploy → `server/.last_deploy_version`·share 기록 커밋까지 한다. Codex 배포를 합친 뒤 기록과 다를 때만 `deploy-force-…` 태그. 저장소 비밀값 `CLOUDFLARE_API_TOKEN`(Workers 편집) 필요(값은 어디에도 쓰지 않는다). 기본 브랜치 main은 다른 프로젝트라 Run workflow 버튼 대신 태그를 쓴다.
+- 휴대폰·원격 배포(2026-09-23): `seoho-game` 최신 커밋으로 `deploy/YYYYMMDD-HHMM` 브랜치를 올리면(휴대폰 GitHub 웹에서 브랜치 만들기도 가능) GitHub Actions(`.github/workflows/seoho-deploy.yml`)가 검사 → check-live → dist_web 동기화 → wrangler deploy → `server/.last_deploy_version`·share 기록 커밋까지 한다. Codex 배포를 합친 뒤 기록과 다를 때만 `deploy-force/…` 브랜치. 끝나면 배포 브랜치는 지워진다. 저장소 비밀값 `CLOUDFLARE_API_TOKEN`(Workers 편집) 필요(값은 어디에도 쓰지 않는다). 기본 브랜치 main은 다른 프로젝트라 Run workflow 버튼 대신 브랜치를 쓰고, Claude 작업 환경은 태그 올리기가 막혀 있다.
 
 ## 2026-09-23. 1차 개선 구현·검증 완료 / 실서버 배포 대기
 - 첫 스킬 선택에 장착 파츠 스킬 보장, 진화 뒤 파츠 5종 복구, 실제 발동·쉬었던 파츠 결과 안내, 첫 보상 선택 창·다음 할 일·특급 선택 보호를 구현했다. 스킬 선택창 위로 전투 아이콘이 겹치던 표시도 정리했다.
