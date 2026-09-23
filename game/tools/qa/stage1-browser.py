@@ -62,6 +62,7 @@ with sync_playwright() as pw:
             state=page.evaluate("async()=>await(await fetch('/api/guardian',{headers:{Authorization:'Bearer '+localStorage.lumen_token}})).json()")
             assert state['profile']['gifts']==4 and state['profile']['giftCounts']['part']==5,state
             page.locator('.sg-nav [data-tab="adventure"]').click();page.locator('#sg-start').click();page.locator('#levelup:not(.hidden)').wait_for();assert page.locator('.sg-my-part').count()>=1
+            page.wait_for_function("document.querySelector('#sg-run-tools').childElementCount===0")
             screen(page,f'local-first-cards-{width}');page.locator('#card-row .sg-my-part').first.locator('..').click()
             page.wait_for_timeout(300);page.evaluate('window.__debugGod=true');page.evaluate('window.__debugPilot(20)');close_dialog(page)
             if page.locator('#levelup:not(.hidden)').count():page.locator('#card-row .card').first.click()

@@ -5010,7 +5010,7 @@ function sgGrowthTick(dt){
 }
 let sgHudSignature='';
 function sgHud(){
-  const active=player&&['playing','paused','levelup'].includes(mode);
+  const active=player&&mode==='playing'; // Keep battle overlays behind selection and pause dialogs.
   const objective=document.getElementById('sg-objective'),tools=document.getElementById('sg-run-tools');
   if(!active){setText(objective,'');if(tools.childNodes.length)tools.replaceChildren();sgHudSignature='';return;}
   const st=R.STAGES[chapter.index],n=runStats.litter||0;
