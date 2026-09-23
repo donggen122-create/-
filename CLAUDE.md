@@ -23,7 +23,7 @@
 - 캡처·밸런스: `game/tools/qa/capture.ps1`(게임), `admin-capture.ps1`(관리 페이지), `sim.ps1`(난이도 자동 조종). 헤드리스 Edge는 스크립트가 정리한다.
 - 검사: `node --test "tests/*.test.mjs"`.
 - 배포: `powershell -NoProfile -ExecutionPolicy Bypass -File game\tools\deploy.ps1 -Message "what changed"` → 끝나면 `git add -A; git commit; git push origin seoho-game` (`server/.last_deploy_version` 포함).
-- GitHub 올리기(git push)가 Claude의 명령 창에서 막힐 때: 보호 모드(sandbox) 안에서는 `error: cannot spawn git: Permission denied`가 난다. 보호 모드 밖에서 PATH에 `C:\Program Files\Git\cmd;C:\Program Files\Git\mingw64\bin;C:\Program Files\Git\usr\bin`을 붙이고 `$env:GCM_INTERACTIVE='always'`로 push한다. 로그인이 없으면 `git credential-manager github login --browser --no-ui`(브라우저가 GitHub에 로그인돼 있으면 자동 완료). 저장소 설정 `credential.credentialStore=dpapi`.
+- GitHub 올리기(git push)가 Claude의 명령 창에서 막힐 때: `error: cannot spawn git: Permission denied`가 나면 보호 모드(sandbox) 밖에서, PATH에 `C:\Program Files\Git\cmd;C:\Program Files\Git\mingw64\bin;C:\Program Files\Git\usr\bin`을 붙이고 `$env:GCM_INTERACTIVE='always'`로 push한다. 그래도 가끔 같은 오류가 나면 몇 초 뒤 다시 시도하면 된다(새로 설치된 Git을 백신이 검사하는 중으로 보임). 로그인이 없으면 `git credential-manager github login --browser --no-ui`(브라우저가 GitHub에 로그인돼 있으면 자동 완료). 저장소 설정 `credential.credentialStore=dpapi`.
 - 단일 파일판: `game/tools/build-single.ps1` → `dist_single/LUMEN.html`(git 제외).
 
 ## 지킬 것
