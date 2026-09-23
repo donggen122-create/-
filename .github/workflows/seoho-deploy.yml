@@ -61,7 +61,11 @@ jobs:
             cp /tmp/last_deploy_version server/.last_deploy_version && tar -xf /tmp/share.tar
             git add server/.last_deploy_version dist_web/share
             git diff --cached --quiet || git commit -q -m "deploy: $(cat server/.last_deploy_version) ($TRIGGER)"
-            if git push -q origin seoho-game; then git push -q origin --delete "$TRIGGER" || true; exit 0; fi
+            if git push -q origin seoho-game; then
+              # 배포 시작용 브랜치 정리(이번 것 + 전에 실패해서 남은 것). Claude 작업 환경은 브랜치를 지우지 못한다.
+              for b in $(git ls-remote --heads origin 'deploy/*' 'deploy-force/*' | sed 's#.*refs/heads/##'); do git push -q origin --delete "$b" || true; done
+              exit 0
+            fi
             sleep 5
           done
           echo "::error::배포는 끝났지만 기록 커밋을 올리지 못했어요. server/.last_deploy_version을 직접 올려 주세요."; exit 1
