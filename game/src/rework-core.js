@@ -41,7 +41,7 @@ export const DIFFICULTIES = {
   // bossHp: 1-5 대왕 체력 배율(적 체력 enemyHp에 더 곱함, docs/29 — 어려움은 적 체력이 이미 5.5배라 대왕만 줄여 2분 안에 잡을 수 있게)
   // contactCap: 1초에 부딪혀서 잃을 수 있는 최대 체력 비율(둘러싸여도 빠져나올 시간). 모든 난이도: 처음 1분은 적 공격이 55%→100%로 서서히 세진다(main.js takeDamage)
   easy:   { name: '쉬움',   stars: 1, desc: '적이 약하고 받는 피해가 적어요. 성공하면 별 1개 · 보급권 1장.', enemyHp: .9,  enemySpd: .85, taken: .4,  density: 1,   hpGrowth: 0,   atkGrowth: 0,   contactCap: .25, special: 0, bossHp: .5 },
-  normal: { name: '보통',   stars: 2, desc: '기본 난이도예요. 시간이 갈수록 적이 조금씩 강해져요. 성공하면 별 2개 · 보급권 1장.', enemyHp: 1, enemySpd: 1, taken: 1, density: 1.1, hpGrowth: .12, atkGrowth: .06, contactCap: .3, special: 0, bossHp: 1 },
+  normal: { name: '보통',   stars: 2, desc: '기본 난이도예요. 시간이 갈수록 적이 조금씩 강해져요. 성공하면 별 2개 · 보급권 1장.', enemyHp: 1, enemySpd: 1, taken: 1, density: 1.1, hpGrowth: .12, atkGrowth: .06, contactCap: .3, special: 0, bossHp: .85 },
   // 어려움(2026-09-23 저녁 사용자: "유니크 이상 파츠 + 기본 능력치 40 이상이어야 간신히 클리어"): 자동 조종 1-3 어려움 10판씩 — 훈련 40·유니크 3개 4/10,
   // 훈련 20·유니크 1/10, 훈련 40·파츠 없음 수준 1/10, 훈련 1 0/10(docs/28). 체력 ×5.5 · 받는 피해 ×4.8 · 1분마다 새 적 체력 +45%.
   hard:   { name: '어려움', stars: 3, desc: '아주 어려워요! 기본 능력치(훈련) 40단계 이상과 유니크 이상 파츠가 있어야 겨우 버틸 수 있어요. 적이 아주 튼튼하고 세며 시간이 갈수록 더 강해져요. 원소 방패·단단 갑옷·날쌘이·회복이·쪼개지기 같은 특별한 적도 나와요. 성공하면 별 3개 · 보급권 2장.', enemyHp: 5.5, enemySpd: 1.08, taken: 4.8, density: 1.2, hpGrowth: .45, atkGrowth: .1, contactCap: .35, special: .3, bossHp: .4 },

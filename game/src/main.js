@@ -1616,7 +1616,7 @@ function spawnBoss() {
     hp, hpMax: hp, atkBase: bossAtk(bossDef, curMult()),
     spdU: bossDef.spdU, radiusU: bossDef.radiusU,
     phase: 1, restT: 1.5, activePattern: null, telegraphT: 0, flashT: 0, stunT: 0,
-    contactT: 0, lastPattern: null, sinceLitter: 0, volley: null,
+    contactT: 0, lastPattern: null, sinceLitter: 0, volley: null, dash: null, pendingFollow: null, airZ: 0, squashT: 0,
   };
   if (chapter?.theme === 1) themeFx.emit("arrival", boss.x, boss.y, { life: 1.4 });
   starTrack.bossNoHit = true;
@@ -2577,6 +2577,7 @@ function onEnemyDeath(e) {
 // ---------- Boss patterns (bosses.json BS01 발췌 재현) ----------
 function updateBoss(dt) {
   if (boss.flashT > 0) boss.flashT -= dt;
+  if (boss.squashT > 0) boss.squashT -= dt;
   if (boss.hp <= 0) {
     onBossDefeated();
     return;
@@ -2591,8 +2592,9 @@ function updateBoss(dt) {
     addShake(7, 0.5);
   }
 
-  // 기절(쓰레기 줍기로 약해짐): 움직이지도, 기술을 쓰지도 못한다
-  if (boss.stunT > 0) {
+  // 기절(쓰레기 줍기로 약해짐): 움직이지도, 기술을 쓰지도 못한다. 점프·박치기 도중이면 끝난 뒤에 기절한다.
+  if (boss.dash) { bossDashTick(dt); return; }
+  if (boss.stunT > 0 && !(boss.airZ > 0)) {
     boss.stunT -= dt;
     elBossLabel.textContent = "😵 기절!";
     if (boss.stunT <= 0) elBossLabel.textContent = "";
@@ -2615,6 +2617,15 @@ function updateBoss(dt) {
     elBossLabel.textContent = rp
       ? `${ap.band ? `[${BOSS_BAND_NAMES[ap.band]}] ` : ""}${ap.name} — ${ap.hint || "피해요!"} (${Math.max(0, boss.telegraphT).toFixed(1)}초)`
       : `${ap.name} 예고! (${boss.telegraphT.toFixed(1)}s)`;
+    if (rp && ap.kind === "leap") {      // 대왕 점프: 웅크렸다가(35%) 포물선으로 날아가 예고가 끝날 때 그림자 자리에 내려앉는다
+      const p = 1 - Math.max(0, boss.telegraphT) / ap.telegraphS;
+      if (p > 0.35) {
+        const f = Math.min(1, (p - 0.35) / 0.65), e = f * f * (3 - 2 * f);
+        boss.x = ap.originX + (ap.telegraphOriginX - ap.originX) * e;
+        boss.y = ap.originY + (ap.telegraphOriginY - ap.originY) * e;
+        boss.airZ = Math.sin(Math.PI * f) * 2.8 * U;
+      }
+    }
     if (ap.kind === "vacuum") {          // 쓰레기 흡입: 예고 동안 플레이어를 끌어당긴다(걸어서 벗어날 수 있는 속도)
       const d = dist(player.x, player.y, boss.x, boss.y);
       if (d > 1.2 * U) {
@@ -2624,13 +2635,13 @@ function updateBoss(dt) {
     }
     if (boss.telegraphT <= 0) {
       resolveBossPattern(ap);
-      // 화난 대왕(2페이즈)은 follow가 있는 기술을 곧바로 한 번 더(여진·다시 박치기)
-      if (rp && boss.phase >= 2 && ap.follow && !ap.isFollow && boss.hp > 0) startBossPattern({ ...ap.follow, isFollow: true, band: ap.band });
-      else {
-        boss.activePattern = null;
-        boss.restT = rp ? (boss.phase >= 2 ? BOSS_REST.angry : BOSS_REST.calm) : 1.5;
-        elBossLabel.textContent = "";
-      }
+      // 화난 대왕(2페이즈)은 follow가 있는 기술을 곧바로 한 번 더(여진·다시 박치기 — 박치기는 달리기가 끝난 뒤)
+      const follow = rp && boss.phase >= 2 && ap.follow && !ap.isFollow && boss.hp > 0 ? { ...ap.follow, isFollow: true, band: ap.band } : null;
+      boss.activePattern = null;
+      elBossLabel.textContent = "";
+      if (follow && boss.dash) boss.pendingFollow = follow;
+      else if (follow) startBossPattern(follow);
+      else boss.restT = rp ? (boss.phase >= 2 ? BOSS_REST.angry : BOSS_REST.calm) : 1.5;
     }
   } else {
     boss.restT -= dt;
@@ -2675,9 +2686,54 @@ function startBossPattern(pat) {
 // 대왕 몸에 닿으면 아프다(0.6초마다). 난이도의 1초 접촉 피해 상한을 함께 쓴다.
 function bossBodyTick(dt) {
   boss.contactT = (boss.contactT || 0) - dt;
-  if (boss.contactT > 0 || dist(player.x, player.y, boss.x, boss.y) > boss.radiusU * U + 0.4 * U) return;
+  if (boss.airZ > 0 || boss.contactT > 0 || dist(player.x, player.y, boss.x, boss.y) > boss.radiusU * U + 0.4 * U) return;
   boss.contactT = 0.6;
+  const before = player.hp;
   applyContactDamage(boss.atkBase * BOSS_CONTACT);
+  if (player.hp < before) { hitFx.push({ x: player.x, y: player.y, life: 0.25, maxLife: 0.25, color: "#ffb35a", vfxKind: "bump" }); addShake(3, 0.12); }
+}
+
+// 몸통 박치기: 대왕이 예고한 빨간 길을 0.3초 동안 실제로 달려간다. 달리는 동안 길 위에서 대왕 앞머리에 닿으면 한 번 맞고 옆으로 튕겨 나간다.
+function bossDashTick(dt) {
+  const d = boss.dash, step = Math.min(26 * U * dt, d.len - d.go);
+  d.go += step;
+  boss.x = d.sx + Math.cos(d.ang) * d.go; boss.y = d.sy + Math.sin(d.ang) * d.go;
+  if (!d.hit) {
+    const dx = player.x - d.sx, dy = player.y - d.sy;
+    const along = dx * Math.cos(d.ang) + dy * Math.sin(d.ang), side = -dx * Math.sin(d.ang) + dy * Math.cos(d.ang);
+    if (Math.abs(side) < 1.2 * U && along > -U && along < d.go + boss.radiusU * U) {
+      d.hit = true;
+      applyBossHit(d.dmg);
+      const k = side >= 0 ? 1 : -1;
+      player.x += -Math.sin(d.ang) * k * 1.5 * U; player.y += Math.cos(d.ang) * k * 1.5 * U;
+    }
+  }
+  d.puffT -= dt;
+  if (d.puffT <= 0 && chapter?.theme === 1) {
+    d.puffT = 0.07;
+    themeFx.emit("dust", boss.x - Math.cos(d.ang) * U, boss.y - Math.sin(d.ang) * U + 20, { radius: 26, life: 0.5, dir: d.ang });
+  }
+  if (d.go >= d.len - 1e-6) {
+    if (chapter?.theme === 1) themeFx.mark("skid", d.sx, d.sy + 20, { toX: boss.x, toY: boss.y + 20, width: 0.9 * U });
+    addShake(6, 0.22); boss.squashT = 0.22; boss.dash = null;
+    if (boss.pendingFollow) { const f = boss.pendingFollow; boss.pendingFollow = null; startBossPattern(f); }
+    else boss.restT = boss.phase >= 2 ? BOSS_REST.angry : BOSS_REST.calm;
+  }
+}
+
+// 대왕 그림의 자세(그림 한 장을 늘이고·누르고·기울여서): 내려찍기 전 쭉 늘어남, 점프 전 웅크림, 박치기 전 몸을 낮추고 부르르, 쾅 하면 납작
+function bossPose() {
+  let sx = 1, sy = 1, lean = 0, jx = 0;
+  const ap = boss.activePattern, p = ap ? 1 - Math.max(0, boss.telegraphT) / ap.telegraphS : 0;
+  if (ap?.kind === "slam") { sx = 1 - 0.08 * p; sy = 1 + 0.16 * p; }
+  else if (ap?.kind === "leap" && p < 0.35) { const q = p / 0.35; sx = 1 + 0.12 * q; sy = 1 - 0.14 * q; }
+  else if (ap?.kind === "dashLine") {
+    sx = 1 + 0.05 * p; sy = 1 - 0.07 * p; lean = Math.cos(ap.aimAngle) * 0.12 * p;
+    if (p > 0.6 && !themeFx.reducedMotion) jx = Math.sin(runTime * 70) * 2.5;
+  }
+  if (boss.dash) { lean = Math.cos(boss.dash.ang) * 0.2; sx *= 1.08; sy *= 0.94; }
+  if (boss.squashT > 0) { const k = boss.squashT / 0.22; sx *= 1 + 0.18 * k; sy *= 1 - 0.22 * k; }
+  return { sx, sy, lean, jx, z: boss.airZ || 0 };
 }
 
 // 연속 던지기: 예고한 부채꼴 방향으로 쓰레기를 여러 번 던진다. 줄마다 반 칸씩 엇갈려서 가만히 있으면 맞는다.
@@ -2691,6 +2747,7 @@ function bossVolleyTick(dt) {
     sgHostileShots.push({ x: boss.x, y: boss.y, angle: a, hostile: true, boss: true, life: 2.6, damage: v.dmg, speed: v.speed, r: 0.5 * U, spin: Math.random() * 6 });
   }
   playSfx("attackFire", 0.25);
+  if (chapter?.theme === 1) themeFx.emit("dust", boss.x + Math.cos(v.aim) * 1.2 * U, boss.y + Math.sin(v.aim) * 1.2 * U, { radius: 22, life: 0.4, dir: v.aim + Math.PI });
   v.wave++; v.t = 0.45;
   if (v.wave >= v.waves) boss.volley = null;
 }
@@ -2772,6 +2829,11 @@ function resolveBossPattern(pat) {
     case "dashLine": {
       // 돌진 — 예고 직선에서 수직으로 비켜야 회피. 보스가 실제로 이동한다.
       const ang = pat.aimAngle, len = (pat.lengthU || 7) * U;
+      if (bossDef.rangePatterns) {             // 개편판 대왕: 판정은 달리는 동안(bossDashTick)
+        boss.dash = { ang, sx: boss.x, sy: boss.y, go: 0, len: len - U, dmg, hit: false, puffT: 0 };
+        addShake(4, 0.2);
+        break;
+      }
       const dx = player.x - boss.x, dy = player.y - boss.y;
       const along = dx * Math.cos(ang) + dy * Math.sin(ang);
       const perp = Math.abs(-dx * Math.sin(ang) + dy * Math.cos(ang));
@@ -2789,20 +2851,23 @@ function resolveBossPattern(pat) {
         const a = Math.atan2(player.y - boss.y, player.x - boss.x);
         player.x += Math.cos(a) * (pat.knockback || 0) * U; player.y += Math.sin(a) * (pat.knockback || 0) * U;
       }
-      blasts.push({ x: boss.x, y: boss.y, radius: r, life: 0.4, maxLife: 0.4, color: "#ffb35a", vfxKind: "avalanche" });
+      blasts.push({ x: boss.x, y: boss.y, radius: r, life: 0.45, maxLife: 0.45, color: "#ffb35a", vfxKind: "shock" });
+      boss.squashT = 0.22;
+      if (chapter?.theme === 1) themeFx.mark("crack", boss.x, boss.y + 20, { radius: r * 0.8 });
       addShake(6, 0.25);
       break;
     }
     case "leap": {
       // 점프(원거리) — 예고한 그림자 자리로 대왕이 내려앉는다. 그림자 밖이면 회피.
       const r = (pat.radiusU || 2.5) * U;
-      boss.x = pat.telegraphOriginX; boss.y = pat.telegraphOriginY;
+      boss.x = pat.telegraphOriginX; boss.y = pat.telegraphOriginY; boss.airZ = 0; boss.squashT = 0.22;
+      if (chapter?.theme === 1) { themeFx.mark("crack", boss.x, boss.y + 20, { radius: r * 0.9 }); themeFx.emit("dust", boss.x, boss.y + 10, { radius: r * 0.6, life: 0.6 }); }
       if (dist(player.x, player.y, boss.x, boss.y) <= r) {
         applyBossHit(dmg);
         const a = Math.atan2(player.y - boss.y, player.x - boss.x) || 0;
         player.x += Math.cos(a) * 1.5 * U; player.y += Math.sin(a) * 1.5 * U;
       }
-      blasts.push({ x: boss.x, y: boss.y, radius: r, life: 0.45, maxLife: 0.45, color: "#ffb35a", vfxKind: "avalanche" });
+      blasts.push({ x: boss.x, y: boss.y, radius: r, life: 0.45, maxLife: 0.45, color: "#ffb35a", vfxKind: "shock" });
       addShake(7, 0.3);
       break;
     }
@@ -4080,8 +4145,9 @@ function drawBoss() {
   ctx.strokeStyle = "rgba(0,0,0,0.75)";
   ctx.lineWidth = Math.max(2, scale * 0.12);
 
-  // 그림자(공통)
-  ctx.beginPath(); ctx.ellipse(0, scale * 1.15, scale * 1.1, scale * 0.35, 0, 0, 7);
+  // 그림자(공통) — 점프로 떠 있으면 작아진다
+  const airK = 1 - Math.min(0.55, (boss.airZ || 0) / (3 * U) * 0.55);
+  ctx.beginPath(); ctx.ellipse(0, scale * 1.15, scale * 1.1 * airK, scale * 0.35 * airK, 0, 0, 7);
   ctx.fillStyle = "rgba(0,0,0,0.5)"; ctx.fill();
 
   const flash = boss.flashT > 0;
@@ -4093,7 +4159,10 @@ function drawBoss() {
     if (img && img.complete && img.naturalWidth) {
       const h = bossDef.drawH || 150, w = h * img.naturalWidth / img.naturalHeight;
       const im = flash ? tintedSprite(img, "rgba(255,255,255,0.85)", img.src + "#flash") : img;
-      ctx.save(); ctx.imageSmoothingEnabled = true; ctx.rotate(sway * 0.4);
+      const pose = bossPose();   // 발끝을 기준으로 늘이고·누르고, 점프 높이만큼 올린다
+      ctx.save(); ctx.imageSmoothingEnabled = true;
+      ctx.translate(pose.jx, h * 0.22 - pose.z); ctx.scale(pose.sx, pose.sy); ctx.translate(0, -h * 0.22);
+      ctx.rotate(sway * 0.4 + pose.lean);
       ctx.drawImage(im, -w / 2, -h * 0.78, w, h);
       ctx.restore(); ctx.imageSmoothingEnabled = false;
     }
@@ -4441,6 +4510,7 @@ function draw() {
   for (let y = -offY; y < viewH; y += gridSize) { ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(viewW, y); ctx.stroke(); }
 
   drawDarkZones();
+  if (chapter?.theme === 1) themeFx.ground(ctx, worldToScreen);   // 대왕이 남긴 바닥 자국(금·끌린 자국)
   if (chapter?.theme === 1 && boss?.activePattern) themeFx.telegraph(ctx, boss.activePattern, boss, boss.telegraphT, runTime, U, worldToScreen);
   drawBeacon();
   for (const d of decor) if (onScreen(d, Math.max(180, d.h || 0))) drawDecorItem(d);
@@ -4807,6 +4877,7 @@ function bossDanger(x,y){
     if(ap.kind==='volley'&&ang<(ap.spread||.8)/2+.25)d+=1;
     if((ap.kind==='scatter'||ap.kind==='litter')&&(ap.spots||[]).some(p=>dist(x,y,p.x,p.y)<(ap.kind==='litter'?.9:1.2)*U+m))d+=1;
   }
+  if(boss.dash){const q=boss.dash,rx=x-q.sx,ry=y-q.sy,al=rx*Math.cos(q.ang)+ry*Math.sin(q.ang),pp=Math.abs(-rx*Math.sin(q.ang)+ry*Math.cos(q.ang));if(al>-U&&al<q.len+boss.radiusU*U+m&&pp<1.2*U+m)d+=1;}
   if(boss.volley&&Math.abs(normalizeAngle(Math.atan2(y-boss.y,x-boss.x)-boss.volley.aim))<boss.volley.spread/2+.25)d+=1;
   for(const s of sgHostileShots){if(s.life<=0)continue;const vx=Math.cos(s.angle),vy=Math.sin(s.angle),rx=x-s.x,ry=y-s.y,t=rx*vx+ry*vy;if(t>-U&&t<5*U&&Math.abs(-rx*vy+ry*vx)<(s.r||.3*U)+.6*U)d+=.7;}
   if(dist(x,y,boss.x,boss.y)<boss.radiusU*U+.8*U)d+=.6;
@@ -5113,7 +5184,7 @@ function sgDrawThreats(){
   for(const e of enemies)if(e.sgThrowWarn>0){const q=worldToScreen(e.x,e.y);ctx.beginPath();ctx.arc(q.x,q.y,18,0,7);ctx.stroke();ctx.beginPath();ctx.moveTo(q.x,q.y);ctx.lineTo(q.x+Math.cos(e.sgThrowAngle)*32,q.y+Math.sin(e.sgThrowAngle)*32);ctx.stroke();}
   for(const s of sgHostileShots){const q=worldToScreen(s.x,s.y);
     // 대왕이 던진 쓰레기: 판정 크기의 빨간 테두리 + 쓰레기 그림(돌며 날아감)
-    if(s.boss){ctx.fillStyle='rgba(246,179,99,.55)';ctx.beginPath();ctx.arc(q.x,q.y,s.r,0,7);ctx.fill();ctx.stroke();themeFx.stamp(ctx,'t1_prop_litter',q.x,q.y,s.r*2.2,1,s.spin+runTime*7);ctx.fillStyle='#f6b363';continue;}
+    if(s.boss){if(!themeFx.stamp(ctx,'t1_fx_trashball',q.x,q.y,s.r*2.3,1,s.spin+runTime*7)){ctx.fillStyle='rgba(246,179,99,.55)';ctx.beginPath();ctx.arc(q.x,q.y,s.r,0,7);ctx.fill();ctx.fillStyle='#f6b363';}ctx.beginPath();ctx.arc(q.x,q.y,s.r*1.1,0,7);ctx.stroke();continue;}
     ctx.beginPath();ctx.arc(q.x,q.y,6,0,7);ctx.fill();ctx.stroke();}
   ctx.restore();
 }

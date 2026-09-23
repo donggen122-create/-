@@ -43,6 +43,10 @@ export const SPRITE_FILES = {
   t1_en_fly: IMG_BASE + "t1/en_fly.png",
   t1_boss_calm: IMG_BASE + "t1/boss_calm.png",
   t1_boss_angry: IMG_BASE + "t1/boss_angry.png",
+  // 대왕 기술 효과(사용자 Gemini 2026-09-23, game/tools/cut_boss_fx.py): 던지는 쓰레기 뭉치 · 쾅 충격파 고리 · 금 간 땅
+  t1_fx_trashball: IMG_BASE + "t1/fx_trashball.png",
+  t1_fx_shockring: IMG_BASE + "t1/fx_shockring.png",
+  t1_fx_crack: IMG_BASE + "t1/fx_crack.png",
   // 공용 아이템(모든 테마): 새싹(경험치) · 큰 새싹 · 재활용 봉투(보물) · 하트 · 지구 에너지 구슬 · 별가루
   item_sprout: IMG_BASE + "t1/item_sprout.png",
   item_sprout_big: IMG_BASE + "t1/item_sprout_big.png",

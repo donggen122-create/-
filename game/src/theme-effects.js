@@ -6,6 +6,7 @@ const fxEase = (n) => 1 - Math.pow(1 - fxClamp(n), 3);
 
 export function createThemeEffects(sprites) {
   const events = [];
+  const marks = [];   // 바닥 자국(대왕 내려찍기·착지 금, 박치기 끌린 자국): 캐릭터 아래에 그린다
   const textures = new Map();
   const motion = typeof matchMedia === "function" ? matchMedia("(prefers-reduced-motion: reduce)") : null;
   let sequence = 0;
@@ -61,6 +62,46 @@ export function createThemeEffects(sprites) {
     for (let i = events.length - 1; i >= 0; i--) {
       events[i].life -= dt;
       if (events[i].life <= 0) events.splice(i, 1);
+    }
+    for (let i = marks.length - 1; i >= 0; i--) {
+      marks[i].life -= dt;
+      if (marks[i].life <= 0) marks.splice(i, 1);
+    }
+  }
+  function mark(kind, x, y, opts = {}) {
+    if (marks.length >= 12) marks.shift();
+    const life = opts.life || (kind === "skid" ? 1 : 1.6);
+    marks.push({ kind, x, y, radius: 60, ...opts, life, maxLife: life, seed: sequence++ });
+  }
+  // 바닥 자국: 금(갈라진 선이 사방으로) · 끌린 자국(박치기 길). 서서히 옅어진다.
+  function ground(c, toScreen) {
+    for (const m of marks) {
+      const s = toScreen(m.x, m.y), t = fxClamp(1 - m.life / m.maxLife);
+      c.save(); c.globalAlpha = Math.min(1, 1.6 * (1 - t));
+      if (m.kind === "crack" && stamp(c, "t1_fx_crack", s.x, s.y, m.radius * 2, .9, (m.seed % 6) * 1.05)) {
+        // 그림(금 간 땅)이 있으면 그것을, 없으면 아래의 선으로 그린다
+      } else if (m.kind === "crack") {
+        const n = 8, r = m.radius;
+        c.fillStyle = "rgba(92,62,32,.18)"; circle(c, s.x, s.y, r * .45); c.fill();
+        c.lineCap = "round";
+        for (const [w, col] of [[5, "rgba(255,244,214,.55)"], [2.5, "#6b4524"]]) {
+          c.strokeStyle = col; c.lineWidth = w;
+          for (let i = 0; i < n; i++) {
+            const a = i * FX_TAU / n + (m.seed % 7) * .21, k = .7 + .3 * Math.sin(m.seed * 3.1 + i * 1.7);
+            c.beginPath(); c.moveTo(s.x + Math.cos(a) * r * .15, s.y + Math.sin(a) * r * .15);
+            const b = a + .22 * Math.sin(i * 2.3 + m.seed);
+            c.lineTo(s.x + Math.cos(b) * r * .55 * k, s.y + Math.sin(b) * r * .55 * k);
+            c.lineTo(s.x + Math.cos(a) * r * k, s.y + Math.sin(a) * r * k); c.stroke();
+          }
+        }
+      } else if (m.kind === "skid") {
+        const e = toScreen(m.toX, m.toY), a = Math.atan2(e.y - s.y, e.x - s.x), len = Math.hypot(e.x - s.x, e.y - s.y), w = m.width || 30;
+        c.translate(s.x, s.y); c.rotate(a);
+        c.fillStyle = "rgba(110,76,40,.2)"; c.fillRect(0, -w, len, w * 2);
+        c.strokeStyle = "#7a5230"; c.lineWidth = 2.5; c.lineCap = "round";
+        for (const y of [-w * .6, -w * .15, w * .35, w * .75]) { c.beginPath(); c.moveTo(len * .08, y); c.lineTo(len * .95, y * .8); c.stroke(); }
+      }
+      c.restore();
     }
   }
   function purify(c, x, y, progress, size = 62) {
@@ -221,6 +262,17 @@ export function createThemeEffects(sprites) {
   function blast(c, b, x, y) {
     const t = fxClamp(1 - b.life / b.maxLife), r = b.radius;
     if (!b.vfxKind) { purify(c, x, y, t, Math.min(180, r * 1.4)); return; }
+    if (b.vfxKind === "shock") {
+      // 대왕 내려찍기·착지: 충격파 고리 그림이 판정 원 크기까지 퍼지며 옅어진다(그림이 없으면 아래 기본 효과)
+      c.save(); c.globalAlpha = 1 - t * t;
+      const ok = stamp(c, "t1_fx_shockring", x, y, r * 2 * (.55 + .5 * fxEase(t)), 1);
+      if (ok && !quiet()) for (let i = 0; i < 6; i++) {
+        const a = i * FX_TAU / 6 + .4, d = r * (.3 + .75 * fxEase(t));
+        stamp(c, "t1_prop_litter", x + Math.cos(a) * d, y + Math.sin(a) * d - 22 * Math.sin(t * Math.PI), 16, .9, a + t * 5);
+      }
+      c.restore();
+      if (ok) return;
+    }
     c.save(); c.globalAlpha = 1 - t;
     ring(c, x, y, r, "#b99d6e", 2 * (1 - t) + 1);
     stamp(c, "vfx_smog", x, y, r * 1.8, .24);
@@ -244,6 +296,14 @@ export function createThemeEffects(sprites) {
       } else if (e.kind === "blink" || e.kind === "summon") {
         ring(c, s.x, s.y, 8 + e.radius * fxEase(t), "#a194bd", 2);
         stamp(c, "vfx_smog", s.x, s.y - 15 * t, e.radius * 2, .35);
+      } else if (e.kind === "dust") {
+        // 흙먼지 한 번(대왕 박치기·던지기·착지): 구름이 퍼지며 옅어지고 쓰레기 조각이 튄다
+        const r = e.radius * (.6 + .6 * fxEase(t));
+        stamp(c, "vfx_smog", s.x, s.y - 10 * t, r * 2, .55);
+        if (!quiet()) for (let i = 0; i < 3; i++) {
+          const a = (e.dir ?? -Math.PI / 2) + (i - 1) * .8 + Math.PI, d = r * (.4 + .6 * t);
+          stamp(c, "t1_prop_litter", s.x + Math.cos(a) * d, s.y + Math.sin(a) * d - 18 * Math.sin(t * Math.PI), 14, .9, a + t * 4);
+        }
       } else if (e.kind === "phase" || e.kind === "arrival") {
         stamp(c, "vfx_smog", s.x, s.y - 30, 180 + 45 * t, .5);
         ring(c, s.x, s.y, 40 + 70 * fxEase(t), "#d5a45d", 3);
@@ -252,6 +312,6 @@ export function createThemeEffects(sprites) {
       c.restore();
     }
   }
-  return { emit, update, draw, hit, purify, smog, beacon, projectile, telegraph, blast, stamp,
-    reset() { events.length = 0; sequence = 0; }, get count() { return events.length; }, get reducedMotion() { return quiet(); } };
+  return { emit, update, draw, hit, purify, smog, beacon, projectile, telegraph, blast, stamp, mark, ground,
+    reset() { events.length = 0; marks.length = 0; sequence = 0; }, get count() { return events.length; }, get reducedMotion() { return quiet(); } };
 }

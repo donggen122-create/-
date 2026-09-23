@@ -48,7 +48,7 @@ test('every skill kind has a hit rule in main.js and a warning drawing in theme-
  }
 });
 
-test('boss hp per difficulty: easy half, hard reduced because enemy hp is already x5.5',()=>{
- const D=R.DIFFICULTIES;assert.equal(D.easy.bossHp,.5);assert.equal(D.normal.bossHp,1);assert.equal(D.hard.bossHp,.4);
+test('boss hp per difficulty: easy half, normal .85, hard reduced because enemy hp is already x5.5',()=>{
+ const D=R.DIFFICULTIES;assert.equal(D.easy.bossHp,.5);assert.equal(D.normal.bossHp,.85);assert.equal(D.hard.bossHp,.4);
  assert.ok(D.hard.enemyHp*D.hard.bossHp>D.normal.enemyHp*D.normal.bossHp*2);
 });
