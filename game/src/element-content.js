@@ -63,18 +63,18 @@ const EVO_DATA = [
   { id: "EVO_L2", skill: "L2", support: "S2", name: "벌떼 소환", kind: "swarm", sprite: "lightning_swarm", interval: 0.4, dmgCoef: 0.9, desc: "벌 5마리가 적을 따라가는 침을 쏴요." },
 ];
 
-// 파츠(로비 성장, Codex v2 규칙 유지): 스킬당 1개. feature는 element-combat.js가 읽는 기능 키.
+// 파츠(로비 성장, Codex v2 규칙 유지): 스킬당 1개. feature는 element-combat.js가 읽는 기능 키. gold = 금 메달(7개) 기능(3차, 일반·진화 양쪽).
 const PART_DATA = [
-  { id: "PART_F1", skill: "F1", name: "불꽃병 기름통", feature: "puddleLonger", desc: "불 웅덩이가 1초 더 오래 타요." },
-  { id: "PART_F2", skill: "F2", name: "로켓 유도 날개", feature: "homing", desc: "로켓이 적을 따라 방향을 조금씩 바꿔요." },
-  { id: "PART_W1", skill: "W1", name: "물풍선 고무줄", feature: "extraBounce", desc: "풍선이 2번 더 튕겨요." },
-  { id: "PART_W2", skill: "W2", name: "물대포 압력 펌프", feature: "longerBeam", desc: "물줄기가 0.2초 더 오래 나가요." },
-  { id: "PART_V1", skill: "V1", name: "부메랑 회수 날개", feature: "extraBlade", desc: "돌아온 뒤 작은 바람 날을 한 번 더 던져요." },
-  { id: "PART_V2", skill: "V2", name: "팽이 풍향계", feature: "widerOrbit", desc: "회오리가 더 넓게 돌아요." },
-  { id: "PART_E1", skill: "E1", name: "돌멩이 새총", feature: "splitStone", desc: "돌이 맞으면 작은 돌 2개로 갈라져요." },
-  { id: "PART_E2", skill: "E2", name: "두더지 도시락", feature: "mineWider", desc: "지뢰 폭발 범위가 30% 넓어져요." },
-  { id: "PART_L1", skill: "L1", name: "번개 피뢰침", feature: "doubleBolt", desc: "번개가 한 번 더 떨어져요(피해 30%)." },
-  { id: "PART_L2", skill: "L2", name: "벌 꿀단지", feature: "fasterBee", desc: "벌이 침을 25% 더 자주 쏴요." },
+  { id: "PART_F1", skill: "F1", name: "불꽃병 기름통", feature: "puddleLonger", desc: "불 웅덩이가 1초 더 오래 타요.", gold: "웅덩이·용암 안에서 작은 불꽃이 1.2초마다 터져요(피해 50%)." },
+  { id: "PART_F2", skill: "F2", name: "로켓 유도 날개", feature: "homing", desc: "로켓이 적을 따라 방향을 조금씩 바꿔요.", gold: "맞히면 작은 보조 로켓 1발이 다른 적을 따라가요(피해 50%, 보조 로켓은 더 나오지 않아요)." },
+  { id: "PART_W1", skill: "W1", name: "물풍선 고무줄", feature: "extraBounce", desc: "풍선이 2번 더 튕겨요.", gold: "마지막으로 튕길 때 작은 풍선 2개로 나뉘어요(피해 40%)." },
+  { id: "PART_W2", skill: "W2", name: "물대포 압력 펌프", feature: "longerBeam", desc: "물줄기가 0.2초 더 오래 나가요.", gold: "물줄기가 지나간 자리에 잠깐 적이 느려지는 물길이 생겨요." },
+  { id: "PART_V1", skill: "V1", name: "부메랑 회수 날개", feature: "extraBlade", desc: "돌아온 뒤 작은 바람 날을 한 번 더 던져요.", gold: "작은 부메랑 1개를 더 던져요(피해 50%)." },
+  { id: "PART_V2", skill: "V2", name: "팽이 풍향계", feature: "widerOrbit", desc: "회오리가 더 넓게 돌아요.", gold: "4초마다 팽이에 닿은 적의 탄환 1개를 없애요(대장 탄환 제외)." },
+  { id: "PART_E1", skill: "E1", name: "돌멩이 새총", feature: "splitStone", desc: "돌이 맞으면 작은 돌 2개로 갈라져요.", gold: "작은 돌이 3개로 나뉘어요." },
+  { id: "PART_E2", skill: "E2", name: "두더지 도시락", feature: "mineWider", desc: "지뢰 폭발 범위가 30% 넓어져요.", gold: "터진 자리에 잠깐 적이 느려지는 흙길이 생겨요." },
+  { id: "PART_L1", skill: "L1", name: "번개 피뢰침", feature: "doubleBolt", desc: "번개가 한 번 더 떨어져요(피해 30%).", gold: "추가 번개가 옆의 다른 적 1명에게 한 번 더 이어져요(피해 30%)." },
+  { id: "PART_L2", skill: "L2", name: "벌 꿀단지", feature: "fasterBee", desc: "벌이 침을 약 33% 더 자주 쏴요(쏘는 간격 25% 짧게).", gold: "8번째 침마다 옆의 다른 적에게 전기가 이어져요(피해 60%)." },
 ];
 
 export const ELEMENTS = Object.fromEntries(ELEMENT_DATA.map(e => [e.id, { ...e, icon: `element_${e.id}`, desc: e.role }]));

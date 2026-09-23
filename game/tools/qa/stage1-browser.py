@@ -49,7 +49,7 @@ with sync_playwright() as pw:
             page.locator('dialog[open] [data-first-part="PART_W1"]').wait_for()
             assert page.locator('[data-first-part="PART_F1"]').is_disabled()
             screen(page,f'local-first-part-{width}')
-            page.locator('[data-first-part="PART_W1"]').click();page.wait_for_function("document.querySelector('dialog[open]')?.textContent.includes('획득')")
+            page.locator('[data-first-part="PART_W1"]').click();page.wait_for_function("!!document.querySelector('dialog[open] .sg-flip')")
             close_dialog(page);page.reload(wait_until='networkidle');enter_lobby(page);page.wait_for_timeout(500)
             assert page.locator('dialog[open] [data-first-part]').count()==0,'first reward repeated'
             screen(page,f'local-lobby-{width}')
@@ -58,7 +58,7 @@ with sync_playwright() as pw:
             page.locator('.sg-nav [data-tab="parts"]').click();assert page.locator('#sg-draw-part option[value="PART_F1"]').evaluate('(option)=>option.disabled')
             assert '3개는 총 +6%' not in page.locator('#guardian-lobby').inner_text()
             page.locator('#sg-draw-part').select_option('PART_W1');screen(page,f'local-parts-{width}')
-            page.locator('[data-do="draw-part"]').click();page.wait_for_function("document.querySelector('dialog[open]')?.textContent.includes('획득')");close_dialog(page)
+            page.locator('[data-do="draw-part"]').click();page.wait_for_function("!!document.querySelector('dialog[open] .sg-flip')");close_dialog(page)
             state=page.evaluate("async()=>await(await fetch('/api/guardian',{headers:{Authorization:'Bearer '+localStorage.lumen_token}})).json()")
             assert state['profile']['gifts']==4 and state['profile']['giftCounts']['part']==5,state
             page.locator('.sg-nav [data-tab="adventure"]').click();page.locator('#sg-start').click();page.locator('#levelup:not(.hidden)').wait_for();assert page.locator('.sg-my-part').count()>=1

@@ -2,10 +2,15 @@
 import { ELEMENTS, SKILLS, PARTS, COMBOS, SUPPORTS, EVO_OF, SKILL_PARTNERS, LEVEL_DAMAGE, RUN_RULES } from './element-content.js';
 export { ELEMENTS, SKILLS, PARTS, COMBOS, SUPPORTS, EVO_OF, SKILL_PARTNERS, RUN_RULES, LEVEL_DAMAGE };
 export const VERSION = 2;
-export const PASS_NOTICE = '매일 아침 8시에 기본 이용권이 10장으로 새로 채워져요. 성공하면 1장, 실패하면 0장! 기본 이용권으로 하루에 10번 성공할 수 있어요. 선생님이 추가로 지급한 이용권은 다음 아침 8시까지 사용할 수 있어요. 이용권은 미션이나 뽑기에서 나오지 않아요.';
+export const PASS_NOTICE = '매일 아침 8시에 기본 이용권이 10장으로 새로 채워져요. 성공하면 1장, 실패하면 0장! 기본 이용권으로 하루에 10번 성공할 수 있어요. 선생님이 추가로 지급한 이용권은 다음 아침 8시까지 사용할 수 있어요. 이용권은 미션이나 보급에서 나오지 않아요.';
 export const TOOLS=SKILLS, SETS=ELEMENTS;
 export const SLOTS={attack:'공격 훈련',hp:'체력 훈련',speed:'기동 훈련'};
-export const GRADE_NAMES=['일반','강화','특급'];
+// 2차 개편(docs/23 §4): 등급은 메달(동 1개 · 은 3개 · 금 7개), 코인은 "레벨 올리기", 뽑기는 "보급"이라고 부른다. 서버 안 이름(draw-part·gifts)은 그대로.
+export const GRADE_NAMES=['동','은','금'];
+export const GOLD_COPIES=7;
+export const SUPPLY_EXCHANGE_COST=300;   // 코인 300개 → 보급권 1장, 게임 날짜(아침 8시 기준)마다 1번
+export const PART_LEVEL_STEP=.03;        // 레벨 1단계마다 그 스킬 피해 +3%(훈련 1단계와 같은 숫자)
+export const GRADE_STEP=.06;             // 메달 1단계마다 +6%(동 0 · 은 6 · 금 12). 배열이 아니라 곱셈이라 등급이 늘어도 NaN이 없다
 // 동물 친구 = 함께 있는 동안 계속 붙는 버프(2026-09-23, 사용자: "펫은 무용지물 → 버프 효과로"). buffs 키는 main.js 통합 스탯 키. 우정 3단계부터 ×1.2
 export const PETS = {
   cat: { name: '야옹이', role: '새싹 자석', desc: '새싹 줍기 범위 +80%, 새싹 경험치 +15%', color: '#efac6a', buffs: { magnetPct: .8, xpPct: .15 } },
@@ -43,11 +48,11 @@ export const STAGES = [
 ];
 
 const stageCopy=[
- ['새싹을 모아 원소 스킬을 고르고 3단계까지 키워요.','첫 파츠 1개 선택 + 파츠·친구 뽑기 열림'],
+ ['새싹을 모아 원소 스킬을 고르고 3단계까지 키워요.','첫 파츠 1개 선택 + 파츠·친구 보급 열림'],
  ['지원품은 나를 튼튼하게, 스킬의 짝 지원품은 진화의 열쇠예요.','첫 성공 코인 120개 추가'],
  ['스킬 3단계 + 짝 지원품이면 금색 진화 카드가 나와요.','처음 성공하면 첫 동물 친구 선택'],
  ['가까운 적·멀리 있는 적에 맞춰 스킬을 조합해요.','첫 성공 코인 120개 추가'],
- ['쓰레기를 5개 모으면 대장도 약해져요!','새 친구 선택 + 뽑기권 1장 추가'],
+ ['쓰레기를 5개 모으면 대장도 약해져요!','새 친구 선택 + 보급권 1장 추가'],
 ];
 STAGES.forEach((s,i)=>{s.tip=stageCopy[i][0];s.unlock=stageCopy[i][1];});
 const clone=x=>structuredClone(x);
@@ -66,32 +71,45 @@ export function trainingCost(level){return level>=20?null:100+25*(level-1);}
 export const upgradeCost=trainingCost;
 export function partUpgradeCost(level){return level>=10?null:60+20*(level-1);}
 export function partResetRefund(level){const n=clampInt(level,1,10)-1;return 60*n+10*n*(n-1);}
-export function grade(copies){return copies>=7?2:copies>=3?1:0;}
+export function grade(copies){return copies>=GOLD_COPIES?2:copies>=3?1:0;}
+export function nextGradeAt(copies){return copies<3?3:copies<GOLD_COPIES?GOLD_COPIES:null;}
 export function friendshipLevel(p){return [0,3,8,16,28].filter(n=>p.friendship>=n).length;}
 export function setCounts(p){const counts=Object.fromEntries(Object.keys(ELEMENTS).map(e=>[e,0]));for(const id of new Set(p.equippedParts||[]))if(PARTS[id]&&p.parts?.[id]?.copies>0)counts[PARTS[id].element]++;return counts;}
 export function hasPart(p,skillId){const id=skillId.startsWith('PART_')?skillId:`PART_${skillId}`;return !!(p.equippedParts?.includes(id)&&p.parts?.[id]?.copies>0);}
-export function partBonus(p,skillId){if(!hasPart(p,skillId))return 0;const part=p.parts[skillId.startsWith('PART_')?skillId:`PART_${skillId}`];return (clampInt(part.level,1,10)-1)*.02+[0,.06,.12][grade(part.copies)];}
+export function hasGold(p,skillId){if(!hasPart(p,skillId))return false;return grade(p.parts[skillId.startsWith('PART_')?skillId:`PART_${skillId}`].copies)>=2;}
+export function partBonus(p,skillId){if(!hasPart(p,skillId))return 0;const part=p.parts[skillId.startsWith('PART_')?skillId:`PART_${skillId}`];return (clampInt(part.level,1,10)-1)*PART_LEVEL_STEP+grade(part.copies)*GRADE_STEP;}
 export function elementBonus(p,element){return (setCounts(p)[element]||0)>=2?.04:0;}
-export function selectableParts(p){return Object.keys(PARTS).filter(id=>(p.parts?.[id]?.copies||0)<7);}
+export function selectableParts(p){return Object.keys(PARTS).filter(id=>(p.parts?.[id]?.copies||0)<GOLD_COPIES);}
+// 서로 다른 원소 파츠 3개를 끼우면 최대 체력 +5%(2차). 같은 원소 2개(+4%)와 동시에는 될 수 없다.
+export function rainbowSet(p){const ids=runParts(p);return ids.length===3&&new Set(ids.map(id=>PARTS[id].element)).size===3;}
+// 이번 보급의 종류: pick(5번째: 금이 아닌 파츠를 골라 3개) → new(가진 종류 3개 미만: 없는 파츠를 골라 1개) → element(원소 고르기, 금 제외 반반 1개). 모두 금이면 null.
+export function drawMode(p){
+ if(!selectableParts(p).length)return null;
+ if(((p.giftCounts?.part||0)+1)%5===0)return 'pick';
+ return Object.keys(PARTS).filter(id=>p.parts?.[id]?.copies>0).length<3?'new':'element';
+}
+export function elementPool(p,element){return Object.keys(PARTS).filter(id=>PARTS[id].element===element&&(p.parts?.[id]?.copies||0)<GOLD_COPIES);}
+export function drawMessage(d){const name=PARTS[d.id]?.name||'파츠';if(d.isNew)return `${name}${d.qty>1?` ×${d.qty}`:''} 획득!${d.autoEquipped?' 빈 칸에 끼웠어요.':''}`;return `${name} ×${d.qty} · ${d.before}→${d.after}개${d.gradeAfter>d.gradeBefore?` · ${GRADE_NAMES[d.gradeAfter]} 달성!`:''}`;}
 export function runParts(p){return [...new Set(p.equippedParts||[])].filter(id=>own(PARTS,id)&&p.parts?.[id]?.copies>0).slice(0,3);}
 export function skillDamageMultiplier(p,id){const combo=COMBOS[id];if(combo)return skillDamageMultiplier(p,combo.skill);return 1+partBonus(p,id)+elementBonus(p,SKILLS[id]?.element);}
 export function levelMultiplier(lv){return LEVEL_DAMAGE[clampInt(lv,1,5)-1];}
 export function supportValue(id,lv){const s=SUPPORTS[id];return s?s.values[clampInt(lv,1,3)-1]:0;}
-export function bonuses(p){return {atkPct:(p.training.attack-1)*.03,hpPct:(p.training.hp-1)*.03,speedPct:Math.min(.15,(p.training.speed-1)*.005),bossDmgPct:0,areaPct:0};}
-export function addPart(p,id){
+export function bonuses(p){return {atkPct:(p.training.attack-1)*.03,hpPct:(p.training.hp-1)*.03+(rainbowSet(p)?.05:0),speedPct:Math.min(.15,(p.training.speed-1)*.005),bossDmgPct:0,areaPct:0};}
+// 개수 상한 없음(2차): 금 뒤에 남는 개수도 그대로 쌓는다. 금 파츠는 고르는 목록·원소 보급에서 빠지므로 "코인 60개" 낭비가 없다.
+export function addPart(p,id,qty=1){
  if(!own(PARTS,id))throw new Error('없는 파츠예요.');
- const owned=p.parts[id];if(owned?.copies>=7){p.coins+=60;return '이미 특급인 파츠 → 코인 60개';}
- if(owned)owned.copies++;else p.parts[id]={copies:1,level:1};
+ const before=Math.max(0,Math.floor(Number(p.parts[id]?.copies)||0)),after=before+qty,isNew=!before;
+ p.parts[id]=isNew?{copies:after,level:1}:{...p.parts[id],copies:after};
  p.equippedParts=(p.equippedParts||[]).filter(x=>PARTS[x]);   // 옛 체계의 파츠 ID는 장착 목록에서 제외
- if(!p.equippedParts.includes(id)&&p.equippedParts.length<3)p.equippedParts.push(id);
- return `${PARTS[id].name} 획득!`;
+ const autoEquipped=!p.equippedParts.includes(id)&&p.equippedParts.length<3;if(autoEquipped)p.equippedParts.push(id);
+ return {id,qty,before,after,gradeBefore:isNew?-1:grade(before),gradeAfter:grade(after),isNew,autoEquipped};
 }
 export function addPet(p,id){if(p.pets.includes(id)){if(p.friendship>=28){p.coins+=60;return '친구 도감 완성 보상: 코인 60개';}p.friendship=Math.min(28,p.friendship+1);return '다시 만난 친구 → 우정 +1';}p.pets.push(id);p.activePet ||= id;return `${PETS[id].name}와 친구가 되었어요!`;}
 export function pendingPart(p){return p?.stages?.CH01?.cleared&&!p.milestones?.firstPart?{key:'firstPart',ids:Object.keys(PARTS)}:null;}
 export function pendingPet(p){if(!p)return null;if(maxClear(p)>=3&&!p.milestones?.firstPet)return {key:'firstPet',ids:['cat','turtle','otter']};if(p.stages?.CH05?.cleared&&!p.milestones?.bossPet){const ids=Object.keys(PETS).filter(id=>!p.pets.includes(id));return {key:'bossPet',ids:ids.length?ids:['cat'],allOwned:!ids.length};}return null;}
 // 별 = 난이도(쉬움 1 · 보통 2 · 어려움 3). 난이도는 출동 전 settings로 프로필에 저장된 값을 서버가 그대로 읽는다(클라이언트가 보낸 값은 쓰지 않음).
 // 환경 목표(쓰레기 줍기)는 별 대신 코인 +30. bossSeconds·hpFraction은 기록용으로만 받는다.
-export function completeRun(profile,{stage,cleared,seconds,litter=0,hpFraction=0,bossSeconds=Infinity,skillIds=[],fusionIds=[],supportIds=[],equippedPartIds=null,difficulty=difficultyOf(profile)}) {
+export function completeRun(profile,{stage,cleared,seconds,litter=0,hpFraction=0,bossSeconds=Infinity,skillIds=[],fusionIds=[],supportIds=[],equippedPartIds=null,difficulty=difficultyOf(profile),day=null}) {
  const p=clone(profile),index=Number(stage.slice(2)),st=STAGES[index-1],diff=DIFFICULTIES[difficulty]||DIFFICULTIES.easy;
  if(!st)throw new Error('없는 단계예요.');
  const first=cleared&&!p.stages[stage]?.cleared,intro=['CH01','CH02'].includes(stage)&&!p.stages[stage]?.cleared;
@@ -99,7 +117,8 @@ export function completeRun(profile,{stage,cleared,seconds,litter=0,hpFraction=0
  const base=120+10*(index-1),coins=cleared?Math.floor(base*(intro?.6:1))+(first?120:0)+(index===5?60:0)+(goal?30:0):Math.floor(base*.6*Math.min(seconds/300,1));
  let gifts=cleared?1+(first&&index===5?1:0):0,friendship=cleared?1:0;
  p.runs++;if(cleared)p.wins++;
- if(!cleared&&seconds>=150){p.failRemainder++;if(p.failRemainder>=2){p.failRemainder-=2;gifts++;friendship++;}}
+ // 실패 격려(150초 이상 실패 2번): 우정은 매번, 보급권은 게임 날짜마다 1장까지(실패만 반복해 보급권을 모으지 못하게). day는 서버가 넣는다.
+ if(!cleared&&seconds>=150){p.failRemainder++;if(p.failRemainder>=2){p.failRemainder-=2;friendship++;if(!day||p.failGiftDay!==day){gifts++;if(day)p.failGiftDay=day;}}}
  p.coins+=coins;p.gifts+=gifts;p.friendship=Math.min(28,p.friendship+friendship);
  const stars=cleared?diff.stars:0;
  if(cleared){const prev=p.stages[stage]||{};p.stages[stage]={cleared:true,stars:Math.max(prev.stars||0,stars),best:Math.min(prev.best??Infinity,seconds)};}
@@ -119,38 +138,56 @@ export function completeRun(profile,{stage,cleared,seconds,litter=0,hpFraction=0
  }
  return {profile:p,reward:{coins,gifts,friendship,stars,first,partActivity,difficulty:own(DIFFICULTIES,difficulty)?difficulty:'easy',goal,notes:first?[st.unlock]:[]}};
 }
-export function action(profile,a,rng=Math.random){
- const p=clone(profile);let message='저장했어요.';
+// ctx.day = 서버가 넣는 게임 날짜(아침 8시 기준). 코인 교환처럼 하루 한 번인 작업에 쓴다.
+export function action(profile,a,rng=Math.random,ctx={}){
+ const p=clone(profile);let message='저장했어요.',draw=null;
  const check=(ok,msg)=>{if(!ok)throw new Error(msg);};
+ const pickIndex=n=>Math.min(n-1,Math.max(0,Math.floor(rng()*n)));
  if(a.kind==='train'){
   check(Object.hasOwn(SLOTS,a.stat),'훈련을 골라 주세요.');const cost=trainingCost(p.training[a.stat]);check(cost!==null,'이미 최고 단계예요.');check(p.coins>=cost,'코인을 더 모아 주세요.');p.coins-=cost;p.training[a.stat]++;message=`${SLOTS[a.stat]} ${p.training[a.stat]}단계! 두 주인공에게 함께 적용돼요.`;
  }else if(a.kind==='equip-part'){
-  check(own(PARTS,a.id)&&p.parts[a.id]?.copies>0,'아직 없는 파츠예요.');p.equippedParts=(p.equippedParts||[]).filter(x=>PARTS[x]);check(p.equippedParts.includes(a.id)||p.equippedParts.length<3,'파츠는 세 개까지 장착해요. 하나를 빼고 장착해 주세요.');if(!p.equippedParts.includes(a.id))p.equippedParts.push(a.id);message='파츠를 장착했어요.';
+  check(own(PARTS,a.id)&&p.parts[a.id]?.copies>0,'아직 없는 파츠예요.');p.equippedParts=(p.equippedParts||[]).filter(x=>PARTS[x]);
+  // 칸이 가득 차면 replace로 바꿀 파츠를 받는다(뺀 파츠의 레벨·개수는 그대로 남음)
+  if(!p.equippedParts.includes(a.id)){
+   if(p.equippedParts.length>=3){check(own(PARTS,a.replace)&&p.equippedParts.includes(a.replace),'파츠는 세 개까지 장착해요. 바꿀 파츠를 골라 주세요.');p.equippedParts=p.equippedParts.map(x=>x===a.replace?a.id:x);message=`${PARTS[a.replace].name} 대신 ${PARTS[a.id].name} 장착!`;}
+   else{p.equippedParts.push(a.id);message='파츠를 장착했어요.';}
+  }else message='파츠를 장착했어요.';
  }else if(a.kind==='unequip-part'){
   check(own(PARTS,a.id)&&p.parts[a.id]?.copies>0,'아직 없는 파츠예요.');p.equippedParts=p.equippedParts.filter(id=>id!==a.id);message='파츠를 보관했어요.';
  }else if(a.kind==='upgrade-part'){
-  check(own(PARTS,a.id)&&p.parts[a.id]?.copies>0,'아직 없는 파츠예요.');const cost=partUpgradeCost(p.parts[a.id].level);check(cost!==null,'이미 최고 단계예요.');check(p.coins>=cost,'코인을 더 모아 주세요.');p.coins-=cost;p.parts[a.id].level++;message=`${PARTS[a.id].name} ${p.parts[a.id].level}단계!`;
+  check(own(PARTS,a.id)&&p.parts[a.id]?.copies>0,'아직 없는 파츠예요.');const cost=partUpgradeCost(p.parts[a.id].level);check(cost!==null,'이미 최고 단계예요.');check(p.coins>=cost,'코인을 더 모아 주세요.');p.coins-=cost;p.parts[a.id].level++;message=`${PARTS[a.id].name} Lv.${p.parts[a.id].level}! 이 스킬 피해 +${Math.round((p.parts[a.id].level-1)*PART_LEVEL_STEP*100)}%`;
  }else if(a.kind==='reset-part'){
-  check(own(PARTS,a.id)&&p.parts[a.id]?.copies>0,'아직 없는 파츠예요.');const refund=partResetRefund(p.parts[a.id].level);p.parts[a.id].level=1;p.coins+=refund;message=`강화를 1단계로 되돌리고 코인 ${refund}개를 돌려받았어요. 등급은 그대로예요.`;
+  check(own(PARTS,a.id)&&p.parts[a.id]?.copies>0,'아직 없는 파츠예요.');const refund=partResetRefund(p.parts[a.id].level);p.parts[a.id].level=1;p.coins+=refund;message=`레벨을 1로 되돌리고 코인 ${refund}개를 돌려받았어요. 메달과 개수는 그대로예요.`;
  }else if(a.kind==='choose-part'){
-  const pending=pendingPart(p);check(pending?.ids.includes(a.id),'첫 파츠를 이미 받았거나 아직 받을 수 없어요.');check(selectableParts(p).includes(a.id),'이미 특급인 파츠예요. 다른 파츠를 골라 주세요.');p.milestones[pending.key]=true;message=addPart(p,a.id);
+  const pending=pendingPart(p);check(pending?.ids.includes(a.id),'첫 파츠를 이미 받았거나 아직 받을 수 없어요.');check(selectableParts(p).includes(a.id),'이미 금인 파츠예요. 다른 파츠를 골라 주세요.');p.milestones[pending.key]=true;draw={...addPart(p,a.id),mode:'first'};message=drawMessage(draw);
  }else if(a.kind==='draw-part'){
-  check(!!p.stages.CH01?.cleared,'1-1을 성공하면 뽑기가 열려요.');check(p.gifts>0,'뽑기권이 더 필요해요.');const count=p.giftCounts.part+1,choice=count%5===0;let selected;
-  if(choice){check(own(PARTS,a.id),'다섯 번째 뽑기예요. 원하는 파츠를 골라 주세요.');check(selectableParts(p).includes(a.id),'이미 특급인 파츠예요. 다른 파츠를 골라 주세요.');selected=a.id;}
-  else{check(own(ELEMENTS,a.element),'원소를 골라 주세요.');const pool=Object.keys(PARTS).filter(id=>PARTS[id].element===a.element);selected=pool[Math.min(pool.length-1,Math.max(0,Math.floor(rng()*pool.length)))];}
-  message=addPart(p,selected);p.gifts--;p.giftCounts.part=count;
+  check(!!p.stages.CH01?.cleared,'1-1을 성공하면 보급이 열려요.');check(p.gifts>0,'보급권이 더 필요해요.');p.giftCounts ||= {part:0,pet:0};
+  const mode=drawMode(p);check(mode,'모든 파츠가 금이에요!');
+  // 차례 확인: 화면이 알고 있는 차례와 서버 판단이 다르면(다른 기기·옛 화면) 아무것도 바꾸지 않고 거절한다.
+  if(a.mode!==mode){const e=new Error(a.mode?'보급 차례가 바뀌었어요. 화면을 다시 불러올게요.':'보급 규칙이 새로워졌어요. 화면을 새로고침해 주세요.');e.code='DRAW_MODE';e.mode=mode;throw e;}
+  let selected,qty=1;
+  if(mode==='pick'){check(own(PARTS,a.id)&&selectableParts(p).includes(a.id),'금이 아닌 파츠를 골라 주세요.');selected=a.id;qty=3;}
+  else if(mode==='new'){check(own(PARTS,a.id)&&!(p.parts[a.id]?.copies>0),'아직 없는 파츠를 골라 주세요.');selected=a.id;}
+  else{check(own(ELEMENTS,a.element)&&a.element!=='neutral','원소를 골라 주세요.');const pool=elementPool(p,a.element);check(pool.length,'이 원소 파츠는 모두 금이에요. 다른 원소를 골라 주세요.');selected=pool[pickIndex(pool.length)];}
+  draw={...addPart(p,selected,qty),mode};p.gifts--;p.giftCounts.part=(p.giftCounts.part||0)+1;message=drawMessage(draw);
+ }else if(a.kind==='buy-supply'){
+  check(!!p.stages.CH01?.cleared,'1-1을 성공하면 보급이 열려요.');check(typeof ctx.day==='string'&&ctx.day,'서버에서만 바꿀 수 있어요.');
+  check(p.supplyBuyDay!==ctx.day,'오늘은 이미 바꿨어요. 내일 아침 8시에 다시 바꿀 수 있어요.');check(p.coins>=SUPPLY_EXCHANGE_COST,`코인 ${SUPPLY_EXCHANGE_COST}개가 필요해요.`);
+  p.coins-=SUPPLY_EXCHANGE_COST;p.gifts++;p.supplyBuyDay=ctx.day;message=`코인 ${SUPPLY_EXCHANGE_COST}개로 보급권 1장을 받았어요!`;
  }else if(a.kind==='pet'){check(p.pets.includes(a.id),'아직 만나지 못한 친구예요.');p.activePet=a.id;message=`${PETS[a.id].name}와 함께 출동해요!`;}
  else if(a.kind==='choose-pet'){const pending=pendingPet(p);check(pending&&pending.ids.includes(a.id),'지금 고를 수 있는 친구가 아니에요.');p.milestones[pending.key]=true;if(pending.allOwned){p.coins+=60;message='친구를 모두 만났어요! 코인 60개';}else message=addPet(p,a.id);}
  else if(a.kind==='gift'){
-  check(a.type==='pet','파츠 뽑기에서 원소를 골라 주세요.');check(!!p.stages.CH01?.cleared,'1-1을 성공하면 뽑기가 열려요.');check(p.gifts>0,'뽑기권이 더 필요해요.');
-  const count=p.giftCounts.pet+1,choice=count%5===0,pool=Object.keys(PETS),unowned=pool.filter(id=>!p.pets.includes(id));check(!choice||!unowned.length||unowned.includes(a.pet),'아직 없는 친구를 골라 주세요.');
-  if(choice&&!unowned.length){p.coins+=60;message='모든 친구를 만났어요! 코인 60개';}else message=addPet(p,choice?a.pet:pool[Math.min(5,Math.max(0,Math.floor(rng()*6)))]);p.gifts--;p.giftCounts.pet=count;
+  check(a.type==='pet','파츠 보급에서 원소를 골라 주세요.');check(!!p.stages.CH01?.cleared,'1-1을 성공하면 보급이 열려요.');check(p.gifts>0,'보급권이 더 필요해요.');
+  // 친구 만나기(2차): 아직 못 만난 친구가 먼저 → 누구나 6번이면 모두 만난다. 모두 만나고 우정 28이면 잠근다(보급권은 파츠에).
+  const pool=Object.keys(PETS),unowned=pool.filter(id=>!p.pets.includes(id));check(unowned.length||p.friendship<28,'친구를 모두 만났고 우정도 가득해요! 보급권은 파츠에 써요.');
+  const count=p.giftCounts.pet+1,choice=count%5===0&&unowned.length>0;check(!choice||unowned.includes(a.pet),'아직 없는 친구를 골라 주세요.');
+  message=addPet(p,choice?a.pet:unowned.length?unowned[pickIndex(unowned.length)]:pool[pickIndex(pool.length)]);p.gifts--;p.giftCounts.pet=count;
  }else if(a.kind==='settings'){
   // 무기 원소 설정은 없앴다(2026-09-23 사용자: "무기는 근거리·원거리만"). 옛 프로필의 weaponElement 키는 지운다.
   const settings={difficulty:a.difficulty??p.difficulty,hero:a.hero??p.hero,weaponMode:a.weaponMode??p.weaponMode};
   check(own(DIFFICULTIES,settings.difficulty),'난이도를 골라 주세요.');check(['hoya','minji'].includes(settings.hero),'주인공을 골라 주세요.');check(['melee','ranged'].includes(settings.weaponMode),'공격 방식을 골라 주세요.');Object.assign(p,settings);delete p.weaponElement;
  }else throw new Error('할 수 없는 작업이에요.');
- return {profile:p,message};
+ return {profile:p,message,...(draw?{draw}:{})};
 }
 // ---------- 판 안 카드 규칙 (탕탕특공대 방식): 스킬 4칸(Lv.5) + 지원품 4칸(Lv.3), 스킬 Lv.5 + 짝 지원품 → 진화 ----------
 function validState(state){state.consumed ||= [];state.fusionCount ||= 0;state.supports ||= {};state.partnerOffers ||= {};return state;}

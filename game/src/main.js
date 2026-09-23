@@ -4559,7 +4559,8 @@ function loop(now) {
     const steps = frameClock.advance(realDt, mode === "playing" && !document.hidden, debugFast ? 8 : 1);
     for (let i = 0; i < steps; i++) simTick(FIXED_DT);
   }
-  if(renderQuality.sample(realDt,mode==='playing'&&!debugFast&&hitStopT<=0&&!document.hidden))resize();
+  // 큰 폭발의 짧은 타격 멈춤(히트스톱) 프레임도 그대로 잰다 — 전에는 그때마다 측정이 처음으로 돌아가 후반 난전에서 화질이 늦게 내려갔다.
+  if(renderQuality.sample(realDt,mode==='playing'&&!debugFast&&!document.hidden))resize();
   draw();
   updateHud();
   sgHud();
@@ -4879,9 +4880,11 @@ function sgMaybeGuidance(){
   };
   if(p.partsRepairNotice&&once('parts-fix-notice')){
     const items=p.partsRepairNotice.details||[];
-    sgUI.notify('사라졌던 파츠를 돌려드렸어요',items.map(x=>`${R.PARTS[x.id]?.name||'파츠'}로 ${x.copies}개 복구${x.gifts?` · 넘치는 ${x.gifts}개는 뽑기권 ${x.gifts}장`:''}${x.refund?` · 강화 코인 ${x.refund}개 반환`:''}`).join(' / '));return;
+    sgUI.notify('사라졌던 파츠를 돌려드렸어요',items.map(x=>`${R.PARTS[x.id]?.name||'파츠'}로 ${x.copies}개 복구${x.gifts?` · 넘치는 ${x.gifts}개는 보급권 ${x.gifts}장`:''}${x.refund?` · 강화 코인 ${x.refund}개 반환`:''}`).join(' / '));return;
   }
-  if(R.pendingPart(p)&&R.selectableParts(p).length&&once('first-part-guide'))sgUI.firstPartDialog();
+  if(R.pendingPart(p)&&R.selectableParts(p).length&&once('first-part-guide')){sgUI.firstPartDialog();return;}
+  // 2차 개편 안내(한 번): 이름이 바뀐 것과 새 보급 규칙. 1-1을 깬 학생만(옛 이름을 본 적이 있는 학생).
+  if(p.stages?.CH01?.cleared&&once('supply-v2-notice'))sgUI.notify('파츠 보급이 새로워졌어요','이름이 바뀌었어요: 뽑기 → 보급, 뽑기권 → 보급권, 특급 → 금 메달, 강화 → 레벨 올리기. 보급 1번에 파츠 1개, 5번째마다 원하는 파츠 3개! 파츠가 3종보다 적으면 없는 파츠를 골라 받아요. 코인 300개로 보급권 1장도 바꿀 수 있어요(하루 1번). 금 메달이 되면 파츠마다 새 기능이 하나 더 생겨요!');
 }
 const sgStorageKey=kind=>`seoho_v1_${kind}_${cloud.user||'guest'}`;
 function sgReadPending(kind){try{return JSON.parse(localStorage.getItem(sgStorageKey(kind))||'null');}catch{return null;}}
@@ -4894,7 +4897,8 @@ async function sgRefresh(){
   if(!cloud.loggedIn)return;
   try{
     const pendingAction=sgReadPending('action');
-    if(pendingAction){try{const r=await sgPost('/guardian/action',pendingAction);sgKeepPending('action',null);sgApplyServer(r);}catch(e){if(e.status&&e.status<500)sgKeepPending('action',null);else throw e;}}
+    // 끊겼던 요청은 같은 요청 번호로 다시 보낸다. 서버가 저장한 같은 결과(보급 카드 포함)가 돌아오므로 결과 카드를 다시 보여 준다.
+    if(pendingAction){try{const r=await sgPost('/guardian/action',pendingAction);sgKeepPending('action',null);sgApplyServer(r);if(r.draw&&sgUI&&!sgUI.dialog.open)sgUI.showDrawResult(r.draw);}catch(e){if(e.status&&e.status<500)sgKeepPending('action',null);else throw e;}}
     const pending=sgReadPending('result');
     if(pending){try{const r=await sgPost('/play/finish',pending);sgKeepPending('result',null);sgApplyServer({...r,active:null});}catch(e){if(e.data?.code==='EXPIRED')sgKeepPending('result',null);else throw e;}}
     sgApplyServer(await cloud.request('/guardian'));
@@ -5045,7 +5049,7 @@ async function sgSettle(pending){
   try{
     const r=await sgPost('/play/finish',pending);sgKeepPending('result',null);sgApplyServer({...r,active:null});
     const w=r.reward,dn=R.DIFFICULTIES[w.difficulty]?.name;elResultTitle.textContent=r.cleared?'우리 마을이 반짝반짝!':'멋진 도전이었어요!';
-    elResultTable.innerHTML=`<tr><td colspan="2" style="text-align:center;font-size:28px;color:#ffd16e">${'★'.repeat(w.stars)}${'☆'.repeat(3-w.stars)}${dn?`<div style="font-size:13px;color:#cfe3ee">${dn} 난이도${r.cleared?` 성공 → 별 ${w.stars}개`:''}</div>`:''}</td></tr><tr><td>코인</td><td>+${w.coins}${w.goal?' (환경 목표 +30 포함)':''}</td></tr><tr><td>뽑기권</td><td>+${w.gifts}</td></tr><tr><td>우정</td><td>+${w.friendship}</td></tr><tr><td>이용권</td><td>${r.charged?'1장 사용':'그대로!'} · ${r.passes.remaining}장 남음</td></tr><tr><td colspan="2"><div class="sg-settlement">${r.cleared?(w.notes.join('<br/>')||'코인으로 훈련하고 파츠를 강화해 보세요.'):'실패해도 이용권은 줄지 않아요. 조금 쉬었다가 다시 도전해요.'}<br/>${R.STAGES.find(s=>s.id===r.stage).tip}</div></td></tr>`;
+    elResultTable.innerHTML=`<tr><td colspan="2" style="text-align:center;font-size:28px;color:#ffd16e">${'★'.repeat(w.stars)}${'☆'.repeat(3-w.stars)}${dn?`<div style="font-size:13px;color:#cfe3ee">${dn} 난이도${r.cleared?` 성공 → 별 ${w.stars}개`:''}</div>`:''}</td></tr><tr><td>코인</td><td>+${w.coins}${w.goal?' (환경 목표 +30 포함)':''}</td></tr><tr><td>보급권</td><td>+${w.gifts}</td></tr><tr><td>우정</td><td>+${w.friendship}</td></tr><tr><td>이용권</td><td>${r.charged?'1장 사용':'그대로!'} · ${r.passes.remaining}장 남음</td></tr><tr><td colspan="2"><div class="sg-settlement">${r.cleared?(w.notes.join('<br/>')||'코인으로 훈련하고 파츠를 강화해 보세요.'):'실패해도 이용권은 줄지 않아요. 조금 쉬었다가 다시 도전해요.'}<br/>${R.STAGES.find(s=>s.id===r.stage).tip}</div></td></tr>`;
     for(const activity of w.partActivity||[]){
       const d=R.PARTS[activity.id];if(!d)continue;
       const times=Object.entries(pending.partEffects||{}).filter(([id])=>(R.COMBOS[id]?.skill||id)===d.skill).reduce((n,[,v])=>n+(Number.isFinite(v)?Math.max(0,Math.floor(v)):0),0);

@@ -50,6 +50,9 @@ export function drawElementScene(ctx, { shots, fields, effects, orbits, mines, b
       glow(ctx, s.x, s.y, f.r, c, .16 * fade);
       const name = f.kind === 'lava' ? cycle(['fire_lava_1', 'fire_lava_2', 'fire_lava_3'], clock * 5) : cycle(['fire_puddle_1', 'fire_puddle_2', 'fire_puddle_3'], clock * 8);
       img(ctx, name, s.x, s.y, f.r * 2, { alpha: .5 * fade, h: f.r * (f.kind === 'lava' ? 1.35 : 1.45), anchorY: f.kind === 'lava' ? .5 : .62 });
+    } else if (f.kind === 'trail') {   // 금 기능 물길·흙길: 가벼운 반투명 타원(그라데이션 없음 — 태블릿 부담 최소)
+      if (!ground) continue;
+      ctx.save(); ctx.globalAlpha = .24 * fade; ctx.fillStyle = c; ctx.beginPath(); ctx.ellipse(s.x, s.y, f.r, f.r * .55, 0, 0, TAU); ctx.fill(); ctx.restore();
     } else if (f.kind === 'storm') {
       if (ground) { glow(ctx, s.x, s.y, f.r, c, .25 * fade); ctx.save(); ctx.globalAlpha = .18 * fade; ctx.fillStyle = c; ctx.beginPath(); ctx.ellipse(s.x, s.y, f.r, f.r * .6, 0, 0, TAU); ctx.fill(); ctx.restore(); }
       if (air) img(ctx, 'lightning_storm', s.x, s.y - 2.6 * U + Math.sin(clock * 3) * 4, f.r * 2.4, { alpha: fade });

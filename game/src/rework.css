@@ -68,3 +68,36 @@
 .sg-first-heading{position:sticky;top:0;background:#fff;display:flex;align-items:center;justify-content:space-between;gap:8px;z-index:1;padding:8px 0;}
 .sg-first-heading h2{margin:0;}
 .sg-first-heading button{white-space:nowrap;flex-shrink:0;}
+
+/* 2026-09-23 2차 개편: 파츠 보급·메달(동·은·금)·결과 카드(1.2초 뒤집기, 결과 전 힌트 없음) */
+.sg-medal{display:inline-flex;align-items:center;justify-content:center;min-width:28px;height:24px;padding:0 7px;border-radius:12px;font:800 12px system-ui,sans-serif;border:1.5px solid;flex-shrink:0;margin-left:auto}
+.sg-medal-0{background:#f6e6d8;color:#8a4f22;border-color:#c98a57}
+.sg-medal-1{background:#eef2f5;color:#4f6272;border-color:#9fb0bd}
+.sg-medal-2{background:#fff3c4;color:#8a6200;border-color:#e0b53c}
+.sg-supply .sg-inline{margin-top:6px}
+.sg-supply .sg-gift-dots>i.sg-dot-pick{border-color:#e0b53c;color:#8a6200;font-weight:800;background:#fff8dc}.sg-supply .sg-gift-dots>i.sg-dot-pick.on{background:#ffe8a3}
+.sg-exchange{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:14px;padding-top:12px;border-top:1px dashed #c7d6df;font-size:13px}
+.sg-exchange>span{display:flex;align-items:center;gap:6px;flex-wrap:wrap;flex:1;min-width:0}.sg-exchange .sg-icon{width:20px;height:20px}
+.sg-exchange small{display:block;width:100%;font-size:11px;color:var(--sg-sub)}
+.sg-draw-panel .sg-exchange>button{flex-shrink:0;width:auto;min-width:104px;margin-top:0}
+.sg-rules p{font-size:14px;line-height:1.6;margin:8px 0}.sg-rules b{display:inline-block;min-width:78px;color:#24546d}
+.sg-next-effect{border:1px solid #d5e0e7;background:#f5f9fc;border-radius:12px;padding:8px 14px;margin:10px 0}.sg-next-effect p{font-size:13px;margin:6px 0;display:flex;align-items:center;gap:6px;flex-wrap:wrap}.sg-next-effect .sg-medal{margin-left:0}
+.sg-swap-list{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin:14px 0}
+.sg-swap-list>button{display:grid;justify-items:center;gap:4px;padding:10px 6px;white-space:normal;text-align:center}.sg-swap-list .sg-icon{width:42px;height:42px}.sg-swap-list small{font-size:11px}
+.sg-flip{perspective:900px;margin:6px auto 14px;width:min(290px,100%);height:330px}
+.sg-flip-inner{position:relative;width:100%;height:100%;transform-style:preserve-3d;animation:sg-flip 1.2s ease-in-out forwards}
+.sg-flip-skip .sg-flip-inner{animation:none;transform:rotateY(180deg)}
+@keyframes sg-flip{0%,35%{transform:rotateY(0)}100%{transform:rotateY(180deg)}}
+.sg-flip-back,.sg-flip-front{position:absolute;inset:0;border-radius:18px;backface-visibility:hidden;-webkit-backface-visibility:hidden;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;padding:16px;text-align:center}
+.sg-flip-back{background:linear-gradient(160deg,#dbe9f1,#c3d8e4);border:2px solid #9dbccc;color:#315b72;font-size:16px}.sg-flip-back .sg-icon{width:72px;height:72px}
+.sg-flip-front{transform:rotateY(180deg);background:#fcfdff;border:2px solid #b8cfdc}
+.sg-flip-front>.sg-icon{width:84px;height:84px}.sg-flip-front h2{margin:4px 0!important;font-size:20px!important}.sg-flip-front p{margin:2px 0;font-size:14px;display:flex;align-items:center;gap:6px;flex-wrap:wrap;justify-content:center}.sg-flip-front .sg-medal{margin-left:0}
+.sg-flip-count b{font-size:18px}.sg-flip-new{color:#24546d;font-weight:700}.sg-flip-slot{color:#2c7a4b;font-weight:700}
+.sg-celebrate{border-color:#e0b53c;box-shadow:0 0 0 4px #ffe8a3;animation:sg-glow 1.4s ease-in-out 1.2s 2}
+.sg-flip-skip .sg-celebrate{animation:none}
+@keyframes sg-glow{50%{box-shadow:0 0 0 9px #ffe8a3}}
+.sg-flip-actions{display:flex;gap:8px;justify-content:center;flex-wrap:wrap}.sg-flip-actions>button{min-width:110px}
+@media(prefers-reduced-motion:reduce){.sg-flip-inner{animation:none;transform:rotateY(180deg)}.sg-celebrate{animation:none}}
+@media(max-width:480px){.sg-flip{height:320px}}
+.sg-gold-feature{border-left:3px solid #e0b53c;background:#fff9e3;padding:6px 9px;border-radius:6px;font-size:12px!important;color:#6b5000}
+.sg-flip-gold{font-size:12px!important;color:#6b5000;background:#fff3c4;border-radius:8px;padding:5px 8px;line-height:1.45}

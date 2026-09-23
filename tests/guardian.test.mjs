@@ -98,8 +98,10 @@ test('old clients cannot start or mutate v2 profiles; an already active old run 
 test('first part, drawing, upgrades and refunds are idempotent across duplicate requests',async()=>{
  const env=await setup();await run(env);let {profile}=await getProfile(env.DB,'test');profile.coins=2000;profile.gifts=10;env.DB.sql.prepare('UPDATE guardian_profiles SET state=?').run(JSON.stringify(profile));
  const choose={requestId:uid(),kind:'choose-part',id:'PART_F1'};let first=await api(env,'/guardian/action',choose),dup=await api(env,'/guardian/action',choose);assert.equal(dup.profile.parts.PART_F1.copies,1);assert.equal(dup.profile.gifts,10);
- for(let i=0;i<4;i++)await api(env,'/guardian/action',{requestId:uid(),kind:'draw-part',element:i%2?'fire':'water'});
- const draw={requestId:uid(),kind:'draw-part',id:'PART_L2'};first=await api(env,'/guardian/action',draw);dup=await api(env,'/guardian/action',draw);assert.equal(dup.profile.parts.PART_L2.copies,1);assert.equal(dup.profile.gifts,5);assert.equal(dup.profile.giftCounts.part,5);
+ // 2차 보급: 가진 종류 3개 미만이면 없는 파츠 고르기, 그다음 원소 보급, 5번째는 고른 파츠 3개
+ for(const a of [{mode:'new',id:'PART_W1'},{mode:'new',id:'PART_V1'},{mode:'element',element:'fire'},{mode:'element',element:'water'}])assert.ok((await api(env,'/guardian/action',{requestId:uid(),kind:'draw-part',...a})).draw);
+ const draw={requestId:uid(),kind:'draw-part',mode:'pick',id:'PART_L2'};first=await api(env,'/guardian/action',draw);dup=await api(env,'/guardian/action',draw);assert.equal(dup.profile.parts.PART_L2.copies,3);assert.equal(dup.profile.gifts,5);assert.equal(dup.profile.giftCounts.part,5);
+ assert.deepEqual(dup.draw,first.draw,'같은 요청은 같은 결과 카드');assert.equal(first.draw.qty,3);assert.equal(dup.profile.coins,2000);
  const upgrade={requestId:uid(),kind:'upgrade-part',id:'PART_F1'};first=await api(env,'/guardian/action',upgrade);dup=await api(env,'/guardian/action',upgrade);assert.equal(dup.profile.parts.PART_F1.level,2);assert.equal(dup.profile.coins,1940);
  const reset={requestId:uid(),kind:'reset-part',id:'PART_F1'};first=await api(env,'/guardian/action',reset);dup=await api(env,'/guardian/action',reset);assert.equal(dup.profile.parts.PART_F1.level,1);assert.equal(dup.profile.coins,2000);assert.equal(dup.passes.remaining,9);
 });

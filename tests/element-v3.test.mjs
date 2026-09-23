@@ -66,8 +66,10 @@ test('난이도: 성공하면 쉬움 ★ · 보통 ★★ · 어려움 ★★★
   assert.equal(best.profile.stages.CH01.stars, 3, '최고 별은 유지');
 });
 
-test('파츠 뽑기: 원소당 2종에서 하나가 나온다', () => {
+test('파츠 보급: 원소를 고르면 그 원소 2종에서 하나가 나온다', () => {
   const p = R.freshProfile(); p.stages.CH01 = { cleared: true, stars: 1, best: 100 }; p.gifts = 1;
-  const r = R.action(p, { kind: 'draw-part', element: 'fire' }, () => .99);
-  assert.ok(Object.keys(r.profile.parts).every(id => PARTS[id]?.element === 'fire'));
+  for (const id of ['PART_W1', 'PART_V1', 'PART_E1']) p.parts[id] = { copies: 1, level: 1 };   // 3종을 가져야 원소 보급 차례
+  const r = R.action(p, { kind: 'draw-part', mode: 'element', element: 'fire' }, () => .99);
+  assert.ok(Object.keys(r.profile.parts).filter(id => !p.parts[id]).every(id => PARTS[id]?.element === 'fire'));
+  assert.equal(r.draw.qty, 1);
 });

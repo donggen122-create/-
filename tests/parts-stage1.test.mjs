@@ -29,9 +29,9 @@ test('invalid equipped entries cannot grant a card; no-part RNG calls retain ori
 });
 test('completed choice is rejected without consuming rewards or free milestone',()=>{
  const p=partProfile();p.parts.PART_F1.copies=7;p.giftCounts.part=4;const before=structuredClone(p);
- assert.throws(()=>R.action(p,{kind:'draw-part',id:'PART_F1'}),/특급/);
- assert.throws(()=>R.action(p,{kind:'choose-part',id:'PART_F1'}),/특급/);assert.deepEqual(p,before);
- const next=R.action(p,{kind:'draw-part',id:'PART_W1'}).profile;assert.equal(next.gifts,19);assert.equal(next.giftCounts.part,5);assert.equal(next.parts.PART_W1.copies,1);
+ assert.throws(()=>R.action(p,{kind:'draw-part',mode:'pick',id:'PART_F1'}),/금/);
+ assert.throws(()=>R.action(p,{kind:'choose-part',id:'PART_F1'}),/금/);assert.deepEqual(p,before);
+ const next=R.action(p,{kind:'draw-part',mode:'pick',id:'PART_W1'}).profile;assert.equal(next.gifts,19);assert.equal(next.giftCounts.part,5);assert.equal(next.parts.PART_W1.copies,3);
 });
 test('first reward stays one free part and does not advance draw counter',()=>{
  const p=partProfile([]),next=R.action(p,{kind:'choose-part',id:'PART_L1'}).profile;
@@ -112,7 +112,7 @@ test('server records run-start equipment, counts evolved use, and never doubles 
 });
 test('full-part choice is rejected by API too and leaves currency and counter intact',async()=>{
  const p=partProfile();p.parts.PART_F1.copies=7;p.giftCounts.part=4;const env=await setup(p);
- const r=await api(env,'/guardian/action',{kind:'draw-part',id:'PART_F1'});assert.equal(r.status,400);assert.deepEqual((await getProfile(env.DB,'qa')).profile,p);
+ const r=await api(env,'/guardian/action',{kind:'draw-part',mode:'pick',id:'PART_F1'});assert.equal(r.status,400);assert.deepEqual((await getProfile(env.DB,'qa')).profile,p);
 });
 for(const hz of [30,60,120,144])test(`fixed step advances exactly 60 simulated ticks in one second at ${hz}Hz`,()=>{
  const clock=createFrameClock();let ticks=0;for(let i=0;i<hz;i++)ticks+=clock.advance(1/hz);assert.equal(ticks,60);

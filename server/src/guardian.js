@@ -98,13 +98,15 @@ export async function guardianAPI(request,env,user,path,now=Date.now()){
       const {profile,revision}=await getProfile(db,id);let result;
       // 별 = 출동할 때의 난이도(정산은 프로필의 difficulty를 읽음) → 도전 중에는 난이도를 못 바꾼다(2026-09-23)
       if(b.kind==='settings'&&b.difficulty!==undefined&&b.difficulty!==profile.difficulty&&await db.prepare("SELECT 1 FROM play_runs WHERE user_id=? AND status='active'").bind(id).first())return reply({error:'도전 중에는 난이도를 바꿀 수 없어요. 먼저 도전을 마무리해 주세요.',code:'ACTIVE_RUN'},409);
-      try{result=action(profile,b);}catch(e){return reply({error:e.message},400);}
-      const event=JSON.stringify({message:result.message});
+      // 게임 날짜(아침 8시 기준)는 서버가 넣는다(코인 교환 하루 1번). 보급 차례가 어긋나면 409 DRAW_MODE — 아무것도 바뀌지 않음.
+      try{result=action(profile,b,Math.random,{day:dayKey(now)});}catch(e){return e.code==='DRAW_MODE'?reply({error:e.message,code:e.code,mode:e.mode},409):reply({error:e.message},400);}
+      // 결과 카드(draw)까지 함께 저장해 같은 요청이 다시 오면(재접속) 같은 결과를 다시 보여 준다.
+      const event=JSON.stringify({message:result.message,...(result.draw?{draw:result.draw}:{})});
       const r=await db.batch([
         db.prepare('UPDATE guardian_profiles SET state=?,revision=revision+1 WHERE user_id=? AND revision=? AND NOT EXISTS(SELECT 1 FROM guardian_operations WHERE user_id=? AND id=?)').bind(JSON.stringify(result.profile),id,revision,id,b.requestId),
         db.prepare('INSERT INTO guardian_operations(user_id,id,result,created_at) SELECT ?,?,?,? WHERE changes()=1').bind(id,b.requestId,event,now),
       ]);
-      if(r[0].meta.changes)return reply({message:result.message,...await status(db,id,now)});
+      if(r[0].meta.changes)return reply({message:result.message,...(result.draw?{draw:result.draw}:{}),...await status(db,id,now)});
     }
     return reply({error:'다른 기기에서 저장 중이에요. 잠시 뒤 다시 눌러 주세요.'},409);
   }
@@ -142,7 +144,7 @@ export async function guardianAPI(request,env,user,path,now=Date.now()){
       const fusionIds=Array.isArray(b.fusionIds)?b.fusionIds.filter(s=>COMBOS[s]).slice(0,4):[];
       const supportIds=Array.isArray(b.supportIds)?b.supportIds.filter(s=>SUPPORTS[s]).slice(0,8):[];
       const equippedPartIds=run.result?JSON.parse(run.result).loadout?.equippedParts:null;
-      const result=completeRun(profile,{equippedPartIds,stage:run.stage,cleared,seconds,litter:Math.max(0,Math.min(99,Math.floor(Number(b.litter)||0))),hpFraction:Math.max(0,Math.min(1,Number(b.hpFraction)||0)),bossSeconds:Number.isFinite(b.bossSeconds)&&b.bossSeconds>=0?b.bossSeconds:Infinity,skillIds,fusionIds,supportIds});
+      const result=completeRun(profile,{day:dayKey(now),equippedPartIds,stage:run.stage,cleared,seconds,litter:Math.max(0,Math.min(99,Math.floor(Number(b.litter)||0))),hpFraction:Math.max(0,Math.min(1,Number(b.hpFraction)||0)),bossSeconds:Number.isFinite(b.bossSeconds)&&b.bossSeconds>=0?b.bossSeconds:Infinity,skillIds,fusionIds,supportIds});
       const event={reward:result.reward,cleared,stage:run.stage,runId,charged:cleared?1:0};
       try{
         const r=await db.batch([

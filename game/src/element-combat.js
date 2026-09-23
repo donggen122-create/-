@@ -59,6 +59,9 @@ export function createElementCombat({ U = 32, getPlayer, getEnemies, getBoss = (
   const part = id => !!R.hasPart?.(getProfile(), baseId(id));
   const feature = id => part(id) ? R.PARTS[`PART_${baseId(id)}`]?.feature : null;
   const markPart = id => { stats.parts[id] = (stats.parts[id] || 0) + 1; };
+  // 금 메달(같은 파츠 7개) 기능(3차, docs/23): 일반·진화 양쪽. 추가 공격은 원래보다 약하고, 추가로 생긴 것은 다시 추가를 만들지 않는다(small/sub).
+  const gold = id => part(id) && !!R.hasGold?.(getProfile(), baseId(id));
+  const trail = (id, at, r, life) => field(id, at, r, 0, { kind: 'trail', life, tickS: .3, maxTicks: Math.ceil(life / .3), onTick: f => { for (const e of within(f, f.r)) slow(e, .6, .5); } });
   const MAXLV = RUN_RULES.maxSkillLevel;
   const lv = id => clamp(player().skills?.[id]?.lv || 1, 1, MAXLV);
   const level = id => COMBOS[id] ? LEVEL_DAMAGE[LEVEL_DAMAGE.length - 1] : LEVEL_DAMAGE[lv(id) - 1];
@@ -117,7 +120,8 @@ export function createElementCombat({ U = 32, getPlayer, getEnemies, getBoss = (
             if (feature(id) === 'puddleLonger') markPart(id);
             if (kind === 'volcano') blast(id, s, 1.7 * U * area(id), 1.6, { kind: 'boom', knock: .35, big: true });
             else blast(id, s, 1.0 * U * area(id), d.dmgCoef * 1.2, { kind: 'splashfire', knock: .1 });
-            field(id, s, r, d.dmgCoef, { kind: kind === 'volcano' ? 'lava' : 'puddle', life, maxTicks: Math.round(life / .4), tickS: .4 });
+            const burst = gold(id) ? f => { if (f.ticks % 3) return; const t = within(f, f.r)[0]; if (!t) return; markPart(id); blast(id, t, .8 * U, d.dmgCoef * .5, { kind: 'splashfire', knock: .05 }); } : null;
+            field(id, s, r, d.dmgCoef, { kind: kind === 'volcano' ? 'lava' : 'puddle', life, maxTicks: Math.round(life / .4), tickS: .4, onTick: burst });
           };
         }
         break;
@@ -131,6 +135,8 @@ export function createElementCombat({ U = 32, getPlayer, getEnemies, getBoss = (
             if (kind === 'firework' && feature(id) === 'homing') markPart(id);
             blast(id, s2, (kind === 'firework' ? 2.2 * (feature(id) === 'homing' ? 1.15 : 1) : 1.8) * U * area(id), d.dmgCoef, { kind: kind === 'firework' ? 'fwork' : 'boom', knock: .4, big: kind === 'firework' });
             if (kind === 'firework') for (let k = 0; k < 6; k++) shot(id, s2, k / 6 * TAU + Math.random() * .3, .45, { kind: 'sparkshot', speed: 8 * U, life: .4, r: .3 * U, maxHits: 1 });
+            const t3 = gold(id) && !s2.sub ? closest(s2, 7 * U, new Set([t2])) : null;
+            if (t3) { markPart(id); shot(id, s2, angleTo(s2, t3), 0, { kind: 'rocket', speed: 11 * U, r: .25 * U, life: 1.2, homing: true, partGuided: true, maxHits: 1, noDirect: true, sub: true, onHit: (t4, s4) => blast(id, s4, 1.1 * U * area(id), d.dmgCoef * .5, { kind: 'boom', knock: .2 }) }); }
           };
         }));
         break;
@@ -140,7 +146,12 @@ export function createElementCombat({ U = 32, getPlayer, getEnemies, getBoss = (
         for (const ang of pickAngles(n, p, a, big ? .7 : .6)) shot(id, p, ang, d.dmgCoef, { kind, speed: 8 * U, r: (big ? .85 : .55) * U, life: 5, maxHits: 99, bounces: (big ? 10 : 5) + (feature(id) === 'extraBounce' ? 2 : 0), knock: .15, onHit: (t, s) => {
           if (feature(id) === 'extraBounce' && s.bounces <= 2) markPart(id);
           blast(id, s, (big ? 1.8 : 1.2) * U * area(id), d.dmgCoef * .6, { kind: big ? 'ksplash' : 'splash', knock: .15 }); slow(t, .65, big ? 3 : 1.5);
-          s.bounces--; if (s.bounces <= 0) { s.life = 0; return; }
+          s.bounces--;
+          if (s.bounces <= 0) {
+            s.life = 0;
+            if (gold(id) && !s.small) { markPart(id); for (const dd of [-.8, .8]) shot(id, s, s.angle + Math.PI + dd, d.dmgCoef * .4, { kind: 'balloon', speed: 8 * U, r: .35 * U, life: 1.5, maxHits: 99, bounces: 1, small: true, knock: .1, onHit: (t3, s3) => { blast(id, s3, .8 * U * area(id), d.dmgCoef * .25, { kind: 'splash', knock: .1 }); slow(t3, .7, 1); s3.life = 0; } }); }
+            return;
+          }
           const next = closest(s, 8 * U, s.hit); if (next) s.angle = angleTo(s, next); else s.angle += Math.PI + (Math.random() - .5);
           if (s.hit.size >= 6) s.hit.clear();
         } });
@@ -158,13 +169,14 @@ export function createElementCombat({ U = 32, getPlayer, getEnemies, getBoss = (
           const s = shot(id, p, ang, d.dmgCoef, { kind, speed: 9 * U, r: (kind === 'mboomerang' ? .6 : .5) * U, life: 2.4, returnAt: .55, maxHits: 99, knock: .15, onHit: (t, s2) => { if (kind === 'mboomerang' && s2.returning && t !== getBoss()) { const pl = player(), l = dist(t, pl); if (l > U) { t.x += (pl.x - t.x) / l * .8 * U; t.y += (pl.y - t.y) / l * .8 * U; } fx('pull', t, .5 * U, id, { x0: pl.x, y0: pl.y, life: .25, maxLife: .25 }); } } });
           s.onReturn = () => { if (feature(id) === 'extraBlade') { markPart(id); shot(id, player(), s.angle + Math.PI, d.dmgCoef * .4, { kind: 'swirl', speed: 13 * U, life: .5, r: .35 * U, maxHits: 3 }); } };
         }
+        if (gold(id)) { markPart(id); shot(id, p, a + .45, d.dmgCoef * .5, { kind: 'boomerang', speed: 9 * U, r: .35 * U, life: 2, returnAt: .5, maxHits: 99, knock: .1, small: true }); }
         break;
       }
       case 'stone': case 'boulder': {
         const n = kind === 'boulder' ? 2 : count(id, 1), big = kind === 'boulder';
         for (const ang of pickAngles(n, p, a, big ? .6 : .5)) shot(id, p, ang, d.dmgCoef, { kind, speed: (big ? 6.5 : 10) * U, r: (big ? .95 : .45) * U, life: big ? 1.7 : 1.3, maxHits: big ? 99 : 1, knock: big ? .35 : .7, onHit: (t, s) => {
           fx(big ? 'crack' : 'dust', t, (big ? 1 : .8) * U, id); fx('sparks', t, .6 * U, id, { life: .3, maxLife: .3 }); onBlast?.(t, .6 * U, false);
-          if (!s.partSplitDone && feature(id) === 'splitStone') { s.partSplitDone = true; markPart(id); for (const dd of [-.6, .6]) shot(id, s, s.angle + dd, d.dmgCoef * .4, { kind: 'stone', speed: 8 * U, r: .25 * U, life: .5, maxHits: 1, small: true }); }
+          if (!s.partSplitDone && feature(id) === 'splitStone') { s.partSplitDone = true; markPart(id); for (const dd of gold(id) ? [-.7, 0, .7] : [-.6, .6]) shot(id, s, s.angle + dd, d.dmgCoef * .4, { kind: 'stone', speed: 8 * U, r: .25 * U, life: .5, maxHits: 1, small: true }); }
         } });
         break;
       }
@@ -175,12 +187,14 @@ export function createElementCombat({ U = 32, getPlayer, getEnemies, getBoss = (
           if (kind === 'storm') { field(id, at, 1.9 * U, d.dmgCoef, { kind: 'storm', life: 3, tickS: .375, maxTicks: 8, knock: .15, onTick: f => { fx('tbolt', { x: f.x + (Math.random() - .5) * f.r, y: f.y + (Math.random() - .5) * f.r * .6 }, f.r, id, { life: .3, maxLife: .3 }); onBlast?.(f, f.r, false);
             if (feature(id) === 'doubleBolt') {
               const primary = closest(f, f.r), target = primary && closest(primary, 5 * U, new Set([primary]));
-              if (target) { hit(id, target, d.dmgCoef * .3, f); markPart(id); fx('bolt', target, .7 * U, id, { life: .25, maxLife: .25 }); }
+              if (target) { hit(id, target, d.dmgCoef * .3, f); markPart(id); fx('bolt', target, .7 * U, id, { life: .25, maxLife: .25 });
+                const next = gold(id) && closest(target, 4 * U, new Set([primary, target])); if (next) { hit(id, next, d.dmgCoef * .3, target); fx('bolt', next, .7 * U, id, { life: .25, maxLife: .25 }); } }
             }
           } }); }
           else {
             fx('cloudmark', at, 1 * U, id, { life: .45, maxLife: .45 });
-            after(.45, () => { blast(id, at, 1.5 * U * area(id), d.dmgCoef, { kind: 'bolt', knock: .25 }); if (feature(id) === 'doubleBolt') { after(.2, () => { blast(id, at, 1.5 * U * area(id), d.dmgCoef * .3, { kind: 'bolt' }); markPart(id); }); } });
+            after(.45, () => { blast(id, at, 1.5 * U * area(id), d.dmgCoef, { kind: 'bolt', knock: .25 }); if (feature(id) === 'doubleBolt') { after(.2, () => { blast(id, at, 1.5 * U * area(id), d.dmgCoef * .3, { kind: 'bolt' }); markPart(id);
+              const next = gold(id) && closest(at, 4 * U, new Set(within(at, 1.5 * U * area(id)))); if (next) { hit(id, next, d.dmgCoef * .3, at); fx('bolt', next, .8 * U, id, { life: .25, maxLife: .25 }); } }); } });
           }
         }
         break;
@@ -207,6 +221,7 @@ export function createElementCombat({ U = 32, getPlayer, getEnemies, getBoss = (
       }
       if (big) { st.v2RingT = (st.v2RingT || 0) - dt; if (st.v2RingT <= 0) { st.v2RingT = 1.6; fx('windring', p, radius + r, id, { life: .5, maxLife: .5 }); onBlast?.(p, radius, true); for (const e of within(p, radius + r)) if (e !== getBoss()) { const l = dist(e, p) || 1; e.kbVx = (e.kbVx || 0) + (e.x - p.x) / l * 200; e.kbVy = (e.kbVy || 0) + (e.y - p.y) / l * 200; } } }
       if (feature(id) === 'widerOrbit' && !st.v2PartMarked) { st.v2PartMarked = true; markPart(id); }
+      if (gold(id)) { st.v2GoldT = (st.v2GoldT || 0) - dt; if (st.v2GoldT <= 0) { const q = (projectiles() || []).find(x => x.hostile && !x.boss && x.life > 0 && dist(x, p) <= radius + r); if (q) { q.life = 0; markPart(id); fx('swirl', q, .7 * U, id, { life: .3, maxLife: .3 }); st.v2GoldT = 4; } else st.v2GoldT = .2; } }
     }
   }
   function updateBees(dt) {
@@ -222,7 +237,9 @@ export function createElementCombat({ U = 32, getPlayer, getEnemies, getBoss = (
       const fast = feature(b.id) === 'fasterBee'; if (fast) markPart(b.id);
       b.cd = d.interval * (mods().intervalMul || 1) * (fast ? .75 : 1) * (lv(b.id) >= 3 && !COMBOS[b.id] ? .8 : 1);
       stats.casts[b.id] = (stats.casts[b.id] || 0) + 1;
-      shot(b.id, b, angleTo(b, e), d.dmgCoef, { kind: d.kind === 'swarm' ? 'hstinger' : 'stinger', speed: 13 * U, r: .28 * U, life: 1, maxHits: 1, homing: d.kind === 'swarm', onHit: t => { fx(d.kind === 'swarm' ? 'bigburst' : 'spark', t, (d.kind === 'swarm' ? 1 : .6) * U, b.id); fx('sparks', t, .5 * U, b.id, { life: .3, maxLife: .3 }); } });
+      const zap = gold(b.id) && (b.stings = (b.stings || 0) + 1) % 8 === 0;
+      shot(b.id, b, angleTo(b, e), d.dmgCoef, { kind: d.kind === 'swarm' ? 'hstinger' : 'stinger', speed: 13 * U, r: .28 * U, life: 1, maxHits: 1, homing: d.kind === 'swarm', onHit: t => { fx(d.kind === 'swarm' ? 'bigburst' : 'spark', t, (d.kind === 'swarm' ? 1 : .6) * U, b.id); fx('sparks', t, .5 * U, b.id, { life: .3, maxLife: .3 });
+        const next = zap && closest(t, 4 * U, new Set([t])); if (next) { markPart(b.id); hit(b.id, next, d.dmgCoef * .6, t); fx('bolt', next, .6 * U, b.id, { life: .25, maxLife: .25 }); } } });
     }
   }
   function updateShots(dt) {
@@ -259,6 +276,7 @@ export function createElementCombat({ U = 32, getPlayer, getEnemies, getBoss = (
       if (b.tick <= 0) {
         b.tick += b.tickS; const end = { x: b.x + Math.cos(b.angle) * b.len, y: b.y + Math.sin(b.angle) * b.len };
         for (const e of alive()) if (segmentDistance(e, b, end) <= b.width / 2 + (e.radiusU || .45) * U) { hit(b.id, e, b.coef, b, .08); if (b.stun) slow(e, .05, .6); else slow(e, .75, .4); }
+        if (!b.trailed && gold(b.id)) { b.trailed = true; markPart(b.id); for (const k of [.35, .65, .95]) trail(b.id, { x: b.x + Math.cos(b.angle) * b.len * k, y: b.y + Math.sin(b.angle) * b.len * k }, b.width * .7, 2); }
         fx(b.kind === 'rbeam' ? 'rspray' : 'spray', end, b.width, b.id, { life: .25, maxLife: .25 });
       }
       if (b.life <= 0) beams.splice(i, 1);
@@ -268,6 +286,7 @@ export function createElementCombat({ U = 32, getPlayer, getEnemies, getBoss = (
     const k = mines.indexOf(m); if (k < 0) return; mines.splice(k, 1);
     if (feature(m.id) === 'mineWider') markPart(m.id);
     blast(m.id, m, m.r, m.coef, { kind: m.kind === 'molemine' ? 'bigdirt' : 'dirt', knock: .4, big: m.kind === 'molemine' });
+    if (gold(m.id)) trail(m.id, m, m.r * .7, 2.5);
     if (m.kind === 'molemine') { fx('chainring', m, 2.6 * U, m.id, { life: .4, maxLife: .4 }); for (const o of mines.filter(o => o !== m && dist(o, m) <= 2.6 * U)) after(.12, () => triggerMine(o, true)); }
   }
   function updateMines(dt) {
