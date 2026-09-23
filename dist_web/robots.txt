@@ -1,0 +1,7 @@
+# seoho-pangpang: school game + shared planning docs (/share/)
+# AI tools (ChatGPT, Codex, Claude...) may read /share/ and the game files for collaboration.
+User-agent: *
+Allow: /
+Disallow: /api/
+Disallow: /admin/
+Content-Signal: search=yes, ai-input=yes, ai-train=no

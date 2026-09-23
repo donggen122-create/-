@@ -1,0 +1,50 @@
+{
+  "checks": [
+    {
+      "name": "그림 3종 로드",
+      "pass": true
+    },
+    {
+      "name": "1-1~1-5 시작/시뮬/렌더",
+      "pass": true
+    },
+    {
+      "name": "여섯 보스 기술 예고/발동/잔류",
+      "pass": true
+    },
+    {
+      "name": "악취 구름 5초 뒤 제거",
+      "pass": true
+    },
+    {
+      "name": "쓰레기 수거 보상/보스 HP/정화 연결",
+      "pass": true
+    },
+    {
+      "name": "쓰레기통 정리/타이어 반응",
+      "pass": true
+    },
+    {
+      "name": "이펙트 상한/수명/다음 판 초기화",
+      "pass": true
+    },
+    {
+      "name": "일시정지 중 이펙트 유지",
+      "pass": true
+    },
+    {
+      "name": "2장 기존 렌더 경로",
+      "pass": true
+    },
+    {
+      "name": "이미지 로드 실패 시 렌더 유지",
+      "pass": true
+    }
+  ],
+  "at": "2026-09-22T06:54:50.324Z",
+  "viewport": {
+    "width": 375,
+    "height": 812
+  },
+  "reduced": false
+}

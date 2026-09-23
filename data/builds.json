@@ -1,0 +1,230 @@
+{
+  "_schema": {
+    "attack": "슬롯 1은 캐릭터 기본 무기. 6개 모두 기재",
+    "passive": "6개 모두 기재",
+    "essential": "이 스킬이 없으면 빌드가 성립하지 않음",
+    "alternatives": "essential 외 스킬의 대체안",
+    "early_priority": "레벨 1~10 선택 우선순위",
+    "evo_order": "중간 보스 상자 1·2·3 순서",
+    "modes": "modes.csv ID",
+    "counters": "불리한 적/보스와 대응"
+  },
+  "builds": [
+    {
+      "id": "B01", "name": "별빛 사수", "character": "C01",
+      "equipment": ["EQ02", "EQ09", "EQ17", "EQ25", "EQ34", "EQ46"],
+      "attack": ["S01", "S21", "S15", "S22", "S04", "S03"],
+      "passive": ["P03", "P16", "P09", "P02", "P01", "P18"],
+      "essential": ["S01", "S21", "P03", "P16"],
+      "alternatives": {"S15": "S11", "S03": "S16", "P18": "P10"},
+      "early_priority": ["S21", "P03", "S15", "P16", "S22"],
+      "evo_order": ["E01 별빛 화살비", "E21 빛의 군체", "E15 쌍둥이 달"],
+      "pets": {"deploy": "PT07", "assist": ["PT01", "PT04"]},
+      "parts": ["T01", "T21", "T15"], "support_parts": ["T04", "T03"],
+      "sets": ["SET02", "SET19", "SET01"],
+      "modes": ["M01", "M02", "M07"],
+      "counters": [
+        {"enemy": "방패 엘리트(EL03)·정면 방어형", "why": "유도탄이 정면 방패에 막힘", "how": "S22 뇌운(무시)과 S04 감전 연쇄로 후면 타격, 주위를 돌며 측면 노출 유도"},
+        {"enemy": "보스 BS07 (분열체 다수)", "why": "다수 표적에 유도가 분산", "how": "E22 천벌 채용 또는 S03 산탄으로 근접 정리"}
+      ]
+    },
+    {
+      "id": "B02", "name": "관통 창벽", "character": "C02",
+      "equipment": ["EQ02", "EQ12", "EQ19", "EQ26", "EQ34", "EQ42"],
+      "attack": ["S02", "S12", "S11", "S15", "S10", "S16"],
+      "passive": ["P15", "P05", "P03", "P02", "P08", "P01"],
+      "essential": ["S02", "P15", "S12"],
+      "alternatives": {"S11": "S01", "S16": "S03", "P08": "P04"},
+      "early_priority": ["P15", "S12", "S11", "P05", "P03"],
+      "evo_order": ["E02 창의 벽", "E12 회전 등대", "E11 혜성 구슬"],
+      "pets": {"deploy": "PT04", "assist": ["PT08", "PT01"]},
+      "parts": ["T02", "T12", "T11"], "support_parts": ["T15", "T10"],
+      "sets": ["SET02", "SET18", "SET16"],
+      "modes": ["M01", "M05", "M04"],
+      "counters": [
+        {"enemy": "포위형(EN12 늑대 무리)", "why": "직선 공격이 측면을 놓침", "how": "통로·벽을 등지고 싸움, E12 회전 등대로 360° 보완"},
+        {"enemy": "개방형 맵", "why": "S11 튕김 효율 하락", "how": "S11 대신 S01 채용"}
+      ]
+    },
+    {
+      "id": "B03", "name": "철벽 톱니", "character": "C03",
+      "equipment": ["EQ05", "EQ13", "EQ22", "EQ29", "EQ36", "EQ43"],
+      "attack": ["S05", "S17", "S20", "S06", "S18", "S16"],
+      "passive": ["P04", "P06", "P07", "P17", "P12", "P14"],
+      "essential": ["S05", "P04", "S20", "P06"],
+      "alternatives": {"S17": "S13", "S18": "S09", "P14": "P13"},
+      "early_priority": ["P04", "S20", "P06", "S17", "P07"],
+      "evo_order": ["E05 황혼의 톱니 또는 F04 화염 톱니", "E20 특이점", "E06 성역의 낙인"],
+      "pets": {"deploy": "PT03", "assist": ["PT10", "PT02"]},
+      "parts": ["T05", "T20", "T06"], "support_parts": ["T17", "T16"],
+      "sets": ["SET04", "SET17", "SET10"],
+      "modes": ["M07", "M06", "M08"],
+      "counters": [
+        {"enemy": "원거리 사격형(EN09 그림자 궁수)", "why": "회전 반경 밖에서 사격", "how": "S20 특이점으로 끌어당김, S16으로 접근 후 처리"},
+        {"enemy": "보스 BS12 (안전지대 강제 이동)", "why": "이동 속도 낮음", "how": "EQ43 신발과 P08 대체 채용, 특이점 폭발 타이밍 맞춤"}
+      ]
+    },
+    {
+      "id": "B04", "name": "성역 원정대", "character": "C04",
+      "equipment": ["EQ03", "EQ14", "EQ17", "EQ31", "EQ35", "EQ41"],
+      "attack": ["S06", "S19", "S08", "S13", "S22", "S01"],
+      "passive": ["P14", "P12", "P06", "P05", "P18", "P13"],
+      "essential": ["S06", "P14", "S19", "P12"],
+      "alternatives": {"S08": "S07", "S22": "S10", "P13": "P17"},
+      "early_priority": ["S19", "P14", "P12", "S08", "P05"],
+      "evo_order": ["E06 성역의 낙인", "E19 달빛 무리", "E08 요새 포탑"],
+      "pets": {"deploy": "PT10", "assist": ["PT03", "PT12"]},
+      "parts": ["T06", "T19", "T08"], "support_parts": ["T13", "T22"],
+      "sets": ["SET05", "SET06", "SET15"],
+      "modes": ["M08", "M05", "M06"],
+      "counters": [
+        {"enemy": "돌진형(EN05 멧돼지 그림자)", "why": "소환체를 뚫고 들어옴", "how": "성역 둔화 + S13 독으로 감속, 포탑 도발(T08)"},
+        {"enemy": "보스 BS15 (소환체 즉사 패턴)", "why": "늑대·포탑 전멸", "how": "고유 능력(전원 부활) 타이밍을 패턴 직후로, 패턴 예고 시 소환체를 멀리 두기"}
+      ]
+    },
+    {
+      "id": "B05", "name": "화약고", "character": "C05",
+      "equipment": ["EQ04", "EQ09", "EQ24", "EQ27", "EQ37", "EQ41"],
+      "attack": ["S09", "S18", "S10", "S23", "S03", "S20"],
+      "passive": ["P01", "P07", "P11", "P10", "P04", "P02"],
+      "essential": ["S09", "S18", "P01", "P07"],
+      "alternatives": {"S10": "S22", "S23": "S16", "P02": "P05"},
+      "early_priority": ["S18", "P01", "P07", "S10", "P11"],
+      "evo_order": ["F01 지연 폭약(S09+S18 둘 다 Lv5) 또는 E09", "E10 유성우", "E23 운명의 주사위"],
+      "pets": {"deploy": "PT09", "assist": ["PT06", "PT08"]},
+      "parts": ["T09", "T18", "T10"], "support_parts": ["T23", "T20"],
+      "sets": ["SET03", "SET16", "SET07"],
+      "modes": ["M04", "M01", "M02"],
+      "counters": [
+        {"enemy": "빠른 소형(EN03 그림자 쥐)", "why": "폭발 예고 시간 동안 이탈", "how": "S20으로 고정, S03 산탄 즉발 보완"},
+        {"enemy": "보스 BS09 (투사체 상쇄 방벽)", "why": "항아리가 방벽에 막힘", "how": "지뢰(지면)·유성우(상공)는 방벽 무시 — 지뢰 위로 유인"}
+      ]
+    },
+    {
+      "id": "B06", "name": "이동 요새", "character": "C06",
+      "equipment": ["EQ06", "EQ10", "EQ20", "EQ31", "EQ33", "EQ47"],
+      "attack": ["S07", "S08", "S19", "S24", "S21", "S12"],
+      "passive": ["P05", "P10", "P12", "P02", "P01", "P06"],
+      "essential": ["S07", "S08", "P05", "P10"],
+      "alternatives": {"S19": "S15", "S24": "S22", "P06": "P07"},
+      "early_priority": ["S08", "P05", "P10", "S19", "P02"],
+      "evo_order": ["F03 이동 요새(S07+S08 Lv5)", "E19 달빛 무리", "E24 황혼의 쌍둥이"],
+      "pets": {"deploy": "PT12", "assist": ["PT03", "PT01"]},
+      "parts": ["T07", "T08", "T19"], "support_parts": ["T24", "T21"],
+      "sets": ["SET06", "SET09", "SET20"],
+      "modes": ["M01", "M04", "M05"],
+      "counters": [
+        {"enemy": "소환체 파괴형(EL08 파쇄자)", "why": "포탑·늑대 즉시 파괴", "how": "F03(파괴 불가) 우선 융합, 과부하로 무적 타이밍"},
+        {"enemy": "모바일 저사양 등급", "why": "소환체·투사체 수 제한", "how": "S21·S24 대신 S12·S15 채용(성능 비용 낮음)"}
+      ]
+    },
+    {
+      "id": "B07", "name": "올인 주사위", "character": "C07",
+      "equipment": ["EQ08", "EQ12", "EQ21", "EQ30", "EQ39", "EQ42"],
+      "attack": ["S23", "S14", "S10", "S09", "S04", "S11"],
+      "passive": ["P10", "P11", "P13", "P01", "P02", "P08"],
+      "essential": ["S23", "P10", "P11", "S14"],
+      "alternatives": {"S10": "S22", "S09": "S03", "P08": "P06"},
+      "early_priority": ["P10", "S14", "P11", "P13", "S10"],
+      "evo_order": ["E23 운명의 주사위", "E14 핏빛 맹세", "E10 유성우"],
+      "pets": {"deploy": "PT08", "assist": ["PT11", "PT01"]},
+      "parts": ["T23", "T14", "T10"], "support_parts": ["T09", "T04"],
+      "sets": ["SET07", "SET16", "SET01"],
+      "modes": ["M04", "M01(속공 5분)", "M03"],
+      "counters": [
+        {"enemy": "장기전(무한 생존·원정)", "why": "받는 피해 +10%, 체력 낮음", "how": "이 캐릭터·빌드는 장기전 비추천. B03/B04 사용"},
+        {"enemy": "보스 BS18 (치명타 저항)", "why": "핵심 승수 무력화", "how": "E14 파동·S10 폭격 위주로 전환, 표식 수집품 SET16"}
+      ]
+    },
+    {
+      "id": "B08", "name": "야수 무리", "character": "C08",
+      "equipment": ["EQ06", "EQ16", "EQ19", "EQ31", "EQ33", "EQ41"],
+      "attack": ["S19", "S07", "S05", "S13", "S21", "S16"],
+      "passive": ["P12", "P06", "P01", "P05", "P04", "P18"],
+      "essential": ["S19", "P12", "S07"],
+      "alternatives": {"S05": "S17", "S13": "S22", "P18": "P02"},
+      "early_priority": ["P12", "S07", "P01", "S05", "P05"],
+      "evo_order": ["E19 달빛 무리", "E07 지휘 드론", "E05 황혼의 톱니"],
+      "pets": {"deploy": "PT02", "assist": ["PT06", "PT12"]},
+      "parts": ["T19", "T07", "T05"], "support_parts": ["T13", "T21"],
+      "sets": ["SET08", "SET06", "SET05"],
+      "modes": ["M01", "M08", "M06"],
+      "counters": [
+        {"enemy": "밀집 대군(EN01 그림자 잔해 ×300)", "why": "늑대가 개별 표적만 공격", "how": "S05 회전 낫·S13 독 확산으로 군중 보완"},
+        {"enemy": "보스 BS03 (넉백 파동)", "why": "펫·늑대가 밀려남", "how": "야성 해방(무적·거대화)을 파동 직전에, 펫 부활 여유 활용"}
+      ]
+    },
+    {
+      "id": "B09", "name": "시간의 폭격", "character": "C09",
+      "equipment": ["EQ03", "EQ11", "EQ20", "EQ28", "EQ40", "EQ46"],
+      "attack": ["S10", "S06", "S22", "S08", "S12", "S20"],
+      "passive": ["P05", "P14", "P11", "P04", "P10", "P01"],
+      "essential": ["S10", "P05", "P14", "S22"],
+      "alternatives": {"S08": "S07", "S12": "S02", "P10": "P02"},
+      "early_priority": ["P05", "S22", "P14", "S06", "P11"],
+      "evo_order": ["E10 유성우", "F02 폭풍의 눈(S04 대체 시) 또는 E22 천벌", "E06 성역의 낙인"],
+      "pets": {"deploy": "PT08", "assist": ["PT09", "PT01"]},
+      "parts": ["T10", "T22", "T06"], "support_parts": ["T12", "T08"],
+      "sets": ["SET09", "SET12", "SET15"],
+      "modes": ["M01", "M02", "M04"],
+      "counters": [
+        {"enemy": "빠른 돌진형(EN05, EL05)", "why": "예고 시간에 벗어남", "how": "S20 인력장으로 고정, T10 조준 위성"},
+        {"enemy": "도전 규칙 R07(쿨다운 감소 무효)", "why": "핵심 승수 상실", "how": "S02·S01 즉발형으로 교체, 이리스 대신 C02"}
+      ]
+    },
+    {
+      "id": "B10", "name": "거인의 진격", "character": "C10",
+      "equipment": ["EQ05", "EQ10", "EQ22", "EQ29", "EQ36", "EQ43"],
+      "attack": ["S14", "S17", "S05", "S03", "S18", "S20"],
+      "passive": ["P13", "P06", "P01", "P04", "P07", "P02"],
+      "essential": ["S14", "S17", "P13", "P06"],
+      "alternatives": {"S05": "S12", "S03": "S16", "P07": "P17"},
+      "early_priority": ["S17", "P13", "P06", "S05", "P01"],
+      "evo_order": ["E14 핏빛 맹세", "F04 화염 톱니(S05+S17)", "E18 추적 지뢰"],
+      "pets": {"deploy": "PT02", "assist": ["PT03", "PT06"]},
+      "parts": ["T14", "T17", "T05"], "support_parts": ["T18", "T03"],
+      "sets": ["SET10", "SET04", "SET17"],
+      "modes": ["M01", "M06", "M07"],
+      "counters": [
+        {"enemy": "원거리 포위(EN09 궁수 + EN14 포수)", "why": "근접 사거리 밖", "how": "S03 넉백으로 길 만들기, S20 인력, 통로형 맵 우선"},
+        {"enemy": "보스 BS05 (근접 반사 장판)", "why": "근접 시 반사 피해", "how": "장판 표시 시 후퇴, E14 파동(3u 원거리)으로 딜"}
+      ]
+    },
+    {
+      "id": "B11", "name": "역병의 왕관", "character": "C11",
+      "equipment": ["EQ07", "EQ14", "EQ23", "EQ27", "EQ38", "EQ45"],
+      "attack": ["S13", "S04", "S17", "S16", "S22", "S06"],
+      "passive": ["P18", "P14", "P04", "P06", "P12", "P01"],
+      "essential": ["S13", "P18", "S04", "P14"],
+      "alternatives": {"S17": "S09", "S16": "S05", "P12": "P17"},
+      "early_priority": ["P18", "S04", "P14", "S17", "P04"],
+      "evo_order": ["E13 역병의 왕관", "E04 뇌전 폭풍", "E17 지옥 채찍"],
+      "pets": {"deploy": "PT05", "assist": ["PT06", "PT11"]},
+      "parts": ["T13", "T04", "T17"], "support_parts": ["T16", "T22"],
+      "sets": ["SET11", "SET13", "SET19"],
+      "modes": ["M07", "M01", "M06"],
+      "counters": [
+        {"enemy": "보스 전반(상태 이상 저항)", "why": "DoT ×0.5", "how": "각성 2단계로 저항 완화, S22·S17 직접 피해 비중 확대, 보스 점수 모드는 비추천"},
+        {"enemy": "도전 규칙 R11(상태 이상 지속 -50%)", "why": "확산 끊김", "how": "S16 빙결·S04 즉발 위주 전환"}
+      ]
+    },
+    {
+      "id": "B12", "name": "여명의 등대", "character": "C12",
+      "equipment": ["EQ03", "EQ11", "EQ17", "EQ25", "EQ40", "EQ44"],
+      "attack": ["S12", "S06", "S20", "S22", "S02", "S10"],
+      "passive": ["P05", "P14", "P04", "P01", "P11", "P06"],
+      "essential": ["S12", "P05", "S06", "S20"],
+      "alternatives": {"S22": "S04", "S02": "S01", "S10": "S08"},
+      "early_priority": ["P05", "S06", "P14", "S20", "P04"],
+      "evo_order": ["E12 회전 등대", "E20 특이점", "E06 성역의 낙인"],
+      "pets": {"deploy": "PT01", "assist": ["PT08", "PT10"]},
+      "parts": ["T12", "T06", "T20"], "support_parts": ["T22", "T10"],
+      "sets": ["SET12", "SET13", "SET15"],
+      "modes": ["M01", "M02", "M05"],
+      "counters": [
+        {"enemy": "빠른 산개 소형(EN03·EN22)", "why": "광선 폭이 좁음", "how": "특이점으로 집결 후 광선 통과, S22 보완"},
+        {"enemy": "보스 BS20 (광원 흡수: 봉화 무효)", "why": "고유 능력 여명 무효", "how": "특이점+회전 등대 순수 DPS 의존, P06으로 생존 보강"}
+      ]
+    }
+  ]
+}

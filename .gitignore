@@ -1,0 +1,35 @@
+# 서호팡팡수호대 — git에 올리지 않는 것
+# ── 비밀값: 절대 올리지 않는다(관리자 열쇠·아이디·비밀번호는 Cloudflare 비밀값과 각 PC의 server/.dev.vars에만) ──
+.dev.vars
+server/.dev.vars
+.env
+*.env
+secrets.json
+server/secrets.json
+
+# ── PC마다 설치·실행하면 생기는 것(game/tools/setup.ps1이 다시 만든다) ──
+node_modules/
+.wrangler/
+__pycache__/
+*.pyc
+.claude/settings.local.json
+
+# ── 스크립트가 만드는 것 ──
+# 단일 파일판: game/tools/build-single.ps1
+dist_single/
+# dist_web에서 game/을 복사해 오는 부분: game/tools/sync-dist.ps1(배포·로컬 서버 때 자동).
+# dist_web/share/(공유 폴더)와 dist_web/robots.txt는 원본이라 올린다.
+dist_web/index.html
+dist_web/ASSET_CREDITS.md
+dist_web/src/
+dist_web/assets/
+dist_web/admin/
+dist_web/zz_*.html
+# 확인용 캡처·로그
+game/tools/qa/out/
+*.log
+
+# ── 운영체제가 만드는 것 ──
+Thumbs.db
+desktop.ini
+.DS_Store

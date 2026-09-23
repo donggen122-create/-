@@ -1,0 +1,1028 @@
+{
+  "date": "2026-09-22",
+  "release": "guardian-v2-20260922",
+  "verifiedAt": "2026-09-22T10:32:27.875264+00:00",
+  "fileCount": 170,
+  "files": [
+    {
+      "path": "game/assets/audio/attack_slice.ogg",
+      "bytes": 15532,
+      "sha256": "4cd96dc630bed9840c15f1dd2306da2cc56a4da26a5d3f1a03c5a7265ac5e54f",
+      "origin": "preserved_existing"
+    },
+    {
+      "path": "game/assets/audio/attack_whoosh.ogg",
+      "bytes": 16508,
+      "sha256": "ddb93a3671233f95da0e0b10367f082f7eb42fa6caaddcf776410aa8833c747d",
+      "origin": "preserved_existing"
+    },
+    {
+      "path": "game/assets/audio/boss_telegraph.ogg",
+      "bytes": 19012,
+      "sha256": "8a990afdc03aebb91d528f5385e2f95582dbfa8e2c12c71098ab01be9142294a",
+      "origin": "preserved_existing"
+    },
+    {
+      "path": "game/assets/audio/card_select.ogg",
+      "bytes": 4522,
+      "sha256": "c640b370738c816eda3d1196d8a8dda7130825b4094f3bb3cbba22a9f6f9b7c9",
+      "origin": "preserved_existing"
+    },
+    {
+      "path": "game/assets/audio/gem_pickup.ogg",
+      "bytes": 13615,
+      "sha256": "9851a69d0c613e13bceef08060ecc4148f098ef487927cbebe270d642398a3b3",
+      "origin": "preserved_existing"
+    },
+    {
+      "path": "game/assets/audio/gold_reward.ogg",
+      "bytes": 25394,
+      "sha256": "8a91f969e932df709df80ee124d86a51389eed9b67f22e5e716bc2bbf60d8dab",
+      "origin": "preserved_existing"
+    },
+    {
+      "path": "game/assets/audio/hit_boss.ogg",
+      "bytes": 15577,
+      "sha256": "9df61e3ae9a83dc65e5a1fd3ed19d480876f3b22b963a1b9ef6fa293592dcec4",
+      "origin": "preserved_existing"
+    },
+    {
+      "path": "game/assets/audio/hit_light.ogg",
+      "bytes": 5827,
+      "sha256": "f0e982611e97512fee5f777986b67e8b435434b601f94992ec044f7e89fb5acb",
+      "origin": "preserved_existing"
+    },
+    {
+      "path": "game/assets/audio/hit_light2.ogg",
+      "bytes": 5795,
+      "sha256": "d0bf60905b59ff630ffe01eb0edeeacd2504eaa8fb6523aeef7d2458b78264d3",
+      "origin": "preserved_existing"
+    },
+    {
+      "path": "game/assets/audio/levelup_open.ogg",
+      "bytes": 5707,
+      "sha256": "7a3032d1dae63d1096cf2f1e59cb43e598d5229dcb9617e9d3fb13e96c78d5f2",
+      "origin": "preserved_existing"
+    },
+    {
+      "path": "game/assets/audio/ui_click.ogg",
+      "bytes": 4656,
+      "sha256": "c394b46bc6737f7f7edfbfa3031ce621b7a43d498d456d6198364eee9cd3e306",
+      "origin": "preserved_existing"
+    },
+    {
+      "path": "game/assets/elements_v2/fx/earth_impact.png",
+      "bytes": 1030172,
+      "sha256": "eca8dae1796b2f6a8cc8f4cc1b7977385bb90b8616bcd69e6f91f38c3c01f5ee",
+      "origin": "generated_imagegen_v2"
+    },
+    {
+      "path": "game/assets/elements_v2/fx/fire_impact.png",
+      "bytes": 1005835,
+      "sha256": "20653166ac2093ecec6c019c13104645555f913ae555066570c6472e458b8855",
+      "origin": "generated_imagegen_v2"
+    },
+    {
+      "path": "game/assets/elements_v2/fx/lightning_impact.png",
+      "bytes": 477332,
+      "sha256": "479233ea7d996c589cc75f89ddb6ef499b2b82ef4ba9f4fd8a22c96a11321011",
+      "origin": "generated_imagegen_v2"
+    },
+    {
+      "path": "game/assets/elements_v2/fx/water_impact.png",
+      "bytes": 1581162,
+      "sha256": "96d90dc7c7a38b7abe4b1e57bf813665b8650c76e3d218b4d5c6bb83dc2277e5",
+      "origin": "generated_imagegen_v2"
+    },
+    {
+      "path": "game/assets/elements_v2/fx/wind_impact.png",
+      "bytes": 1388418,
+      "sha256": "0755a65ec8b0a03bae79a8a1fced765c334c32918b79e4bdef01da42df9de53a",
+      "origin": "generated_imagegen_v2"
+    },
+    {
+      "path": "game/assets/elements_v2/icons/combo_COMBO_01.svg",
+      "bytes": 953,
+      "sha256": "b34ae666063c84f8153dc017771ecba57e89c205b64e22ab3de77053da897e87",
+      "origin": "generated_svg_v2"
+    },
+    {
+      "path": "game/assets/elements_v2/icons/combo_COMBO_02.svg",
+      "bytes": 892,
+      "sha256": "086d6631495df90c034cc1ed64da7f03d1b587401b99fa7860097d746f3d5e4d",
+      "origin": "generated_svg_v2"
+    },
+    {
+      "path": "game/assets/elements_v2/icons/combo_COMBO_03.svg",
+      "bytes": 959,
+      "sha256": "5dc1606f72db23065935fa284f0af4b5bb4d419be8c93b799e90cedbc6f889c4",
+      "origin": "generated_svg_v2"
+    },
+    {
+      "path": "game/assets/elements_v2/icons/combo_COMBO_04.svg",
+      "bytes": 943,
+      "sha256": "1d8a5743fac9952d65245ad18f7b19c2d766a22a31be1684a331a1eb02c120c4",
+      "origin": "generated_svg_v2"
+    },
+    {
+      "path": "game/assets/elements_v2/icons/combo_COMBO_05.svg",
+      "bytes": 1009,
+      "sha256": "58792de49d267c0bc8cb5d19d4cad79f51af2f0d7ae481f878242b8ce053f66f",
+      "origin": "generated_svg_v2"
+    },
+    {
+      "path": "game/assets/elements_v2/icons/combo_COMBO_06.svg",
+      "bytes": 910,
+      "sha256": "fcc7a66c0562c8a553513b829361923fa34dfbb1f764d63a6e1ae18e47bcbbd9",
+      "origin": "generated_svg_v2"
+    },
+    {
+      "path": "game/assets/elements_v2/icons/combo_COMBO_07.svg",
+      "bytes": 910,
+      "sha256": "b1d446316d75ef6118d8abb73aa0ea23f8f404090672776d1561220508014221",
+      "origin": "generated_svg_v2"
+    },
+    {
+      "path": "game/assets/elements_v2/icons/combo_COMBO_08.svg",
+      "bytes": 1001,
+      "sha256": "e82b8303d87a8fb6bca0ffaeda3ffec7f4d8c1c1bb6184d7df9d8405d07ce0fa",
+      "origin": "generated_svg_v2"
+    },
+    {
+      "path": "game/assets/elements_v2/icons/combo_COMBO_09.svg",
+      "bytes": 922,
+      "sha256": "98faedb97c795d637343812023da8a1a235b2ca440d2ae6b10c18ba0172777bf",
+      "origin": "generated_svg_v2"
+    },
+    {
+      "path": "game/assets/elements_v2/icons/combo_COMBO_10.svg",
+      "bytes": 908,
+      "sha256": "d86f8cdb18b30c15a3ab16c958c66229a85d13d17f89646b08aaa8772756a7a4",
+      "origin": "generated_svg_v2"
+    },
+    {
+      "path": "game/assets/elements_v2/icons/combo_COMBO_11.svg",
+      "bytes": 1079,
+      "sha256": "805503b85d421401b61bae2159d44590a61b0c82f7b3dbdeed14964a20446bd0",
+      "origin": "generated_svg_v2"
+    },
+    {
+      "path": "game/assets/elements_v2/icons/combo_COMBO_12.svg",
+      "bytes": 885,
+      "sha256": "816605f6d7ed67564c870cd96422ede4a95e2b3ce8c71faf6b2195b00e458e44",
+      "origin": "generated_svg_v2"
+    },
+    {
+      "path": "game/assets/elements_v2/icons/combo_COMBO_13.svg",
+      "bytes": 957,
+      "sha256": "f8d4757aa08428f1be9a747b64fbfaccd3149d25b138c8b45f8eb6f6bc78e378",
+      "origin": "generated_svg_v2"
+    },
+    {
+      "path": "game/assets/elements_v2/icons/combo_COMBO_14.svg",
+      "bytes": 861,
+      "sha256": "ef71766601b304935726ff8bbdb7e04066b5bf3fe8a1bce301d50fab7b266354",
+      "origin": "generated_svg_v2"
+    },
+    {
+      "path": "game/assets/elements_v2/icons/combo_COMBO_15.svg",
+      "bytes": 931,
+      "sha256": "6dba0d3a2d433ac199f561d00c2e90d3f37de4051a697a9b1a55e7bb761739c8",
+      "origin": "generated_svg_v2"
+    },
+    {
+      "path": "game/assets/elements_v2/icons/element_earth.svg",
+      "bytes": 496,
+      "sha256": "77590617b1051a02309e42c39e098ffc5fa3465ecf0de19061a0fd09408747d3",
+      "origin": "generated_svg_v2"
+    },
+    {
+      "path": "game/assets/elements_v2/icons/element_fire.svg",
+      "bytes": 514,
+      "sha256": "57829288a7307017e6d01a4aec342cf17f19d4e87ce9a6b9cdb7a53a6c5a6ad8",
+      "origin": "generated_svg_v2"
+    },
+    {
+      "path": "game/assets/elements_v2/icons/element_lightning.svg",
+      "bytes": 385,
+      "sha256": "0aa2887edf0b22b68cff939a00c5cec03791758ace73118d03a67655ad63e301",
+      "origin": "generated_svg_v2"
+    },
+    {
+      "path": "game/assets/elements_v2/icons/element_water.svg",
+      "bytes": 547,
+      "sha256": "3262132204cec24609470a98254bef1983b7ba0ed6663e01f7c43d3fa39c95ef",
+      "origin": "generated_svg_v2"
+    },
+    {
+      "path": "game/assets/elements_v2/icons/element_wind.svg",
+      "bytes": 503,
+      "sha256": "6648b4e4a8c6381732987436fdb16e1ae113cde85bba055aed73cde5ed8e25f7",
+      "origin": "generated_svg_v2"
+    },
+    {
+      "path": "game/assets/elements_v2/icons/mode_melee.svg",
+      "bytes": 485,
+      "sha256": "cd225ab6b2fc703115183a1674d94c727f12690445d0230f4e641b6aeca5327b",
+      "origin": "generated_svg_v2"
+    },
+    {
+      "path": "game/assets/elements_v2/icons/mode_ranged.svg",
+      "bytes": 684,
+      "sha256": "a38ef56c0a70bda9c7019d3d80e4b948c4c181044bf4879d6cd9ed99c7771450",
+      "origin": "generated_svg_v2"
+    },
+    {
+      "path": "game/assets/elements_v2/icons/part_PART_E1.svg",
+      "bytes": 1076,
+      "sha256": "a5728fd56c428a61fdb7e4239b9d8d0b9fa6012b1badd87f0f5769b45f56373a",
+      "origin": "generated_svg_v2"
+    },
+    {
+      "path": "game/assets/elements_v2/icons/part_PART_E2.svg",
+      "bytes": 997,
+      "sha256": "cbe70cc883cf72b18b4a4116392cab72604698098fb2c4dd3f5e273392f8e751",
+      "origin": "generated_svg_v2"
+    },
+    {
+      "path": "game/assets/elements_v2/icons/part_PART_E3.svg",
+      "bytes": 985,
+      "sha256": "acaba306b2f8d6cb28d7d0cc6ca536465d45daaced96e05d1a7dbf6c1230ecec",
+      "origin": "generated_svg_v2"
+    },
+    {
+      "path": "game/assets/elements_v2/icons/part_PART_F1.svg",
+      "bytes": 964,
+      "sha256": "31a9dacfeaefb83dd1343a3480e3450087ddc922dd52330d5457d8bf852e61af",
+      "origin": "generated_svg_v2"
+    },
+    {
+      "path": "game/assets/elements_v2/icons/part_PART_F2.svg",
+      "bytes": 886,
+      "sha256": "483d1fbeac9c11c103801974d31e56bed389e3aed5e6e35adf04aea94ade666b",
+      "origin": "generated_svg_v2"
+    },
+    {
+      "path": "game/assets/elements_v2/icons/part_PART_F3.svg",
+      "bytes": 971,
+      "sha256": "20abd359073874fb8b853f761a249ea535d8d526fe2e246ecd44756d5a04d776",
+      "origin": "generated_svg_v2"
+    },
+    {
+      "path": "game/assets/elements_v2/icons/part_PART_L1.svg",
+      "bytes": 1162,
+      "sha256": "5932981df5f34670afed1cea02304baae1c118b153f486a2eb320d34f32e5d91",
+      "origin": "generated_svg_v2"
+    },
+    {
+      "path": "game/assets/elements_v2/icons/part_PART_L2.svg",
+      "bytes": 949,
+      "sha256": "568209b3db14c2dc4c0a1cf0746b3c01f2fca26725da0206537db1d9c87ca754",
+      "origin": "generated_svg_v2"
+    },
+    {
+      "path": "game/assets/elements_v2/icons/part_PART_L3.svg",
+      "bytes": 1071,
+      "sha256": "031a4991984fb10b9b9467473b28e9d3d46668b34212f34e480d741b53014266",
+      "origin": "generated_svg_v2"
+    },
+    {
+      "path": "game/assets/elements_v2/icons/part_PART_V1.svg",
+      "bytes": 924,
+      "sha256": "7e6c83310ab8cbb280d50a5ca125c3db6b904adada6e807619fca4be7d0cd3d8",
+      "origin": "generated_svg_v2"
+    },
+    {
+      "path": "game/assets/elements_v2/icons/part_PART_V2.svg",
+      "bytes": 855,
+      "sha256": "0b0dfcb3cfdbedc4b65a8f317294c47243080fc5ebac513e26396c7e79405187",
+      "origin": "generated_svg_v2"
+    },
+    {
+      "path": "game/assets/elements_v2/icons/part_PART_V3.svg",
+      "bytes": 982,
+      "sha256": "69f45448fd8a5edd6a3749f5d5803133bbf6d805d1b8fb94734ab9bc519e1afa",
+      "origin": "generated_svg_v2"
+    },
+    {
+      "path": "game/assets/elements_v2/icons/part_PART_W1.svg",
+      "bytes": 878,
+      "sha256": "0232db463a27d3023d2d1106b58d16f2055172110b3697928760636159c15e99",
+      "origin": "generated_svg_v2"
+    },
+    {
+      "path": "game/assets/elements_v2/icons/part_PART_W2.svg",
+      "bytes": 900,
+      "sha256": "1b92e60af4243d160aa95d41cd62d66b43763097048c690c59e8ac50e5d0c7ea",
+      "origin": "generated_svg_v2"
+    },
+    {
+      "path": "game/assets/elements_v2/icons/part_PART_W3.svg",
+      "bytes": 1002,
+      "sha256": "9afaedf1f874037d619694babed7c682542fddd6675b14d65f6083a1e91d88a7",
+      "origin": "generated_svg_v2"
+    },
+    {
+      "path": "game/assets/elements_v2/icons/skill_E1.svg",
+      "bytes": 725,
+      "sha256": "94bc8f9a5753c161677d473afdff5f6d305b2ff9a15e2595f2a7eda8eff04d9a",
+      "origin": "generated_svg_v2"
+    },
+    {
+      "path": "game/assets/elements_v2/icons/skill_E2.svg",
+      "bytes": 646,
+      "sha256": "5a7cd785c4ae78334693a696665fe9b43b0d29c4673b7ec7a3f7af15683487b1",
+      "origin": "generated_svg_v2"
+    },
+    {
+      "path": "game/assets/elements_v2/icons/skill_E3.svg",
+      "bytes": 634,
+      "sha256": "b28dbe675e6dc5ad24e84e57d23c74b2599e22df2d151732c9b27537a62bede1",
+      "origin": "generated_svg_v2"
+    },
+    {
+      "path": "game/assets/elements_v2/icons/skill_F1.svg",
+      "bytes": 613,
+      "sha256": "61e93b35afab98de5178c77ba66bd487038e6174b503d5587d6f4b3c78aa42ce",
+      "origin": "generated_svg_v2"
+    },
+    {
+      "path": "game/assets/elements_v2/icons/skill_F2.svg",
+      "bytes": 535,
+      "sha256": "6d622c4fe940f02910fd2bd41e432e2f834646b52517594dc679c617bc88c644",
+      "origin": "generated_svg_v2"
+    },
+    {
+      "path": "game/assets/elements_v2/icons/skill_F3.svg",
+      "bytes": 620,
+      "sha256": "feb702a49856a9ef4ecf5086e956f9eef8c2b6bdabc964060c0a745c52035b75",
+      "origin": "generated_svg_v2"
+    },
+    {
+      "path": "game/assets/elements_v2/icons/skill_L1.svg",
+      "bytes": 811,
+      "sha256": "0a3ed67346d44dd627a5e0ae27b624f73277b967fbe970c503c9ee2c2a453475",
+      "origin": "generated_svg_v2"
+    },
+    {
+      "path": "game/assets/elements_v2/icons/skill_L2.svg",
+      "bytes": 598,
+      "sha256": "0fc358335d3d550dad3f91a423cf895846c3aaaa43e39cf306970dd6329f8755",
+      "origin": "generated_svg_v2"
+    },
+    {
+      "path": "game/assets/elements_v2/icons/skill_L3.svg",
+      "bytes": 720,
+      "sha256": "2e699fe8855d109f478abda3dc793af3c046e6ba9a5a2a7c0869f0bde89b4018",
+      "origin": "generated_svg_v2"
+    },
+    {
+      "path": "game/assets/elements_v2/icons/skill_V1.svg",
+      "bytes": 573,
+      "sha256": "5bd7cbdda4519faab76f7e5c0672438612f0224e794c5f3ffabe491d4466b590",
+      "origin": "generated_svg_v2"
+    },
+    {
+      "path": "game/assets/elements_v2/icons/skill_V2.svg",
+      "bytes": 504,
+      "sha256": "11b885785d853c828d164d6531e418a50654eb7632cc82cb28510851a0a815e5",
+      "origin": "generated_svg_v2"
+    },
+    {
+      "path": "game/assets/elements_v2/icons/skill_V3.svg",
+      "bytes": 631,
+      "sha256": "5c9979e49987990eb42f7b2d2b06e1c69ef778ec5ae4361a8ae9aaa3fe3ec144",
+      "origin": "generated_svg_v2"
+    },
+    {
+      "path": "game/assets/elements_v2/icons/skill_W1.svg",
+      "bytes": 527,
+      "sha256": "7c6052fe7ac2da6bd1f7e330c17a68b1aa2e5ab41fe3a6e272b2ff31f6f2bdc6",
+      "origin": "generated_svg_v2"
+    },
+    {
+      "path": "game/assets/elements_v2/icons/skill_W2.svg",
+      "bytes": 549,
+      "sha256": "df6852948af6772707102f8c773192af801fd27e2786279a024e9f33ccac459e",
+      "origin": "generated_svg_v2"
+    },
+    {
+      "path": "game/assets/elements_v2/icons/skill_W3.svg",
+      "bytes": 651,
+      "sha256": "ce74cf6dda9c08e795e4fb658a9a5d21e128a3bb34c6550fbf97116338e54a60",
+      "origin": "generated_svg_v2"
+    },
+    {
+      "path": "game/assets/elements_v2/weapons/baseball.png",
+      "bytes": 1172628,
+      "sha256": "88390d39611e23dd281d127d72170c7d28947e2b2ca70b26e17b655673c6f14a",
+      "origin": "generated_imagegen_v2"
+    },
+    {
+      "path": "game/assets/elements_v2/weapons/bat.png",
+      "bytes": 229326,
+      "sha256": "b005786b2980a3a6a94f0d96c91f450b0f8cf6a6e0a91e9d62924037f0af9dc3",
+      "origin": "generated_imagegen_v2"
+    },
+    {
+      "path": "game/assets/elements_v2/weapons/dodgeball.png",
+      "bytes": 961941,
+      "sha256": "c3f93c38b4ada368e376c1398f3165f5f23513f5f1f866b5184d88c11e8c98ce",
+      "origin": "generated_imagegen_v2"
+    },
+    {
+      "path": "game/assets/elements_v2/weapons/pencil.png",
+      "bytes": 277652,
+      "sha256": "8e594e2d3233a63f85977c7f200c78af9d61829f4d25efdb7bd8f6e8e4d67730",
+      "origin": "generated_imagegen_v2"
+    },
+    {
+      "path": "game/assets/elements_v2/weapons/sword.png",
+      "bytes": 283187,
+      "sha256": "0f35c238881429fc8fcb73e1efb444e094bb01ac1ce4b1be96a5959c8857e119",
+      "origin": "generated_imagegen_v2"
+    },
+    {
+      "path": "game/assets/seoho_v1/icons/arrow.svg",
+      "bytes": 294,
+      "sha256": "69e94ddf4742452cfc010d4a3bdb78bd0d97e1c6d060517e8f844a05d755e3b9",
+      "origin": "new_native_svg"
+    },
+    {
+      "path": "game/assets/seoho_v1/icons/book.svg",
+      "bytes": 381,
+      "sha256": "74ab7818823dcbfbf74a4a25675666393d22492fcf534db346bdcb6d6fb99895",
+      "origin": "new_native_svg"
+    },
+    {
+      "path": "game/assets/seoho_v1/icons/boots.svg",
+      "bytes": 363,
+      "sha256": "7883b920e2fd76ab8ed3dbcb02ff0611d7efd764af7b9f7b476cdfddae99b784",
+      "origin": "new_native_svg"
+    },
+    {
+      "path": "game/assets/seoho_v1/icons/broom.svg",
+      "bytes": 391,
+      "sha256": "ea4bcf8691928e0e974a8c0f24d295e29f9797a8d37be49f6e393a5ab338204e",
+      "origin": "new_native_svg"
+    },
+    {
+      "path": "game/assets/seoho_v1/icons/coin.svg",
+      "bytes": 403,
+      "sha256": "8bf1a223385743ef2e2499f9429707d0ecc7433163b3080dabe83bc6b6f0f430",
+      "origin": "new_native_svg"
+    },
+    {
+      "path": "game/assets/seoho_v1/icons/gift.svg",
+      "bytes": 411,
+      "sha256": "a389f471bc1ff17a5fb70a25da27404d4672c469d3b5deccff61bba54285402b",
+      "origin": "new_native_svg"
+    },
+    {
+      "path": "game/assets/seoho_v1/icons/grabber.svg",
+      "bytes": 423,
+      "sha256": "ddacb10fc160e1eaf10f3a05bde57740fe66b516108ea2258386c136962c41e1",
+      "origin": "new_native_svg"
+    },
+    {
+      "path": "game/assets/seoho_v1/icons/handle.svg",
+      "bytes": 316,
+      "sha256": "34c9dc60dbdbd7f93082462f7a2af0f5756009a53cee9f47aae558e440fa6cec",
+      "origin": "new_native_svg"
+    },
+    {
+      "path": "game/assets/seoho_v1/icons/heart.svg",
+      "bytes": 340,
+      "sha256": "1dad6560b44beb7928a49300c59db28d6dc5553cd164a01883816f9e80575115",
+      "origin": "new_native_svg"
+    },
+    {
+      "path": "game/assets/seoho_v1/icons/map.svg",
+      "bytes": 421,
+      "sha256": "07e31d2db3d8c779a10ff6f51f6d0ad088c62d59144fdad09d387665e6850506",
+      "origin": "new_native_svg"
+    },
+    {
+      "path": "game/assets/seoho_v1/icons/pass.svg",
+      "bytes": 410,
+      "sha256": "834930524455b17f821996851dace94cd7523877f85eb9ec7741e8f886428d09",
+      "origin": "new_native_svg"
+    },
+    {
+      "path": "game/assets/seoho_v1/icons/pinwheel.svg",
+      "bytes": 400,
+      "sha256": "1c3915dc6f57466562c3ce6bf94971edd03af04791101903f544cc1dead85b6a",
+      "origin": "new_native_svg"
+    },
+    {
+      "path": "game/assets/seoho_v1/icons/seed.svg",
+      "bytes": 331,
+      "sha256": "8a261b02607646db4f0730ee92a6ad1c2d934816e825dd814c18f6f17c833dfa",
+      "origin": "new_native_svg"
+    },
+    {
+      "path": "game/assets/seoho_v1/icons/shield.svg",
+      "bytes": 360,
+      "sha256": "b4bec36f63f5cae067c59e9def4d9d1277e525dcf4bcc9d25be264d3cec88295",
+      "origin": "new_native_svg"
+    },
+    {
+      "path": "game/assets/seoho_v1/icons/shirt.svg",
+      "bytes": 356,
+      "sha256": "6cd96bd075897008ea3c8db0fd258ea6f9bb2dab8072aec0fae04b374113bcd1",
+      "origin": "new_native_svg"
+    },
+    {
+      "path": "game/assets/seoho_v1/icons/spark.svg",
+      "bytes": 318,
+      "sha256": "b5ce63d5b4b995e8e1559fcb8c34b067e2ec110e3fccad3ac2982771e15a3a77",
+      "origin": "new_native_svg"
+    },
+    {
+      "path": "game/assets/seoho_v1/icons/sun.svg",
+      "bytes": 350,
+      "sha256": "0d77ce74470880d26a99a1e6e991ae7d64c9e6ee0e6b4ebcccfeb25367d210b0",
+      "origin": "new_native_svg"
+    },
+    {
+      "path": "game/assets/seoho_v1/icons/water.svg",
+      "bytes": 349,
+      "sha256": "289723652eb7c787b62dea551e8138565cc84c7d83508a38dc1217a39d491154",
+      "origin": "new_native_svg"
+    },
+    {
+      "path": "game/assets/seoho_v1/icons/watergun.svg",
+      "bytes": 419,
+      "sha256": "02880a48c89425572671b3d8e06aeef195cd09ab3678b5f039288515e435b144",
+      "origin": "new_native_svg"
+    },
+    {
+      "path": "game/assets/seoho_v1/icons/wind.svg",
+      "bytes": 324,
+      "sha256": "f8219dae04b7ff9469eb9549236f6e8f9a220246420179d341b8c2d0b3e91777",
+      "origin": "new_native_svg"
+    },
+    {
+      "path": "game/assets/seoho_v1/pets/cat_idle.png",
+      "bytes": 871290,
+      "sha256": "5bd8bfa4ded864c5e84619d3dfd5d69a67ade24ee7763b12c10b1d6cd7593843",
+      "origin": "new_imagegen"
+    },
+    {
+      "path": "game/assets/seoho_v1/pets/deer_idle.png",
+      "bytes": 767606,
+      "sha256": "ce87e8933603f88062af6be890ebfc336864c07aeee498015d29d4c969368a83",
+      "origin": "new_imagegen"
+    },
+    {
+      "path": "game/assets/seoho_v1/pets/otter_idle.png",
+      "bytes": 766772,
+      "sha256": "5cc66772872828a3e86715e636c9a9ab443908a114b7629046ba175da4542403",
+      "origin": "new_imagegen"
+    },
+    {
+      "path": "game/assets/seoho_v1/pets/seal_idle.png",
+      "bytes": 619332,
+      "sha256": "dedb14c5447177638701925245c5a621fc7e7d031c2871e7fb30c1be3d1e3e73",
+      "origin": "new_imagegen"
+    },
+    {
+      "path": "game/assets/seoho_v1/pets/sparrow_idle.png",
+      "bytes": 717852,
+      "sha256": "fbd14102a24ca62bfca9f554455f71b32c4337fb17f067b560162241a9cfe765",
+      "origin": "new_imagegen"
+    },
+    {
+      "path": "game/assets/seoho_v1/pets/turtle_idle.png",
+      "bytes": 861663,
+      "sha256": "7bb85715d727f33ceb4c99c01fb35743c5837ff5ed324d4e266e212a21fc76be",
+      "origin": "new_imagegen"
+    },
+    {
+      "path": "game/assets/sprites/enemy_elite.png",
+      "bytes": 195,
+      "sha256": "2ca96264cc5506bb52a5f7b5d278d0fa8e66e26c4b8242e40db6b46acb9df95e",
+      "origin": "preserved_existing"
+    },
+    {
+      "path": "game/assets/sprites/enemy_imp.png",
+      "bytes": 219,
+      "sha256": "f344d22151345f81fe1b95fdb03cf007747042670bda1540192c14853f35b94a",
+      "origin": "preserved_existing"
+    },
+    {
+      "path": "game/assets/sprites/enemy_spider.png",
+      "bytes": 232,
+      "sha256": "2cb76164d899e3a5eb42d7cd23ffe8defae130f6ce702a35926cbf61d2d1b569",
+      "origin": "preserved_existing"
+    },
+    {
+      "path": "game/assets/sprites/enemy_wraith.png",
+      "bytes": 189,
+      "sha256": "28466ec899a6e0720f40e4f622aee5925d2e5c50b2409856f36ef65c7eedc532",
+      "origin": "preserved_existing"
+    },
+    {
+      "path": "game/assets/sprites/floor_ground.png",
+      "bytes": 109,
+      "sha256": "af45eaf5658a481cbf5645ed006ea59072e8bcdbe481b15a55204179d291f5c7",
+      "origin": "preserved_existing"
+    },
+    {
+      "path": "game/assets/sprites/heroes/hoya_attack_1.png",
+      "bytes": 21559,
+      "sha256": "9397792e24349882b92e37724164b1f2dff20c3e4db70785489ad6f0fd9470aa",
+      "origin": "preserved_existing"
+    },
+    {
+      "path": "game/assets/sprites/heroes/hoya_attack_2.png",
+      "bytes": 24398,
+      "sha256": "b45235421fe45bc612d75e3a94f54e790e1e68319f30dd0d6c31788be633909d",
+      "origin": "preserved_existing"
+    },
+    {
+      "path": "game/assets/sprites/heroes/hoya_attack_3.png",
+      "bytes": 21799,
+      "sha256": "c1fa196a327699a7a86ac8bb959952853adc114c09c81576f7ff270b10f99f55",
+      "origin": "preserved_existing"
+    },
+    {
+      "path": "game/assets/sprites/heroes/hoya_down_1.png",
+      "bytes": 17040,
+      "sha256": "5586814f38b44e77eadb8071b35e4df4e35d1c7ed9af16512d7883880106dadb",
+      "origin": "preserved_existing"
+    },
+    {
+      "path": "game/assets/sprites/heroes/hoya_hurt_1.png",
+      "bytes": 13966,
+      "sha256": "d4335a1b6a3739542a8aacf525b460920d8babac39a4376654aeb008d8061ad3",
+      "origin": "preserved_existing"
+    },
+    {
+      "path": "game/assets/sprites/heroes/hoya_idle_1.png",
+      "bytes": 13966,
+      "sha256": "d4335a1b6a3739542a8aacf525b460920d8babac39a4376654aeb008d8061ad3",
+      "origin": "preserved_existing"
+    },
+    {
+      "path": "game/assets/sprites/heroes/hoya_jump_1.png",
+      "bytes": 15020,
+      "sha256": "1a42d656d5f8d7eb1ad75749418de3899b284602700f21c0e37c495a7a59e689",
+      "origin": "preserved_existing"
+    },
+    {
+      "path": "game/assets/sprites/heroes/hoya_jump_2.png",
+      "bytes": 14927,
+      "sha256": "3862de02d7a69d21267d33981defe5514dfc8323c97c919d40187b56fae913b4",
+      "origin": "preserved_existing"
+    },
+    {
+      "path": "game/assets/sprites/heroes/hoya_run_1.png",
+      "bytes": 14663,
+      "sha256": "6eac92028e8322a05dc75fced47ec76c41c11680f9ef3857e2cbe1695b3cc0d8",
+      "origin": "preserved_existing"
+    },
+    {
+      "path": "game/assets/sprites/heroes/hoya_run_2.png",
+      "bytes": 14396,
+      "sha256": "457313d69744e80396d3d49ba1925d7a358d4dd046939b9912e38ff6865ab9e6",
+      "origin": "preserved_existing"
+    },
+    {
+      "path": "game/assets/sprites/heroes/hoya_run_3.png",
+      "bytes": 13811,
+      "sha256": "da16aba4c7c3416e8dd017262e1c7837554b260eb073d2f9d3b207ca83fed2e5",
+      "origin": "preserved_existing"
+    },
+    {
+      "path": "game/assets/sprites/heroes/hoya_walk_1.png",
+      "bytes": 15839,
+      "sha256": "84400db972fd984e8c3ffdb77f4a7b748744b3c6545f1bbaef08e8c38d9e1c1d",
+      "origin": "preserved_existing"
+    },
+    {
+      "path": "game/assets/sprites/heroes/hoya_walk_2.png",
+      "bytes": 15614,
+      "sha256": "6904c334c45c739b14b3549b01d3900892bfb0ade8662825605dc80713107c5c",
+      "origin": "preserved_existing"
+    },
+    {
+      "path": "game/assets/sprites/heroes/hoya_walk_3.png",
+      "bytes": 15574,
+      "sha256": "ab3c6bb774bdefa6b3da9c727d71b40ce6f9ed67665bdcd048c822f3b70fb02d",
+      "origin": "preserved_existing"
+    },
+    {
+      "path": "game/assets/sprites/heroes/minji_attack_1.png",
+      "bytes": 20675,
+      "sha256": "24136b48f52a4059bde5a47c79d8b19194062caec08d2e745ab86c592a617b06",
+      "origin": "preserved_existing"
+    },
+    {
+      "path": "game/assets/sprites/heroes/minji_attack_2.png",
+      "bytes": 21010,
+      "sha256": "50aef67e941d49c97120a2e6f5d2fee8ff5b5d535a60b33b94dd1d393fe0660b",
+      "origin": "preserved_existing"
+    },
+    {
+      "path": "game/assets/sprites/heroes/minji_attack_3.png",
+      "bytes": 20677,
+      "sha256": "38856d3b5cc736c84f02ccfc2d4f00c2a696b85dcaa449f900ce8153c2f25f9f",
+      "origin": "preserved_existing"
+    },
+    {
+      "path": "game/assets/sprites/heroes/minji_down_1.png",
+      "bytes": 15828,
+      "sha256": "3b7b8d5956fdb5a5a86cbad60e3620d927cafc289af1740ddaae8cf4c73ced9c",
+      "origin": "preserved_existing"
+    },
+    {
+      "path": "game/assets/sprites/heroes/minji_hurt_1.png",
+      "bytes": 17665,
+      "sha256": "3b0e03877e198a39a7d87b949f18e8b98093c39d9bbb8fb49d9f01cafdca6767",
+      "origin": "preserved_existing"
+    },
+    {
+      "path": "game/assets/sprites/heroes/minji_idle_1.png",
+      "bytes": 16826,
+      "sha256": "820723496f83e0ef81e699fdb3ccb32dec9722eb06ff917d467794e41c1ccdb4",
+      "origin": "preserved_existing"
+    },
+    {
+      "path": "game/assets/sprites/heroes/minji_jump_1.png",
+      "bytes": 17301,
+      "sha256": "42155c43a09816ca80c6c139ccbd9f06be2d428ecca42d907a954f444746eaa7",
+      "origin": "preserved_existing"
+    },
+    {
+      "path": "game/assets/sprites/heroes/minji_run_1.png",
+      "bytes": 16786,
+      "sha256": "9fde7b8d299d4ffe57e36665dd94fa3f25ea74d96fdb8bfbf95bd310eaf689a6",
+      "origin": "preserved_existing"
+    },
+    {
+      "path": "game/assets/sprites/heroes/minji_run_2.png",
+      "bytes": 16710,
+      "sha256": "6271c7829a3c620b7855a2c3f2b359e19e55bd3a0c60407378016a04ed12a02b",
+      "origin": "preserved_existing"
+    },
+    {
+      "path": "game/assets/sprites/heroes/minji_run_3.png",
+      "bytes": 16516,
+      "sha256": "1861dad55267be8563ebdb6a47b01cdb109b48b0a3a0916b3735229779ccd20f",
+      "origin": "preserved_existing"
+    },
+    {
+      "path": "game/assets/sprites/heroes/minji_walk_1.png",
+      "bytes": 17800,
+      "sha256": "114b9588d1949c08b1648d130e3d58722d292f012c752aa825a6ee97db8dcde9",
+      "origin": "preserved_existing"
+    },
+    {
+      "path": "game/assets/sprites/heroes/minji_walk_2.png",
+      "bytes": 17310,
+      "sha256": "ca2640c33d54c18f39d12b245d89fd9b4b2838c7dd23af3eb4a29a83d71e0532",
+      "origin": "preserved_existing"
+    },
+    {
+      "path": "game/assets/sprites/heroes/minji_walk_3.png",
+      "bytes": 17490,
+      "sha256": "f9c503f52ef4d218cbf6516f3bc0b663d41a35adba55d753977b220cc7231928",
+      "origin": "preserved_existing"
+    },
+    {
+      "path": "game/assets/sprites/player_knight.png",
+      "bytes": 206,
+      "sha256": "b8a0a9376c1c3398a059a1e3226e8f8d6839c1d73ac53ea37425340d762055fd",
+      "origin": "preserved_existing"
+    },
+    {
+      "path": "game/assets/sprites/prop_chest.png",
+      "bytes": 202,
+      "sha256": "928dcac1d9d2df6fa2ac8916edc35f409605e70e387321a7cbd5ba26ffdc3b5e",
+      "origin": "preserved_existing"
+    },
+    {
+      "path": "game/assets/sprites/prop_rock.png",
+      "bytes": 175,
+      "sha256": "3f4d77da84e948836c16d2c81f2812b7805e76147921f0ea9f047705f709a62a",
+      "origin": "preserved_existing"
+    },
+    {
+      "path": "game/assets/sprites/prop_torch.png",
+      "bytes": 208,
+      "sha256": "9a448977535c4af375b3db4800112ecde93e0d794b393e0cacf1dd82b4d9f971",
+      "origin": "preserved_existing"
+    },
+    {
+      "path": "game/assets/sprites/t1/boss_angry.png",
+      "bytes": 173043,
+      "sha256": "1a403190e74da3c46a908f611921a2bfb436b4cab29b94d6b826cd5245365af4",
+      "origin": "preserved_existing"
+    },
+    {
+      "path": "game/assets/sprites/t1/boss_calm.png",
+      "bytes": 148963,
+      "sha256": "7cb7daf35847fea09a739f0a6489d34002c79a4597c233acbc4f62ae072e4662",
+      "origin": "preserved_existing"
+    },
+    {
+      "path": "game/assets/sprites/t1/en_baggy.png",
+      "bytes": 33467,
+      "sha256": "6d267c2391ce75b4272217f991b16fa84e39d701ffcd8328bc7196c187289dea",
+      "origin": "preserved_existing"
+    },
+    {
+      "path": "game/assets/sprites/t1/en_bottle.png",
+      "bytes": 32260,
+      "sha256": "c53409a1c6c9b2f1d0a559369de380b0c049a6c1370ec3d41c0f7bced3ce2d65",
+      "origin": "preserved_existing"
+    },
+    {
+      "path": "game/assets/sprites/t1/en_buttbug.png",
+      "bytes": 48512,
+      "sha256": "f5fc4986c2108758225a91a55d741cd79f8a7b15211495cb561d192a9dc73e09",
+      "origin": "preserved_existing"
+    },
+    {
+      "path": "game/assets/sprites/t1/en_fly.png",
+      "bytes": 39603,
+      "sha256": "c98ca7383e87cf6d72a19126ae39222e1028967e70a68303966bf8e885698a29",
+      "origin": "preserved_existing"
+    },
+    {
+      "path": "game/assets/sprites/t1/en_foodwaste.png",
+      "bytes": 47742,
+      "sha256": "497f215b63781314ba2d82ec4ef84b9b634a7a06362e3c02b2e7cfc80ad6a884",
+      "origin": "preserved_existing"
+    },
+    {
+      "path": "game/assets/sprites/t1/en_snackbag.png",
+      "bytes": 40663,
+      "sha256": "a075a693faaea6f4b0d38606a07003bfaf7e4cad2ca835a3ea0556a99a025f5a",
+      "origin": "preserved_existing"
+    },
+    {
+      "path": "game/assets/sprites/t1/floor_concrete.png",
+      "bytes": 197689,
+      "sha256": "bcddd9c6f833f0949c6e6869ec5edfe3715448ac4355369f0df6462cac998987",
+      "origin": "preserved_existing"
+    },
+    {
+      "path": "game/assets/sprites/t1/floor_dirt.png",
+      "bytes": 166704,
+      "sha256": "63d13a453e26ea2d99e6bf204a131644836662968fb3bbe10923f1c31e7317dd",
+      "origin": "preserved_existing"
+    },
+    {
+      "path": "game/assets/sprites/t1/floor_trash.png",
+      "bytes": 306144,
+      "sha256": "93ca202adc7e541fe5ebac358e6fa11bb487345e4b5a12d0ad64beaec51972f4",
+      "origin": "preserved_existing"
+    },
+    {
+      "path": "game/assets/sprites/t1/item_heart.png",
+      "bytes": 6566,
+      "sha256": "71c26cfefdfe70109fba88dac30402594b8eb87028d3df2e655dd9f53b79ca65",
+      "origin": "preserved_existing"
+    },
+    {
+      "path": "game/assets/sprites/t1/item_orb.png",
+      "bytes": 10064,
+      "sha256": "6ad939222594a8b4a884386a075410a84b5764429445cdebf654e32542ce7721",
+      "origin": "preserved_existing"
+    },
+    {
+      "path": "game/assets/sprites/t1/item_recycle.png",
+      "bytes": 10213,
+      "sha256": "19351da09a7ac8a15ee59d6786f1309dd282d6b19e6b709b6cadd21677415053",
+      "origin": "preserved_existing"
+    },
+    {
+      "path": "game/assets/sprites/t1/item_sprout.png",
+      "bytes": 7302,
+      "sha256": "ebea6a373ca1bbf7e3fa9b26b151309bcce4550d5b3a609f2233bd0a23327c8f",
+      "origin": "preserved_existing"
+    },
+    {
+      "path": "game/assets/sprites/t1/item_sprout_big.png",
+      "bytes": 6059,
+      "sha256": "ad2c6ee3eb49cc31d0f2cd606e51be1e2f5873f22819797e5adb4962cbe463dd",
+      "origin": "preserved_existing"
+    },
+    {
+      "path": "game/assets/sprites/t1/item_star.png",
+      "bytes": 4527,
+      "sha256": "84b660b1f0ce8e357fed178cb69771412aa4dab473264bc602555d2aa876bbea",
+      "origin": "preserved_existing"
+    },
+    {
+      "path": "game/assets/sprites/t1/prop_bags.png",
+      "bytes": 37677,
+      "sha256": "55ab777316d4fce2ecf8e713d527a267c56ac74f71d8da14bc15d5a39665f650",
+      "origin": "preserved_existing"
+    },
+    {
+      "path": "game/assets/sprites/t1/prop_bench.png",
+      "bytes": 33329,
+      "sha256": "b5566ceeec24a9c4664ddcd82b07c91f90ad2cce4bc740fe9b9677b458e1ee82",
+      "origin": "preserved_existing"
+    },
+    {
+      "path": "game/assets/sprites/t1/prop_bin_fallen.png",
+      "bytes": 41001,
+      "sha256": "3d1032ba6eba1a1a4f0fb9909d8c98387c834f74b82e9cbdede24e4031adf140",
+      "origin": "preserved_existing"
+    },
+    {
+      "path": "game/assets/sprites/t1/prop_bins.png",
+      "bytes": 63976,
+      "sha256": "1f768499d628ab67e29fe465a63d853359e9fd851eaddf4f0d9973a921e6e09c",
+      "origin": "preserved_existing"
+    },
+    {
+      "path": "game/assets/sprites/t1/prop_litter.png",
+      "bytes": 30551,
+      "sha256": "b0cc059bcc0e54e19bcae0d6976c8e7faa01f15927944e9e3f2788d2cf093253",
+      "origin": "preserved_existing"
+    },
+    {
+      "path": "game/assets/sprites/t1/prop_tire.png",
+      "bytes": 33073,
+      "sha256": "04cef94593878b99c3dae385b77625d9cfb7cbab181794c03a855464f0ee7d38",
+      "origin": "preserved_existing"
+    },
+    {
+      "path": "game/assets/sprites/vfx/purify-v1.png",
+      "bytes": 199711,
+      "sha256": "e9ecde21a5c7e1fe70731e106281384c7442fcb77fe2c648a8786c15048a7d20",
+      "origin": "preserved_existing"
+    },
+    {
+      "path": "game/assets/sprites/vfx/smog-v1.png",
+      "bytes": 187662,
+      "sha256": "e0a85dd8d933064023b0570ab07000752ad99673edf282cb4d94c65ada5f03cd",
+      "origin": "preserved_existing"
+    },
+    {
+      "path": "game/assets/sprites/vfx/splash-v1.png",
+      "bytes": 134534,
+      "sha256": "b30f000e12660723f5c401f8a0d915ad6c5f8bd993f84cc7019217fee0c7b74e",
+      "origin": "preserved_existing"
+    },
+    {
+      "path": "game/assets/ui/jua-title.woff2",
+      "bytes": 46372,
+      "sha256": "500caf6cc29b294243cad68de52b188d4ce2b71dd97bf8e9e302d11fa088e554",
+      "origin": "preserved_existing"
+    },
+    {
+      "path": "game/assets/ui/panel-border-thin.png",
+      "bytes": 139,
+      "sha256": "838e2da25706859101f78711cddc25c41e85d3f8f2d392f3fe2a04efbf020535",
+      "origin": "preserved_existing"
+    },
+    {
+      "path": "game/assets/ui/panel-border.png",
+      "bytes": 170,
+      "sha256": "313180aeff83ced12da57141e8cb48ef2ae24d47e04f19400e72aa474c628500",
+      "origin": "preserved_existing"
+    },
+    {
+      "path": "game/assets/ui/title_emblem.png",
+      "bytes": 236332,
+      "sha256": "ba0e32c971e7cc32af4722d19007f52c47aab3439d6a091f400616ba6472cdb1",
+      "origin": "preserved_existing"
+    },
+    {
+      "path": "game/assets/ui/title_hoya.png",
+      "bytes": 246167,
+      "sha256": "25f7b358c194807b9b1c4e3cf13cc6fa8aee08bde30c739a8e913cce1509b64b",
+      "origin": "preserved_existing"
+    },
+    {
+      "path": "game/assets/ui/title_landscape.jpg",
+      "bytes": 168233,
+      "sha256": "a90b334b7c4f697d109535ba92d23bbe0e9e7ffc4234333cf31a899903a065d4",
+      "origin": "preserved_existing"
+    },
+    {
+      "path": "game/assets/ui/title_mascot.png",
+      "bytes": 79573,
+      "sha256": "b73f1100e3a01172a8fd52c9fecddbb614b39962999e63d21da6f30998fc2243",
+      "origin": "preserved_existing"
+    },
+    {
+      "path": "game/assets/ui/title_minji.png",
+      "bytes": 263865,
+      "sha256": "3f20e3414377e003e16457d15b69bb96e6eeba44a8d36206e8a2a587c8d8aec7",
+      "origin": "preserved_existing"
+    },
+    {
+      "path": "game/assets/ui/title_portrait.jpg",
+      "bytes": 320164,
+      "sha256": "7cab21ee2b795bbb9ba655c815c688c6735da149831e382282280bcc16d511c0",
+      "origin": "preserved_existing"
+    }
+  ]
+}

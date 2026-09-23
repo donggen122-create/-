@@ -1,0 +1,22 @@
+# 서호팡팡수호대 — Cloudflare Workers(서버) + D1(저장 DB) + 정적 파일(게임 본체 dist_web/)
+# 배포: server/README.md 참조
+name = "seoho-pangpang"
+main = "src/index.js"
+compatibility_date = "2025-09-01"
+
+# 게임 파일(dist_web)을 같은 주소에서 서빙. /api/* 는 아래 Worker가 처리한다.
+[assets]
+directory = "../dist_web"
+binding = "ASSETS"
+not_found_handling = "none"
+# 게임 첫 화면("/")만 Worker를 먼저 거친다: 접속 신호 스크립트(/presence.js)를 서버가 붙여 주기 위해서(src/index.js injectPresence)
+run_worker_first = ["/"]
+
+# D1: `wrangler d1 create seoho-pangpang-db` 실행 결과의 database_id를 아래에 넣는다(README 2단계)
+[[d1_databases]]
+binding = "DB"
+database_name = "seoho-pangpang-db"
+database_id = "f5875a0a-4c44-4077-bf99-abe3722e5560"
+
+[observability]
+enabled = true

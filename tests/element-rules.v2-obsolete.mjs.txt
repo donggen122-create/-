@@ -1,0 +1,101 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import * as R from '../game/src/rework-core.js';
+import {migrateProfileV2,GEAR_PART_MAP} from '../server/src/profile-migration-v2.js';
+import {migrateLegacy} from '../server/src/legacy-migration.js';
+const runState=()=>({consumed:[],fusionCount:0,partnerOffers:{}});
+const ready=ids=>Object.fromEntries(ids.map(id=>[id,{lv:3,cd:0}]));
+function rng(seed){return ()=>((seed=Math.imul(seed,1664525)+1013904223|0)>>>0)/4294967296;}
+
+test('every one of 15 skills is available in CH01 with zero parts; each has exactly two recipes',()=>{
+ const p=R.freshProfile(),cards=R.cardPool(p,{},runState());assert.equal(cards.length,15);
+ assert.deepEqual(cards.map(c=>c.id).sort(),Object.keys(R.SKILLS).sort());assert.equal(Object.keys(R.PARTS).length,15);assert.equal(Object.keys(R.COMBOS).length,15);
+ for(const id of Object.keys(R.SKILLS)){assert.equal(Object.values(R.COMBOS).filter(c=>c.ingredients.includes(id)).length,2);assert.ok(R.PARTS[`PART_${id}`]);}
+ assert.deepEqual(R.availableTools(p),R.availableTools({...p,stages:{CH05:{cleared:true}}}));
+});
+test('all 15 recipes guarantee a ready card, consume two slots, inherit levels and cannot reacquire ingredients',()=>{
+ for(const combo of Object.values(R.COMBOS)){
+  const p=R.freshProfile(),state=runState(),skills=ready(combo.ingredients);
+  const choice=R.cardChoices(p,skills,state,1,()=>0);assert.ok(choice.some(c=>c.kind==='fusion'&&c.id===combo.id));
+  R.applyRunCard(skills,state,{kind:'fusion',id:combo.id});assert.deepEqual(Object.keys(skills),[combo.id]);assert.equal(skills[combo.id].lv,3);assert.equal(state.fusionCount,1);
+  const pool=R.cardPool(p,skills,state);assert.equal(pool.filter(c=>c.kind==='skill-new').length,13);assert.ok(pool.every(c=>!combo.ingredients.includes(c.id)));assert.ok(pool.every(c=>c.kind!=='skill-up'));
+ }
+});
+test('five slots stop new cards; fusion reopens a slot, never more than two fusions',()=>{
+ const p=R.freshProfile(),state=runState(),skills=ready(['F1','W1','F3','E2','W3']);
+ assert.ok(R.cardPool(p,skills,state).every(c=>c.kind!=='skill-new'));
+ R.applyRunCard(skills,state,{kind:'fusion',id:'COMBO_01'});assert.ok(R.cardPool(p,skills,state).some(c=>c.kind==='skill-new'));
+ R.applyRunCard(skills,state,{kind:'fusion',id:'COMBO_05'});assert.equal(state.fusionCount,2);
+ R.applyRunCard(skills,state,{kind:'skill-new',id:'L2'});skills.L2.lv=3;assert.ok(R.cardPool(p,skills,state).every(c=>c.kind!=='fusion'));
+ assert.throws(()=>R.applyRunCard(skills,state,{kind:'fusion',id:'COMBO_10'}));
+ assert.ok(R.cardPool(p,{},runState()).some(c=>c.id==='F1'));
+});
+test('new-skill opportunities offer a useful fusion partner within three offers for every starting skill and seeded draws',()=>{
+ for(const id of Object.keys(R.SKILLS))for(let seed=0;seed<20;seed++){
+  const skills={[id]:{lv:1}},state=runState(),offers=[];
+  for(let i=0;i<3;i++)offers.push(...R.cardChoices(R.freshProfile(),skills,state,1,rng(seed+i)).filter(c=>c.kind==='skill-new').map(c=>c.id));
+  assert.ok(R.SKILL_PARTNERS[id].some(id=>offers.includes(id)),`${id}, ${seed}`);
+ }
+});
+test('card upgrade cap and full-build fallback remain useful',()=>{
+ const skills=ready(['F1','F2','F3','W2','W3']),state={...runState(),fusionCount:2};
+ assert.equal(R.cardChoices(R.freshProfile(),skills,state,.5)[0].kind,'heal');assert.equal(R.cardChoices(R.freshProfile(),skills,state,1)[0].kind,'shield');
+ assert.throws(()=>R.applyRunCard(skills,state,{kind:'skill-up',id:'F1'}));assert.throws(()=>R.applyRunCard(skills,state,{kind:'skill-new',id:'L1'}));
+ assert.deepEqual([1,2,3].map(R.levelMultiplier),[1,1.3,1.6]);
+});
+test('low-health recovery occupies one of three choices while preserving every ready fusion',()=>{
+ for(const combo of Object.values(R.COMBOS)){
+  const skills=ready(combo.ingredients),cards=R.cardChoices(R.freshProfile(),skills,runState(),.44,()=>0);
+  assert.equal(cards.length,3);assert.equal(cards.filter(c=>c.kind==='heal').length,1);assert.ok(cards.some(c=>c.kind==='fusion'&&c.id===combo.id));
+ }
+ const threeReady=ready(['F1','W1','L1','V2']),allFusions=R.cardChoices(R.freshProfile(),threeReady,runState(),.1,()=>0);
+ assert.equal(allFusions.length,3);assert.ok(allFusions.every(c=>c.kind==='fusion'));assert.deepEqual(allFusions.map(c=>c.id).sort(),['COMBO_01','COMBO_07','COMBO_12']);
+ const boundary=R.cardChoices(R.freshProfile(),{F1:{lv:1}},runState(),.45,()=>0);assert.equal(boundary.length,3);assert.ok(boundary.every(c=>c.kind!=='heal'));
+});
+test('a partner replaced by recovery does not reset the missing-partner offer counter',()=>{
+ const p=R.freshProfile(),skills=ready(['F1','W1','F3','E2']),state=runState();
+ const low=R.cardChoices(p,skills,state,.2,()=>0);assert.deepEqual(low.map(c=>c.kind),['fusion','fusion','heal']);assert.equal(state.partnerOffers.F1,1);
+ const healthy=R.cardChoices(p,skills,state,1,()=>0);assert.ok(healthy.some(c=>c.kind==='skill-new'&&R.SKILL_PARTNERS.F1.includes(c.id)));assert.equal(state.partnerOffers.F1,0);
+});
+test('choosing recovery only returns healing; skill levels, fusion limits and permanent growth remain unchanged',()=>{
+ const p=R.freshProfile();p.coins=1000;const skills={F1:{lv:2,cd:.8}},state=runState();
+ const beforeProfile=structuredClone(p),beforeSkills=structuredClone(skills),cards=R.cardChoices(p,skills,state,.25,()=>0),heal=cards.find(c=>c.kind==='heal');
+ assert.ok(heal);const beforeState=structuredClone(state),result=R.applyRunCard(skills,state,heal);
+ assert.deepEqual(result,{healed:.2,shielded:0});assert.deepEqual(skills,beforeSkills);assert.deepEqual(state,beforeState);assert.deepEqual(p,beforeProfile);
+ const trained=R.action(p,{kind:'train',stat:'attack'}).profile;assert.equal(trained.training.attack,2);assert.equal(trained.coins,900);assert.equal(trained.gifts,0);
+});
+test('parts are optional, only equipped parts apply, element resonance and fusion halves do not multiply',()=>{
+ const p=R.freshProfile();p.parts.PART_F1={copies:3,level:8};p.parts.PART_W1={copies:1,level:6};
+ assert.equal(R.partBonus(p,'F1'),0);assert.equal(R.skillDamageMultiplier(p,'COMBO_01'),1);
+ p.equippedParts=['PART_F1','PART_W1'];assert.ok(Math.abs(R.partBonus(p,'F1')-.2)<1e-9);assert.ok(Math.abs(R.skillDamageMultiplier(p,'COMBO_01')-1.15)<1e-9);
+ p.parts.PART_F2={copies:1,level:1};p.equippedParts.push('PART_F2');assert.equal(R.elementBonus(p,'fire'),.04);assert.equal(R.elementBonus(p,'water'),0);assert.ok(Math.abs(R.skillDamageMultiplier(p,'COMBO_01')-1.17)<1e-9);
+ p.parts.PART_F3={copies:7,level:10};p.equippedParts=['PART_F1','PART_F2','PART_F3'];assert.equal(R.elementBonus(p,'fire'),.06);assert.ok(Math.abs(R.partBonus(p,'F3')-.3)<1e-9);
+ assert.equal(R.cardPool(p,{},runState()).find(c=>c.id==='F3').weight,1.3);assert.equal(R.cardPool(p,{},runState()).find(c=>c.id==='L3').weight,1);
+});
+test('gacha counters persist across elements; fifth draw can choose any part, first reward costs nothing',()=>{
+ let p=R.freshProfile();p.stages.CH01={cleared:true};p.gifts=10;
+ for(const element of ['fire','water','wind','earth'])p=R.action(p,{kind:'draw-part',element},()=>0).profile;
+ assert.equal(p.giftCounts.part,4);assert.throws(()=>R.action(p,{kind:'draw-part',element:'fire'}));
+ p=R.action(p,{kind:'draw-part',id:'PART_L3'}).profile;assert.ok(p.parts.PART_L3);assert.equal(p.gifts,5);assert.equal(p.giftCounts.part,5);
+ p=R.action(p,{kind:'choose-part',id:'PART_L2'}).profile;assert.equal(p.gifts,5);assert.equal(p.giftCounts.part,5);assert.equal(p.milestones.firstPart,true);assert.throws(()=>R.action(p,{kind:'choose-part',id:'PART_F1'}));
+ p.parts.PART_L3.copies=7;const before=p.coins;R.addPart(p,'PART_L3');assert.equal(p.coins,before+60);assert.equal(p.parts.PART_L3.copies,7);
+});
+test('part upgrade/reset refunds precisely 1260 and leaves copies/grade; training and slot bounds enforce caps',()=>{
+ let p=R.freshProfile();p.coins=10000;for(const id of ['PART_F1','PART_W1','PART_E1','PART_L1'])R.addPart(p,id);
+ assert.equal(p.equippedParts.length,3);assert.throws(()=>R.action(p,{kind:'equip-part',id:'PART_L1'}));
+ p.parts.PART_F1.copies=7;const before=p.coins;
+ for(let i=1;i<10;i++)p=R.action(p,{kind:'upgrade-part',id:'PART_F1'}).profile;
+ assert.equal(before-p.coins,1260);assert.throws(()=>R.action(p,{kind:'upgrade-part',id:'PART_F1'}));
+ p=R.action(p,{kind:'reset-part',id:'PART_F1'}).profile;assert.equal(p.coins,before);assert.deepEqual(p.parts.PART_F1,{copies:7,level:1});
+ p=R.action(p,{kind:'reset-part',id:'PART_F1'}).profile;assert.equal(p.coins,before);
+ p=R.action(p,{kind:'train',stat:'attack'}).profile;assert.equal(p.training.attack,2);assert.equal(p.coins,before-100);assert.equal(R.bonuses(p).atkPct,.03);
+ assert.throws(()=>R.action(p,{kind:'train',stat:'__proto__'}));p.training.speed=20;assert.throws(()=>R.action(p,{kind:'train',stat:'speed'}));
+});
+test('v1 migration preserves currency, training, nine parts, counters, stars, pets, and is repeatable without awards',()=>{
+ const v1=migrateLegacy({});Object.assign(v1,{coins:1234,gifts:11,levels:{WPN:13,ARM:7,BTS:4},gear:Object.fromEntries(Object.keys(GEAR_PART_MAP).map((id,i)=>[id,[1,3,7][i%3]])),equipped:{WPN:'water_WPN',ARM:'wind_ARM',BTS:'seed_BTS'},giftCounts:{gear:9,pet:4},hero:'minji',pets:['cat','seal'],activePet:'seal',friendship:12,stages:{CH01:{cleared:true,stars:3,best:180}},milestones:{firstPet:true},wins:13,runs:18});
+ const original=JSON.stringify(v1),v2=migrateProfileV2(v1);assert.equal(JSON.stringify(v1),original);assert.deepEqual(v2.training,{attack:13,hp:7,speed:4});
+ assert.deepEqual(v2.equippedParts,['PART_W1','PART_V2','PART_E3']);assert.equal(Object.keys(v2.parts).length,9);
+ for(const [old,id] of Object.entries(GEAR_PART_MAP))assert.deepEqual(v2.parts[id],{copies:v1.gear[old],level:1});
+ for(const key of ['coins','gifts','hero','pets','activePet','friendship','stages','milestones','runs','wins'])assert.deepEqual(v2[key],v1[key]);
+ assert.deepEqual(v2.giftCounts,{part:9,pet:4});assert.ok(R.pendingPart(v2));assert.deepEqual(migrateProfileV2(v2),v2);assert.ok(!v2.gear&&!v2.levels&&!v2.equipped);
+});

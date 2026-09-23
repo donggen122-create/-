@@ -1,0 +1,16 @@
+{
+  "name": "seoho-pangpang-server",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "서호팡팡수호대 — 게임 정적 파일 + 계정·저장 API (Cloudflare Workers + D1)",
+  "scripts": {
+    "dev": "wrangler dev --port 8797 --local",
+    "deploy": "wrangler deploy",
+    "db:init": "wrangler d1 execute seoho-pangpang-db --remote --file=schema.sql",
+    "db:init:local": "wrangler d1 execute seoho-pangpang-db --local --file=schema.sql"
+  },
+  "devDependencies": {
+    "wrangler": "^4.136.1"
+  }
+}

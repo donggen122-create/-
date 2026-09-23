@@ -1,0 +1,17 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "lumen",
+      "runtimeExecutable": "powershell",
+      "runtimeArgs": ["-NoProfile", "-ExecutionPolicy", "Bypass", "-File", "game/server.ps1", "-Port", "8796"],
+      "port": 8796
+    },
+    {
+      "name": "wrangler",
+      "runtimeExecutable": "powershell",
+      "runtimeArgs": ["-NoProfile", "-ExecutionPolicy", "Bypass", "-File", "game/tools/dev-server.ps1"],
+      "port": 8797
+    }
+  ]
+}

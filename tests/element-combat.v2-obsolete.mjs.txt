@@ -1,0 +1,112 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import {createElementCombat,elementDamageMultiplier,COMBAT_TUNING} from '../game/src/element-combat.js';
+import * as R from '../game/src/rework-core.js';
+
+const U=32;
+const enemy=(x,y=0,extra={})=>({x:x*U,y:y*U,hp:100000,radiusU:.45,...extra});
+function fixture(id,{parts=[],enemies=null,boss=null,level=3}={}){
+ const p={x:0,y:0,atk:30,spdU:4.5,skills:{[id]:{lv:level,cd:0}},attackT:0};
+ const profile=R.freshProfile();for(const part of parts){profile.parts[`PART_${part}`]={copies:1,level:1};profile.equippedParts.push(`PART_${part}`);}
+ const targets=enemies||Array.from({length:120},(_,i)=>enemy((i%15)*.55+.6,(Math.floor(i/15)-3.5)*.5));
+ const bullets=[],hits=[];
+ const engine=createElementCombat({U,getPlayer:()=>p,getEnemies:()=>targets,getBoss:()=>boss,getProfile:()=>profile,projectiles:()=>bullets,damage:(target,amount)=>{hits.push({target,amount});target.hp-=amount;}});
+ const kinds=new Set();
+ function run(seconds){for(let t=0;t<seconds-1e-7;t+=.02){engine.update(Math.min(.02,seconds-t));for(const k of engine.snapshot().kinds)kinds.add(k);}return engine.snapshot();}
+ return {p,profile,targets,bullets,hits,engine,run,kinds};
+}
+
+test('all 15 attacks and 15 fusions execute real damage without hero animation',()=>{
+ for(const id of Object.keys(COMBAT_TUNING)){
+  const f=fixture(id),s=f.run(3);
+  assert.ok(s.hits[id]>0,`${id} never hit`);assert.ok(Number.isFinite(s.damage[id])&&s.damage[id]>0,id);
+  assert.equal(f.p.attackT,0,`${id} must not trigger a baked sword animation`);
+ }
+});
+
+test('every skill part is functional at its first copy, including both inheritance routes',()=>{
+ for(const skill of Object.keys(R.SKILLS)){
+  const ids=[skill,...Object.values(R.COMBOS).filter(c=>c.ingredients.includes(skill)).map(c=>c.id)];
+  assert.equal(ids.length,3);
+  for(const id of ids){
+   const f=fixture(id,{parts:[skill]});f.bullets.push({x:U,y:0,hostile:true});const s=f.run(7);
+   assert.ok(s.parts[skill]>0,`${skill} did not activate on ${id}`);
+  }
+ }
+});
+
+test('fusion numerical bonuses average the two source halves without global amplification',()=>{
+ const p=R.freshProfile();p.parts={PART_F1:{copies:3,level:8},PART_W1:{copies:1,level:6},PART_E3:{copies:7,level:10}};p.equippedParts=Object.keys(p.parts);
+ assert.ok(Math.abs(elementDamageMultiplier(p,'COMBO_01')-1.15)<1e-10);
+ assert.ok(Math.abs(elementDamageMultiplier(p,'COMBO_01','F1')-.6)<1e-10);
+ assert.ok(Math.abs(elementDamageMultiplier(p,'COMBO_01','W1')-.55)<1e-10);
+ assert.equal(elementDamageMultiplier(p,'COMBO_01','E3'),0);
+ assert.equal(elementDamageMultiplier(p,'V1'),1);
+});
+
+test('both impact attachments add 20 percent total to a fusion, not 40 percent or recursion',()=>{
+ function single(parts){const e=enemy(2),f=fixture('COMBO_05',{parts,enemies:[e]});f.run(1.4);return f.hits.reduce((n,h)=>n+h.amount,0);}
+ const base=single([]),one=single(['F3']),two=single(['F3','E2']);
+ assert.ok(Math.abs(one/base-1.1)<1e-9);
+ assert.ok(Math.abs(two/base-1.2)<1e-9);
+});
+
+test('water spear can add only a fourth, reduced target',()=>{
+ for(const has of [false,true]){
+  const targets=Array.from({length:6},(_,i)=>enemy(1+i)),f=fixture('W1',{parts:has?['W1']:[],enemies:targets,level:1});f.run(.8);
+  assert.equal(f.hits.length,has?4:3);if(has)assert.ok(Math.abs(f.hits[3].amount/f.hits[0].amount-.3)<1e-9);
+ }
+});
+
+test('chain lightning visits different targets and attachment adds exactly a fifth',()=>{
+ for(const has of [false,true]){
+  const f=fixture('L1',{parts:has?['L1']:[],enemies:Array.from({length:6},(_,i)=>enemy(i+1)),level:1});f.run(.02);
+  assert.equal(f.hits.length,has?5:4);assert.equal(new Set(f.hits.map(h=>h.target)).size,f.hits.length);
+  if(has)assert.equal(f.hits.at(-1).amount,9);
+ }
+});
+
+test('boomerang hits once on the outward path and once on return',()=>{
+ const f=fixture('V1',{enemies:[enemy(2)],level:1});f.run(1.8);assert.equal(f.hits.length,2);assert.deepEqual(f.hits.map(h=>h.amount),[19.5,19.5]);
+});
+
+test('fields apply only three ticks; part slow and pull leave bosses anchored',()=>{
+ const boss=enemy(0,0),e=enemy(1),f=fixture('L3',{parts:['L3'],enemies:[e],boss});f.run(2.1);
+ assert.equal(f.hits.filter(h=>h.target===e).length,3);assert.equal(e.v2SlowMul,.8);assert.equal(boss.v2SlowT,undefined);
+ const g=fixture('V2',{enemies:[enemy(1,1)],boss});g.run(.6);assert.equal(boss.x,0);assert.equal(boss.y,0);assert.notEqual(g.targets[0].y,U);
+});
+
+test('rock bearing blocks only ordinary hostile projectiles and obeys the 12-second cooldown',()=>{
+ const f=fixture('E1',{parts:['E1'],enemies:[]});
+ const friendly={x:0,y:0},boss={x:0,y:0,hostile:true,boss:true},zone={x:0,y:0,hostile:true,zone:true};
+ f.bullets.push(friendly,boss,zone,{x:U,y:0,hostile:true},{x:U,y:0,hostile:true});f.run(.1);
+ assert.equal(f.engine.snapshot().blocked,1);assert.ok(f.bullets.includes(friendly)&&f.bullets.includes(boss)&&f.bullets.includes(zone));
+ f.run(11);assert.equal(f.engine.snapshot().blocked,1);f.run(1.1);assert.equal(f.engine.snapshot().blocked,2);
+});
+
+test('orbit attacks retain contact coverage when an enemy has crossed their outer ring',()=>{
+ for(const id of ['W3','E1','COMBO_03','COMBO_09','COMBO_11']){
+  const f=fixture(id,{enemies:[enemy(.85,0,{radiusU:.45})]});f.run(2);
+  assert.ok(f.hits.length>0,`${id} left a permanent inner blind spot at contact range`);
+ }
+});
+
+test('different attack families expose distinct moving geometry and remain bounded',()=>{
+ const expected={F1:'fireball',F2:'flame-ring',F3:'fall-mark',W1:'spear',W2:'wave',W3:'orb-water',V1:'blade',V2:'tornado',V3:'gust',E1:'orb-rock',E2:'fall-mark',E3:'spike',L1:'chain',L2:'strike-mark',L3:'electric-field',COMBO_01:'steam',COMBO_02:'flame-blade',COMBO_03:'orb-lava',COMBO_04:'plasma',COMBO_05:'fracture',COMBO_06:'steam-wave',COMBO_07:'current-spear',COMBO_08:'typhoon',COMBO_09:'orb-crystal',COMBO_10:'rain-drop',COMBO_11:'sand-blade',COMBO_12:'thunderstorm',COMBO_13:'sandstone',COMBO_14:'electro-shot',COMBO_15:'rift'};
+ for(const[id,kind]of Object.entries(expected)){const f=fixture(id,{enemies:[enemy(5)]}),s=f.run(4);assert.ok(f.kinds.has(kind),`${id} missing ${kind}`);assert.ok(s.shots<=90&&s.fields<=32&&s.effects<=96&&s.scheduled<=180);}
+});
+
+test('reset clears skill events and entities between runs',()=>{
+ const f=fixture('COMBO_05');f.run(.3);assert.ok(f.engine.snapshot().scheduled);f.engine.reset();const s=f.engine.snapshot();assert.equal(s.scheduled,0);assert.equal(s.effects,0);assert.deepEqual(s.casts,{});
+});
+
+test('fusions improve a representative close-target damage run without doubling parent damage',()=>{
+ // A stationary target at 1.8U exercises both orbit contact and ranged attacks.
+ // Area coverage, moving targets, and the freed slot remain separate advantages.
+ function dps(ids){
+  const f=fixture(ids[0],{enemies:[enemy(1.8,0,{radiusU:.5})]});f.p.skills=Object.fromEntries(ids.map(id=>[id,{lv:3,cd:0}]));
+  for(let t=0;t<30;t+=.02)f.engine.update(.02);
+  return f.hits.reduce((n,h)=>n+h.amount,0)/30;
+ }
+ for(const combo of Object.values(R.COMBOS)){const ratio=dps([combo.id])/dps(combo.ingredients);assert.ok(ratio>=1.12&&ratio<=1.3,`${combo.id}: ${ratio.toFixed(3)}x`);}
+});

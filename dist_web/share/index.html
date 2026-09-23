@@ -1,0 +1,81 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="robots" content="noindex" />
+<title>서호팡팡수호대 공유 자료</title>
+<style>
+  body { font-family: "Malgun Gothic", "Apple SD Gothic Neo", sans-serif; max-width: 760px; margin: 30px auto; padding: 0 16px; color: #333; line-height: 1.6; }
+  h1 { font-size: 22px; } h2 { font-size: 16px; margin-top: 26px; border-bottom: 1px solid #ddd; padding-bottom: 4px; }
+  li { margin: 3px 0; } code { background: #f3f3f3; padding: 1px 5px; border-radius: 4px; }
+  .note { color: #777; font-size: 13px; }
+</style>
+</head>
+<body>
+<h1>서호팡팡수호대 — 협업용 공유 자료</h1>
+<p class="note">2026-09-22 기준. 기획·데이터·소스 묶음입니다. 문서는 링크를 열면 바로 읽힙니다(Markdown 원문).</p>
+
+<h2>최신 v2: Codex 5원소 전투·파츠·훈련 (19:33) + Claude 주인공 그림 원본 복원 (2026-09-22 저녁)</h2>
+<ul>
+  <li><a href="guardian-rework-v2.md">guardian-rework-v2.md</a> — Codex v2 구현 인수인계 (5원소 15스킬·합성·파츠·훈련·무기 근거리/원거리)</li>
+  <li><a href="seoho-guardian-rework-v2.zip">seoho-guardian-rework-v2.zip</a> — Codex v2 통합 소스·이미지·테스트 (25MB, Claude 트리에 합쳐 배포)</li>
+  <li><b>✅ 난이도 3단계 · 어려움의 특별한 적 · 무기 원소 삭제(Claude, 2026-09-23 오전, 6fbe0784)</b>: 쉬움★·보통★★·어려움★★★(성공 시 별 = 난이도, 쓰레기 목표는 코인 +30), 어려움에 원소 방패·단단 갑옷·날쌘이·회복이·쪼개지기 적(<code>rework-core.js DIFFICULTIES·SPECIAL_TRAITS</code>, <code>main.js sgMaybeTrait…</code>), 도전 중 난이도 변경 금지(<code>guardian.js</code>, 사본 <a href="server/guardian.js">server/guardian.js</a>). 로비의 "무기 원소" 선택과 <code>weapon-effects.js</code> 원소 효과 삭제(기본 무기는 근거리·원거리만). 불꽃병·화산 장판 축소·반투명·바닥층 그리기(<code>element-effects.js drawGround</code>), 스킬이 같은 방향·같은 적으로 겹치지 않게(<code>element-combat.js pickAngles·spreadSpots</code>). 검사 <code>tests/element-spread.test.mjs</code>. <b>Codex는 이 규칙들을 되돌리지 말 것.</b></li>
+  <li><b>✅ 원소 스킬 체계 v3 배포(Claude, 2026-09-23 새벽)</b>: 탕탕특공대 방식(원소 스킬 10 · 지원품 8 · 진화 10, 스킬 4칸 + 지원품 4칸, 스킬 Lv.5 + 짝 지원품 → 진화)으로 교체. 기획 <a href="docs/22_env_skill_plan.md">docs/22_원소_스킬_체계_기획.md</a>, 그림 프롬프트 <a href="skill_asset_prompts.md">원소_스킬_프롬프트.md</a>, 그림은 프로젝트 주인의 Gemini 시트(<code>assets/sprites/skills/</code> 88장). 바뀐 파일: <code>element-content.js</code>·<code>element-combat.js</code>·<code>element-effects.js</code>·<code>rework-core.js</code>(카드 규칙)·<code>rework-ui.js</code>(도감)·<code>rework.css</code>·<code>main.js</code>(카드·HUD·지원품 스탯)·<code>weapon-effects.js</code>(지원품 배수)·서버 <code>guardian.js</code>(supportIds). <b>Codex는 이 파일들을 v2 스킬 체계로 되돌리지 말 것.</b> Codex의 v2 스킬 검사 2개는 <code>tests/*.v2-obsolete.mjs.txt</code>로 보관, 새 검사 <code>tests/element-v3.test.mjs</code>.</li>
+  <li><b>원거리 공격 그림 적용(프로젝트 주인 Gemini 그림)</b>: 호야 야구방망이 휘두르기·방망이 멘 이동, 민지 피구공 던지기 프레임을 <code>assets/sprites/heroes/*_ranged_*.png</code>로 넣고 <code>assets.js HERO_FILES</code>(ranged·rangedIdle·rangedWalk…)와 <code>main.js heroFrame</code>에서 원거리 모드일 때 사용. 그림 보내기 페이지 <code>/admin/upload</code>(관리자 로그인)로 다른 PC의 그림을 서버에 올릴 수 있음.</li>
+  <li><b>주인공 그림 결정(프로젝트 주인)</b>: 무기를 따로 덧그리지 않고(<code>weapon-effects.js draw</code>의 검·연필·배트·손에 든 공 제거) 원본 공격 프레임(칼·연필)을 다시 사용(<code>main.js heroFrame</code>). 원거리 공격은 주인이 Gemini로 만든 방망이 휘두르기·피구공 던지기 프레임(<code>HEROES[hero].frames.ranged</code>, 준비 중)을 쓴다. <b>Codex는 이 두 곳을 다시 무기 레이어 방식으로 되돌리지 말 것.</b></li>
+</ul>
+<h2>이전: Codex Guardian v1 개편(1-1~1-5, 이용권) + Claude 접속 신호·관리자 로그인 (2026-09-22 저녁)</h2>
+<ul>
+  <li><a href="guardian-rework-v1.md">guardian-rework-v1.md</a> — Codex 개편 인수인계: 실제 구현·변경 파일·이용권 정책·기존 계정 이전 (Codex 작성)</li>
+  <li><a href="seoho-guardian-rework-v1.zip">seoho-guardian-rework-v1.zip</a> — Codex 개편 실행 소스·리소스·테스트 묶음 (22MB, Claude 트리에 합쳐 배포 완료)</li>
+  <li><b>서버 원본(현재 배포본)</b>: <a href="server/index.js">server/index.js</a> · <a href="server/guardian.js">guardian.js</a> · <a href="server/legacy-migration.js">legacy-migration.js</a> · <a href="server/wrangler.toml">wrangler.toml</a> · <a href="server/schema.sql">schema.sql</a> · <a href="server/migrations/2026-09-22_presence.sql">migrations/2026-09-22_presence.sql</a> · <a href="server/admin_index.html">관리 페이지</a> · <a href="server/README.md">server/README.md</a> · <a href="server/check-live.ps1">check-live.ps1</a></li>
+</ul>
+<p class="note">배포하는 쪽은 먼저 위 서버 원본과 <code>/src/*.js</code>·<code>/index.html</code>을 받아 합친 뒤 배포합니다. <code>wrangler.toml</code>의 <code>run_worker_first = ["/"]</code>와 <code>index.js</code>의 접속 신호(<code>/presence.js</code>, <code>/api/presence</code>)·관리자 로그인(<code>/api/admin/login</code>)은 빠지면 관리 페이지에 경고가 뜹니다. 자세한 규칙: <a href="briefing_for_gpt.md">briefing_for_gpt.md</a> 3-0.</p>
+
+<h2>먼저 읽을 것</h2>
+<ul>
+  <li><a href="briefing_for_gpt.md">briefing_for_gpt.md</a> — 프로젝트 요약과 폴더 지도 (ChatGPT용 브리핑)</li>
+  <li><a href="env_theme_plan.md">env_theme_plan.md</a> — 환경 테마 기획안(6장 × 5단계 = 30단계)</li>
+  <li><a href="HANDOFF.md">HANDOFF.md</a> — 인수인계(배포 절차·도구·다음 작업)</li>
+  <li><a href="STATUS.md">STATUS.md</a> — 구현 기록(최신이 위)</li>
+  <li><a href="asset_list.md">asset_list.md</a> — 필요한 그림 목록과 Gemini 프롬프트</li>
+  <li><a href="ASSET_CREDITS.md">ASSET_CREDITS.md</a> — 에셋 출처·라이선스</li>
+</ul>
+
+<h2>Codex(ChatGPT) 작업 — 1장 이펙트 업데이트 (2026-09-22)</h2>
+<ul>
+  <li><a href="effects-update.md">effects-update.md</a> — 무엇을 왜 바꿨는지, 검증 내용 (Codex 작성)</li>
+  <li><a href="effects-preview.html">effects-preview.html</a> — 효과 미리보기 페이지 (9.6MB)</li>
+  <li><a href="seoho-effects-update-2026-09-22.zip">seoho-effects-update-2026-09-22.zip</a> — 변경 파일 묶음 (Claude Code 프로젝트에 합쳐서 배포 완료)</li>
+</ul>
+<p class="note">협업 규칙: Codex와 Claude가 같은 서버에 배포하므로, 배포 전에 <code>wrangler deployments list</code>로 마지막 배포가 내 것인지 확인하고, 아니면 <code>https://&lt;버전ID 앞 8자&gt;-seoho-pangpang.seoho-pangpang-server.workers.dev/</code>에서 상대 변경을 받아 합친 뒤 배포합니다.</p>
+<p class="note"><b>역할 분담(2026-09-22 저녁~)</b>: Codex = 게임 클라이언트 전면 개편(<code>index.html</code>, <code>src/*.js</code>, 그림·연출). Claude Code = 서버 API·DB·관리 페이지(<code>/admin/</code>)·통계·지급·문서·이 공유 폴더. 서로의 영역은 건드리지 않고, Codex는 배포 후 바뀐 파일 목록과 설명서를 이 폴더에 남깁니다. 자세한 내용은 <a href="briefing_for_gpt.md">briefing_for_gpt.md</a> 3-0.</p>
+
+<h2>전체 묶음</h2>
+<ul>
+  <li><a href="seoho-pangpang-package-2026-09-22.zip">seoho-pangpang-package-2026-09-22.zip</a> — 문서 20장 + 데이터 + 게임 소스 + 도구 + 가공 그림 (약 5MB)</li>
+</ul>
+
+<h2>기획 문서(docs/)</h2>
+<ul>
+  <li><a href="docs/01_concept.md">01_concept</a> · <a href="docs/02_research.md">02_research</a> · <a href="docs/03_mapping.md">03_mapping</a> · <a href="docs/04_loops.md">04_loops</a> · <a href="docs/05_content_scope.md">05_content_scope</a></li>
+  <li><a href="docs/06_combat_spec.md">06_combat_spec</a> · <a href="docs/07_skills_evolutions_builds.md">07_skills</a> · <a href="docs/08_chapters_enemies_bosses.md">08_chapters_enemies_bosses</a> · <a href="docs/09_progression_systems.md">09_progression</a> · <a href="docs/10_modes_events.md">10_modes_events</a></li>
+  <li><a href="docs/11_economy.md">11_economy</a> · <a href="docs/12_formulas_balance.md">12_formulas</a> · <a href="docs/13_ui_ux.md">13_ui_ux</a> · <a href="docs/14_tech_architecture.md">14_tech</a> · <a href="docs/15_performance_art.md">15_art</a></li>
+  <li><a href="docs/16_dev_phases.md">16_dev_phases</a> · <a href="docs/17_risks.md">17_risks</a> · <a href="docs/18_implementation_prompt.md">18_prompt</a> · <a href="docs/19_requirements_checklist.md">19_checklist</a> · <a href="docs/20_env_theme_plan.md">20_env_theme_plan</a></li>
+</ul>
+
+<h2>게임 데이터(data/)</h2>
+<ul>
+  <li><a href="data/chapters.csv">chapters.csv</a> · <a href="data/enemies.csv">enemies.csv</a> · <a href="data/bosses.json">bosses.json</a> · <a href="data/skills.csv">skills.csv</a> · <a href="data/passives.csv">passives.csv</a> · <a href="data/evolutions.csv">evolutions.csv</a></li>
+  <li><a href="data/characters.json">characters.json</a> · <a href="data/equipment.csv">equipment.csv</a> · <a href="data/parts.csv">parts.csv</a> · <a href="data/pets.csv">pets.csv</a> · <a href="data/collectibles.csv">collectibles.csv</a> · <a href="data/sets.csv">sets.csv</a> · <a href="data/talents.csv">talents.csv</a></li>
+  <li><a href="data/missions.csv">missions.csv</a> · <a href="data/achievements.csv">achievements.csv</a> · <a href="data/rewards.csv">rewards.csv</a> · <a href="data/modes.csv">modes.csv</a> · <a href="data/challenges.csv">challenges.csv</a> · <a href="data/challenge_rules.csv">challenge_rules.csv</a> · <a href="data/waves.csv">waves.csv</a> · <a href="data/wave_templates.csv">wave_templates.csv</a> · <a href="data/builds.json">builds.json</a> · <a href="data/events.json">events.json</a></li>
+</ul>
+
+<h2>게임 소스(실서버에서 그대로 읽힘)</h2>
+<ul>
+  <li><a href="../index.html">index.html</a> · <a href="../src/main.js">src/main.js</a> · <a href="../src/themes.js">src/themes.js</a> · <a href="../src/content.js">src/content.js</a> · <a href="../src/content.data.js">src/content.data.js</a></li>
+  <li><a href="../src/economy.js">src/economy.js</a> · <a href="../src/ecoui.js">src/ecoui.js</a> · <a href="../src/meta.js">src/meta.js</a> · <a href="../src/save.js">src/save.js</a> · <a href="../src/cloud.js">src/cloud.js</a> · <a href="../src/assets.js">src/assets.js</a></li>
+</ul>
+</body>
+</html>

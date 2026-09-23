@@ -1,0 +1,347 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="robots" content="noindex, nofollow" />
+<title>서호팡팡수호대 선생님 관리</title>
+<style>
+  :root { --ink: #4a2f14; --muted: #8a6d4a; --line: #dcc3a0; --panel: #fffdf7; --green: #3d8a2c; --red: #c9463d; --blue: #2c7fc0; }
+  * { box-sizing: border-box; }
+  body { margin: 0; font-family: "Malgun Gothic", "Apple SD Gothic Neo", sans-serif; color: var(--ink); background: linear-gradient(#cfe9ff 0%, #eef6ff 30%, #fff3dc 100%) fixed; min-height: 100vh; }
+  header { display: flex; align-items: center; gap: 10px; padding: 14px 16px; }
+  header h1 { font-size: 20px; margin: 0; flex: 1; }
+  main { padding: 0 16px 40px; max-width: 1200px; margin: 0 auto; }
+  .panel { background: var(--panel); border: 2px solid var(--line); border-radius: 14px; padding: 12px 14px; box-shadow: 0 3px 0 rgba(160,110,60,0.15); margin: 10px 0; }
+  button { font-family: inherit; font-size: 13px; font-weight: 700; color: var(--ink); background: #fff; border: 2px solid var(--line); border-radius: 10px; padding: 6px 12px; cursor: pointer; }
+  button:hover { background: #fff6dc; }
+  button.primary { background: linear-gradient(#ffe97a, #ffb832); border-color: #b8641c; color: #4a2a08; }
+  button.danger { color: var(--red); border-color: #e8b4b0; }
+  button.sm { font-size: 12px; padding: 4px 8px; border-radius: 8px; }
+  input { font-family: inherit; font-size: 14px; padding: 7px 10px; border: 2px solid var(--line); border-radius: 10px; background: #fff; color: var(--ink); }
+  input[type=number] { width: 96px; }
+  #login { max-width: 420px; margin: 40px auto; text-align: center; }
+  #login input { width: 100%; margin: 6px 0; }
+  #login button { width: 100%; margin-top: 8px; padding: 10px; font-size: 15px; }
+  .err { color: var(--red); font-size: 13px; min-height: 18px; }
+  .cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 8px; margin: 10px 0; }
+  .card { background: var(--panel); border: 2px solid var(--line); border-radius: 12px; padding: 8px 10px; }
+  .card .k { font-size: 12px; color: var(--muted); }
+  .card .v { font-size: 22px; font-weight: 900; }
+  .card.on { border-color: #9fd58f; background: #f1fbe9; }
+  .card.on .v { color: var(--green); }
+  .row { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin: 10px 0; }
+  .row label { font-size: 13px; color: var(--muted); }
+  .chips { display: flex; flex-wrap: wrap; gap: 6px; margin: 6px 0; }
+  .chip { background: #e8f7e3; border: 2px solid #b8dcae; border-radius: 999px; padding: 4px 11px; font-size: 13px; font-weight: 800; }
+  .chip small { color: var(--muted); font-weight: 400; margin-left: 4px; }
+  .warn { color: #b3541e; font-weight: 700; font-size: 13px; }
+  .tablewrap { overflow-x: auto; margin-top: 10px; }
+  table { border-collapse: collapse; width: 100%; font-size: 13px; background: var(--panel); border: 2px solid var(--line); border-radius: 12px; overflow: hidden; }
+  th, td { padding: 6px 8px; border-bottom: 1px solid #eee2cc; text-align: center; white-space: nowrap; }
+  th { background: #fff3dc; font-size: 12px; color: var(--muted); }
+  td.id { text-align: left; font-weight: 800; }
+  td.id .dot { display: inline-block; width: 9px; height: 9px; border-radius: 50%; background: #3fbf3f; margin-right: 5px; box-shadow: 0 0 0 2px #d7f3d0; }
+  td.id .dot[hidden] { display: none; }   /* 접속 중이 아닌 학생은 점을 숨긴다(위 display가 hidden을 덮어써 모두에게 점이 보이던 것 수정, 2026-09-23) */
+  tr.locked td { background: #fff0ee; }
+  tr.locked td.id::after { content: " 🔒"; }
+  .acts { display: flex; gap: 4px; justify-content: center; }
+  .muted { color: var(--muted); }
+  .note { font-size: 12px; color: var(--muted); margin: 6px 0; line-height: 1.5; }
+  details.panel summary { cursor: pointer; font-weight: 700; }
+  dialog { border: 2px solid var(--line); border-radius: 14px; padding: 18px; font-family: inherit; color: var(--ink); max-width: 360px; }
+  dialog::backdrop { background: rgba(60,40,20,0.35); }
+  dialog h3 { margin: 0 0 10px; font-size: 16px; }
+  dialog .row { margin: 6px 0; }
+  .role { font-size: 12px; font-weight: 800; border-radius: 999px; padding: 3px 10px; border: 2px solid var(--line); background: #fff; }
+  .role.owner { color: #8a4b12; border-color: #e7b86d; background: #fff4d6; }
+  .role.teacher { color: #2c6a9e; border-color: #a9cdea; background: #eaf5ff; }
+  .toast { position: fixed; left: 50%; bottom: 24px; transform: translateX(-50%); background: #4a2f14; color: #fff; padding: 10px 16px; border-radius: 10px; font-size: 14px; display: none; z-index: 20; }
+  @media (max-width: 600px) { header { flex-wrap: wrap; } header h1 { font-size: 17px; flex-basis: 100%; } th, td { padding: 5px 5px; font-size: 12px; } #login { margin: 20px auto; } }
+</style>
+</head>
+<body>
+<header>
+  <h1>🧑‍🏫 서호팡팡수호대 선생님 관리</h1>
+  <span id="role-badge" class="role" hidden></span>
+  <a href="upload.html" id="lnk-upload" hidden style="font-size:13px;font-weight:700">🖼️ 그림 보내기</a>
+  <button id="btn-refresh" hidden>새로고침</button>
+  <button id="btn-logout" hidden class="sm">나가기</button>
+</header>
+<main>
+  <section id="login" class="panel">
+    <h2 style="font-size:17px;margin:0 0 4px">선생님 로그인</h2>
+    <div class="note">이 화면은 선생님만 쓰는 곳이에요. 로그인은 12시간 동안 유지되고, 창을 닫으면 풀립니다.</div>
+    <form id="login-form">
+      <input id="aid" type="text" placeholder="아이디" autocomplete="username" autocapitalize="off" />
+      <input id="apw" type="password" placeholder="비밀번호" autocomplete="current-password" />
+      <div class="err" id="login-err"></div>
+      <button class="primary" type="submit">들어가기</button>
+    </form>
+  </section>
+
+  <section id="main" hidden>
+    <div class="cards" id="cards"></div>
+
+    <div class="panel" id="online-panel">
+      <div class="row" style="margin:0">
+        <b>🟢 지금 접속 중 <span id="online-n">0</span>명</b>
+        <span class="muted" id="online-upd" style="font-size:12px"></span>
+        <span class="warn" id="signal-state"></span>
+      </div>
+      <div class="chips" id="online-list"></div>
+      <div class="note" id="recent-line"></div>
+      <div class="note">게임 화면이 열려 있는 학생은 30초마다 신호를 보내요. 화면을 닫거나 다른 탭으로 가면 바로 빠집니다. 파일로 받은 게임(단일 파일판)은 신호를 보내지 않아요.</div>
+    </div>
+
+    <div class="panel">
+      <b>모두에게 선물 주기</b>
+      <div class="row">
+        <label>💰 코인</label><input id="g-gold" type="number" min="0" value="0" />
+        <input id="g-dust" type="hidden" value="0" />
+        <label>🎟 이용권</label><input id="g-energy" type="number" min="0" max="100" value="0" />
+        <input id="g-note" placeholder="메모(예: 1반 수업 보상)" style="width:200px" />
+        <button class="primary" id="btn-grant-all">전체 지급</button>
+      </div>
+      <div class="note">기본 이용권은 매일 <b>한국 시간 오전 8시, 10장</b>으로 초기화됩니다. 성공할 때만 1장 사용하며 실패는 무료입니다. 관리자 추가분은 즉시 반영되고 <b>다음 오전 8시에 만료</b>됩니다. 학생 화면은 로비에서 15초 안에 갱신됩니다. 코인은 만료되지 않습니다. 미션·선물로 이용권을 지급할 수 없습니다.</div>
+    </div>
+
+    <div class="row">
+      <input id="search" placeholder="아이디 찾기" style="width:160px" />
+      <label>정렬</label>
+      <select id="sort" style="font-family:inherit;font-size:13px;padding:6px 8px;border:2px solid var(--line);border-radius:10px;background:#fff;color:var(--ink)">
+        <option value="created">가입 순</option>
+        <option value="last">마지막 접속 순</option>
+        <option value="runs">판 수 많은 순</option>
+        <option value="stage">최고 단계 순</option>
+        <option value="id">아이디 가나다순</option>
+      </select>
+      <span class="muted" id="count"></span>
+    </div>
+    <div class="tablewrap"><table id="tbl"><thead><tr>
+      <th>아이디</th><th>가입</th><th>마지막 접속</th><th>마지막 저장</th><th>판</th><th>성공</th><th>최고 단계</th><th>계정 Lv</th><th>코인</th><th>이전 별가루</th><th>이용권</th><th>이전 선물</th><th>주인공</th><th>관리</th>
+    </tr></thead><tbody></tbody></table></div>
+    <div class="note" id="legend"></div>
+    <details class="panel"><summary>최근 관리자 지급 기록 (최대 100건)</summary><div class="tablewrap"><table><thead><tr><th>시각</th><th>아이디</th><th>추가 이용권</th><th>코인</th><th>메모</th></tr></thead><tbody id="grant-audit"></tbody></table></div><div class="note">선생님 계정으로 지급한 기록은 메모 앞에 [선생님]이 붙어요.</div></details>
+    <details class="panel" id="teacher-panel" hidden><summary>선생님 계정 (관리자만 보임)</summary>
+      <div class="note" id="teacher-state"></div>
+      <div class="note">선생님들은 이 주소(/admin/)에서 <b>선생님 계정</b>으로 로그인해요. 선생님 화면에는 학생 계정 <b>삭제</b>·진행 <b>초기화</b>·그림 보내기가 없고, 서버도 선생님 로그인으로 온 그 요청을 거절해요. 비번 바꾸기·잠금·선물·전체 지급·통계는 똑같이 쓸 수 있어요. 선생님 계정의 아이디·비밀번호는 Cloudflare 비밀값(TEACHER_ID·TEACHER_PW)이고, 바꾸면 이미 로그인한 선생님은 다시 로그인해야 해요.</div>
+      <div class="row"><button id="btn-preview-teacher">👀 선생님 화면 미리보기</button><span class="muted" style="font-size:12px">미리보기를 끝내려면 나가기 → 관리자 계정으로 다시 로그인</span></div>
+    </details>
+  </section>
+</main>
+
+<dialog id="dlg-grant">
+  <h3>🎁 <span id="dlg-grant-who"></span>에게 선물</h3>
+  <div class="row"><label style="width:60px">💰 코인</label><input id="d-gold" type="number" min="0" value="0" /></div>
+  <input id="d-dust" type="hidden" value="0" />
+  <div class="row"><label style="width:60px">🎟 이용권</label><input id="d-energy" type="number" min="0" max="100" value="0" /></div>
+  <div class="row"><input id="d-note" placeholder="메모" style="width:100%" /></div>
+  <div class="row" style="justify-content:flex-end"><button id="d-cancel">취소</button><button class="primary" id="d-ok">지급</button></div>
+</dialog>
+<div class="toast" id="toast"></div>
+
+<script>
+const $ = (s) => document.querySelector(s);
+const TOKEN_STORE = "seoho_admin_token", ROLE_STORE = "seoho_admin_role";
+let TOKEN = sessionStorage.getItem(TOKEN_STORE) || "";
+// 역할: owner = 관리자(전부), teacher = 선생님 계정(학생 계정 삭제·진행 초기화·그림 보내기 없음 — 서버도 거절한다)
+let ROLE = sessionStorage.getItem(ROLE_STORE) || "";
+const isOwner = () => ROLE === "owner";
+const LEGEND = {
+  owner: "🟢 = 지금 접속 중 · 마지막 접속 = 로그인 또는 접속 신호 중 최근 것 · 비번 = 새 비밀번호 정하기(다른 기기 접속도 끊김) · 잠금 = 로그인·저장 막기(수업 중 제한, 다시 풀 수 있음) · 선물 = 이 학생에게만 지급 · 초기화 = 진행을 처음부터(계정은 남음) · 삭제 = 계정과 저장을 완전히 지움",
+  teacher: "🟢 = 지금 접속 중 · 마지막 접속 = 로그인 또는 접속 신호 중 최근 것 · 비번 = 새 비밀번호 정하기(다른 기기 접속도 끊김) · 잠금 = 로그인·저장 막기(수업 중 제한, 다시 풀 수 있음) · 선물 = 이 학생에게만 지급 · 학생 계정 삭제와 진행 초기화는 관리자만 할 수 있어요",
+};
+function applyRole() {
+  const badge = $("#role-badge");
+  badge.hidden = !ROLE; badge.className = `role ${ROLE}`; badge.textContent = isOwner() ? "관리자" : "선생님 계정";
+  $("#lnk-upload").hidden = !isOwner();
+  $("#teacher-panel").hidden = !isOwner();
+  $("#legend").textContent = LEGEND[isOwner() ? "owner" : "teacher"];
+}
+async function loadTeacherState() {
+  if (!isOwner()) return;
+  try { const c = await api("config"); $("#teacher-state").innerHTML = c.teacher.configured ? `✅ 선생님 계정이 켜져 있어요${c.teacher.sameIdAsAdmin ? " (아이디는 관리자와 같고 비밀번호로 구분)" : ""}.` : "⚠ 선생님 계정이 아직 설정되지 않았어요(TEACHER_ID·TEACHER_PW)."; } catch (e) {}
+}
+let USERS = [], AUDIT = [], NOW = Date.now(), ONLINE = new Set(), timers = [];
+
+async function api(path, body) {
+  const r = await fetch(`/api/admin/${path}`, {
+    method: body ? "POST" : "GET",
+    headers: { "Content-Type": "application/json", "X-Admin-Token": TOKEN },
+    body: body ? JSON.stringify(body) : undefined,
+  });
+  let d = null; try { d = await r.json(); } catch (e) {}
+  if (r.status === 401) showLogin(TOKEN ? "로그인이 풀렸어요. 다시 로그인해 주세요." : "");
+  if (!r.ok) throw Object.assign(new Error(d?.error || `오류 ${r.status}`), { status: r.status });
+  return d;
+}
+function toast(msg, ms = 2200) { const t = $("#toast"); t.textContent = msg; t.style.display = "block"; clearTimeout(t._t); t._t = setTimeout(() => (t.style.display = "none"), ms); }
+function showLogin(err) {
+  TOKEN = ""; sessionStorage.removeItem(TOKEN_STORE); ROLE = ""; sessionStorage.removeItem(ROLE_STORE);
+  timers.forEach(clearInterval); timers = [];
+  $("#login").hidden = false; $("#main").hidden = true; $("#btn-refresh").hidden = true; $("#btn-logout").hidden = true; $("#lnk-upload").hidden = true; $("#role-badge").hidden = true; $("#login-err").textContent = err || "";
+}
+function fmt(ts) { if (!ts) return "-"; const d = new Date(ts); return d.toLocaleString("ko-KR", { timeZone: "Asia/Seoul", month: "numeric", day: "numeric", hour: "2-digit", minute: "2-digit", hour12: false }); }
+function timeKST(ts) { return new Date(ts).toLocaleTimeString("ko-KR", { timeZone: "Asia/Seoul", hour: "2-digit", minute: "2-digit", hour12: false }); }
+function dayKST(ts) { return ts ? new Date(ts).toLocaleDateString("ko-KR", { timeZone: "Asia/Seoul" }) : ""; }
+function stageLabel(n) { if (!n) return "-"; return `${Math.floor((n - 1) / 5) + 1}-${((n - 1) % 5) + 1}`; }
+function num(v) { return v == null ? 0 : Number(v) || 0; }
+function lastSeen(u) { return Math.max(num(u.last_login), num(u.last_seen)); }
+function mins(ms) { return Math.max(0, Math.round(ms / 60000)); }
+function esc(s) { return String(s ?? "").replace(/[<>&"]/g, (c) => ({ "<": "&lt;", ">": "&gt;", "&": "&amp;", '"': "&quot;" }[c])); }
+
+async function enter() {
+  const me = await api("me"); ROLE = me.role; sessionStorage.setItem(ROLE_STORE, ROLE); applyRole();
+  await load(); await loadOnline(); checkSignal(); loadTeacherState();
+  timers.forEach(clearInterval);
+  timers = [setInterval(() => { if (!document.hidden) loadOnline().catch(() => {}); }, 30000),
+            setInterval(() => { if (!document.hidden) load().catch(() => {}); }, 120000)];
+}
+async function load() {
+  const [d, grants] = await Promise.all([api("stats"), api("passes")]);
+  USERS = d.users; AUDIT = grants.audit; NOW = d.now;
+  $("#login").hidden = true; $("#main").hidden = false; $("#btn-refresh").hidden = false; $("#btn-logout").hidden = false; applyRole();
+  render();
+}
+async function loadOnline() {
+  const d = await api("online"); NOW = d.now;
+  ONLINE = new Set(d.online.map((u) => u.id));
+  $("#online-n").textContent = d.online.length;
+  $("#online-list").innerHTML = d.online.length
+    ? d.online.map((u) => `<span class="chip">${esc(u.display_id)}<small>${u.device === "phone" ? "📱" : "🖥️"} ${mins(d.now - u.since)}분째</small></span>`).join("")
+    : `<span class="muted">지금은 아무도 없어요</span>`;
+  $("#recent-line").textContent = d.recent.length ? "조금 전까지(1시간 안): " + d.recent.map((u) => `${u.display_id}(${mins(d.now - u.last_seen)}분 전)`).join(", ") : "";
+  $("#online-upd").textContent = `· ${timeKST(d.now)} 기준, 30초마다 새로 확인`;
+  const onCard = $("#card-online"); if (onCard) onCard.textContent = d.online.length;
+  document.querySelectorAll("#tbl tbody tr").forEach((tr) => { const dot = tr.querySelector(".dot"); if (dot) dot.hidden = !ONLINE.has(tr.dataset.id); });
+}
+// 게임 첫 화면에 신호 스크립트가 붙어 있는지 확인(서버 설정이 빠진 배포가 올라오면 여기서 알 수 있다)
+async function checkSignal() {
+  try {
+    const t = await (await fetch("/?nc=" + Date.now(), { cache: "no-store" })).text();
+    $("#signal-state").textContent = t.includes("presence.js") ? "" : "⚠ 신호 기능이 꺼져 있어요 (서버 설정이 빠진 배포 — 확인 필요)";
+  } catch (e) {}
+}
+function render() {
+  const today = dayKST(NOW);
+  const played = USERS.filter((u) => num(u.runs) > 0).length;
+  const todayN = USERS.filter((u) => dayKST(lastSeen(u)) === today || dayKST(u.saved_at) === today).length;
+  const runs = USERS.reduce((a, u) => a + num(u.runs), 0), clears = USERS.reduce((a, u) => a + num(u.clears), 0);
+  const locked = USERS.filter((u) => u.locked).length;
+  const cards = [["지금 접속 중", ONLINE.size, "on", "card-online"], ["계정", USERS.length], ["플레이한 학생", played], ["오늘 접속", todayN], ["총 판 수", runs], ["총 성공", clears], ["잠긴 계정", locked]];
+  $("#cards").innerHTML = cards.map(([k, v, cls, id]) => `<div class="card ${cls || ""}"><div class="k">${k}</div><div class="v" ${id ? `id="${id}"` : ""}>${v.toLocaleString()}</div></div>`).join("");
+  $("#grant-audit").innerHTML = AUDIT.map((a) => `<tr><td>${fmt(a.created_at)}</td><td>${esc(USERS.find((u) => u.id === a.user_id)?.display_id || a.user_id)}</td><td>${num(a.passes)}</td><td>${num(a.gold)}</td><td>${esc(a.note)}</td></tr>`).join("") || '<tr><td colspan="5">아직 지급 기록이 없어요.</td></tr>';
+
+  const q = $("#search").value.trim().toLowerCase();
+  const sort = $("#sort").value;
+  let list = USERS.filter((u) => !q || u.display_id.toLowerCase().includes(q));
+  const by = { created: (a, b) => a.created_at - b.created_at, last: (a, b) => lastSeen(b) - lastSeen(a), runs: (a, b) => num(b.runs) - num(a.runs),
+    stage: (a, b) => num(b.best_stage) - num(a.best_stage) || num(b.runs) - num(a.runs), id: (a, b) => a.display_id.localeCompare(b.display_id, "ko") };
+  list.sort(by[sort] || by.created);
+  $("#count").textContent = `${list.length}명`;
+  $("#tbl tbody").innerHTML = list.map((u) => `
+    <tr class="${u.locked ? "locked" : ""}" data-id="${esc(u.id)}">
+      <td class="id"><span class="dot" ${ONLINE.has(u.id) ? "" : "hidden"}></span>${esc(u.display_id)}</td>
+      <td>${fmt(u.created_at)}</td><td>${fmt(lastSeen(u))}</td><td>${fmt(u.saved_at)}</td>
+      <td>${num(u.runs)}</td><td>${num(u.clears)}</td><td><b>${stageLabel(u.best_stage)}</b></td><td>${num(u.acc_level) || "-"}</td>
+      <td>${num(u.gold).toLocaleString()}</td><td>${num(u.dust)}</td><td>${num(u.passes?.baseRemaining)} + ${num(u.passes?.bonusRemaining)} 추가</td>
+      <td>${num(u.pending_grants) ? `<b style="color:var(--blue)">${u.pending_grants}</b>` : ""}</td>
+      <td>${u.hero === "hoya" ? "호야" : u.hero === "minji" ? "민지" : "-"}</td>
+      <td class="acts">
+        <button class="sm" data-act="pw">비번</button>
+        <button class="sm" data-act="lock">${u.locked ? "풀기" : "잠금"}</button>
+        <button class="sm" data-act="grant">선물</button>
+        ${isOwner() ? `<button class="sm danger" data-act="reset">초기화</button>
+        <button class="sm danger" data-act="del">삭제</button>` : ""}
+      </td>
+    </tr>`).join("");
+}
+
+$("#login-form").addEventListener("submit", async (e) => {
+  e.preventDefault();
+  const id = $("#aid").value.trim(), pw = $("#apw").value;
+  $("#login-err").textContent = "";
+  if (!id || !pw) { $("#login-err").textContent = "아이디와 비밀번호를 입력해 주세요."; return; }
+  try {
+    const r = await fetch("/api/admin/login", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ id, pw }) });
+    const d = await r.json().catch(() => ({}));
+    if (!r.ok) { $("#login-err").textContent = d.error || `로그인에 실패했어요 (${r.status})`; return; }
+    TOKEN = d.token; sessionStorage.setItem(TOKEN_STORE, TOKEN); ROLE = d.role || ""; sessionStorage.setItem(ROLE_STORE, ROLE); $("#apw").value = "";
+    await enter();
+  } catch (err) { $("#login-err").textContent = err.message; }
+});
+$("#btn-refresh").addEventListener("click", () => Promise.all([load(), loadOnline()]).then(() => toast("새로 불러왔어요")).catch((e) => toast(e.message)));
+$("#btn-logout").addEventListener("click", () => showLogin(""));
+// 관리자 전용: 선생님 계정으로 보이는 화면 그대로 보기(선생님 토큰으로 바꿔 들어감)
+$("#btn-preview-teacher").addEventListener("click", async () => {
+  try {
+    const d = await api("as-teacher", {});
+    TOKEN = d.token; sessionStorage.setItem(TOKEN_STORE, TOKEN); ROLE = "teacher"; sessionStorage.setItem(ROLE_STORE, ROLE);
+    await enter(); toast("선생님 화면으로 바꿨어요");
+  } catch (e) { toast(e.message); }
+});
+$("#search").addEventListener("input", render);
+$("#sort").addEventListener("change", render);
+
+$("#btn-grant-all").addEventListener("click", async () => {
+  const gold = +$("#g-gold").value || 0, energy = +$("#g-energy").value || 0;
+  if (!gold && !energy) return toast("지급할 양을 입력해 주세요");
+  if (!confirm(`모든 학생(${USERS.length}명)에게 코인 ${gold} · 추가 이용권 ${energy}장을 지급할까요?`)) return;
+  try { const r = await grantSafe({ all: true, gold, passes: energy, note: $("#g-note").value }); toast(`${r.count}명에게 지급했어요`); await load(); } catch (e) { toast(e.message); }
+});
+
+// 지급은 요청 번호(requestId)를 붙여 보내므로 응답이 끊겨 다시 눌러도 두 번 지급되지 않는다(Codex 개편)
+let grantTarget = null, grantBusy = false;
+async function grantSafe(payload) {
+  if (grantBusy) throw new Error("지급 결과를 확인하고 있어요.");
+  const signature = JSON.stringify(payload), key = "seoho_pending_admin_grant";
+  let pending; try { pending = JSON.parse(sessionStorage.getItem(key) || "null"); } catch {}
+  if (pending && pending.signature !== signature) throw new Error("직전 지급 결과를 먼저 확인하세요. 같은 값으로 다시 지급을 누르면 중복 없이 확인됩니다.");
+  pending ||= { signature, requestId: crypto.randomUUID(), payload };
+  sessionStorage.setItem(key, JSON.stringify(pending));
+  grantBusy = true; $("#btn-grant-all").disabled = true; $("#d-ok").disabled = true;
+  try { const result = await api("grant-passes", { ...pending.payload, requestId: pending.requestId }); sessionStorage.removeItem(key); return result; }
+  catch (e) { if (e.status >= 400 && e.status < 500) sessionStorage.removeItem(key); throw e; }
+  finally { grantBusy = false; $("#btn-grant-all").disabled = false; $("#d-ok").disabled = false; }
+}
+$("#tbl").addEventListener("click", async (e) => {
+  const btn = e.target.closest("button[data-act]"); if (!btn) return;
+  const tr = btn.closest("tr"); const id = tr.dataset.id; const u = USERS.find((x) => x.id === id); if (!u) return;
+  const name = u.display_id;
+  try {
+    if (btn.dataset.act === "pw") {
+      const pw = prompt(`${name}의 새 비밀번호 (4자 이상)`); if (pw == null) return;
+      if (pw.length < 4) return toast("4자 이상이어야 해요");
+      await api("reset-password", { id, pw }); toast(`${name} 비밀번호를 바꿨어요`);
+    } else if (btn.dataset.act === "lock") {
+      const locked = !u.locked;
+      if (!confirm(locked ? `${name} 계정을 잠글까요? 잠그면 게임에 들어올 수 없어요.` : `${name} 계정 잠금을 풀까요?`)) return;
+      await api("lock", { id, locked }); toast(locked ? `${name} 잠금` : `${name} 잠금 해제`); await load(); await loadOnline();
+    } else if (btn.dataset.act === "grant") {
+      grantTarget = u; $("#dlg-grant-who").textContent = name; $("#dlg-grant").showModal();
+    } else if ((btn.dataset.act === "reset" || btn.dataset.act === "del") && !isOwner()) {
+      return toast("학생 계정 삭제와 진행 초기화는 관리자만 할 수 있어요");
+    } else if (btn.dataset.act === "reset") {
+      if (!confirm(`${name}의 진행(단계·코인·장비)을 처음부터로 되돌릴까요? 계정과 비밀번호는 남아요. 오늘 쓴 이용권은 되돌아오지 않아요.`)) return;
+      await api("reset-save", { id }); toast(`${name} 진행을 초기화했어요`); await load();
+    } else if (btn.dataset.act === "del") {
+      const typed = prompt(`${name} 계정을 완전히 지웁니다(되돌릴 수 없음). 확인하려면 아이디를 똑같이 입력하세요.`);
+      if (typed == null) return; if (typed.trim() !== name) return toast("아이디가 달라서 취소했어요");
+      await api("delete", { id }); toast(`${name} 계정을 지웠어요`); await load(); await loadOnline();
+    }
+  } catch (err) { toast(err.message); }
+});
+$("#d-cancel").addEventListener("click", () => $("#dlg-grant").close());
+$("#d-ok").addEventListener("click", async () => {
+  if (!grantTarget) return;
+  const gold = +$("#d-gold").value || 0, energy = +$("#d-energy").value || 0;
+  if (!gold && !energy) return toast("지급할 양을 입력해 주세요");
+  try { await grantSafe({ id: grantTarget.id, gold, passes: energy, note: $("#d-note").value }); $("#dlg-grant").close(); toast(`${grantTarget.display_id}에게 지급했어요`); await load(); }
+  catch (e) { toast(e.message); }
+});
+
+if (TOKEN) enter().catch(() => showLogin("")); else showLogin("");
+</script>
+</body>
+</html>

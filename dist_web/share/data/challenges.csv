@@ -1,0 +1,181 @@
+id,chapter_id,tier,name,rules,params,reward,unlock
+CL001,CH01,1,첫 시험: 좁은 시야,R01,vision=0.6,"medal=21;core=5",CH05 클리어
+CL002,CH01,2,새로고침 없는 밤,R06;R10,contact=2,"medal=42;core=10;enh=1",CL001
+CL003,CH01,3,파수꾼 세라의 첫 임무,R21;R05,char=C02;cards=2,"medal=63;core=15;enh=2;dust=20",CL002
+CL004,CH02,1,막힌 골목,R03,move=0.75,"medal=22;core=5",CH05 클리어
+CL005,CH02,2,골목의 화살비,R26;R01,ranged=2;vision=0.6,"medal=44;core=10;enh=1",CL004
+CL006,CH02,3,줄어든 탄창,R13;R06;R25,proj=-1,"medal=66;core=15;enh=2;dust=20",CL005
+CL007,CH03,1,폭주하는 언덕,R19,spd=1.3,"medal=23;core=5",CH05 클리어
+CL008,CH03,2,멧돼지 러시,R18;R19,bosses=5;spd=1.3,"medal=46;core=10;enh=1",CL007
+CL009,CH03,3,회복 없는 언덕,R08;R21,char=C03,"medal=69;core=15;enh=2;dust=20",CL008
+CL010,CH04,1,좁아진 절벽,R17,time=600,"medal=24;core=5",CH05 클리어
+CL011,CH04,2,근접 결투,R14;R10,range=4;contact=2,"medal=48;core=10;enh=1",CL010
+CL012,CH04,3,두 장의 절벽,R05;R23;R24,cards=2;passive=3,"medal=72;core=15;enh=2;dust=20",CL011
+CL013,CH05,1,완전한 안개,R02,dark=1.0,"medal=25;core=5",CH05 클리어
+CL014,CH05,2,짧은 독,R11;R01,status=0.5;vision=0.6,"medal=50;core=10;enh=1",CL013
+CL015,CH05,3,늪의 홀로서기,R25;R08;R19,spd=1.3,"medal=75;core=15;enh=2;dust=20",CL014
+CL016,CH06,1,두꺼운 잔해,R20,hp=1.5,"medal=26;core=5",CH06 클리어
+CL017,CH06,2,소환 없는 초원,R16;R12,elite=0.5,"medal=52;core=10;enh=1",CL016
+CL018,CH06,3,이든의 귀향,R21;R22;R06,char=C01;ban=S21;S22,"medal=78;core=15;enh=2;dust=20",CL017
+CL019,CH07,1,가시밭,R10,contact=2,"medal=27;core=5",CH07 클리어
+CL020,CH07,2,원거리 사냥,R15;R19,range=3;spd=1.3,"medal=54;core=10;enh=1",CL019
+CL021,CH07,3,거목의 시험,R18;R08;R05,bosses=5;cards=2,"medal=81;core=15;enh=2;dust=20",CL020
+CL022,CH08,1,종탑의 화살비,R26,ranged=2,"medal=28;core=5",CH08 클리어
+CL023,CH08,2,멈춘 시계탑,R07;R03,move=0.75,"medal=56;core=10;enh=1",CL022
+CL024,CH08,3,인형의 골목(브란),R21;R13;R09,char=C03;proj=-1;heal=0.5,"medal=84;core=15;enh=2;dust=20",CL023
+CL025,CH09,1,늑대의 속도,R19,spd=1.3,"medal=29;core=5",CH09 클리어
+CL026,CH09,2,엘리트 사냥터,R12;R20,elite=0.5;hp=1.5,"medal=58;core=10;enh=1",CL025
+CL027,CH09,3,홀로 남은 사냥꾼,R25;R24;R10,contact=2,"medal=87;core=15;enh=2;dust=20",CL026
+CL028,CH10,1,등대의 두 장,R05,cards=2,"medal=30;core=5",CH10 클리어
+CL029,CH10,2,근접 등대,R14;R26,range=4;ranged=2,"medal=60;core=10;enh=1",CL028
+CL030,CH10,3,카일의 등대 폭파,R21;R17;R08,char=C05;time=600,"medal=90;core=15;enh=2;dust=20",CL029
+CL031,CH11,1,망령의 어둠,R02,dark=1.0,"medal=31;core=5",CH11 클리어
+CL032,CH11,2,얇은 지원,R23;R01,passive=3;vision=0.6,"medal=62;core=10;enh=1",CL031
+CL033,CH11,3,봉인된 광선,R22;R19;R06,ban=S12;S06;spd=1.3,"medal=93;core=15;enh=2;dust=20",CL032
+CL034,CH12,1,멈춘 갱도,R07,cdr=0,"medal=32;core=5",CH12 클리어
+CL035,CH12,2,갱도 보스 러시,R18;R03,bosses=5;move=0.75,"medal=64;core=10;enh=1",CL034
+CL036,CH12,3,루카의 기계 없는 날,R21;R16;R13,char=C06;proj=-1,"medal=96;core=15;enh=2;dust=20",CL035
+CL037,CH13,1,깊은 어둠의 시야,R01,vision=0.6,"medal=33;core=5",CH13 클리어
+CL038,CH13,2,안개 속 폭주,R19;R02,spd=1.3;dark=1.0,"medal=66;core=10;enh=1",CL037
+CL039,CH13,3,회복 없는 안개(니아),R21;R08;R05,char=C04;cards=2,"medal=99;core=15;enh=2;dust=20",CL038
+CL040,CH14,1,인형 극장 두 장,R05,cards=2,"medal=34;core=5",CH14 클리어
+CL041,CH14,2,극장 화살비,R26;R10,ranged=2;contact=2,"medal=68;core=10;enh=1",CL040
+CL042,CH14,3,분열 대군 압축,R17;R20;R25,time=600;hp=1.5,"medal=102;core=15;enh=2;dust=20",CL041
+CL043,CH15,1,사금 시간 압축,R17,time=600,"medal=35;core=5",CH15 클리어
+CL044,CH15,2,느린 광부,R03;R12,move=0.75;elite=0.5,"medal=70;core=10;enh=1",CL043
+CL045,CH15,3,마르의 도박 갱도,R21;R06;R24,char=C07,"medal=105;core=15;enh=2;dust=20",CL044
+CL046,CH16,1,절벽 폭주,R19,spd=1.3,"medal=36;core=5",CH16 클리어
+CL047,CH16,2,근접 절벽 결전,R14;R08,range=4,"medal=72;core=10;enh=1",CL046
+CL048,CH16,3,줄어든 탄창 결전,R13;R23;R18,proj=-1;passive=3;bosses=5,"medal=108;core=15;enh=2;dust=20",CL047
+CL049,CH17,1,사냥개의 이빨,R10,contact=2,"medal=37;core=5",CH17 클리어
+CL050,CH17,2,완전한 밤,R02;R19,dark=1.0;spd=1.3,"medal=74;core=10;enh=1",CL049
+CL051,CH17,3,오르의 짐승 없는 밤,R21;R25;R16,char=C08,"medal=111;core=15;enh=2;dust=20",CL050
+CL052,CH18,1,기관실 화살비,R26,ranged=2,"medal=38;core=5",CH18 클리어
+CL053,CH18,2,멈춘 기관,R07;R05,cards=2,"medal=76;core=10;enh=1",CL052
+CL054,CH18,3,원거리 기관실,R15;R03;R09,range=3;move=0.75;heal=0.5,"medal=114;core=15;enh=2;dust=20",CL053
+CL055,CH19,1,둥지의 독,R11,status=0.5,"medal=39;core=5",CH19 클리어
+CL056,CH19,2,두꺼운 둥지,R20;R01,hp=1.5;vision=0.6,"medal=78;core=10;enh=1",CL055
+CL057,CH19,3,페이의 짧은 고통,R21;R11;R06,char=C11;status=0.5,"medal=117;core=15;enh=2;dust=20",CL056
+CL058,CH20,1,실 끊긴 두 장,R05,cards=2,"medal=40;core=5",CH20 클리어
+CL059,CH20,2,방패의 거리,R26;R14,ranged=2;range=4,"medal=80;core=10;enh=1",CL058
+CL060,CH20,3,하겐의 첫 걸음,R21;R23;R10,char=C10;passive=3;contact=2,"medal=120;core=15;enh=2;dust=20",CL059
+CL061,CH21,1,사막의 느린 발,R03,move=0.75,"medal=41;core=5",CH21 클리어
+CL062,CH21,2,열기 폭주,R19;R08,spd=1.3,"medal=82;core=10;enh=1",CL061
+CL063,CH21,3,봉인된 폭발,R22;R12;R24,ban=S09;S18;elite=0.5,"medal=123;core=15;enh=2;dust=20",CL062
+CL064,CH22,1,신기루 시야,R01,vision=0.6,"medal=42;core=5",CH22 클리어
+CL065,CH22,2,미끄러운 모래,R04;R05,inertia=0.5;cards=2,"medal=84;core=10;enh=1",CL064
+CL066,CH22,3,이리스의 멈춘 시계,R21;R07;R17,char=C09;time=600,"medal=126;core=15;enh=2;dust=20",CL065
+CL067,CH23,1,망령의 러시,R18,bosses=5,"medal=43;core=5",CH23 클리어
+CL068,CH23,2,얇은 등대,R23;R26,passive=3;ranged=2,"medal=86;core=10;enh=1",CL067
+CL069,CH23,3,홀로 선 등대,R25;R08;R02,dark=1.0,"medal=129;core=15;enh=2;dust=20",CL068
+CL070,CH24,1,붕괴의 두꺼운 가죽,R20,hp=1.5,"medal=44;core=5",CH24 클리어
+CL071,CH24,2,근접 갱도,R14;R19,range=4;spd=1.3,"medal=88;core=10;enh=1",CL070
+CL072,CH24,3,세라의 좁은 갱도,R21;R13;R06,char=C02;proj=-1,"medal=132;core=15;enh=2;dust=20",CL071
+CL073,CH25,1,사냥꾼의 완전한 어둠,R02,dark=1.0,"medal=45;core=5",CH25 클리어
+CL074,CH25,2,덫과 화살,R26;R03,ranged=2;move=0.75,"medal=90;core=10;enh=1",CL073
+CL075,CH25,3,소환 없는 안개,R16;R01;R09,vision=0.6;heal=0.5,"medal=135;core=15;enh=2;dust=20",CL074
+CL076,CH26,1,성벽의 화살비,R26,ranged=2,"medal=46;core=5",CH26 클리어
+CL077,CH26,2,원거리 성채,R15;R12,range=3;elite=0.5,"medal=92;core=10;enh=1",CL076
+CL078,CH26,3,브란의 방패전,R21;R14;R08,char=C03;range=4,"medal=138;core=15;enh=2;dust=20",CL077
+CL079,CH27,1,금고 시간 압축,R17,time=600,"medal=47;core=5",CH27 클리어
+CL080,CH27,2,멈춘 금고,R07;R20,hp=1.5,"medal=94;core=10;enh=1",CL079
+CL081,CH27,3,광휘 봉인 금고,R24;R05;R25,cards=2,"medal=141;core=15;enh=2;dust=20",CL080
+CL082,CH28,1,가고일의 이빨,R10,contact=2,"medal=48;core=5",CH28 클리어
+CL083,CH28,2,회랑 보스 러시,R18;R01,bosses=5;vision=0.6,"medal=96;core=10;enh=1",CL082
+CL084,CH28,3,루카의 회랑 요새,R21;R23;R19,char=C06;passive=3;spd=1.3,"medal=144;core=15;enh=2;dust=20",CL083
+CL085,CH29,1,기사단 두 장,R05,cards=2,"medal=49;core=5",CH29 클리어
+CL086,CH29,2,짧은 고통의 뜰,R11;R26,status=0.5;ranged=2,"medal=98;core=10;enh=1",CL085
+CL087,CH29,3,봉인된 회전,R22;R14;R06,ban=S05;S17;range=4,"medal=147;core=15;enh=2;dust=20",CL086
+CL088,CH30,1,최심부 폭주,R19,spd=1.3,"medal=50;core=5",CH30 클리어
+CL089,CH30,2,회복 없는 최심부,R08;R12,elite=0.5,"medal=100;core=10;enh=1",CL088
+CL090,CH30,3,카일의 최심부 폭파,R21;R17;R13,char=C05;time=600;proj=-1,"medal=150;core=15;enh=2;dust=20",CL089
+CL091,CH31,1,하류의 느린 발,R03,move=0.75,"medal=51;core=5",CH31 클리어
+CL092,CH31,2,급류 화살비,R26;R19,ranged=2;spd=1.3,"medal=102;core=10;enh=1",CL091
+CL093,CH31,3,홀로 건너는 강,R25;R05;R10,cards=2;contact=2,"medal=153;core=15;enh=2;dust=20",CL092
+CL094,CH32,1,익사자의 어둠,R02,dark=1.0,"medal=52;core=5",CH32 클리어
+CL095,CH32,2,두꺼운 익사자,R20;R11,hp=1.5;status=0.5,"medal=104;core=10;enh=1",CL094
+CL096,CH32,3,니아의 강,R21;R08;R16,char=C04,"medal=156;core=15;enh=2;dust=20",CL095
+CL097,CH33,1,유리 폭풍 시야,R01,vision=0.6,"medal=53;core=5",CH33 클리어
+CL098,CH33,2,근접 유리 폭풍,R14;R04,range=4;inertia=0.5,"medal=106;core=10;enh=1",CL097
+CL099,CH33,3,멈춘 폭풍(이리스 금지),R07;R22;R24,ban=S10;S22,"medal=159;core=15;enh=2;dust=20",CL098
+CL100,CH34,1,여왕의 두 장,R05,cards=2,"medal=54;core=5",CH34 클리어
+CL101,CH34,2,신기루 러시,R18;R03,bosses=5;move=0.75,"medal=108;core=10;enh=1",CL100
+CL102,CH34,3,마르의 거울 도박,R21;R09;R13,char=C07;heal=0.5;proj=-1,"medal=162;core=15;enh=2;dust=20",CL101
+CL103,CH35,1,모래 폭풍 폭주,R19,spd=1.3,"medal=55;core=5",CH35 클리어
+CL104,CH35,2,원거리 모래 폭풍,R15;R26,range=3;ranged=2,"medal=110;core=10;enh=1",CL103
+CL105,CH35,3,얇은 지원 폭풍,R23;R08;R12,passive=3;elite=0.5,"medal=165;core=15;enh=2;dust=20",CL104
+CL106,CH36,1,거울 사막 압축,R17,time=600,"medal=56;core=5",CH36 클리어
+CL107,CH36,2,거울의 완전한 어둠,R02;R10,dark=1.0;contact=2,"medal=112;core=10;enh=1",CL106
+CL108,CH36,3,솔 없는 거울(광선 봉인),R22;R01;R06,ban=S12;S06;vision=0.6,"medal=168;core=15;enh=2;dust=20",CL107
+CL109,CH37,1,미끄러운 호수,R04,inertia=0.5,"medal=57;core=5",CH37 클리어
+CL110,CH37,2,얼어붙은 회복,R09;R11,heal=0.5;status=0.5,"medal=114;core=10;enh=1",CL109
+CL111,CH37,3,하겐의 빙판,R21;R04;R14,char=C10;inertia=0.5;range=4,"medal=171;core=15;enh=2;dust=20",CL110
+CL112,CH38,1,내정의 화살비,R26,ranged=2,"medal=58;core=5",CH38 클리어
+CL113,CH38,2,소환 없는 성채,R16;R20,hp=1.5,"medal=116;core=10;enh=1",CL112
+CL114,CH38,3,광휘 봉인 성채,R24;R18;R05,bosses=5;cards=2,"medal=174;core=15;enh=2;dust=20",CL113
+CL115,CH39,1,눈보라 시야,R01,vision=0.6,"medal=59;core=5",CH39 클리어
+CL116,CH39,2,눈보라 저격,R26;R03,ranged=2;move=0.75,"medal=118;core=10;enh=1",CL115
+CL117,CH39,3,오르의 눈보라,R21;R25;R19,char=C08;spd=1.3,"medal=177;core=15;enh=2;dust=20",CL116
+CL118,CH40,1,군주 성채 두꺼운 가죽,R20,hp=1.5,"medal=60;core=5",CH40 클리어
+CL119,CH40,2,멈춘 성채,R07;R26,ranged=2,"medal=120;core=10;enh=1",CL118
+CL120,CH40,3,세라의 성채 돌파,R21;R23;R08,char=C02;passive=3,"medal=180;core=15;enh=2;dust=20",CL119
+CL121,CH41,1,회랑 폭주,R19,spd=1.3,"medal=61;core=5",CH41 클리어
+CL122,CH41,2,근접 회랑,R14;R12,range=4;elite=0.5,"medal=122;core=10;enh=1",CL121
+CL123,CH41,3,봉인된 소환(루카 금지),R22;R16;R10,ban=S07;S08;contact=2,"medal=183;core=15;enh=2;dust=20",CL122
+CL124,CH42,1,종탑 그림자 시야,R01,vision=0.6,"medal=62;core=5",CH42 클리어
+CL125,CH42,2,종탑 러시,R18;R05,bosses=5;cards=2,"medal=124;core=10;enh=1",CL124
+CL126,CH42,3,페이의 종탑,R21;R11;R23,char=C11;status=0.5;passive=3,"medal=186;core=15;enh=2;dust=20",CL125
+CL127,CH43,1,급류 시간 압축,R17,time=600,"medal=63;core=5",CH43 클리어
+CL128,CH43,2,급류 회복 봉인,R08;R04,inertia=0.5,"medal=126;core=10;enh=1",CL127
+CL129,CH43,3,줄어든 탄창 급류,R13;R26;R25,proj=-1;ranged=2,"medal=189;core=15;enh=2;dust=20",CL128
+CL130,CH44,1,잠긴 등대의 어둠,R02,dark=1.0,"medal=64;core=5",CH44 클리어
+CL131,CH44,2,잠긴 등대 폭주,R19;R09,spd=1.3;heal=0.5,"medal=128;core=10;enh=1",CL130
+CL132,CH44,3,이든의 잠긴 등대,R21;R24;R05,char=C01;cards=2,"medal=192;core=15;enh=2;dust=20",CL131
+CL133,CH45,1,균열의 느린 발,R03,move=0.75,"medal=65;core=5",CH45 클리어
+CL134,CH45,2,균열 엘리트 행진,R12;R01,elite=0.5;vision=0.6,"medal=130;core=10;enh=1",CL133
+CL135,CH45,3,원거리 균열,R15;R08;R06,range=3,"medal=195;core=15;enh=2;dust=20",CL134
+CL136,CH46,1,침식 절벽 두 장,R05,cards=2,"medal=66;core=5",CH46 클리어
+CL137,CH46,2,침식 화살비,R26;R20,ranged=2;hp=1.5,"medal=132;core=10;enh=1",CL136
+CL138,CH46,3,브란의 침식 절벽,R21;R10;R11,char=C03;contact=2;status=0.5,"medal=198;core=15;enh=2;dust=20",CL137
+CL139,CH47,1,검은 강 폭주,R19,spd=1.3,"medal=67;core=5",CH47 클리어
+CL140,CH47,2,검은 강 러시,R18;R02,bosses=5;dark=1.0,"medal=134;core=10;enh=1",CL139
+CL141,CH47,3,홀로 검은 강,R25;R23;R04,passive=3;inertia=0.5,"medal=201;core=15;enh=2;dust=20",CL140
+CL142,CH48,1,사냥꾼 최후의 시야,R01,vision=0.6,"medal=68;core=5",CH48 클리어
+CL143,CH48,2,멈춘 사냥,R07;R10,contact=2,"medal=136;core=10;enh=1",CL142
+CL144,CH48,3,이리스의 최후 사냥,R21;R17;R08,char=C09;time=600,"medal=204;core=15;enh=2;dust=20",CL143
+CL145,CH49,1,빙하 미끄러짐,R04,inertia=0.5,"medal=69;core=5",CH49 클리어
+CL146,CH49,2,빙하 얇은 지원,R23;R26,passive=3;ranged=2,"medal=138;core=10;enh=1",CL145
+CL147,CH49,3,봉인된 서리(카일 금지),R22;R19;R09,ban=S16;S20;spd=1.3;heal=0.5,"medal=207;core=15;enh=2;dust=20",CL146
+CL148,CH50,1,왕의 설원 두꺼운 가죽,R20,hp=1.5,"medal=70;core=5",CH50 클리어
+CL149,CH50,2,설원 근접전,R14;R03,range=4;move=0.75,"medal=140;core=10;enh=1",CL148
+CL150,CH50,3,하겐의 설원,R21;R12;R24,char=C10;elite=0.5,"medal=210;core=15;enh=2;dust=20",CL149
+CL151,CH51,1,침식 갱도 화살비,R26,ranged=2,"medal=71;core=5",CH51 클리어
+CL152,CH51,2,침식 갱도 어둠,R02;R05,dark=1.0;cards=2,"medal=142;core=10;enh=1",CL151
+CL153,CH51,3,루카의 침식 갱도,R21;R16;R20,char=C06;hp=1.5,"medal=213;core=15;enh=2;dust=20",CL152
+CL154,CH52,1,초원의 끝 폭주,R19,spd=1.3,"medal=72;core=5",CH52 클리어
+CL155,CH52,2,초원 엘리트 행진,R12;R10,elite=0.5;contact=2,"medal=144;core=10;enh=1",CL154
+CL156,CH52,3,마르의 마지막 도박,R21;R08;R13,char=C07;proj=-1,"medal=216;core=15;enh=2;dust=20",CL155
+CL157,CH53,1,얼어붙은 균열 시야,R01,vision=0.6,"medal=73;core=5",CH53 클리어
+CL158,CH53,2,균열 러시,R18;R04,bosses=5;inertia=0.5,"medal=146;core=10;enh=1",CL157
+CL159,CH53,3,오르의 얼어붙은 균열,R21;R25;R11,char=C08;status=0.5,"medal=219;core=15;enh=2;dust=20",CL158
+CL160,CH54,1,전조의 두 장,R05,cards=2,"medal=74;core=5",CH54 클리어
+CL161,CH54,2,전조의 회복 봉인,R08;R26,ranged=2,"medal=148;core=10;enh=1",CL160
+CL162,CH54,3,원거리 전조,R15;R23;R19,range=3;passive=3;spd=1.3,"medal=222;core=15;enh=2;dust=20",CL161
+CL163,CH55,1,예언의 시간 압축,R17,time=600,"medal=75;core=5",CH55 클리어
+CL164,CH55,2,예언의 어둠,R02;R03,dark=1.0;move=0.75,"medal=150;core=10;enh=1",CL163
+CL165,CH55,3,솔의 예언,R21;R24;R12,char=C12;elite=0.5,"medal=225;core=15;enh=2;dust=20",CL164
+CL166,CH56,1,최후의 밤 폭주,R19,spd=1.3,"medal=76;core=5",CH56 클리어
+CL167,CH56,2,최후의 밤 화살비,R26;R14,ranged=2;range=4,"medal=152;core=10;enh=1",CL166
+CL168,CH56,3,페이의 최후의 밤,R21;R05;R09,char=C11;cards=2;heal=0.5,"medal=228;core=15;enh=2;dust=20",CL167
+CL169,CH57,1,등불 없는 강 시야,R01,vision=0.6,"medal=77;core=5",CH57 클리어
+CL170,CH57,2,등불 없는 러시,R18;R20,bosses=5;hp=1.5,"medal=154;core=10;enh=1",CL169
+CL171,CH57,3,니아의 등불 없는 강,R21;R08;R25,char=C04,"medal=231;core=15;enh=2;dust=20",CL170
+CL172,CH58,1,성채 종말 두꺼운 가죽,R20,hp=1.5,"medal=78;core=5",CH58 클리어
+CL173,CH58,2,멈춘 종말,R07;R12,elite=0.5,"medal=156;core=10;enh=1",CL172
+CL174,CH58,3,봉인된 근접(하겐 금지),R22;R15;R06,ban=S14;S17;range=3,"medal=234;core=15;enh=2;dust=20",CL173
+CL175,CH59,1,문턱의 느린 발,R03,move=0.75,"medal=79;core=5",CH59 클리어
+CL176,CH59,2,문턱의 완전한 어둠,R02;R10,dark=1.0;contact=2,"medal=158;core=10;enh=1",CL175
+CL177,CH59,3,이든의 마지막 등불,R21;R23;R08,char=C01;passive=3,"medal=237;core=15;enh=2;dust=20",CL176
+CL178,CH60,1,군주의 두 장,R05,cards=2,"medal=80;core=5",CH60 클리어
+CL179,CH60,2,군주의 러시,R18;R19,bosses=5;spd=1.3,"medal=160;core=10;enh=1",CL178
+CL180,CH60,3,솔의 여명,R21;R24;R08;R01,char=C12;vision=0.6,"medal=300;core=30;enh=4;dust=100;title=황혼을 넘은 자",CL179

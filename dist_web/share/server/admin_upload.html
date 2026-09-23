@@ -1,0 +1,138 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="robots" content="noindex, nofollow" />
+<title>서호팡팡수호대 그림 보내기</title>
+<style>
+  :root { --ink: #4a2f14; --muted: #8a6d4a; --line: #dcc3a0; --panel: #fffdf7; --green: #3d8a2c; --red: #c9463d; }
+  * { box-sizing: border-box; }
+  body { margin: 0; font-family: "Malgun Gothic", "Apple SD Gothic Neo", sans-serif; color: var(--ink); background: linear-gradient(#cfe9ff 0%, #eef6ff 30%, #fff3dc 100%) fixed; min-height: 100vh; }
+  header { display: flex; align-items: center; gap: 10px; padding: 14px 16px; }
+  header h1 { font-size: 20px; margin: 0; flex: 1; }
+  main { padding: 0 16px 40px; max-width: 760px; margin: 0 auto; }
+  .panel { background: var(--panel); border: 2px solid var(--line); border-radius: 14px; padding: 14px; box-shadow: 0 3px 0 rgba(160,110,60,0.15); margin: 10px 0; }
+  button { font-family: inherit; font-size: 14px; font-weight: 700; color: var(--ink); background: #fff; border: 2px solid var(--line); border-radius: 10px; padding: 8px 14px; cursor: pointer; }
+  button.primary { background: linear-gradient(#ffe97a, #ffb832); border-color: #b8641c; color: #4a2a08; }
+  button.sm { font-size: 12px; padding: 4px 8px; }
+  button.danger { color: var(--red); border-color: #e8b4b0; }
+  input[type=text], input[type=password] { font-family: inherit; font-size: 15px; padding: 9px 10px; border: 2px solid var(--line); border-radius: 10px; width: 100%; margin: 6px 0; }
+  #login { max-width: 420px; margin: 40px auto; text-align: center; }
+  .err { color: var(--red); font-size: 13px; min-height: 18px; }
+  .drop { border: 3px dashed #c9ad7e; border-radius: 14px; padding: 28px 14px; text-align: center; background: #fffaf0; }
+  .drop.on { background: #fff1c9; }
+  .drop input { display: none; }
+  .note { font-size: 13px; color: var(--muted); line-height: 1.5; }
+  ul.files { list-style: none; padding: 0; margin: 8px 0 0; }
+  ul.files li { display: flex; align-items: center; gap: 8px; padding: 8px 6px; border-bottom: 1px solid #eee2cc; font-size: 14px; flex-wrap: wrap; }
+  ul.files li b { flex: 1; word-break: break-all; }
+  .bar { height: 8px; background: #eee2cc; border-radius: 4px; overflow: hidden; width: 100%; }
+  .bar i { display: block; height: 100%; background: var(--green); width: 0; transition: width .2s; }
+  .ok { color: var(--green); font-weight: 700; }
+  .toast { position: fixed; left: 50%; bottom: 24px; transform: translateX(-50%); background: #4a2f14; color: #fff; padding: 10px 16px; border-radius: 10px; font-size: 14px; display: none; }
+</style>
+</head>
+<body>
+<header>
+  <h1>🖼️ 그림 보내기</h1>
+  <a href="./" style="font-size:13px">관리 페이지로</a>
+</header>
+<main>
+  <section id="login" class="panel">
+    <h2 style="font-size:17px;margin:0 0 4px">선생님 로그인</h2>
+    <form id="login-form">
+      <input id="aid" type="text" placeholder="아이디" autocomplete="username" autocapitalize="off" />
+      <input id="apw" type="password" placeholder="비밀번호" autocomplete="current-password" />
+      <div class="err" id="login-err"></div>
+      <button class="primary" type="submit" style="width:100%">들어가기</button>
+    </form>
+  </section>
+
+  <section id="main" hidden>
+    <div class="panel">
+      <label class="drop" id="drop">
+        <input id="file" type="file" multiple accept="image/*,.zip" />
+        <div style="font-size:16px;font-weight:800">여기를 눌러 그림을 고르거나, 파일을 끌어다 놓으세요</div>
+        <div class="note">여러 장 한꺼번에 가능 · 한 장 최대 24MB · Gemini에서 받은 이름 그대로 올려도 됩니다</div>
+      </label>
+      <ul class="files" id="progress"></ul>
+    </div>
+    <div class="panel">
+      <b>서버에 올라간 그림</b> <button class="sm" id="btn-refresh">새로고침</button>
+      <ul class="files" id="list"></ul>
+      <div class="note">작업 PC(Claude)가 여기서 내려받아 <code>이미지 에셋</code> 폴더에 넣습니다. 다 쓴 그림은 지워도 됩니다.</div>
+    </div>
+  </section>
+</main>
+<div class="toast" id="toast"></div>
+<script>
+const $ = (s) => document.querySelector(s);
+const TOKEN_STORE = "seoho_admin_token";
+let TOKEN = sessionStorage.getItem(TOKEN_STORE) || "";
+const CHUNK = 384 * 1024;
+function toast(msg, ms = 2200) { const t = $("#toast"); t.textContent = msg; t.style.display = "block"; clearTimeout(t._t); t._t = setTimeout(() => (t.style.display = "none"), ms); }
+function esc(s) { return String(s ?? "").replace(/[<>&"]/g, (c) => ({ "<": "&lt;", ">": "&gt;", "&": "&amp;", '"': "&quot;" }[c])); }
+function kb(n) { return n >= 1048576 ? (n / 1048576).toFixed(1) + " MB" : Math.round(n / 1024) + " KB"; }
+function fmt(ts) { return new Date(ts).toLocaleString("ko-KR", { timeZone: "Asia/Seoul", month: "numeric", day: "numeric", hour: "2-digit", minute: "2-digit", hour12: false }); }
+function showLogin(err) { TOKEN = ""; sessionStorage.removeItem(TOKEN_STORE); $("#login").hidden = false; $("#main").hidden = true; $("#login-err").textContent = err || ""; }
+async function api(path, body, raw) {
+  const r = await fetch(`/api/admin/${path}`, { method: body !== undefined ? "POST" : "GET", headers: raw ? { "X-Admin-Token": TOKEN } : { "Content-Type": "application/json", "X-Admin-Token": TOKEN }, body: body === undefined ? undefined : (raw ? body : JSON.stringify(body)) });
+  let d = null; try { d = await r.json(); } catch (e) {}
+  if (r.status === 401) { showLogin("로그인이 풀렸어요. 다시 로그인해 주세요."); throw new Error("401"); }
+  if (!r.ok) throw new Error(d?.error || `오류 ${r.status}`);
+  return d;
+}
+async function loadList() {
+  const d = await api("upload/list");
+  $("#list").innerHTML = d.files.length ? d.files.map((f) => `<li><b>${esc(f.name)}</b><span class="note">${kb(f.size)} · ${fmt(f.created_at)}${f.done ? "" : " · <span style='color:var(--red)'>미완성</span>"}</span>
+    <a class="sm" href="/api/admin/upload/file?id=${f.id}&token=${encodeURIComponent(TOKEN)}" download="${esc(f.name)}">내려받기</a>
+    <button class="sm danger" data-del="${f.id}">지우기</button></li>`).join("") : `<li class="note">아직 없어요</li>`;
+}
+async function uploadOne(file) {
+  const li = document.createElement("li");
+  li.innerHTML = `<b>${esc(file.name)}</b><span class="note">${kb(file.size)}</span><div class="bar"><i></i></div>`;
+  $("#progress").prepend(li);
+  const bar = li.querySelector("i");
+  try {
+    const chunks = Math.ceil(file.size / CHUNK);
+    const s = await api("upload/start", { name: file.name, size: file.size, mime: file.type, chunks });
+    for (let i = 0; i < chunks; i++) {
+      const blob = file.slice(i * CHUNK, (i + 1) * CHUNK);
+      let tries = 0;
+      while (true) { try { await api(`upload/chunk?id=${s.id}&idx=${i}`, blob, true); break; } catch (e) { if (++tries >= 3) throw e; } }
+      bar.style.width = Math.round(((i + 1) / chunks) * 100) + "%";
+    }
+    await api("upload/finish", { id: s.id });
+    li.querySelector(".note").innerHTML = `${kb(file.size)} · <span class="ok">올렸어요 ✓</span>`;
+  } catch (e) {
+    li.querySelector(".note").innerHTML = `<span style="color:var(--red)">실패: ${esc(e.message)}</span>`;
+  }
+}
+async function enter() { $("#login").hidden = true; $("#main").hidden = false; await loadList(); }
+$("#login-form").addEventListener("submit", async (e) => {
+  e.preventDefault();
+  const id = $("#aid").value.trim(), pw = $("#apw").value;
+  try {
+    const r = await fetch("/api/admin/login", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ id, pw }) });
+    const d = await r.json().catch(() => ({}));
+    if (!r.ok) { $("#login-err").textContent = d.error || `로그인 실패 (${r.status})`; return; }
+    TOKEN = d.token; sessionStorage.setItem(TOKEN_STORE, TOKEN); $("#apw").value = "";
+    await enter();
+  } catch (err) { $("#login-err").textContent = err.message; }
+});
+$("#file").addEventListener("change", async (e) => { for (const f of [...e.target.files]) await uploadOne(f); e.target.value = ""; await loadList(); });
+const drop = $("#drop");
+["dragenter", "dragover"].forEach((ev) => drop.addEventListener(ev, (e) => { e.preventDefault(); drop.classList.add("on"); }));
+["dragleave", "drop"].forEach((ev) => drop.addEventListener(ev, (e) => { e.preventDefault(); drop.classList.remove("on"); }));
+drop.addEventListener("drop", async (e) => { for (const f of [...e.dataTransfer.files]) await uploadOne(f); await loadList(); });
+$("#btn-refresh").addEventListener("click", () => loadList().catch((e) => toast(e.message)));
+$("#list").addEventListener("click", async (e) => {
+  const b = e.target.closest("button[data-del]"); if (!b) return;
+  if (!confirm("이 그림을 서버에서 지울까요?")) return;
+  try { await api("upload/delete", { id: b.dataset.del }); await loadList(); } catch (err) { toast(err.message); }
+});
+if (TOKEN) enter().catch(() => showLogin("")); else showLogin("");
+</script>
+</body>
+</html>

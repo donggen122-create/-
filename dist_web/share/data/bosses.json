@@ -1,0 +1,312 @@
+{
+  "_schema": {
+    "hp_mult": "일반 적 기본 HP(60) 대비 배수. 챕터 계수는 12장 수식으로 별도 적용",
+    "patterns": "최소 3개. telegraph_s = 예고 시간, dodge = 회피 방법, dmg = 플레이어 ATK 무관, 적 ATK 기준 배수",
+    "phases": "체력 비율 도달 시 변화. 단계 진입 시 1.0s 무적·연출",
+    "rest_s": "패턴 사이 최소 휴식(기본 추적만 수행)",
+    "safe_zone": "패턴 중 안전한 위치",
+    "melee_note": "근접 빌드 대응",
+    "summons": "소환 적 처리 방식",
+    "no_overlap_rule": "회피 불가 조합 방지 규칙 — 패턴 스케줄러가 강제",
+    "mid_variant": "중간 보스로 등장 시: HP 60%, 패턴 1·2만, 단계 1개",
+    "common_rules": [
+      "보스는 넉백·기절·인력 면역, 빙결 0.4s 후 8s 면역, 둔화 -15% 상한",
+      "패턴 예고는 붉은 영역/선으로 표시하며 예고 종료 전 판정 없음",
+      "동시에 두 패턴의 예고가 겹칠 수 없음(스케줄러 규칙). 소환 적 존재 중 광역 패턴은 예고 +0.3s",
+      "플레이어가 12u 이상 떨어지면 보스는 5s 후 플레이어 근처 6u로 점프(예고 1s, 착지 반경 1.5u 피해)",
+      "패턴 순서는 시드 기반 무작위이나 같은 패턴 연속 2회 금지"
+    ]
+  },
+  "bosses": [
+    {
+      "id": "BS01", "name": "황혼의 거목", "env": "ENV01", "hp_mult": 400, "atk_mult": 2.0, "radius_u": 1.4, "spd_u": 1.5,
+      "patterns": [
+        {"name": "뿌리 솟구침", "telegraph": "플레이어 주변 5곳 붉은 원(반경 1u)", "telegraph_s": 1.2, "dodge": "원 밖으로 한 걸음", "dmg": 1.5, "cooldown_s": 6},
+        {"name": "가지 휩쓸기", "telegraph": "전방 180° 부채꼴(반경 4u)", "telegraph_s": 1.0, "dodge": "보스 뒤로 이동", "dmg": 2.0, "cooldown_s": 8},
+        {"name": "씨앗 산탄", "telegraph": "보스 몸체 흔들림 + 8방향 선", "telegraph_s": 0.8, "dodge": "선 사이로", "dmg": 1.0, "cooldown_s": 7},
+        {"name": "낙엽 폭풍(2단계)", "telegraph": "맵 전체 어둡게, 안전 원 1곳(반경 2u) 표시", "telegraph_s": 2.0, "dodge": "안전 원으로", "dmg": 3.0, "cooldown_s": 20}
+      ],
+      "phases": [{"hp_pct": 50, "change": "낙엽 폭풍 해금, 뿌리 솟구침 7곳, 이동 속도 2.0"}],
+      "rest_s": 2.0, "safe_zone": "가지 휩쓸기 중 보스 후방, 낙엽 폭풍 중 안전 원",
+      "melee_note": "후방 근접 유지 시 뿌리 솟구침만 주의",
+      "summons": "없음. 일반 웨이브는 계속 생성되나 보스 등장 시 생성량 50%",
+      "no_overlap_rule": "낙엽 폭풍 예고 중 다른 패턴 금지",
+      "resist": {"status": 0.5}, "final_of": ["CH01", "CH06", "CH07"], "mid_of": ["CH01", "CH02", "CH03", "CH13", "CH52"]
+    },
+    {
+      "id": "BS02", "name": "들개 왕", "env": "ENV01", "hp_mult": 350, "atk_mult": 2.2, "radius_u": 1.0, "spd_u": 3.5,
+      "patterns": [
+        {"name": "삼단 돌진", "telegraph": "직선 예고 3개 순차(각 6u)", "telegraph_s": 1.0, "dodge": "선과 수직으로 이동", "dmg": 1.8, "cooldown_s": 7},
+        {"name": "포효", "telegraph": "보스 주변 원 4u 확장", "telegraph_s": 1.2, "dodge": "4u 밖으로", "dmg": 1.2, "cooldown_s": 10, "extra": "무리 소환 EN12 ×6"},
+        {"name": "물어뜯기 연타", "telegraph": "플레이어 고정 추적, 붉은 이빨 표시", "telegraph_s": 0.6, "dodge": "이동 속도 유지하며 원 그리기", "dmg": 1.0, "cooldown_s": 5}
+      ],
+      "phases": [{"hp_pct": 40, "change": "광폭: 이동 4.5u/s, 삼단 돌진 → 오단 돌진, 예고 0.8s"}],
+      "rest_s": 1.5, "safe_zone": "돌진 경로 옆 2u",
+      "melee_note": "돌진 후 1s 경직 시 근접 창",
+      "summons": "무리는 일반 적으로 처리. 포효 중 소환된 무리는 보스 사망 시 함께 소멸",
+      "no_overlap_rule": "포효 후 3s 동안 돌진 금지",
+      "resist": {"status": 0.5}, "final_of": ["CH03", "CH09", "CH17", "CH52"], "mid_of": ["CH05", "CH09", "CH17"]
+    },
+    {
+      "id": "BS03", "name": "마을의 종지기", "env": "ENV02", "hp_mult": 450, "atk_mult": 2.0, "radius_u": 1.2, "spd_u": 1.8,
+      "patterns": [
+        {"name": "종소리 파동", "telegraph": "보스 중심 링 3개 순차 확장(반경 2/4/6u)", "telegraph_s": 1.0, "dodge": "링 사이 틈으로 타이밍", "dmg": 1.5, "cooldown_s": 8, "extra": "플레이어·소환체 넉백 2u"},
+        {"name": "골목 봉쇄", "telegraph": "통로 2개 붉게(3s 후 벽 생성 5s)", "telegraph_s": 3.0, "dodge": "봉쇄 안 되는 통로로", "dmg": 0, "cooldown_s": 15},
+        {"name": "추 떨어뜨리기", "telegraph": "플레이어 위치 원 1.5u", "telegraph_s": 1.0, "dodge": "이동", "dmg": 2.5, "cooldown_s": 6},
+        {"name": "군중 호출(2단계)", "telegraph": "종 3회 타종", "telegraph_s": 2.0, "dodge": "—", "dmg": 0, "cooldown_s": 25, "extra": "EN10 인형 ×8 소환"}
+      ],
+      "phases": [{"hp_pct": 60, "change": "군중 호출 해금"}, {"hp_pct": 25, "change": "종소리 파동 링 5개, 휴식 1.0s"}],
+      "rest_s": 2.0, "safe_zone": "파동 링 사이(폭 1.5u)",
+      "melee_note": "넉백 파동이 근접을 밀어냄 → 파동 직전 접근 포기",
+      "summons": "인형은 사망 시 쥐 분열. 보스 사망 시 소멸",
+      "no_overlap_rule": "골목 봉쇄 중 추 떨어뜨리기 금지",
+      "resist": {"status": 0.5}, "final_of": ["CH02", "CH08", "CH56"], "mid_of": ["CH04", "CH14", "CH42"]
+    },
+    {
+      "id": "BS04", "name": "인형사", "env": "ENV02", "hp_mult": 380, "atk_mult": 1.8, "radius_u": 1.0, "spd_u": 2.2,
+      "patterns": [
+        {"name": "실 던지기", "telegraph": "보스→플레이어 직선 예고", "telegraph_s": 0.8, "dodge": "옆으로", "dmg": 1.2, "cooldown_s": 5, "extra": "명중 시 1.5s 동안 플레이어 이동 방향 반전"},
+        {"name": "인형 극장", "telegraph": "무대 원 6u 표시", "telegraph_s": 1.5, "dodge": "원 밖으로", "dmg": 0, "cooldown_s": 18, "extra": "원 안 EN10 ×6 + EN21 ×2 소환, 원 밖 적 이동 정지 5s"},
+        {"name": "가위질", "telegraph": "X자 선 2개", "telegraph_s": 1.0, "dodge": "선 사이 사분면", "dmg": 2.0, "cooldown_s": 7}
+      ],
+      "phases": [{"hp_pct": 50, "change": "분신 1개(HP 20%, 실 던지기만 사용). 본체는 반투명 표시"}],
+      "rest_s": 2.0, "safe_zone": "가위질 사분면, 극장 원 밖",
+      "melee_note": "분신은 근접 시 사라지고 본체 위치 노출",
+      "summons": "극장 소환은 무대 종료 시 잔존. 방패병(EN21)은 후면 공격",
+      "no_overlap_rule": "실 던지기 명중(반전) 중 가위질 금지",
+      "resist": {"status": 0.5}, "final_of": ["CH14", "CH20", "CH42"], "mid_of": ["CH08", "CH20", "CH26", "CH56"]
+    },
+    {
+      "id": "BS05", "name": "절벽의 파수 거상", "env": "ENV03", "hp_mult": 550, "atk_mult": 2.4, "radius_u": 1.6, "spd_u": 1.2,
+      "patterns": [
+        {"name": "내려찍기", "telegraph": "플레이어 위치 원 2u", "telegraph_s": 1.2, "dodge": "이동", "dmg": 3.0, "cooldown_s": 6, "extra": "착지 시 8방향 균열 선(0.5s 후 판정)"},
+        {"name": "반사 장판", "telegraph": "보스 주변 3u 붉은 원", "telegraph_s": 1.0, "dodge": "3u 밖에서 원거리 공격", "dmg": 0, "cooldown_s": 14, "extra": "5s 동안 원 안에서 준 근접 피해의 30%를 플레이어가 받음(상한 초당 최대 체력 8%)"},
+        {"name": "낙석", "telegraph": "경기장 무작위 원 10곳", "telegraph_s": 1.5, "dodge": "원 사이", "dmg": 1.5, "cooldown_s": 9},
+        {"name": "경기장 축소(2단계)", "telegraph": "가장자리 붉은 띠", "telegraph_s": 3.0, "dodge": "중앙으로", "dmg": "띠 안 초당 5%", "cooldown_s": 30}
+      ],
+      "phases": [{"hp_pct": 50, "change": "경기장 반경 8u→6u, 낙석 14곳"}],
+      "rest_s": 2.5, "safe_zone": "반사 장판 중 3u 밖, 축소 후 중앙",
+      "melee_note": "반사 장판 표시 시 근접 중단(E14 파동 등 원거리 근접 활용)",
+      "summons": "없음",
+      "no_overlap_rule": "축소 예고 중 낙석 금지, 반사 장판 중 내려찍기 금지",
+      "resist": {"status": 0.5}, "final_of": ["CH04", "CH10", "CH16"], "mid_of": ["CH06", "CH16", "CH22"]
+    },
+    {
+      "id": "BS06", "name": "등대의 망령", "env": "ENV03", "hp_mult": 420, "atk_mult": 2.0, "radius_u": 1.1, "spd_u": 2.0,
+      "patterns": [
+        {"name": "탐조등", "telegraph": "회전 광선 예고(폭 1.5u, 90°/s)", "telegraph_s": 1.0, "dodge": "회전 방향 따라 이동", "dmg": "초당 1.0", "cooldown_s": 12, "duration_s": 6},
+        {"name": "안개 호출", "telegraph": "경기장 안개, 시야 반경 4u", "telegraph_s": 1.5, "dodge": "봉화 근처", "dmg": 0, "cooldown_s": 20, "duration_s": 8, "extra": "EN08 유령 ×4"},
+        {"name": "구슬 발사", "telegraph": "보스 주변 6개 구슬 점멸", "telegraph_s": 0.8, "dodge": "구슬 사이", "dmg": 1.3, "cooldown_s": 6, "extra": "구슬은 벽에 1회 튕김"}
+      ],
+      "phases": [{"hp_pct": 50, "change": "탐조등 2개(대칭)"}],
+      "rest_s": 2.0, "safe_zone": "탐조등 반대편",
+      "melee_note": "보스 밀착 시 탐조등 중심에 가까워 회전 각속도 이득",
+      "summons": "유령은 순간이동형. 안개 종료 시 소멸",
+      "no_overlap_rule": "안개 중 탐조등 금지",
+      "resist": {"status": 0.5}, "final_of": ["CH11", "CH23", "CH46"], "mid_of": ["CH10", "CH18", "CH23"]
+    },
+    {
+      "id": "BS07", "name": "늪의 어미", "env": "ENV04", "hp_mult": 480, "atk_mult": 1.8, "radius_u": 1.5, "spd_u": 1.4,
+      "patterns": [
+        {"name": "산란", "telegraph": "보스 몸체 팽창", "telegraph_s": 1.5, "dodge": "—", "dmg": 0, "cooldown_s": 12, "extra": "EN13 균류 ×6 사방 투척(착지 원 표시)"},
+        {"name": "독 분사", "telegraph": "전방 부채꼴 60° 6u", "telegraph_s": 1.0, "dodge": "측면", "dmg": 1.2, "cooldown_s": 7, "extra": "독 3중첩"},
+        {"name": "늪 가라앉기", "telegraph": "보스 주변 4u 원 갈색", "telegraph_s": 1.2, "dodge": "원 밖", "dmg": 0.8, "cooldown_s": 10, "extra": "원 안 플레이어 이동 -50% 3s"},
+        {"name": "분열(2단계)", "telegraph": "—", "telegraph_s": 0, "dodge": "—", "dmg": 0, "cooldown_s": 0, "extra": "HP 40%에서 본체가 소형 3체(각 HP 15%, 패턴 독 분사만)로 분열. 3체 모두 처치 시 승리"}
+      ],
+      "phases": [{"hp_pct": 40, "change": "분열"}],
+      "rest_s": 2.0, "safe_zone": "독 분사 측면",
+      "melee_note": "분열체는 근접에 약함(빠른 처치)",
+      "summons": "균류는 자폭형 — 원거리 처치 권장. 보스 사망 시 소멸",
+      "no_overlap_rule": "산란 후 4s 동안 늪 가라앉기 금지",
+      "resist": {"status": 0.5, "poison": 0}, "final_of": ["CH05", "CH19"], "mid_of": ["CH07", "CH25"]
+    },
+    {
+      "id": "BS08", "name": "안개 속의 사냥꾼", "env": "ENV04", "hp_mult": 400, "atk_mult": 2.3, "radius_u": 0.9, "spd_u": 2.8,
+      "patterns": [
+        {"name": "은신 저격", "telegraph": "보스 사라짐 → 플레이어에게 선 예고", "telegraph_s": 1.5, "dodge": "선 옆으로", "dmg": 2.5, "cooldown_s": 8},
+        {"name": "덫 설치", "telegraph": "플레이어 주변 4곳 원 0.8u", "telegraph_s": 0.5, "dodge": "밟지 않기(10s 유지)", "dmg": 1.0, "cooldown_s": 10, "extra": "밟으면 1s 속박"},
+        {"name": "그물", "telegraph": "부채꼴 90° 5u", "telegraph_s": 0.9, "dodge": "측면", "dmg": 0.8, "cooldown_s": 7, "extra": "둔화 50% 2s"}
+      ],
+      "phases": [{"hp_pct": 50, "change": "은신 시간 2배, 저격 2연발"}],
+      "rest_s": 1.5, "safe_zone": "덫 없는 방향",
+      "melee_note": "은신 해제 직후 0.5s 보스 피해 +50% (근접 보상)",
+      "summons": "없음",
+      "no_overlap_rule": "속박 중 저격 금지",
+      "resist": {"status": 0.5}, "final_of": ["CH13", "CH25", "CH48"], "mid_of": ["CH11", "CH19", "CH48"]
+    },
+    {
+      "id": "BS09", "name": "갱도 기관장", "env": "ENV05", "hp_mult": 500, "atk_mult": 2.2, "radius_u": 1.3, "spd_u": 1.6,
+      "patterns": [
+        {"name": "투사체 방벽", "telegraph": "보스 전방 반원 3u 푸른 벽", "telegraph_s": 1.0, "dodge": "벽은 회전(30°/s) — 뒤로", "dmg": 0, "cooldown_s": 15, "duration_s": 8, "extra": "정면 투사체 소멸(지면·상공 공격 통과)"},
+        {"name": "광차 발사", "telegraph": "레일 2개 붉은 선", "telegraph_s": 1.2, "dodge": "레일 밖", "dmg": 2.5, "cooldown_s": 8},
+        {"name": "갱도 붕괴", "telegraph": "천장 원 8곳", "telegraph_s": 1.5, "dodge": "원 사이", "dmg": 1.8, "cooldown_s": 10, "extra": "낙석은 장애물로 남음(파괴 가능 HP 50)"},
+        {"name": "통로 개폐(2단계)", "telegraph": "문 아이콘", "telegraph_s": 2.0, "dodge": "열리는 통로로", "dmg": 0, "cooldown_s": 20, "extra": "현재 방 폐쇄 후 옆 방으로 이동 강제(10s)"}
+      ],
+      "phases": [{"hp_pct": 50, "change": "통로 개폐 해금, 방벽 180°"}],
+      "rest_s": 2.5, "safe_zone": "방벽 후방, 레일 밖",
+      "melee_note": "근접은 방벽 영향 없음 — 근접 유리",
+      "summons": "EN14 포수 2 고정 배치(파괴 가능)",
+      "no_overlap_rule": "통로 개폐 중 광차 금지",
+      "resist": {"status": 0.5}, "final_of": ["CH12", "CH18", "CH24", "CH30"], "mid_of": ["CH15", "CH30"]
+    },
+    {
+      "id": "BS10", "name": "사금의 탐욕자", "env": "ENV05", "hp_mult": 360, "atk_mult": 1.6, "radius_u": 1.0, "spd_u": 3.0,
+      "patterns": [
+        {"name": "금화 투척", "telegraph": "포물선 8개 착지 원", "telegraph_s": 1.0, "dodge": "원 사이", "dmg": 1.2, "cooldown_s": 6, "extra": "착지 금화는 5s 후 골드로 회수 가능(ch×3)"},
+        {"name": "도주", "telegraph": "보스가 반대편으로 뛰어감", "telegraph_s": 0.5, "dodge": "—", "dmg": 0, "cooldown_s": 12, "extra": "도주 중 EN17 사금 정령 ×5 생성"},
+        {"name": "황금 감옥", "telegraph": "플레이어 주변 정사각 3u 벽", "telegraph_s": 1.5, "dodge": "예고 중 벗어나기", "dmg": 0, "cooldown_s": 18, "extra": "갇히면 벽(HP) 파괴까지 4s 이상"}
+      ],
+      "phases": [{"hp_pct": 30, "change": "도주 빈도 2배, 금화 12개"}],
+      "rest_s": 1.5, "safe_zone": "금화 착지 원 밖",
+      "melee_note": "도주형이라 근접 불리 — 인력·유도 권장",
+      "summons": "사금 정령은 처치 시 골드 보너스(보스전 중 회수 동기)",
+      "no_overlap_rule": "황금 감옥 중 도주 금지",
+      "resist": {"status": 0.5}, "final_of": ["CH15", "CH27", "CH51"], "mid_of": ["CH12", "CH21", "CH31"]
+    },
+    {
+      "id": "BS11", "name": "유리 폭풍", "env": "ENV06", "hp_mult": 460, "atk_mult": 2.0, "radius_u": 1.8, "spd_u": 2.2,
+      "patterns": [
+        {"name": "유리 파편 회오리", "telegraph": "보스 주변 회전 원 5u", "telegraph_s": 1.2, "dodge": "5u 밖", "dmg": "초당 0.8", "cooldown_s": 10, "duration_s": 5},
+        {"name": "모래 벽", "telegraph": "맵 가로지르는 선(폭 2u) 이동 예고", "telegraph_s": 1.5, "dodge": "벽 통과 지점(틈 2u) 표시로", "dmg": 2.0, "cooldown_s": 12},
+        {"name": "열기 지대", "telegraph": "무작위 원 6곳 붉은 지면", "telegraph_s": 1.0, "dodge": "원 밖", "dmg": "초당 0.5 + 화상", "cooldown_s": 9, "duration_s": 8}
+      ],
+      "phases": [{"hp_pct": 50, "change": "보스 위치가 3s마다 무작위 이동(사막 신기루), 회오리 반경 6u"}],
+      "rest_s": 2.0, "safe_zone": "모래 벽 틈, 열기 원 밖",
+      "melee_note": "회오리 중 근접 불가 — 회오리 사이클 4~5초 창",
+      "summons": "없음. 열기 지대에 EN38 잔해 생성",
+      "no_overlap_rule": "회오리 중 모래 벽 금지",
+      "resist": {"status": 0.5, "burn": 0}, "final_of": ["CH21", "CH33", "CH35"], "mid_of": ["CH28", "CH35"]
+    },
+    {
+      "id": "BS12", "name": "신기루 여왕", "env": "ENV06", "hp_mult": 420, "atk_mult": 2.1, "radius_u": 1.0, "spd_u": 2.5,
+      "patterns": [
+        {"name": "오아시스 이동", "telegraph": "맵에 안전 원(반경 2.5u) 1곳 표시, 나머지 지면 붉음", "telegraph_s": 2.5, "dodge": "안전 원으로 이동(거리 8~12u)", "dmg": "밖에 있으면 초당 6%", "cooldown_s": 25, "duration_s": 5},
+        {"name": "거울상", "telegraph": "보스 4체로 분열(진짜 1)", "telegraph_s": 1.0, "dodge": "—", "dmg": 0, "cooldown_s": 15, "extra": "가짜는 피해 시 소멸, 진짜만 HP 감소"},
+        {"name": "모래 창", "telegraph": "플레이어 향한 선 3개(부채꼴 30°)", "telegraph_s": 0.8, "dodge": "선 사이", "dmg": 1.8, "cooldown_s": 6}
+      ],
+      "phases": [{"hp_pct": 50, "change": "오아시스 원 반경 1.5u, 거울상 6체"}],
+      "rest_s": 2.0, "safe_zone": "오아시스 원",
+      "melee_note": "거울상 판별: 진짜는 그림자가 있음(시각 힌트). 근접 접촉 시 가짜 즉시 소멸",
+      "summons": "없음",
+      "no_overlap_rule": "오아시스 이동 중 모래 창 금지",
+      "resist": {"status": 0.5}, "final_of": ["CH22", "CH34", "CH36"], "mid_of": ["CH24", "CH34", "CH36"]
+    },
+    {
+      "id": "BS13", "name": "성채의 기사단장", "env": "ENV07", "hp_mult": 560, "atk_mult": 2.5, "radius_u": 1.2, "spd_u": 2.0,
+      "patterns": [
+        {"name": "방패 돌진", "telegraph": "직선 8u", "telegraph_s": 1.0, "dodge": "수직 이동", "dmg": 2.2, "cooldown_s": 7, "extra": "정면 투사체 차단 유지"},
+        {"name": "대검 회전", "telegraph": "보스 중심 원 3.5u", "telegraph_s": 1.0, "dodge": "밖으로", "dmg": 2.5, "cooldown_s": 9},
+        {"name": "기사 소집", "telegraph": "깃발 상승", "telegraph_s": 1.5, "dodge": "—", "dmg": 0, "cooldown_s": 20, "extra": "EN40 황혼 기사 ×3 + EN24 깃발 1"},
+        {"name": "성벽 붕괴(2단계)", "telegraph": "구조물 3곳 붉게", "telegraph_s": 2.0, "dodge": "구조물에서 멀리", "dmg": 3.0, "cooldown_s": 25, "extra": "파괴 가능 구조물이 무너지며 경기장 형태 변화"}
+      ],
+      "phases": [{"hp_pct": 60, "change": "성벽 붕괴 해금"}, {"hp_pct": 30, "change": "방패 버림: 투사체 차단 해제, 공격 +30%, 이동 3.0"}],
+      "rest_s": 2.5, "safe_zone": "대검 회전 3.5u 밖, 방패 돌진 옆",
+      "melee_note": "방패 단계에서 근접이 유리(후면 피해 +20%)",
+      "summons": "기사는 방패형. 깃발 우선 처치",
+      "no_overlap_rule": "기사 소집 후 5s 동안 대검 회전 금지",
+      "resist": {"status": 0.5}, "final_of": ["CH26", "CH29", "CH38", "CH58"], "mid_of": ["CH27", "CH40", "CH41"]
+    },
+    {
+      "id": "BS14", "name": "가고일 군주", "env": "ENV07", "hp_mult": 440, "atk_mult": 2.0, "radius_u": 1.3, "spd_u": 0,
+      "patterns": [
+        {"name": "석화", "telegraph": "보스 정지(피해 -70%) + 눈 빛남", "telegraph_s": 1.0, "dodge": "—", "dmg": 0, "cooldown_s": 15, "duration_s": 5, "extra": "석화 중 EN22 가고일 ×4 활성화"},
+        {"name": "급강하", "telegraph": "보스 사라짐 → 플레이어 위치 원 2u", "telegraph_s": 1.3, "dodge": "이동", "dmg": 3.0, "cooldown_s": 8},
+        {"name": "돌 비", "telegraph": "경기장 절반 붉음(좌/우)", "telegraph_s": 1.5, "dodge": "반대편", "dmg": 2.0, "cooldown_s": 10}
+      ],
+      "phases": [{"hp_pct": 50, "change": "석화 지속 3s, 급강하 2연속"}],
+      "rest_s": 2.0, "safe_zone": "돌 비 반대편",
+      "melee_note": "석화 중 근접 피해 -70% → 그 시간엔 소환 가고일 처리",
+      "summons": "가고일은 활성화 전 원거리 처치 가능",
+      "no_overlap_rule": "석화 중 급강하 금지",
+      "resist": {"status": 0.5}, "final_of": ["CH28", "CH40", "CH41"], "mid_of": ["CH29", "CH38"]
+    },
+    {
+      "id": "BS15", "name": "강의 지배자", "env": "ENV08", "hp_mult": 520, "atk_mult": 2.2, "radius_u": 1.6, "spd_u": 2.4,
+      "patterns": [
+        {"name": "해일", "telegraph": "강 상류에서 파도 선(폭 3u) 접근", "telegraph_s": 2.0, "dodge": "다리(안전 구역) 위로", "dmg": 2.5, "cooldown_s": 14, "extra": "소환체·포탑·지뢰·결정 즉시 파괴"},
+        {"name": "잠수 습격", "telegraph": "수면 소용돌이 → 플레이어 아래 원 1.5u", "telegraph_s": 1.2, "dodge": "이동", "dmg": 2.0, "cooldown_s": 7},
+        {"name": "물기둥", "telegraph": "무작위 원 6곳", "telegraph_s": 1.0, "dodge": "원 사이", "dmg": 1.5, "cooldown_s": 8}
+      ],
+      "phases": [{"hp_pct": 50, "change": "다리 1개 붕괴(안전 구역 축소), 해일 2연속"}],
+      "rest_s": 2.5, "safe_zone": "다리",
+      "melee_note": "잠수 중 무적 — 부상 직후 2s 창",
+      "summons": "EN26 급류 뱀 상시 3마리 유지",
+      "no_overlap_rule": "해일 예고 중 잠수 습격 금지",
+      "resist": {"status": 0.5}, "final_of": ["CH31", "CH43", "CH47"], "mid_of": ["CH32", "CH44", "CH47"]
+    },
+    {
+      "id": "BS16", "name": "익사한 등불지기", "env": "ENV08", "hp_mult": 410, "atk_mult": 2.0, "radius_u": 1.0, "spd_u": 2.6,
+      "patterns": [
+        {"name": "거짓 등불", "telegraph": "맵에 등불 3개 배치(1개만 진짜, 푸른빛)", "telegraph_s": 1.5, "dodge": "진짜 등불로 → 광휘 +30, 가짜는 폭발 반경 2u", "dmg": 1.5, "cooldown_s": 15},
+        {"name": "익사자 행렬", "telegraph": "강 한쪽에서 EN28 ×12 일렬 접근", "telegraph_s": 1.0, "dodge": "범위 공격", "dmg": 0, "cooldown_s": 18},
+        {"name": "빛 흡수", "telegraph": "보스가 봉화 방향으로 손 뻗음", "telegraph_s": 2.0, "dodge": "보스에게 총 피해 1회 이상 → 중단(피해량 무관)", "dmg": 0, "cooldown_s": 20, "extra": "중단 실패 시 10s 동안 봉화 회복 무효, 시야 -30%"}
+      ],
+      "phases": [{"hp_pct": 50, "change": "거짓 등불 5개(진짜 1)"}],
+      "rest_s": 2.0, "safe_zone": "진짜 등불 근처",
+      "melee_note": "빛 흡수 중단은 근접이 가장 확실",
+      "summons": "행렬은 포위형 — 일렬로 오므로 관통 유리",
+      "no_overlap_rule": "빛 흡수 중 거짓 등불 금지",
+      "resist": {"status": 0.5}, "final_of": ["CH32", "CH44", "CH57"], "mid_of": ["CH33", "CH43", "CH57"]
+    },
+    {
+      "id": "BS17", "name": "빙하의 심장", "env": "ENV09", "hp_mult": 600, "atk_mult": 2.3, "radius_u": 1.7, "spd_u": 1.3,
+      "patterns": [
+        {"name": "빙결 파동", "telegraph": "보스 중심 원 확장(5u)", "telegraph_s": 1.3, "dodge": "밖으로 또는 EN30 조각상 뒤(차단)", "dmg": 1.5, "cooldown_s": 10, "extra": "명중 시 빙결 1s"},
+        {"name": "균열", "telegraph": "지면 선 3개(폭 1u) 균열", "telegraph_s": 1.5, "dodge": "선 밖", "dmg": 3.0, "cooldown_s": 9, "extra": "균열은 10s 동안 통과 불가 장애물"},
+        {"name": "고드름 낙하", "telegraph": "플레이어 추적 원 1.2u ×5 순차", "telegraph_s": 0.8, "dodge": "계속 이동", "dmg": 1.8, "cooldown_s": 7},
+        {"name": "설원 봉인(2단계)", "telegraph": "맵 전체 흰색", "telegraph_s": 3.0, "dodge": "봉화 원 안", "dmg": "밖 초당 8%", "cooldown_s": 30, "duration_s": 4}
+      ],
+      "phases": [{"hp_pct": 50, "change": "설원 봉인 해금, 이동 속도 2.0"}],
+      "rest_s": 2.5, "safe_zone": "조각상 뒤, 봉화 원",
+      "melee_note": "빙결 파동 명중 시 근접이 가장 위험 — 파동 직전 후퇴",
+      "summons": "EN30 조각상 4개 배치(차폐물 겸 빙결 폭발 자원)",
+      "no_overlap_rule": "봉인 예고 중 다른 패턴 금지, 균열 중 고드름 금지",
+      "resist": {"status": 0.5, "freeze": 0}, "final_of": ["CH37", "CH49"], "mid_of": ["CH39", "CH45", "CH50", "CH53"]
+    },
+    {
+      "id": "BS18", "name": "얼음 사냥꾼 왕", "env": "ENV09", "hp_mult": 470, "atk_mult": 2.4, "radius_u": 1.1, "spd_u": 2.8,
+      "patterns": [
+        {"name": "저격 삼중", "telegraph": "선 3개 순차(각 1.2s)", "telegraph_s": 1.2, "dodge": "선 밖", "dmg": 2.8, "cooldown_s": 8},
+        {"name": "얼음 갑주", "telegraph": "보스 푸른 빛", "telegraph_s": 1.0, "dodge": "—", "dmg": 0, "cooldown_s": 20, "duration_s": 8, "extra": "치명타를 일반 피해로 전환(치명타 저항)"},
+        {"name": "눈사태", "telegraph": "맵 한쪽 끝에서 선 접근(폭 4u)", "telegraph_s": 2.0, "dodge": "틈(2u) 또는 반대편", "dmg": 2.5, "cooldown_s": 15}
+      ],
+      "phases": [{"hp_pct": 50, "change": "얼음 갑주 상시(치명타 저항 영구), 저격 5중"}],
+      "rest_s": 2.0, "safe_zone": "눈사태 틈",
+      "melee_note": "근접은 저격 예고 회피가 쉬움(보스가 도망치지 않음)",
+      "summons": "EN31 눈보라 정령 ×3",
+      "no_overlap_rule": "눈사태 중 저격 금지",
+      "resist": {"status": 0.5, "crit": "갑주 중 100%"}, "final_of": ["CH39", "CH50", "CH53"], "mid_of": ["CH37", "CH49"]
+    },
+    {
+      "id": "BS19", "name": "심연의 예언자", "env": "ENV10", "hp_mult": 650, "atk_mult": 2.5, "radius_u": 1.4, "spd_u": 1.6,
+      "patterns": [
+        {"name": "촉수 정원", "telegraph": "원 12곳", "telegraph_s": 1.2, "dodge": "원 사이", "dmg": 2.0, "cooldown_s": 8, "extra": "EN33 촉수 잔존 3s"},
+        {"name": "응시", "telegraph": "보스 눈 → 플레이어 선", "telegraph_s": 2.0, "dodge": "보스 시야에서 벗어나기(장애물 뒤) 또는 봉화 원 안", "dmg": 0, "cooldown_s": 15, "extra": "실패 시 시야 -50% 5s + 조작 반전 없음"},
+        {"name": "균열 개방", "telegraph": "맵 중앙 균열", "telegraph_s": 2.5, "dodge": "균열 밖", "dmg": "초당 4%", "cooldown_s": 25, "duration_s": 8, "extra": "EN35 벌레 ×10, EN36 사제 ×2"},
+        {"name": "심연의 손(2단계)", "telegraph": "플레이어 위치 거대 손 원 3u", "telegraph_s": 1.5, "dodge": "이동", "dmg": 4.0, "cooldown_s": 12, "extra": "명중 시 봉화로 강제 끌어당김(피해 후)"}
+      ],
+      "phases": [{"hp_pct": 66, "change": "심연의 손 해금"}, {"hp_pct": 33, "change": "촉수 18곳, 휴식 1.5s"}],
+      "rest_s": 2.5, "safe_zone": "봉화 원(응시 무효), 장애물 뒤",
+      "melee_note": "응시 회피에 장애물 필요 — 근접은 보스 몸체를 장애물로 사용 불가(눈은 정면)",
+      "summons": "사제 우선 처치. 벌레는 분열형(범위 즉발)",
+      "no_overlap_rule": "균열 개방 중 심연의 손 금지, 응시 중 촉수 정원 금지",
+      "resist": {"status": 0.5}, "final_of": ["CH45", "CH55", "CH59"], "mid_of": ["CH46", "CH51", "CH54", "CH59", "CH60"]
+    },
+    {
+      "id": "BS20", "name": "황혼의 군주", "env": "ENV10", "hp_mult": 800, "atk_mult": 2.8, "radius_u": 1.6, "spd_u": 1.8,
+      "patterns": [
+        {"name": "광원 흡수", "telegraph": "봉화 어두워짐", "telegraph_s": 2.0, "dodge": "—", "dmg": 0, "cooldown_s": 30, "duration_s": 10, "extra": "봉화·여명 등 광원 효과 무효, 어둠 지대 전역"},
+        {"name": "황혼 검", "telegraph": "직선 10u 폭 1.5u", "telegraph_s": 1.0, "dodge": "옆으로", "dmg": 3.0, "cooldown_s": 6},
+        {"name": "그림자 군단", "telegraph": "군주 손 들기", "telegraph_s": 1.5, "dodge": "—", "dmg": 0, "cooldown_s": 20, "extra": "EN37 병정 ×8 + EL 1종(챕터별) 소환"},
+        {"name": "몰락의 원", "telegraph": "보스 중심 원 4u 수축→확장", "telegraph_s": 1.5, "dodge": "수축 후 확장 전 원 안으로 진입(역발상) 또는 8u 밖", "dmg": 3.5, "cooldown_s": 12},
+        {"name": "최후의 황혼(3단계)", "telegraph": "맵 전체 붉음, 안전 원 2곳(각 1.5u) 12u 거리", "telegraph_s": 3.5, "dodge": "안전 원", "dmg": 5.0, "cooldown_s": 35}
+      ],
+      "phases": [{"hp_pct": 70, "change": "그림자 군단 해금"}, {"hp_pct": 40, "change": "최후의 황혼 해금, 황혼 검 2연"}, {"hp_pct": 15, "change": "광원 흡수 영구, 휴식 1.0s"}],
+      "rest_s": 2.5, "safe_zone": "몰락의 원 안(확장 전) 또는 8u 밖, 최후의 황혼 안전 원",
+      "melee_note": "몰락의 원 역발상 진입은 근접에 유리",
+      "summons": "군단은 보스 사망 시 소멸. 엘리트는 별도 처치 필요",
+      "no_overlap_rule": "최후의 황혼 예고 중 모든 패턴 금지, 광원 흡수 중 최후의 황혼 금지(안전 원 가시성 보장)",
+      "resist": {"status": 0.5}, "final_of": ["CH54", "CH60"], "mid_of": ["CH55", "CH58"]
+    }
+  ]
+}

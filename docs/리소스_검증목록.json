@@ -1,0 +1,742 @@
+{
+  "checked_at": "2026-09-22T10:20:26.672Z",
+  "new_png": 10,
+  "new_svg": 52,
+  "new_hero_images": 0,
+  "hero_png_unchanged": 27,
+  "hero_baseline": "67972a6e-6bc0-4fc0-980b-e04a35bd6560",
+  "resources": [
+    {
+      "path": "game/assets/elements_v2/weapons/baseball.png",
+      "category": "weapons",
+      "format": "PNG",
+      "method": "ImageGen 생성",
+      "bytes": 1172628,
+      "sha256": "88390d39611e23dd281d127d72170c7d28947e2b2ca70b26e17b655673c6f14a",
+      "width": 1254,
+      "height": 1254
+    },
+    {
+      "path": "game/assets/elements_v2/weapons/bat.png",
+      "category": "weapons",
+      "format": "PNG",
+      "method": "ImageGen 생성",
+      "bytes": 229326,
+      "sha256": "b005786b2980a3a6a94f0d96c91f450b0f8cf6a6e0a91e9d62924037f0af9dc3",
+      "width": 1254,
+      "height": 1254
+    },
+    {
+      "path": "game/assets/elements_v2/weapons/dodgeball.png",
+      "category": "weapons",
+      "format": "PNG",
+      "method": "ImageGen 생성",
+      "bytes": 961941,
+      "sha256": "c3f93c38b4ada368e376c1398f3165f5f23513f5f1f866b5184d88c11e8c98ce",
+      "width": 1254,
+      "height": 1254
+    },
+    {
+      "path": "game/assets/elements_v2/weapons/pencil.png",
+      "category": "weapons",
+      "format": "PNG",
+      "method": "ImageGen 생성",
+      "bytes": 277652,
+      "sha256": "8e594e2d3233a63f85977c7f200c78af9d61829f4d25efdb7bd8f6e8e4d67730",
+      "width": 1254,
+      "height": 1254
+    },
+    {
+      "path": "game/assets/elements_v2/weapons/sword.png",
+      "category": "weapons",
+      "format": "PNG",
+      "method": "ImageGen 생성",
+      "bytes": 283187,
+      "sha256": "0f35c238881429fc8fcb73e1efb444e094bb01ac1ce4b1be96a5959c8857e119",
+      "width": 1254,
+      "height": 1254
+    },
+    {
+      "path": "game/assets/elements_v2/fx/earth_impact.png",
+      "category": "fx",
+      "format": "PNG",
+      "method": "ImageGen 생성",
+      "bytes": 1030172,
+      "sha256": "eca8dae1796b2f6a8cc8f4cc1b7977385bb90b8616bcd69e6f91f38c3c01f5ee",
+      "width": 1230,
+      "height": 1278
+    },
+    {
+      "path": "game/assets/elements_v2/fx/fire_impact.png",
+      "category": "fx",
+      "format": "PNG",
+      "method": "ImageGen 생성",
+      "bytes": 1005835,
+      "sha256": "20653166ac2093ecec6c019c13104645555f913ae555066570c6472e458b8855",
+      "width": 1254,
+      "height": 1254
+    },
+    {
+      "path": "game/assets/elements_v2/fx/lightning_impact.png",
+      "category": "fx",
+      "format": "PNG",
+      "method": "ImageGen 생성",
+      "bytes": 477332,
+      "sha256": "479233ea7d996c589cc75f89ddb6ef499b2b82ef4ba9f4fd8a22c96a11321011",
+      "width": 1774,
+      "height": 887
+    },
+    {
+      "path": "game/assets/elements_v2/fx/water_impact.png",
+      "category": "fx",
+      "format": "PNG",
+      "method": "ImageGen 생성",
+      "bytes": 1581162,
+      "sha256": "96d90dc7c7a38b7abe4b1e57bf813665b8650c76e3d218b4d5c6bb83dc2277e5",
+      "width": 1536,
+      "height": 1024
+    },
+    {
+      "path": "game/assets/elements_v2/fx/wind_impact.png",
+      "category": "fx",
+      "format": "PNG",
+      "method": "ImageGen 생성",
+      "bytes": 1388418,
+      "sha256": "0755a65ec8b0a03bae79a8a1fced765c334c32918b79e4bdef01da42df9de53a",
+      "width": 1254,
+      "height": 1254
+    },
+    {
+      "path": "game/assets/elements_v2/icons/combo_COMBO_01.svg",
+      "category": "icons",
+      "format": "SVG",
+      "method": "코드로 제작한 원본 SVG",
+      "bytes": 953,
+      "sha256": "b34ae666063c84f8153dc017771ecba57e89c205b64e22ab3de77053da897e87",
+      "viewBox": "0 0 64 64"
+    },
+    {
+      "path": "game/assets/elements_v2/icons/combo_COMBO_02.svg",
+      "category": "icons",
+      "format": "SVG",
+      "method": "코드로 제작한 원본 SVG",
+      "bytes": 892,
+      "sha256": "086d6631495df90c034cc1ed64da7f03d1b587401b99fa7860097d746f3d5e4d",
+      "viewBox": "0 0 64 64"
+    },
+    {
+      "path": "game/assets/elements_v2/icons/combo_COMBO_03.svg",
+      "category": "icons",
+      "format": "SVG",
+      "method": "코드로 제작한 원본 SVG",
+      "bytes": 959,
+      "sha256": "5dc1606f72db23065935fa284f0af4b5bb4d419be8c93b799e90cedbc6f889c4",
+      "viewBox": "0 0 64 64"
+    },
+    {
+      "path": "game/assets/elements_v2/icons/combo_COMBO_04.svg",
+      "category": "icons",
+      "format": "SVG",
+      "method": "코드로 제작한 원본 SVG",
+      "bytes": 943,
+      "sha256": "1d8a5743fac9952d65245ad18f7b19c2d766a22a31be1684a331a1eb02c120c4",
+      "viewBox": "0 0 64 64"
+    },
+    {
+      "path": "game/assets/elements_v2/icons/combo_COMBO_05.svg",
+      "category": "icons",
+      "format": "SVG",
+      "method": "코드로 제작한 원본 SVG",
+      "bytes": 1009,
+      "sha256": "58792de49d267c0bc8cb5d19d4cad79f51af2f0d7ae481f878242b8ce053f66f",
+      "viewBox": "0 0 64 64"
+    },
+    {
+      "path": "game/assets/elements_v2/icons/combo_COMBO_06.svg",
+      "category": "icons",
+      "format": "SVG",
+      "method": "코드로 제작한 원본 SVG",
+      "bytes": 910,
+      "sha256": "fcc7a66c0562c8a553513b829361923fa34dfbb1f764d63a6e1ae18e47bcbbd9",
+      "viewBox": "0 0 64 64"
+    },
+    {
+      "path": "game/assets/elements_v2/icons/combo_COMBO_07.svg",
+      "category": "icons",
+      "format": "SVG",
+      "method": "코드로 제작한 원본 SVG",
+      "bytes": 910,
+      "sha256": "b1d446316d75ef6118d8abb73aa0ea23f8f404090672776d1561220508014221",
+      "viewBox": "0 0 64 64"
+    },
+    {
+      "path": "game/assets/elements_v2/icons/combo_COMBO_08.svg",
+      "category": "icons",
+      "format": "SVG",
+      "method": "코드로 제작한 원본 SVG",
+      "bytes": 1001,
+      "sha256": "e82b8303d87a8fb6bca0ffaeda3ffec7f4d8c1c1bb6184d7df9d8405d07ce0fa",
+      "viewBox": "0 0 64 64"
+    },
+    {
+      "path": "game/assets/elements_v2/icons/combo_COMBO_09.svg",
+      "category": "icons",
+      "format": "SVG",
+      "method": "코드로 제작한 원본 SVG",
+      "bytes": 922,
+      "sha256": "98faedb97c795d637343812023da8a1a235b2ca440d2ae6b10c18ba0172777bf",
+      "viewBox": "0 0 64 64"
+    },
+    {
+      "path": "game/assets/elements_v2/icons/combo_COMBO_10.svg",
+      "category": "icons",
+      "format": "SVG",
+      "method": "코드로 제작한 원본 SVG",
+      "bytes": 908,
+      "sha256": "d86f8cdb18b30c15a3ab16c958c66229a85d13d17f89646b08aaa8772756a7a4",
+      "viewBox": "0 0 64 64"
+    },
+    {
+      "path": "game/assets/elements_v2/icons/combo_COMBO_11.svg",
+      "category": "icons",
+      "format": "SVG",
+      "method": "코드로 제작한 원본 SVG",
+      "bytes": 1079,
+      "sha256": "805503b85d421401b61bae2159d44590a61b0c82f7b3dbdeed14964a20446bd0",
+      "viewBox": "0 0 64 64"
+    },
+    {
+      "path": "game/assets/elements_v2/icons/combo_COMBO_12.svg",
+      "category": "icons",
+      "format": "SVG",
+      "method": "코드로 제작한 원본 SVG",
+      "bytes": 885,
+      "sha256": "816605f6d7ed67564c870cd96422ede4a95e2b3ce8c71faf6b2195b00e458e44",
+      "viewBox": "0 0 64 64"
+    },
+    {
+      "path": "game/assets/elements_v2/icons/combo_COMBO_13.svg",
+      "category": "icons",
+      "format": "SVG",
+      "method": "코드로 제작한 원본 SVG",
+      "bytes": 957,
+      "sha256": "f8d4757aa08428f1be9a747b64fbfaccd3149d25b138c8b45f8eb6f6bc78e378",
+      "viewBox": "0 0 64 64"
+    },
+    {
+      "path": "game/assets/elements_v2/icons/combo_COMBO_14.svg",
+      "category": "icons",
+      "format": "SVG",
+      "method": "코드로 제작한 원본 SVG",
+      "bytes": 861,
+      "sha256": "ef71766601b304935726ff8bbdb7e04066b5bf3fe8a1bce301d50fab7b266354",
+      "viewBox": "0 0 64 64"
+    },
+    {
+      "path": "game/assets/elements_v2/icons/combo_COMBO_15.svg",
+      "category": "icons",
+      "format": "SVG",
+      "method": "코드로 제작한 원본 SVG",
+      "bytes": 931,
+      "sha256": "6dba0d3a2d433ac199f561d00c2e90d3f37de4051a697a9b1a55e7bb761739c8",
+      "viewBox": "0 0 64 64"
+    },
+    {
+      "path": "game/assets/elements_v2/icons/element_earth.svg",
+      "category": "icons",
+      "format": "SVG",
+      "method": "코드로 제작한 원본 SVG",
+      "bytes": 496,
+      "sha256": "77590617b1051a02309e42c39e098ffc5fa3465ecf0de19061a0fd09408747d3",
+      "viewBox": "0 0 64 64"
+    },
+    {
+      "path": "game/assets/elements_v2/icons/element_fire.svg",
+      "category": "icons",
+      "format": "SVG",
+      "method": "코드로 제작한 원본 SVG",
+      "bytes": 514,
+      "sha256": "57829288a7307017e6d01a4aec342cf17f19d4e87ce9a6b9cdb7a53a6c5a6ad8",
+      "viewBox": "0 0 64 64"
+    },
+    {
+      "path": "game/assets/elements_v2/icons/element_lightning.svg",
+      "category": "icons",
+      "format": "SVG",
+      "method": "코드로 제작한 원본 SVG",
+      "bytes": 385,
+      "sha256": "0aa2887edf0b22b68cff939a00c5cec03791758ace73118d03a67655ad63e301",
+      "viewBox": "0 0 64 64"
+    },
+    {
+      "path": "game/assets/elements_v2/icons/element_water.svg",
+      "category": "icons",
+      "format": "SVG",
+      "method": "코드로 제작한 원본 SVG",
+      "bytes": 547,
+      "sha256": "3262132204cec24609470a98254bef1983b7ba0ed6663e01f7c43d3fa39c95ef",
+      "viewBox": "0 0 64 64"
+    },
+    {
+      "path": "game/assets/elements_v2/icons/element_wind.svg",
+      "category": "icons",
+      "format": "SVG",
+      "method": "코드로 제작한 원본 SVG",
+      "bytes": 503,
+      "sha256": "6648b4e4a8c6381732987436fdb16e1ae113cde85bba055aed73cde5ed8e25f7",
+      "viewBox": "0 0 64 64"
+    },
+    {
+      "path": "game/assets/elements_v2/icons/mode_melee.svg",
+      "category": "icons",
+      "format": "SVG",
+      "method": "코드로 제작한 원본 SVG",
+      "bytes": 485,
+      "sha256": "cd225ab6b2fc703115183a1674d94c727f12690445d0230f4e641b6aeca5327b",
+      "viewBox": "0 0 64 64"
+    },
+    {
+      "path": "game/assets/elements_v2/icons/mode_ranged.svg",
+      "category": "icons",
+      "format": "SVG",
+      "method": "코드로 제작한 원본 SVG",
+      "bytes": 684,
+      "sha256": "a38ef56c0a70bda9c7019d3d80e4b948c4c181044bf4879d6cd9ed99c7771450",
+      "viewBox": "0 0 64 64"
+    },
+    {
+      "path": "game/assets/elements_v2/icons/part_PART_E1.svg",
+      "category": "icons",
+      "format": "SVG",
+      "method": "코드로 제작한 원본 SVG",
+      "bytes": 1076,
+      "sha256": "a5728fd56c428a61fdb7e4239b9d8d0b9fa6012b1badd87f0f5769b45f56373a",
+      "viewBox": "0 0 64 64"
+    },
+    {
+      "path": "game/assets/elements_v2/icons/part_PART_E2.svg",
+      "category": "icons",
+      "format": "SVG",
+      "method": "코드로 제작한 원본 SVG",
+      "bytes": 997,
+      "sha256": "cbe70cc883cf72b18b4a4116392cab72604698098fb2c4dd3f5e273392f8e751",
+      "viewBox": "0 0 64 64"
+    },
+    {
+      "path": "game/assets/elements_v2/icons/part_PART_E3.svg",
+      "category": "icons",
+      "format": "SVG",
+      "method": "코드로 제작한 원본 SVG",
+      "bytes": 985,
+      "sha256": "acaba306b2f8d6cb28d7d0cc6ca536465d45daaced96e05d1a7dbf6c1230ecec",
+      "viewBox": "0 0 64 64"
+    },
+    {
+      "path": "game/assets/elements_v2/icons/part_PART_F1.svg",
+      "category": "icons",
+      "format": "SVG",
+      "method": "코드로 제작한 원본 SVG",
+      "bytes": 964,
+      "sha256": "31a9dacfeaefb83dd1343a3480e3450087ddc922dd52330d5457d8bf852e61af",
+      "viewBox": "0 0 64 64"
+    },
+    {
+      "path": "game/assets/elements_v2/icons/part_PART_F2.svg",
+      "category": "icons",
+      "format": "SVG",
+      "method": "코드로 제작한 원본 SVG",
+      "bytes": 886,
+      "sha256": "483d1fbeac9c11c103801974d31e56bed389e3aed5e6e35adf04aea94ade666b",
+      "viewBox": "0 0 64 64"
+    },
+    {
+      "path": "game/assets/elements_v2/icons/part_PART_F3.svg",
+      "category": "icons",
+      "format": "SVG",
+      "method": "코드로 제작한 원본 SVG",
+      "bytes": 971,
+      "sha256": "20abd359073874fb8b853f761a249ea535d8d526fe2e246ecd44756d5a04d776",
+      "viewBox": "0 0 64 64"
+    },
+    {
+      "path": "game/assets/elements_v2/icons/part_PART_L1.svg",
+      "category": "icons",
+      "format": "SVG",
+      "method": "코드로 제작한 원본 SVG",
+      "bytes": 1162,
+      "sha256": "5932981df5f34670afed1cea02304baae1c118b153f486a2eb320d34f32e5d91",
+      "viewBox": "0 0 64 64"
+    },
+    {
+      "path": "game/assets/elements_v2/icons/part_PART_L2.svg",
+      "category": "icons",
+      "format": "SVG",
+      "method": "코드로 제작한 원본 SVG",
+      "bytes": 949,
+      "sha256": "568209b3db14c2dc4c0a1cf0746b3c01f2fca26725da0206537db1d9c87ca754",
+      "viewBox": "0 0 64 64"
+    },
+    {
+      "path": "game/assets/elements_v2/icons/part_PART_L3.svg",
+      "category": "icons",
+      "format": "SVG",
+      "method": "코드로 제작한 원본 SVG",
+      "bytes": 1071,
+      "sha256": "031a4991984fb10b9b9467473b28e9d3d46668b34212f34e480d741b53014266",
+      "viewBox": "0 0 64 64"
+    },
+    {
+      "path": "game/assets/elements_v2/icons/part_PART_V1.svg",
+      "category": "icons",
+      "format": "SVG",
+      "method": "코드로 제작한 원본 SVG",
+      "bytes": 924,
+      "sha256": "7e6c83310ab8cbb280d50a5ca125c3db6b904adada6e807619fca4be7d0cd3d8",
+      "viewBox": "0 0 64 64"
+    },
+    {
+      "path": "game/assets/elements_v2/icons/part_PART_V2.svg",
+      "category": "icons",
+      "format": "SVG",
+      "method": "코드로 제작한 원본 SVG",
+      "bytes": 855,
+      "sha256": "0b0dfcb3cfdbedc4b65a8f317294c47243080fc5ebac513e26396c7e79405187",
+      "viewBox": "0 0 64 64"
+    },
+    {
+      "path": "game/assets/elements_v2/icons/part_PART_V3.svg",
+      "category": "icons",
+      "format": "SVG",
+      "method": "코드로 제작한 원본 SVG",
+      "bytes": 982,
+      "sha256": "69f45448fd8a5edd6a3749f5d5803133bbf6d805d1b8fb94734ab9bc519e1afa",
+      "viewBox": "0 0 64 64"
+    },
+    {
+      "path": "game/assets/elements_v2/icons/part_PART_W1.svg",
+      "category": "icons",
+      "format": "SVG",
+      "method": "코드로 제작한 원본 SVG",
+      "bytes": 878,
+      "sha256": "0232db463a27d3023d2d1106b58d16f2055172110b3697928760636159c15e99",
+      "viewBox": "0 0 64 64"
+    },
+    {
+      "path": "game/assets/elements_v2/icons/part_PART_W2.svg",
+      "category": "icons",
+      "format": "SVG",
+      "method": "코드로 제작한 원본 SVG",
+      "bytes": 900,
+      "sha256": "1b92e60af4243d160aa95d41cd62d66b43763097048c690c59e8ac50e5d0c7ea",
+      "viewBox": "0 0 64 64"
+    },
+    {
+      "path": "game/assets/elements_v2/icons/part_PART_W3.svg",
+      "category": "icons",
+      "format": "SVG",
+      "method": "코드로 제작한 원본 SVG",
+      "bytes": 1002,
+      "sha256": "9afaedf1f874037d619694babed7c682542fddd6675b14d65f6083a1e91d88a7",
+      "viewBox": "0 0 64 64"
+    },
+    {
+      "path": "game/assets/elements_v2/icons/skill_E1.svg",
+      "category": "icons",
+      "format": "SVG",
+      "method": "코드로 제작한 원본 SVG",
+      "bytes": 725,
+      "sha256": "94bc8f9a5753c161677d473afdff5f6d305b2ff9a15e2595f2a7eda8eff04d9a",
+      "viewBox": "0 0 64 64"
+    },
+    {
+      "path": "game/assets/elements_v2/icons/skill_E2.svg",
+      "category": "icons",
+      "format": "SVG",
+      "method": "코드로 제작한 원본 SVG",
+      "bytes": 646,
+      "sha256": "5a7cd785c4ae78334693a696665fe9b43b0d29c4673b7ec7a3f7af15683487b1",
+      "viewBox": "0 0 64 64"
+    },
+    {
+      "path": "game/assets/elements_v2/icons/skill_E3.svg",
+      "category": "icons",
+      "format": "SVG",
+      "method": "코드로 제작한 원본 SVG",
+      "bytes": 634,
+      "sha256": "b28dbe675e6dc5ad24e84e57d23c74b2599e22df2d151732c9b27537a62bede1",
+      "viewBox": "0 0 64 64"
+    },
+    {
+      "path": "game/assets/elements_v2/icons/skill_F1.svg",
+      "category": "icons",
+      "format": "SVG",
+      "method": "코드로 제작한 원본 SVG",
+      "bytes": 613,
+      "sha256": "61e93b35afab98de5178c77ba66bd487038e6174b503d5587d6f4b3c78aa42ce",
+      "viewBox": "0 0 64 64"
+    },
+    {
+      "path": "game/assets/elements_v2/icons/skill_F2.svg",
+      "category": "icons",
+      "format": "SVG",
+      "method": "코드로 제작한 원본 SVG",
+      "bytes": 535,
+      "sha256": "6d622c4fe940f02910fd2bd41e432e2f834646b52517594dc679c617bc88c644",
+      "viewBox": "0 0 64 64"
+    },
+    {
+      "path": "game/assets/elements_v2/icons/skill_F3.svg",
+      "category": "icons",
+      "format": "SVG",
+      "method": "코드로 제작한 원본 SVG",
+      "bytes": 620,
+      "sha256": "feb702a49856a9ef4ecf5086e956f9eef8c2b6bdabc964060c0a745c52035b75",
+      "viewBox": "0 0 64 64"
+    },
+    {
+      "path": "game/assets/elements_v2/icons/skill_L1.svg",
+      "category": "icons",
+      "format": "SVG",
+      "method": "코드로 제작한 원본 SVG",
+      "bytes": 811,
+      "sha256": "0a3ed67346d44dd627a5e0ae27b624f73277b967fbe970c503c9ee2c2a453475",
+      "viewBox": "0 0 64 64"
+    },
+    {
+      "path": "game/assets/elements_v2/icons/skill_L2.svg",
+      "category": "icons",
+      "format": "SVG",
+      "method": "코드로 제작한 원본 SVG",
+      "bytes": 598,
+      "sha256": "0fc358335d3d550dad3f91a423cf895846c3aaaa43e39cf306970dd6329f8755",
+      "viewBox": "0 0 64 64"
+    },
+    {
+      "path": "game/assets/elements_v2/icons/skill_L3.svg",
+      "category": "icons",
+      "format": "SVG",
+      "method": "코드로 제작한 원본 SVG",
+      "bytes": 720,
+      "sha256": "2e699fe8855d109f478abda3dc793af3c046e6ba9a5a2a7c0869f0bde89b4018",
+      "viewBox": "0 0 64 64"
+    },
+    {
+      "path": "game/assets/elements_v2/icons/skill_V1.svg",
+      "category": "icons",
+      "format": "SVG",
+      "method": "코드로 제작한 원본 SVG",
+      "bytes": 573,
+      "sha256": "5bd7cbdda4519faab76f7e5c0672438612f0224e794c5f3ffabe491d4466b590",
+      "viewBox": "0 0 64 64"
+    },
+    {
+      "path": "game/assets/elements_v2/icons/skill_V2.svg",
+      "category": "icons",
+      "format": "SVG",
+      "method": "코드로 제작한 원본 SVG",
+      "bytes": 504,
+      "sha256": "11b885785d853c828d164d6531e418a50654eb7632cc82cb28510851a0a815e5",
+      "viewBox": "0 0 64 64"
+    },
+    {
+      "path": "game/assets/elements_v2/icons/skill_V3.svg",
+      "category": "icons",
+      "format": "SVG",
+      "method": "코드로 제작한 원본 SVG",
+      "bytes": 631,
+      "sha256": "5c9979e49987990eb42f7b2d2b06e1c69ef778ec5ae4361a8ae9aaa3fe3ec144",
+      "viewBox": "0 0 64 64"
+    },
+    {
+      "path": "game/assets/elements_v2/icons/skill_W1.svg",
+      "category": "icons",
+      "format": "SVG",
+      "method": "코드로 제작한 원본 SVG",
+      "bytes": 527,
+      "sha256": "7c6052fe7ac2da6bd1f7e330c17a68b1aa2e5ab41fe3a6e272b2ff31f6f2bdc6",
+      "viewBox": "0 0 64 64"
+    },
+    {
+      "path": "game/assets/elements_v2/icons/skill_W2.svg",
+      "category": "icons",
+      "format": "SVG",
+      "method": "코드로 제작한 원본 SVG",
+      "bytes": 549,
+      "sha256": "df6852948af6772707102f8c773192af801fd27e2786279a024e9f33ccac459e",
+      "viewBox": "0 0 64 64"
+    },
+    {
+      "path": "game/assets/elements_v2/icons/skill_W3.svg",
+      "category": "icons",
+      "format": "SVG",
+      "method": "코드로 제작한 원본 SVG",
+      "bytes": 651,
+      "sha256": "ce74cf6dda9c08e795e4fb658a9a5d21e128a3bb34c6550fbf97116338e54a60",
+      "viewBox": "0 0 64 64"
+    }
+  ],
+  "heroes": [
+    {
+      "path": "game/assets/sprites/heroes/hoya_attack_1.png",
+      "sha256": "9397792e24349882b92e37724164b1f2dff20c3e4db70785489ad6f0fd9470aa",
+      "actual_sha256": "9397792e24349882b92e37724164b1f2dff20c3e4db70785489ad6f0fd9470aa",
+      "unchanged": true
+    },
+    {
+      "path": "game/assets/sprites/heroes/hoya_attack_2.png",
+      "sha256": "b45235421fe45bc612d75e3a94f54e790e1e68319f30dd0d6c31788be633909d",
+      "actual_sha256": "b45235421fe45bc612d75e3a94f54e790e1e68319f30dd0d6c31788be633909d",
+      "unchanged": true
+    },
+    {
+      "path": "game/assets/sprites/heroes/hoya_attack_3.png",
+      "sha256": "c1fa196a327699a7a86ac8bb959952853adc114c09c81576f7ff270b10f99f55",
+      "actual_sha256": "c1fa196a327699a7a86ac8bb959952853adc114c09c81576f7ff270b10f99f55",
+      "unchanged": true
+    },
+    {
+      "path": "game/assets/sprites/heroes/hoya_down_1.png",
+      "sha256": "5586814f38b44e77eadb8071b35e4df4e35d1c7ed9af16512d7883880106dadb",
+      "actual_sha256": "5586814f38b44e77eadb8071b35e4df4e35d1c7ed9af16512d7883880106dadb",
+      "unchanged": true
+    },
+    {
+      "path": "game/assets/sprites/heroes/hoya_hurt_1.png",
+      "sha256": "d4335a1b6a3739542a8aacf525b460920d8babac39a4376654aeb008d8061ad3",
+      "actual_sha256": "d4335a1b6a3739542a8aacf525b460920d8babac39a4376654aeb008d8061ad3",
+      "unchanged": true
+    },
+    {
+      "path": "game/assets/sprites/heroes/hoya_idle_1.png",
+      "sha256": "d4335a1b6a3739542a8aacf525b460920d8babac39a4376654aeb008d8061ad3",
+      "actual_sha256": "d4335a1b6a3739542a8aacf525b460920d8babac39a4376654aeb008d8061ad3",
+      "unchanged": true
+    },
+    {
+      "path": "game/assets/sprites/heroes/hoya_jump_1.png",
+      "sha256": "1a42d656d5f8d7eb1ad75749418de3899b284602700f21c0e37c495a7a59e689",
+      "actual_sha256": "1a42d656d5f8d7eb1ad75749418de3899b284602700f21c0e37c495a7a59e689",
+      "unchanged": true
+    },
+    {
+      "path": "game/assets/sprites/heroes/hoya_jump_2.png",
+      "sha256": "3862de02d7a69d21267d33981defe5514dfc8323c97c919d40187b56fae913b4",
+      "actual_sha256": "3862de02d7a69d21267d33981defe5514dfc8323c97c919d40187b56fae913b4",
+      "unchanged": true
+    },
+    {
+      "path": "game/assets/sprites/heroes/hoya_run_1.png",
+      "sha256": "6eac92028e8322a05dc75fced47ec76c41c11680f9ef3857e2cbe1695b3cc0d8",
+      "actual_sha256": "6eac92028e8322a05dc75fced47ec76c41c11680f9ef3857e2cbe1695b3cc0d8",
+      "unchanged": true
+    },
+    {
+      "path": "game/assets/sprites/heroes/hoya_run_2.png",
+      "sha256": "457313d69744e80396d3d49ba1925d7a358d4dd046939b9912e38ff6865ab9e6",
+      "actual_sha256": "457313d69744e80396d3d49ba1925d7a358d4dd046939b9912e38ff6865ab9e6",
+      "unchanged": true
+    },
+    {
+      "path": "game/assets/sprites/heroes/hoya_run_3.png",
+      "sha256": "da16aba4c7c3416e8dd017262e1c7837554b260eb073d2f9d3b207ca83fed2e5",
+      "actual_sha256": "da16aba4c7c3416e8dd017262e1c7837554b260eb073d2f9d3b207ca83fed2e5",
+      "unchanged": true
+    },
+    {
+      "path": "game/assets/sprites/heroes/hoya_walk_1.png",
+      "sha256": "84400db972fd984e8c3ffdb77f4a7b748744b3c6545f1bbaef08e8c38d9e1c1d",
+      "actual_sha256": "84400db972fd984e8c3ffdb77f4a7b748744b3c6545f1bbaef08e8c38d9e1c1d",
+      "unchanged": true
+    },
+    {
+      "path": "game/assets/sprites/heroes/hoya_walk_2.png",
+      "sha256": "6904c334c45c739b14b3549b01d3900892bfb0ade8662825605dc80713107c5c",
+      "actual_sha256": "6904c334c45c739b14b3549b01d3900892bfb0ade8662825605dc80713107c5c",
+      "unchanged": true
+    },
+    {
+      "path": "game/assets/sprites/heroes/hoya_walk_3.png",
+      "sha256": "ab3c6bb774bdefa6b3da9c727d71b40ce6f9ed67665bdcd048c822f3b70fb02d",
+      "actual_sha256": "ab3c6bb774bdefa6b3da9c727d71b40ce6f9ed67665bdcd048c822f3b70fb02d",
+      "unchanged": true
+    },
+    {
+      "path": "game/assets/sprites/heroes/minji_attack_1.png",
+      "sha256": "24136b48f52a4059bde5a47c79d8b19194062caec08d2e745ab86c592a617b06",
+      "actual_sha256": "24136b48f52a4059bde5a47c79d8b19194062caec08d2e745ab86c592a617b06",
+      "unchanged": true
+    },
+    {
+      "path": "game/assets/sprites/heroes/minji_attack_2.png",
+      "sha256": "50aef67e941d49c97120a2e6f5d2fee8ff5b5d535a60b33b94dd1d393fe0660b",
+      "actual_sha256": "50aef67e941d49c97120a2e6f5d2fee8ff5b5d535a60b33b94dd1d393fe0660b",
+      "unchanged": true
+    },
+    {
+      "path": "game/assets/sprites/heroes/minji_attack_3.png",
+      "sha256": "38856d3b5cc736c84f02ccfc2d4f00c2a696b85dcaa449f900ce8153c2f25f9f",
+      "actual_sha256": "38856d3b5cc736c84f02ccfc2d4f00c2a696b85dcaa449f900ce8153c2f25f9f",
+      "unchanged": true
+    },
+    {
+      "path": "game/assets/sprites/heroes/minji_down_1.png",
+      "sha256": "3b7b8d5956fdb5a5a86cbad60e3620d927cafc289af1740ddaae8cf4c73ced9c",
+      "actual_sha256": "3b7b8d5956fdb5a5a86cbad60e3620d927cafc289af1740ddaae8cf4c73ced9c",
+      "unchanged": true
+    },
+    {
+      "path": "game/assets/sprites/heroes/minji_hurt_1.png",
+      "sha256": "3b0e03877e198a39a7d87b949f18e8b98093c39d9bbb8fb49d9f01cafdca6767",
+      "actual_sha256": "3b0e03877e198a39a7d87b949f18e8b98093c39d9bbb8fb49d9f01cafdca6767",
+      "unchanged": true
+    },
+    {
+      "path": "game/assets/sprites/heroes/minji_idle_1.png",
+      "sha256": "820723496f83e0ef81e699fdb3ccb32dec9722eb06ff917d467794e41c1ccdb4",
+      "actual_sha256": "820723496f83e0ef81e699fdb3ccb32dec9722eb06ff917d467794e41c1ccdb4",
+      "unchanged": true
+    },
+    {
+      "path": "game/assets/sprites/heroes/minji_jump_1.png",
+      "sha256": "42155c43a09816ca80c6c139ccbd9f06be2d428ecca42d907a954f444746eaa7",
+      "actual_sha256": "42155c43a09816ca80c6c139ccbd9f06be2d428ecca42d907a954f444746eaa7",
+      "unchanged": true
+    },
+    {
+      "path": "game/assets/sprites/heroes/minji_run_1.png",
+      "sha256": "9fde7b8d299d4ffe57e36665dd94fa3f25ea74d96fdb8bfbf95bd310eaf689a6",
+      "actual_sha256": "9fde7b8d299d4ffe57e36665dd94fa3f25ea74d96fdb8bfbf95bd310eaf689a6",
+      "unchanged": true
+    },
+    {
+      "path": "game/assets/sprites/heroes/minji_run_2.png",
+      "sha256": "6271c7829a3c620b7855a2c3f2b359e19e55bd3a0c60407378016a04ed12a02b",
+      "actual_sha256": "6271c7829a3c620b7855a2c3f2b359e19e55bd3a0c60407378016a04ed12a02b",
+      "unchanged": true
+    },
+    {
+      "path": "game/assets/sprites/heroes/minji_run_3.png",
+      "sha256": "1861dad55267be8563ebdb6a47b01cdb109b48b0a3a0916b3735229779ccd20f",
+      "actual_sha256": "1861dad55267be8563ebdb6a47b01cdb109b48b0a3a0916b3735229779ccd20f",
+      "unchanged": true
+    },
+    {
+      "path": "game/assets/sprites/heroes/minji_walk_1.png",
+      "sha256": "114b9588d1949c08b1648d130e3d58722d292f012c752aa825a6ee97db8dcde9",
+      "actual_sha256": "114b9588d1949c08b1648d130e3d58722d292f012c752aa825a6ee97db8dcde9",
+      "unchanged": true
+    },
+    {
+      "path": "game/assets/sprites/heroes/minji_walk_2.png",
+      "sha256": "ca2640c33d54c18f39d12b245d89fd9b4b2838c7dd23af3eb4a29a83d71e0532",
+      "actual_sha256": "ca2640c33d54c18f39d12b245d89fd9b4b2838c7dd23af3eb4a29a83d71e0532",
+      "unchanged": true
+    },
+    {
+      "path": "game/assets/sprites/heroes/minji_walk_3.png",
+      "sha256": "f9c503f52ef4d218cbf6516f3bc0b663d41a35adba55d753977b220cc7231928",
+      "actual_sha256": "f9c503f52ef4d218cbf6516f3bc0b663d41a35adba55d753977b220cc7231928",
+      "unchanged": true
+    }
+  ]
+}

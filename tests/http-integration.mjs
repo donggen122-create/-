@@ -1,0 +1,66 @@
+import assert from 'node:assert/strict';
+const base=process.env.TEST_ORIGIN||'http://127.0.0.1:8797';
+assert.ok(base.startsWith('http://127.0.0.1:')||base.startsWith('http://localhost:'),'Integration mutations are restricted to localhost.');
+let token;const uuid=()=>crypto.randomUUID();
+const id='it'+Date.now().toString().slice(-8),pw='local-integration-only';
+async function call(path,b,admin=false,method=b?'POST':'GET'){
+  const res=await fetch(base+'/api'+path,{method,headers:{'Content-Type':'application/json',...(token?{Authorization:'Bearer '+token}:{}),...(admin?{'X-Admin-Key':'local-only-test-key'}:{})},...(b?{body:JSON.stringify({clientVersion:2,...b})}:{})});
+  return {status:res.status,...await res.json()};
+}
+token=(await call('/register',{id,pw})).token;assert.ok(token);
+const front=await fetch(base+'/');assert.equal(front.status,200);assert.match(await front.text(),/<script src="\/presence\.js\?v=1" defer><\/script>/);
+const presenceScript=await fetch(base+'/presence.js');assert.equal(presenceScript.status,200);assert.match(await presenceScript.text(),/sp_in=1/);
+const noPresence=await fetch(base+'/api/presence',{method:'POST'});assert.equal(noPresence.status,401);
+assert.equal((await call('/admin/login',{id:'local-admin',pw:'incorrect-local-password'})).status,401);
+const adminLogin=await call('/admin/login',{id:'local-admin',pw:'local-admin-password-only'});assert.equal(adminLogin.status,200);assert.match(adminLogin.token,/^\d{13}\.[0-9a-f]{64}$/);
+const adminByToken=async(path,adminToken=adminLogin.token)=>{const r=await fetch(base+'/api/admin/'+path,{headers:{'X-Admin-Token':adminToken}});return {status:r.status,...await r.json()};};
+assert.equal((await adminByToken('online','invalid-token')).status,401);
+// Existing students resume with Bearer /me; it restores the heartbeat cookies without another login.
+const resumed=await fetch(base+'/api/me',{headers:{Authorization:'Bearer '+token}});assert.equal(resumed.status,200);
+const cookies=resumed.headers.getSetCookie();assert.ok(cookies.some(c=>c.startsWith('sp_hb=')&&c.includes('HttpOnly')&&c.includes('Path=/api/presence')));assert.ok(cookies.some(c=>c.startsWith('sp_in=1')));
+const presenceCookie=cookies.map(c=>c.split(';')[0]).join('; ');
+assert.equal((await fetch(base+'/api/presence',{method:'POST',headers:{Cookie:presenceCookie,'User-Agent':'local Mobile test'}})).status,204);
+const online=await adminByToken('online');assert.equal(online.status,200);assert.ok(online.online.some(u=>u.id===id&&u.device==='phone'));
+assert.equal((await fetch(base+'/api/presence?bye=1',{method:'POST',headers:{Cookie:presenceCookie}})).status,204);assert.ok(!(await adminByToken('online')).online.some(u=>u.id===id));
+assert.equal((await call('/admin/grant-passes',{requestId:uuid(),id,passes:100})).status,401);
+for(let i=0;i<9;i++){const s=await call('/play/start',{requestId:uuid(),stage:'CH01'});assert.equal(s.status,200);const f=await call('/play/finish',{requestId:uuid(),runId:s.runId,cleared:true,seconds:300});assert.equal(f.passes.remaining,9-i);}
+const starts=await Promise.all([1,2].map(()=>call('/play/start',{requestId:uuid(),stage:'CH01'})));
+assert.deepEqual(starts.map(r=>r.status).sort(),[200,409]);
+const active=starts.find(s=>s.status===200),finish={requestId:uuid(),runId:active.runId,cleared:true,seconds:300};
+const finishes=await Promise.all([1,2].map(()=>call('/play/finish',finish)));assert.ok(finishes.every(r=>r.status===200&&r.passes.remaining===0&&r.profile.wins===10));
+assert.equal((await call('/play/start',{requestId:uuid(),stage:'CH01'})).code,'NO_PASSES');
+assert.equal((await call('/save',{save:{energy:{value:999},passes:999,guardian:{passes:999}},device:'test'},false,'PUT')).status,410);
+assert.equal((await call('/guardian')).passes.remaining,0);
+const grant={requestId:uuid(),id,passes:2,gold:120,note:'local-only integration'};
+await Promise.all([1,2].map(()=>call('/admin/grant-passes',grant,true)));
+assert.equal((await call('/guardian')).passes.remaining,2);
+const lose=await call('/play/start',{requestId:uuid(),stage:'CH01'});
+const lost=await call('/play/finish',{requestId:uuid(),runId:lose.runId,cleared:false,seconds:160});assert.equal(lost.passes.remaining,2);
+const coinsBefore=lost.profile.coins,act={requestId:uuid(),kind:'train',stat:'attack'};
+const actions=await Promise.all([1,2].map(()=>call('/guardian/action',act)));
+assert.ok(actions.every(r=>r.status===200&&r.profile.coins===coinsBefore-100&&r.profile.training.attack===2));
+assert.equal((await call('/guardian/action',{requestId:uuid(),kind:'settings',hero:'minji',clientVersion:1})).code,'CLIENT_UPDATE_REQUIRED');
+const firstPart={requestId:uuid(),kind:'choose-part',id:'PART_E2'};
+const chosen=await Promise.all([1,2].map(()=>call('/guardian/action',firstPart)));
+assert.ok(chosen.every(r=>r.status===200&&r.profile.parts.PART_E2.copies===1&&r.profile.giftCounts.part===0));
+for(const element of ['fire','water','wind','earth'])assert.equal((await call('/guardian/action',{requestId:uuid(),kind:'draw-part',element})).status,200);
+const fifthPart={requestId:uuid(),kind:'draw-part',id:'PART_L2'};
+const drawn=await Promise.all([1,2].map(()=>call('/guardian/action',fifthPart)));
+assert.ok(drawn.every(r=>r.status===200&&r.profile.parts.PART_L2.copies===1&&r.profile.giftCounts.part===5));
+const upgradePart={requestId:uuid(),kind:'upgrade-part',id:'PART_L2'},partCoins=drawn[0].profile.coins;
+const upgraded=await Promise.all([1,2].map(()=>call('/guardian/action',upgradePart)));
+assert.ok(upgraded.every(r=>r.status===200&&r.profile.parts.PART_L2.level===2&&r.profile.coins===partCoins-60));
+const resetPart={requestId:uuid(),kind:'reset-part',id:'PART_L2'};
+const reset=await Promise.all([1,2].map(()=>call('/guardian/action',resetPart)));
+assert.ok(reset.every(r=>r.status===200&&r.profile.parts.PART_L2.level===1&&r.profile.coins===partCoins));
+const giftBefore=reset[0].profile.gifts;
+const distinctDraws=await Promise.all(['fire','lightning'].map(element=>call('/guardian/action',{requestId:uuid(),kind:'draw-part',element})));
+assert.ok(distinctDraws.every(r=>r.status===200));
+const afterDraws=await call('/guardian');assert.equal(afterDraws.profile.giftCounts.part,7);assert.equal(afterDraws.profile.gifts,giftBefore-2);assert.equal(afterDraws.passes.remaining,2);
+const records=await call('/admin/passes',undefined,true);assert.equal(records.audit.filter(r=>r.request_id===grant.requestId).length,1);
+await call('/admin/reset-save',{id},true);token=(await call('/login',{id,pw})).token;
+assert.equal((await call('/guardian')).passes.remaining,2);
+assert.equal((await call('/admin/grant',{id,energy:999},true)).status,410);
+assert.equal((await call('/admin/delete',{id},true)).status,200);
+console.log(JSON.stringify({ok:true,account:id,accountDeleted:true,checks:['presence script injected','anonymous presence rejected','admin incorrect login rejected','admin correct login token','invalid admin token rejected','resumed student presence cookies','presence cookie authentication and online device','presence goodbye removal','student cannot grant','10 clear limit','two-device start race','duplicate finish race','legacy save cannot grant','admin key grant retry race','free loss','duplicate training race','stale client rejected','first part duplicate race','fifth part guaranteed duplicate race','part upgrade duplicate race','part refund duplicate race','independent draws counter race','grant audit','save reset preserves quota','old energy route disabled']}));
+

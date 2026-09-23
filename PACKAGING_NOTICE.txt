@@ -1,0 +1,2 @@
+This source archive excludes node_modules, .wrangler, .dev.vars, private credentials, databases, dist_web, old public ZIP archives and large historical previews.
+Retain the existing project share/ files when updating a live deployment. Run npm run build before deployment.
