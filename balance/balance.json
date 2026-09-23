@@ -1,0 +1,120 @@
+{
+  "_comment": "서호팡팡수호대 5분 런 밸런스 데이터 (탕탕특공대 구조 참고). 시간 단위: 초, 거리: px, 이동속도는 플레이어 기본속도 대비 비율.",
+  "run": {
+    "durationSec": 300,
+    "bossSpawnSec": 240,
+    "bossEnrageSec": 290,
+    "maxEnemiesOnScreen": 160,
+    "targetLevels": { "30": 5, "60": 8, "120": 13, "180": 18, "240": 22, "300": 25 }
+  },
+
+  "player": {
+    "maxHp": 100,
+    "moveSpeed": 200,
+    "pickupRadius": 70,
+    "invincibleAfterHitSec": 0.5,
+    "hpRegenPerSec": 0.3
+  },
+
+  "levelUp": {
+    "choices": 3,
+    "rerollsPerRun": 2,
+    "weaponSlots": 4,
+    "passiveSlots": 4,
+    "maxSkillLevel": 5,
+    "xpRequired": { "base": 5, "linear": 2.5, "quadratic": 0.2 },
+    "offerWeights": { "ownedSkill": 1.6, "newSkill": 1.0, "evolutionPartnerPassive": 2.5 },
+    "guaranteeOwnedWeaponWhenSlotsFull": true
+  },
+
+  "xpGems": {
+    "small":  { "xp": 1,  "color": "green" },
+    "medium": { "xp": 5,  "color": "blue" },
+    "large":  { "xp": 20, "color": "yellow" },
+    "mergeWhenOnFieldOver": 120
+  },
+
+  "weapons": {
+    "basicShot":  { "name": "기본 발사",     "dmg": 12, "cooldown": 0.8, "projectiles": 1, "pierce": 1, "hitEfficiency": 0.90,
+                    "levels": [ {}, {"projectiles": 2}, {"dmgMul": 1.3}, {"projectiles": 3}, {"dmgMul": 1.6, "cooldownMul": 0.85} ] },
+    "orbit":      { "name": "회전 수호구",   "dmg": 9,  "cooldown": 0.5, "projectiles": 2, "uptime": 0.6, "hitEfficiency": 0.70,
+                    "levels": [ {}, {"projectiles": 3}, {"dmgMul": 1.3}, {"projectiles": 4}, {"dmgMul": 1.5, "uptime": 1.0} ] },
+    "bomb":       { "name": "팡팡 폭탄",     "dmg": 22, "cooldown": 2.0, "projectiles": 1, "aoeRadius": 70, "hitEfficiency": 0.80,
+                    "levels": [ {}, {"aoeRadius": 85}, {"projectiles": 2}, {"dmgMul": 1.4}, {"projectiles": 3, "aoeRadius": 100} ] },
+    "laser":      { "name": "관통 레이저",   "dmg": 30, "cooldown": 3.0, "projectiles": 1, "pierce": 999, "hitEfficiency": 0.60,
+                    "levels": [ {}, {"dmgMul": 1.3}, {"projectiles": 2}, {"cooldownMul": 0.8}, {"dmgMul": 1.7, "projectiles": 3} ] },
+    "lightning":  { "name": "번개",         "dmg": 18, "cooldown": 2.4, "projectiles": 3, "hitEfficiency": 0.95,
+                    "levels": [ {}, {"projectiles": 4}, {"dmgMul": 1.3}, {"projectiles": 5}, {"dmgMul": 1.6, "cooldownMul": 0.8} ] },
+    "aura":       { "name": "수호 결계",     "dmg": 5,  "cooldown": 0.5, "projectiles": 1, "aoeRadius": 80, "hitEfficiency": 1.0,
+                    "levels": [ {}, {"aoeRadius": 95}, {"dmgMul": 1.4}, {"aoeRadius": 110}, {"dmgMul": 1.8} ] }
+  },
+
+  "passives": {
+    "power":    { "name": "공격력",     "perLevel": { "dmgMul": 0.10 } },
+    "haste":    { "name": "쿨타임 감소", "perLevel": { "cooldownMul": -0.08 } },
+    "vitality": { "name": "최대 체력",   "perLevel": { "maxHpMul": 0.20 } },
+    "boots":    { "name": "이동 속도",   "perLevel": { "moveSpeedMul": 0.08 } },
+    "magnet":   { "name": "획득 범위",   "perLevel": { "pickupRadiusMul": 0.30 } },
+    "area":     { "name": "효과 범위",   "perLevel": { "areaMul": 0.10 } },
+    "wisdom":   { "name": "경험치 획득", "perLevel": { "xpMul": 0.08 } }
+  },
+
+  "evolutions": {
+    "_rule": "무기 Lv5 + 짝 패시브 보유(Lv1 이상) 상태에서 진화 상자 획득 시 진화. 진화 무기는 최종 DPS x2.2 + 고유 효과.",
+    "basicShot": { "partner": "haste",    "result": "폭풍 연사",   "dpsMul": 2.2 },
+    "orbit":     { "partner": "vitality", "result": "수호 성벽",   "dpsMul": 2.2 },
+    "bomb":      { "partner": "area",     "result": "대폭발",     "dpsMul": 2.2 },
+    "laser":     { "partner": "power",    "result": "섬멸 광선",   "dpsMul": 2.2 },
+    "lightning": { "partner": "boots",    "result": "천둥 폭풍",   "dpsMul": 2.2 },
+    "aura":      { "partner": "magnet",   "result": "성역",       "dpsMul": 2.2 }
+  },
+
+  "enemies": {
+    "_scaling": "HP = baseHp * (1 + hpLinearPerMin*m + hpQuadPerMin*m^2), 접촉 피해 = baseDmg * (1 + dmgPerMin*m), m = 경과 분",
+    "scaling": { "hpLinearPerMin": 0.6, "hpQuadPerMin": 0.25, "dmgPerMin": 0.25 },
+    "grunt":   { "name": "잡몹",       "baseHp": 10,  "dmg": 5,  "speed": 0.55, "xpGem": "small" },
+    "runner":  { "name": "돌격몹",     "baseHp": 7,   "dmg": 4,  "speed": 0.95, "xpGem": "small" },
+    "tank":    { "name": "탱커몹",     "baseHp": 45,  "dmg": 10, "speed": 0.40, "xpGem": "medium" },
+    "shooter": { "name": "원거리몹",   "baseHp": 18,  "dmg": 8,  "speed": 0.45, "xpGem": "small", "projectileDmg": 6, "fireInterval": 3.0 },
+    "elite":   { "name": "엘리트",     "baseHp": 350, "dmg": 15, "speed": 0.60, "xp": 30,  "drop": "evolutionChest" },
+    "miniBoss":{ "name": "중간 보스",   "baseHp": 1500, "dmg": 20, "speed": 0.50, "xp": 60, "drop": "evolutionChest", "arenaLock": true },
+    "boss":    { "name": "최종 보스",   "baseHp": 5200, "dmg": 25, "speed": 0.55, "arenaLock": true, "enrageDmgMul": 2.0, "enrageSpeedMul": 1.3,
+                 "_note": "보스 HP는 시간 스케일링 미적용(고정). 평균 빌드 기준 처치 35~45초 목표." }
+  },
+
+  "timeline": [
+    { "from": 0,   "to": 30,  "phase": "워밍업",   "spawnPerSec": [1.5, 2.5], "mix": { "grunt": 1.0 } },
+    { "from": 30,  "to": 90,  "phase": "빌드업",   "spawnPerSec": [2.5, 4.0], "mix": { "grunt": 0.7, "runner": 0.3 } },
+    { "from": 90,  "to": 150, "phase": "첫 고비",  "spawnPerSec": [4.0, 5.5], "mix": { "grunt": 0.5, "runner": 0.3, "tank": 0.2 } },
+    { "from": 150, "to": 210, "phase": "압박",     "spawnPerSec": [5.5, 7.0], "mix": { "grunt": 0.4, "runner": 0.25, "tank": 0.2, "shooter": 0.15 } },
+    { "from": 210, "to": 240, "phase": "클라이맥스", "spawnPerSec": [7.0, 9.0], "mix": { "grunt": 0.35, "runner": 0.3, "tank": 0.2, "shooter": 0.15 } },
+    { "from": 240, "to": 300, "phase": "보스전",   "spawnPerSec": [2.0, 2.0], "mix": { "grunt": 0.6, "runner": 0.4 } }
+  ],
+
+  "events": [
+    { "at": 60,  "type": "elite",     "count": 1, "_note": "첫 상자 = 스킬 1개 +1레벨 (진화 조건 미충족 시)" },
+    { "at": 100, "type": "swarmRing", "enemy": "grunt",  "count": 40, "_note": "플레이어를 원형으로 포위 - 탈출 긴장감" },
+    { "at": 120, "type": "miniBoss",  "count": 1 },
+    { "at": 150, "type": "supply",    "item": "magnet" },
+    { "at": 180, "type": "elite",     "count": 2 },
+    { "at": 200, "type": "swarmRing", "enemy": "runner", "count": 60 },
+    { "at": 225, "type": "supply",    "item": "meat" },
+    { "at": 240, "type": "boss",      "count": 1, "_note": "보스 등장 시 필드 잡몹 정리 + 자동 자석(남은 경험치 회수)" }
+  ],
+
+  "drops": {
+    "meatHealPct": 0.30,
+    "meatDropChancePerKill": 0.004,
+    "bombDropChancePerKill": 0.002,
+    "magnetDropChancePerKill": 0.002,
+    "evolutionChest": { "ifEvolutionReady": "evolve", "else": "upgradeRandomOwnedSkill", "count": 1 }
+  },
+
+  "sim": {
+    "_comment": "simulate.js 전용 가정값",
+    "killEfficiency": 0.85,
+    "buildOrder": ["basicShot", "power", "basicShot", "basicShot", "bomb", "basicShot", "haste", "basicShot",
+                   "bomb", "vitality", "bomb", "lightning", "bomb", "power", "bomb", "area",
+                   "lightning", "lightning", "power", "lightning", "lightning", "haste", "power", "haste", "boots", "boots"]
+  }
+}
