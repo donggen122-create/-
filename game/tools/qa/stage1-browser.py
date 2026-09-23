@@ -55,7 +55,7 @@ with sync_playwright() as pw:
             screen(page,f'local-lobby-{width}')
             p=profile(coins=400,gifts=5,stages={'CH01':{'cleared':True,'stars':1}},parts={'PART_F1':{'copies':7,'level':1},'PART_W1':{'copies':1,'level':2},'PART_E1':{'copies':1,'level':1}},equippedParts=['PART_F1','PART_W1','PART_E1'],giftCounts={'part':4,'pet':0},milestones={'firstPart':True})
             seed(ctx,uid,p);page.reload(wait_until='networkidle');enter_lobby(page);page.wait_for_timeout(400)
-            page.locator('.sg-nav [data-tab="parts"]').click();assert page.locator('#sg-draw-part option[value="PART_F1"]').is_disabled()
+            page.locator('.sg-nav [data-tab="parts"]').click();assert page.locator('#sg-draw-part option[value="PART_F1"]').evaluate('(option)=>option.disabled')
             assert '3개는 총 +6%' not in page.locator('#guardian-lobby').inner_text()
             page.locator('#sg-draw-part').select_option('PART_W1');screen(page,f'local-parts-{width}')
             page.locator('[data-do="draw-part"]').click();page.wait_for_function("document.querySelector('dialog[open]')?.textContent.includes('획득')");close_dialog(page)
