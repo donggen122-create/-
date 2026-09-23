@@ -29,6 +29,7 @@ import { createElementCombat } from "./element-combat.js";
 import { createWeaponCombat } from "./weapon-effects.js";
 import { ELEMENT_WEAPONS } from "./assets.js";
 import { installReworkContent } from "./rework-content.js";
+import { pickBossPattern, bossBand, BOSS_REST, BOSS_BAND_NAMES, BOSS_CONTACT } from "./boss-patterns.js";
 installReworkContent({SKILLS,PASSIVES,EVOLUTIONS,CHAPTERS,BOSSES});
 ECO.setCharBonusTable(RAW_CHARACTERS);
 
@@ -1609,12 +1610,13 @@ function spawnBoss() {
   const angle = Math.random() * Math.PI * 2;
   // 보스 점수형(3분 피해 누적)은 이동에 시간을 버리지 않도록 6u 앞에 등장
   const r = runCfg.bossScore ? 6 * U : Math.max(viewW, viewH) / 2 + 3 * U;
-  const hp = Math.round(bossHp(bossDef, curMult()) * (runMods.enemyHpMul || 1));
+  const hp = Math.round(bossHp(bossDef, curMult()) * (runMods.enemyHpMul || 1) * (runMods.bossHpMul || 1));   // bossHpMul: 난이도별 대왕 체력(rework-core DIFFICULTIES.bossHp)
   boss = {
     x: player.x + Math.cos(angle) * r, y: player.y + Math.sin(angle) * r,
     hp, hpMax: hp, atkBase: bossAtk(bossDef, curMult()),
     spdU: bossDef.spdU, radiusU: bossDef.radiusU,
     phase: 1, restT: 1.5, activePattern: null, telegraphT: 0, flashT: 0, stunT: 0,
+    contactT: 0, lastPattern: null, sinceLitter: 0, volley: null,
   };
   if (chapter?.theme === 1) themeFx.emit("arrival", boss.x, boss.y, { life: 1.4 });
   starTrack.bossNoHit = true;
@@ -2598,15 +2600,22 @@ function updateBoss(dt) {
   }
 
   const angle = Math.atan2(player.y - boss.y, player.x - boss.x);
-  if (!boss.activePattern) {
-    boss.x += Math.cos(angle) * boss.spdU * U * dt * 0.5;
-    boss.y += Math.sin(angle) * boss.spdU * U * dt * 0.5;
+  const rp = bossDef.rangePatterns;   // 개편판 대왕: 거리별 기술(boss-patterns.js) + 몸통 접촉 피해 + 연속 던지기
+  if (!boss.activePattern && !boss.volley) {
+    const walk = rp ? 1 : 0.5;
+    boss.x += Math.cos(angle) * boss.spdU * U * dt * walk;
+    boss.y += Math.sin(angle) * boss.spdU * U * dt * walk;
   }
+  if (rp) bossBodyTick(dt);
+  if (boss.volley) bossVolleyTick(dt);
 
   if (boss.activePattern) {
+    const ap = boss.activePattern;
     boss.telegraphT -= dt;
-    elBossLabel.textContent = `${boss.activePattern.name} 예고! (${boss.telegraphT.toFixed(1)}s)`;
-    if (boss.activePattern.kind === "vacuum") {          // 쓰레기 흡입: 예고 동안 플레이어를 끌어당긴다(걸어서 벗어날 수 있는 속도)
+    elBossLabel.textContent = rp
+      ? `${ap.band ? `[${BOSS_BAND_NAMES[ap.band]}] ` : ""}${ap.name} — ${ap.hint || "피해요!"} (${Math.max(0, boss.telegraphT).toFixed(1)}초)`
+      : `${ap.name} 예고! (${boss.telegraphT.toFixed(1)}s)`;
+    if (ap.kind === "vacuum") {          // 쓰레기 흡입: 예고 동안 플레이어를 끌어당긴다(걸어서 벗어날 수 있는 속도)
       const d = dist(player.x, player.y, boss.x, boss.y);
       if (d > 1.2 * U) {
         const a = Math.atan2(boss.y - player.y, boss.x - player.x);
@@ -2614,32 +2623,76 @@ function updateBoss(dt) {
       }
     }
     if (boss.telegraphT <= 0) {
-      resolveBossPattern(boss.activePattern);
-      boss.activePattern = null;
-      boss.restT = 1.5;
-      elBossLabel.textContent = "";
+      resolveBossPattern(ap);
+      // 화난 대왕(2페이즈)은 follow가 있는 기술을 곧바로 한 번 더(여진·다시 박치기)
+      if (rp && boss.phase >= 2 && ap.follow && !ap.isFollow && boss.hp > 0) startBossPattern({ ...ap.follow, isFollow: true, band: ap.band });
+      else {
+        boss.activePattern = null;
+        boss.restT = rp ? (boss.phase >= 2 ? BOSS_REST.angry : BOSS_REST.calm) : 1.5;
+        elBossLabel.textContent = "";
+      }
     }
   } else {
     boss.restT -= dt;
-    if (boss.restT <= 0) {
-      const pats = bossDef.patterns.filter((p) => !p.phase || p.phase <= boss.phase);   // 2페이즈 전용 기술은 화난 뒤에만
-      const pat = boss.forcePattern || pats[Math.floor(Math.random() * pats.length)];   // forcePattern: QA 훅(__debugBossPattern)
+    if (boss.restT <= 0 && !boss.volley) {
+      const dU = dist(player.x, player.y, boss.x, boss.y) / U;
+      const pat = boss.forcePattern || pickBossPattern(bossDef.patterns, {   // forcePattern: QA 훅(__debugBossPattern)
+        distU: dU, phase: boss.phase, last: boss.lastPattern, sinceLitter: boss.sinceLitter,
+        litterOnGround: decor.some((x) => x.bossLitter && !x.opened && x.expire > runTime),
+      });
       boss.forcePattern = null;
-      boss.activePattern = {
-        ...pat, originX: boss.x, originY: boss.y, aimAngle: angle,
-        telegraphOriginX: player.x, telegraphOriginY: player.y,
-        // 산개형(낙석·쓰레기 뿌리기)은 예고 시점에 좌표를 뽑아둔다
-        spots: pat.kind === "scatter" || pat.kind === "litter"
-          ? Array.from({ length: pat.count || 8 }, () => {
-              const a = Math.random() * Math.PI * 2, r = (pat.kind === "litter" ? 1.5 * U : 0) + Math.random() * (pat.kind === "litter" ? 2 * U : 7 * U);
-              return { x: player.x + Math.cos(a) * r, y: player.y + Math.sin(a) * r };
-            })
-          : null,
-      };
-      boss.telegraphT = pat.telegraphS;
-      playSfx("bossTelegraph", 0.45);
+      if (pat) {
+        boss.lastPattern = pat.name;
+        boss.sinceLitter = pat.kind === "litter" ? 0 : (boss.sinceLitter || 0) + 1;
+        const band = bossBand(dU);
+        startBossPattern({ ...pat, band: rp && pat.ranges && !pat.ranges.includes("any") ? (pat.ranges.includes(band) ? band : pat.ranges[0]) : null });
+        playSfx("bossTelegraph", 0.45);
+      }
     }
   }
+}
+
+// 예고 시작: 조준 방향·예고 자리(내 위치)·떨어질 자리를 이때 정해 둔다(예고가 가리킨 곳 = 실제 판정)
+function startBossPattern(pat) {
+  if (pat.kind === "volley" && boss.phase >= 2)   // 화난 대왕: 더 많이, 더 넓게
+    pat = { ...pat, waves: pat.angryWaves || pat.waves, shots: pat.angryShots || pat.shots, spread: (pat.spread || 0.8) * 1.2 };
+  const litter = pat.kind === "litter";
+  boss.activePattern = {
+    ...pat, originX: boss.x, originY: boss.y, aimAngle: Math.atan2(player.y - boss.y, player.x - boss.x),
+    telegraphOriginX: player.x, telegraphOriginY: player.y,
+    // 산개형(낙석·쓰레기 뿌리기)은 예고 시점에 좌표를 뽑아둔다. spreadU가 있으면(개편판 폭격) 첫 자리는 바로 내 발밑.
+    spots: pat.kind === "scatter" || litter
+      ? Array.from({ length: pat.count || 8 }, (_, i) => {
+          const a = Math.random() * Math.PI * 2;
+          const r = litter ? 1.5 * U + Math.random() * 2 * U : pat.spreadU && i === 0 ? 0 : Math.random() * (pat.spreadU || 7) * U;
+          return { x: player.x + Math.cos(a) * r, y: player.y + Math.sin(a) * r };
+        })
+      : null,
+  };
+  boss.telegraphT = pat.telegraphS;
+}
+
+// 대왕 몸에 닿으면 아프다(0.6초마다). 난이도의 1초 접촉 피해 상한을 함께 쓴다.
+function bossBodyTick(dt) {
+  boss.contactT = (boss.contactT || 0) - dt;
+  if (boss.contactT > 0 || dist(player.x, player.y, boss.x, boss.y) > boss.radiusU * U + 0.4 * U) return;
+  boss.contactT = 0.6;
+  applyContactDamage(boss.atkBase * BOSS_CONTACT);
+}
+
+// 연속 던지기: 예고한 부채꼴 방향으로 쓰레기를 여러 번 던진다. 줄마다 반 칸씩 엇갈려서 가만히 있으면 맞는다.
+function bossVolleyTick(dt) {
+  const v = boss.volley;
+  v.t -= dt;
+  if (v.t > 0) return;
+  const odd = v.wave % 2 === 1 && v.shots > 1, n = odd ? v.shots - 1 : v.shots;   // 홀수 줄은 짝수 줄 틈 사이로
+  for (let i = 0; i < n; i++) {
+    const a = v.aim + (v.shots > 1 ? ((i + (odd ? 0.5 : 0)) / (v.shots - 1) - 0.5) * v.spread : 0);
+    sgHostileShots.push({ x: boss.x, y: boss.y, angle: a, hostile: true, boss: true, life: 2.6, damage: v.dmg, speed: v.speed, r: 0.5 * U, spin: Math.random() * 6 });
+  }
+  playSfx("attackFire", 0.25);
+  v.wave++; v.t = 0.45;
+  if (v.wave >= v.waves) boss.volley = null;
 }
 
 // 보스 패턴 판정 — kind별로 다른 회피 조건(bosses.json의 dodge 설명을 구현)
@@ -2718,14 +2771,44 @@ function resolveBossPattern(pat) {
     }
     case "dashLine": {
       // 돌진 — 예고 직선에서 수직으로 비켜야 회피. 보스가 실제로 이동한다.
-      const ang = pat.aimAngle;
+      const ang = pat.aimAngle, len = (pat.lengthU || 7) * U;
       const dx = player.x - boss.x, dy = player.y - boss.y;
       const along = dx * Math.cos(ang) + dy * Math.sin(ang);
       const perp = Math.abs(-dx * Math.sin(ang) + dy * Math.cos(ang));
-      if (along > -U && along < 7 * U && perp < 1.2 * U) applyBossHit(dmg);
-      boss.x += Math.cos(ang) * 5 * U;
-      boss.y += Math.sin(ang) * 5 * U;
+      if (along > -U && along < len && perp < 1.2 * U) applyBossHit(dmg);
+      boss.x += Math.cos(ang) * (pat.lengthU ? len - U : 5 * U);
+      boss.y += Math.sin(ang) * (pat.lengthU ? len - U : 5 * U);
       addShake(6, 0.25);
+      break;
+    }
+    case "slam": {
+      // 내려찍기(근거리) — 대왕 둘레 원 밖으로 나가면 회피, 맞으면 밖으로 밀려난다
+      const r = (pat.radiusU || 3) * U;
+      if (dist(player.x, player.y, boss.x, boss.y) <= r) {
+        applyBossHit(dmg);
+        const a = Math.atan2(player.y - boss.y, player.x - boss.x);
+        player.x += Math.cos(a) * (pat.knockback || 0) * U; player.y += Math.sin(a) * (pat.knockback || 0) * U;
+      }
+      blasts.push({ x: boss.x, y: boss.y, radius: r, life: 0.4, maxLife: 0.4, color: "#ffb35a", vfxKind: "avalanche" });
+      addShake(6, 0.25);
+      break;
+    }
+    case "leap": {
+      // 점프(원거리) — 예고한 그림자 자리로 대왕이 내려앉는다. 그림자 밖이면 회피.
+      const r = (pat.radiusU || 2.5) * U;
+      boss.x = pat.telegraphOriginX; boss.y = pat.telegraphOriginY;
+      if (dist(player.x, player.y, boss.x, boss.y) <= r) {
+        applyBossHit(dmg);
+        const a = Math.atan2(player.y - boss.y, player.x - boss.x) || 0;
+        player.x += Math.cos(a) * 1.5 * U; player.y += Math.sin(a) * 1.5 * U;
+      }
+      blasts.push({ x: boss.x, y: boss.y, radius: r, life: 0.45, maxLife: 0.45, color: "#ffb35a", vfxKind: "avalanche" });
+      addShake(7, 0.3);
+      break;
+    }
+    case "volley": {
+      // 연속 던지기(원거리) — 판정은 날아가는 쓰레기(sgThreatTick). 부채꼴 방향은 예고 때 고정.
+      boss.volley = { aim: pat.aimAngle, wave: 0, waves: pat.waves || 3, shots: pat.shots || 5, spread: pat.spread || 0.8, speed: (pat.speedU || 5) * U, dmg, t: 0 };
       break;
     }
     case "scatter": {
@@ -4630,6 +4713,7 @@ window.__debugBossPattern = function (name) {   // 다음 기술을 이름으로
   boss.forcePattern = pat; boss.activePattern = null; boss.restT = 0; return true;
 };
 window.__debugPlayerPos = function () { return { x: player.x, y: player.y }; };
+window.__debugBossAt = function (dxU, dyU) { if (!boss) return false; boss.x = player.x + dxU * U; boss.y = player.y + dyU * U; return true; };   // QA: 대왕을 내 옆 (dx, dy)칸에
 window.__debugUnlockAll = function () {
   for (const c of CHAPTERS) {
     save.progress.chapters[c.id] = { ...(save.progress.chapters[c.id] || { cleared: false, bestClearS: null }), unlocked: true };
@@ -4709,6 +4793,36 @@ window.__bgm=()=>({...music.state(),mode,sound:elSound?{hidden:elSound.hidden,te
 window.__sgCard=(c)=>sgApplyCard(c);
 window.__sgSnapshot=()=>({runTime,mode,skills:player?.skills,run:player?.sgRun,cards:currentCards,choices:player?.sgChoices,litter:runStats.litter,weapon:sgWeapon.snapshot(),elements:sgElements.snapshot(),difficulty:sgRunProfile?.difficulty,hurt:{contact:Math.round(runStats.hurtContact||0),hit:Math.round(runStats.hurtHit||0),blast:Math.round(runStats.hurtBlast||0)},enemyTypes:enemies.reduce((o,e)=>{o[e.typeId]=(o[e.typeId]||0)+1;return o;},{}),enemies:enemies.length,special:enemies.reduce((o,e)=>{if(e.sgTrait)o[e.sgTrait]=(o[e.sgTrait]||0)+1;return o;},{})});
 window.__sgCombatLoad=(ids,profile={},supports={})=>{player.skills=Object.fromEntries(ids.map(id=>[id,{lv:R.RUN_RULES.maxSkillLevel,cd:0}]));player.pendingLevels=0;player.sgChoices=runCfg.cardCap;player.sgRun={consumed:[],fusionCount:0,supports:Object.fromEntries(Object.entries(supports).map(([k,v])=>[k,{lv:v}])),partnerOffers:{}};if(mode==='levelup'){mode='playing';elLevelup.classList.add('hidden');}Object.assign(sgRunProfile,profile);sgElements.reset();sgWeapon.reset();return window.__sgSnapshot();};
+// 자동 조종의 보스전: 예고 범위·날아오는 쓰레기를 피하면서 대왕과 5칸쯤 거리를 두고, 대왕 쓰레기가 있으면 줍는다(QA 전용)
+function bossDanger(x,y){
+  let d=0;const ap=boss.activePattern,m=.7*U;
+  if(ap){
+    const bd=dist(x,y,boss.x,boss.y),ang=Math.abs(normalizeAngle(Math.atan2(y-boss.y,x-boss.x)-ap.aimAngle));
+    const dx=x-boss.x,dy=y-boss.y,along=dx*Math.cos(ap.aimAngle)+dy*Math.sin(ap.aimAngle),perp=Math.abs(-dx*Math.sin(ap.aimAngle)+dy*Math.cos(ap.aimAngle));
+    if(ap.kind==='slam'&&bd<(ap.radiusU||3)*U+m)d+=1;
+    if(ap.kind==='vacuum'&&bd<3.5*U)d+=1;
+    if(ap.kind==='cone'&&ang<Math.PI/2+.2&&bd<4*U+m)d+=1;
+    if(ap.kind==='dashLine'&&along>-U-m&&along<(ap.lengthU||7)*U+m&&perp<1.2*U+m)d+=1;
+    if(ap.kind==='leap'&&dist(x,y,ap.telegraphOriginX,ap.telegraphOriginY)<(ap.radiusU||2.5)*U+m)d+=1;
+    if(ap.kind==='volley'&&ang<(ap.spread||.8)/2+.25)d+=1;
+    if((ap.kind==='scatter'||ap.kind==='litter')&&(ap.spots||[]).some(p=>dist(x,y,p.x,p.y)<(ap.kind==='litter'?.9:1.2)*U+m))d+=1;
+  }
+  if(boss.volley&&Math.abs(normalizeAngle(Math.atan2(y-boss.y,x-boss.x)-boss.volley.aim))<boss.volley.spread/2+.25)d+=1;
+  for(const s of sgHostileShots){if(s.life<=0)continue;const vx=Math.cos(s.angle),vy=Math.sin(s.angle),rx=x-s.x,ry=y-s.y,t=rx*vx+ry*vy;if(t>-U&&t<5*U&&Math.abs(-rx*vy+ry*vx)<(s.r||.3*U)+.6*U)d+=.7;}
+  if(dist(x,y,boss.x,boss.y)<boss.radiusU*U+.8*U)d+=.6;
+  return d;
+}
+function bossDodge(target){
+  const litter=decor.filter(d=>d.bossLitter&&!d.opened&&d.expire>runTime).sort((a,b)=>dist(a.x,a.y,player.x,player.y)-dist(b.x,b.y,player.x,player.y))[0];
+  let best=[0,0],bestS=Infinity;
+  for(let k=0;k<17;k++){
+    const a=k*Math.PI/8,dx=k===16?0:Math.cos(a),dy=k===16?0:Math.sin(a),x=player.x+dx*1.2*U,y=player.y+dy*1.2*U,x2=player.x+dx*2.4*U,y2=player.y+dy*2.4*U;
+    let sc=(bossDanger(x,y)+bossDanger(x2,y2))*10+Math.abs(dist(x,y,boss.x,boss.y)/U-5)*.6;
+    if(litter)sc+=dist(x,y,litter.x,litter.y)/U*.5;
+    if(sc<bestS){bestS=sc;best=[dx,dy];}
+  }
+  return best;
+}
 window.__debugPilot=(seconds)=>{
   window.__debugGod=false;
   const n=Math.floor(seconds*60);
@@ -4727,7 +4841,8 @@ window.__debugPilot=(seconds)=>{
     if(i%12===0){
       const targets=[...decor.filter(d=>d.litter&&!d.opened),...gems].sort((a,b)=>dist(a.x,a.y,player.x,player.y)-dist(b.x,b.y,player.x,player.y));
       const target=targets[0];let dx=0,dy=0;
-      if(boss){const a=Math.atan2(boss.y-player.y,boss.x-player.x),d=dist(boss.x,boss.y,player.x,player.y);dx=Math.cos(a+(d<160?Math.PI/2:0));dy=Math.sin(a+(d<160?Math.PI/2:0));if(boss.activePattern&&d<150){dx=-Math.cos(a);dy=-Math.sin(a);}}
+      if(boss&&window.__pilotBossDodge!==false){[dx,dy]=bossDodge(target);}
+      else if(boss){const a=Math.atan2(boss.y-player.y,boss.x-player.x),d=dist(boss.x,boss.y,player.x,player.y);dx=Math.cos(a+(d<160?Math.PI/2:0));dy=Math.sin(a+(d<160?Math.PI/2:0));}   // 예고를 보지 않는 서툰 플레이어
       else if(target){const a=Math.atan2(target.y-player.y,target.x-player.x);dx=Math.cos(a);dy=Math.sin(a);}
       else{dx=Math.cos(runTime/4);dy=Math.sin(runTime/4);}
       const avoid=window.__pilotAvoid??2;   // 0 = 피하지 않는 서툰 플레이어(난이도 비교용)
@@ -4736,7 +4851,7 @@ window.__debugPilot=(seconds)=>{
     }
     simTick(FIXED_DT);
   }
-  keys.clear();draw();return {runTime,mode,hp:player.hp,maxHp:player.hpMax,kills:killCount,litter:runStats.litter,choices:player.sgChoices,bossHp:boss?.hp};
+  keys.clear();draw();return {runTime,mode,hp:player.hp,maxHp:player.hpMax,kills:killCount,litter:runStats.litter,choices:player.sgChoices,bossHp:boss?.hp,bossMax:boss?.hpMax,bossHurt:Math.round(runStats.hurtHit||0),bossDmg:Math.round(runStats.bossDamage||0)};
 };
 }
 ECOUI.initEcoUI({
@@ -4932,7 +5047,7 @@ async function sgStart(stage){
 function sgRunConfig(stage){
   // 난이도 3단계(R.DIFFICULTIES): 쉬움 ★ · 보통 ★★ · 어려움 ★★★(특별한 적 special 비율)
   const p=sgRunProfile||sgState.profile,s=R.STAGES.find(s=>s.id===stage),duration=sgServerDuration||R.durationFor(p,stage),D=R.DIFFICULTIES[R.difficultyOf(p)];
-  return {mode:'M01',chapterId:stage,rework:true,time:{id:'guardian',dur:duration,rewardMul:1},survival:true,bossStage:stage==='CH05',timeLimitS:duration,noBoss:true,timeScale:duration/900,beaconAtS:Math.min(150,duration-45),gemMul:.8,densityMul:s.density,multMul:1,mods:{lateDensity:D.density||1,stageHp:s.enemyHp,stageAtk:s.enemyAtk,diffHp:D.enemyHp,diffSpd:D.enemySpd,diffTaken:D.taken,enemyHpMul:s.enemyHp*D.enemyHp,enemySpdMul:D.enemySpd,takenMul:D.taken*s.enemyAtk,special:D.special,hpGrowth:D.hpGrowth,atkGrowth:D.atkGrowth},cardCap:duration===180?R.RUN_RULES.introChoices:R.RUN_RULES.normalChoices};
+  return {mode:'M01',chapterId:stage,rework:true,time:{id:'guardian',dur:duration,rewardMul:1},survival:true,bossStage:stage==='CH05',timeLimitS:duration,noBoss:true,timeScale:duration/900,beaconAtS:Math.min(150,duration-45),gemMul:.8,densityMul:s.density,multMul:1,mods:{lateDensity:D.density||1,stageHp:s.enemyHp,stageAtk:s.enemyAtk,diffHp:D.enemyHp,diffSpd:D.enemySpd,diffTaken:D.taken,enemyHpMul:s.enemyHp*D.enemyHp,enemySpdMul:D.enemySpd,takenMul:D.taken*s.enemyAtk,special:D.special,hpGrowth:D.hpGrowth,atkGrowth:D.atkGrowth,bossHpMul:D.bossHp||1},cardCap:duration===180?R.RUN_RULES.introChoices:R.RUN_RULES.normalChoices};
 }
 function sgChooseCards(reroll=false){
   mode='levelup';keys.clear();touchJoy.active=false;
@@ -4988,15 +5103,18 @@ function sgThreatTick(dt){
     if(e.sgThrowWarn>0){e.sgThrowWarn-=dt;if(e.sgThrowWarn<=0&&sgHostileShots.length<12)sgHostileShots.push({x:e.x,y:e.y,angle:e.sgThrowAngle,hostile:true,boss:false,life:2,damage:e.atk*.55});}
   }
   for(const s of sgHostileShots){
-    if(s.life<=0)continue;s.life-=dt;s.x+=Math.cos(s.angle)*4.5*U*dt;s.y+=Math.sin(s.angle)*4.5*U*dt;
-    if(dist(s.x,s.y,player.x,player.y)<.6*U){applyBossHit(s.damage);s.life=0;}
+    if(s.life<=0)continue;s.life-=dt;const v=s.speed||4.5*U;s.x+=Math.cos(s.angle)*v*dt;s.y+=Math.sin(s.angle)*v*dt;
+    if(dist(s.x,s.y,player.x,player.y)<(s.r?s.r+.3*U:.6*U)){applyBossHit(s.damage);s.life=0;}
   }
   sgHostileShots=sgHostileShots.filter(s=>s.life>0);
 }
 function sgDrawThreats(){
   ctx.save();ctx.lineWidth=2;ctx.strokeStyle='#8b2720';ctx.fillStyle='#f6b363';
   for(const e of enemies)if(e.sgThrowWarn>0){const q=worldToScreen(e.x,e.y);ctx.beginPath();ctx.arc(q.x,q.y,18,0,7);ctx.stroke();ctx.beginPath();ctx.moveTo(q.x,q.y);ctx.lineTo(q.x+Math.cos(e.sgThrowAngle)*32,q.y+Math.sin(e.sgThrowAngle)*32);ctx.stroke();}
-  for(const s of sgHostileShots){const q=worldToScreen(s.x,s.y);ctx.beginPath();ctx.arc(q.x,q.y,6,0,7);ctx.fill();ctx.stroke();}
+  for(const s of sgHostileShots){const q=worldToScreen(s.x,s.y);
+    // 대왕이 던진 쓰레기: 판정 크기의 빨간 테두리 + 쓰레기 그림(돌며 날아감)
+    if(s.boss){ctx.fillStyle='rgba(246,179,99,.55)';ctx.beginPath();ctx.arc(q.x,q.y,s.r,0,7);ctx.fill();ctx.stroke();themeFx.stamp(ctx,'t1_prop_litter',q.x,q.y,s.r*2.2,1,s.spin+runTime*7);ctx.fillStyle='#f6b363';continue;}
+    ctx.beginPath();ctx.arc(q.x,q.y,6,0,7);ctx.fill();ctx.stroke();}
   ctx.restore();
 }
 function sgGrowthTick(dt){

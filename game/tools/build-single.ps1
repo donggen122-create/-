@@ -17,7 +17,7 @@ function DataUri($p) {
 }
 
 # 의존 순서(앞 모듈이 뒤 모듈에 쓰인다). rework-*는 Codex 개편(Guardian v1) 모듈: core ← content·ui ← main
-$order = @("content.data", "themes", "content", "meta", "save", "assets", "cloud", "economy", "ecoui", "theme-effects", "element-content", "rework-core", "rework-content", "element-effects", "element-combat", "weapon-effects", "rework-ui", "music", "runtime-performance", "main")
+$order = @("content.data", "themes", "content", "meta", "save", "assets", "cloud", "economy", "ecoui", "theme-effects", "element-content", "rework-core", "boss-patterns", "rework-content", "element-effects", "element-combat", "weapon-effects", "rework-ui", "music", "runtime-performance", "main")
 $sb = New-Object System.Text.StringBuilder
 [void]$sb.AppendLine("var __m = {};")
 

@@ -174,6 +174,41 @@ export function createThemeEffects(sprites) {
         const a = i * FX_TAU / 8;
         stamp(c, "t1_prop_litter", s.x + Math.cos(a) * 4 * U, s.y + Math.sin(a) * 4 * U, 20, .8);
       }
+    } else if (pat.kind === "slam") {
+      // 내려찍기: 대왕 둘레 원(판정 크기 그대로) + 들어 올린 쓰레기 더미
+      warning(c, s.x, s.y, (pat.radiusU || 3) * U, t);
+      stamp(c, "t1_prop_litter", s.x, s.y - (quiet() ? 90 : 80 + 40 * t), 44, .85, quiet() ? 0 : t * 4);
+    } else if (pat.kind === "leap") {
+      // 점프: 내려앉을 자리에 점점 짙어지는 그림자 + 대왕에서 이어지는 점선
+      const q = toScreen(pat.telegraphOriginX, pat.telegraphOriginY), r = (pat.radiusU || 2.5) * U;
+      c.setLineDash([6, 6]); c.strokeStyle = "#c77832"; c.lineWidth = 2;
+      c.beginPath(); c.moveTo(s.x, s.y); c.lineTo(q.x, q.y); c.stroke(); c.setLineDash([]);
+      warning(c, q.x, q.y, r, t);
+      c.fillStyle = `rgba(60,40,20,${.12 + .3 * t})`; circle(c, q.x, q.y, r * (.3 + .6 * t)); c.fill();
+    } else if (pat.kind === "dashLine") {
+      // 몸통 박치기: 대왕이 달려갈 빨간 길(판정 폭 그대로) + 시간 막대 + 화살표
+      const len = (pat.lengthU || 7) * U, w = 1.2 * U;
+      c.translate(s.x, s.y); c.rotate(pat.aimAngle);
+      c.fillStyle = `rgba(228,94,52,${.12 + .18 * t})`; c.fillRect(0, -w, len, w * 2);
+      c.strokeStyle = "#fff7d7"; c.lineWidth = 5; c.strokeRect(0, -w, len, w * 2);
+      c.strokeStyle = "#d64d35"; c.lineWidth = 2.5; c.strokeRect(0, -w, len, w * 2);
+      c.fillStyle = "#d64d35"; c.fillRect(0, -w, len * t, 5);
+      c.lineWidth = 4;
+      for (let i = 1; i <= 3; i++) {
+        const x = len * i / 4; c.beginPath(); c.moveTo(x - 12, -12); c.lineTo(x, 0); c.lineTo(x - 12, 12); c.stroke();
+      }
+    } else if (pat.kind === "volley") {
+      // 연속 던지기: 쓰레기가 날아올 부채꼴과 줄
+      const len = 9 * U, sp = pat.spread || .8, n = pat.shots || 5, a0 = pat.aimAngle;
+      c.fillStyle = `rgba(228,94,52,${.08 + .14 * t})`;
+      c.beginPath(); c.moveTo(s.x, s.y); c.arc(s.x, s.y, len, a0 - sp / 2 - .08, a0 + sp / 2 + .08); c.closePath(); c.fill();
+      c.strokeStyle = "#d64d35"; c.lineWidth = 2; c.setLineDash([8, 6]);
+      for (let i = 0; i < n; i++) {
+        const a = a0 + (n > 1 ? (i / (n - 1) - .5) * sp : 0), l = len * (.35 + .65 * t);
+        c.beginPath(); c.moveTo(s.x, s.y); c.lineTo(s.x + Math.cos(a) * l, s.y + Math.sin(a) * l); c.stroke();
+      }
+      c.setLineDash([]);
+      stamp(c, "t1_prop_litter", s.x + Math.cos(a0) * 50, s.y + Math.sin(a0) * 50 - 20, 30, .9, t * 6);
     } else if (pat.kind === "summonOnly") {
       for (let i = 0; i < (pat.summon?.n || 4); i++) {
         const a = i * FX_TAU / (pat.summon?.n || 4), x = s.x + Math.cos(a) * 60, y = s.y + Math.sin(a) * 60;

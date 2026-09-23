@@ -501,6 +501,9 @@
   .ev .si-desc, .ev .si-val, .ev .si-lock { font-size: 11.5px; line-height: 1.45; margin: 3px 0; }
 
   #app.theme-one #boss-telegraph-label { top: calc(106px + var(--sat)); }
+  /* 보스 기술 예고(거리·이름·피하는 법·남은 시간): 복잡한 바닥 위에서도 읽히게 어두운 말풍선 */
+  #boss-telegraph-label:not(:empty) { background: rgba(48,24,12,.82); color: #ffe2b0; border: 2px solid #ff8a5a; border-radius: 14px; padding: 4px 12px; width: max-content; max-width: calc(100vw - 24px); box-sizing: border-box; text-align: center; line-height: 1.35; z-index: 3; pointer-events: none; }
+  @media (max-width: 560px) { #app.theme-one #boss-telegraph-label { top: calc(134px + var(--sat)); font-size: 13px; } }   /* 휴대폰: 스킬 칸 줄 아래로 */
   #app.theme-one #hpbar-wrap, #app.theme-one #xpbar-wrap { left: 64px; transform: none; width: min(340px, calc(100% - 180px)); }
   #app.theme-one #lum-wrap { left: 64px; transform: none; width: min(180px, calc(100% - 180px)); }
 
