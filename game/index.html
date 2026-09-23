@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>서호팡팡수호대</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <button
+      id="mute-toggle"
+      class="mute-toggle"
+      type="button"
+      aria-label="배경음악 음소거"
+      aria-pressed="false"
+    >
+      <span class="icon" aria-hidden="true">🔊</span>
+    </button>
+
+    <section id="screen-title" class="screen active" aria-label="시작 화면">
+      <h1>서호팡팡수호대</h1>
+      <p class="blink">화면을 터치하거나 아무 키나 눌러 시작</p>
+    </section>
+
+    <section id="screen-lobby" class="screen" aria-label="로비">
+      <h2>로비</h2>
+      <p>출동 준비 완료!</p>
+      <button id="deploy" type="button" class="primary">출동</button>
+    </section>
+
+    <section id="screen-battle" class="screen" aria-label="전투">
+      <h2>전투 중</h2>
+      <p>(게임 플레이 화면)</p>
+      <button id="back-to-lobby" type="button">로비로 돌아가기</button>
+    </section>
+
+    <script src="bgm.js"></script>
+    <script src="main.js"></script>
+  </body>
+</html>
