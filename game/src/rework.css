@@ -101,3 +101,5 @@
 @media(max-width:480px){.sg-flip{height:320px}}
 .sg-gold-feature{border-left:3px solid #e0b53c;background:#fff9e3;padding:6px 9px;border-radius:6px;font-size:12px!important;color:#6b5000}
 .sg-flip-gold{font-size:12px!important;color:#6b5000;background:#fff3c4;border-radius:8px;padding:5px 8px;line-height:1.45}
+.sg-stage-gift{display:block;font-size:10px;font-weight:700;color:#2c6b52;margin-top:2px}.sg-stage-gift.done{color:#8a6a2a}
+.sg-stage-gift-note{margin-top:8px}.sg-stage-gift-note .sg-icon{width:20px;height:20px}

@@ -136,3 +136,26 @@ test('API: failure supply cap follows the settlement day',async()=>{
  for(let i=0;i<4;i++){const s=await api(env,'/play/start',{stage:'CH01'},t);await api(env,'/play/finish',{runId:s.runId,cleared:false,seconds:200},t+210000);t+=220000;}
  const {profile}=await getProfile(env.DB,'qa');assert.equal(profile.gifts,31);assert.equal(profile.failGiftDay,dayKey(now));
 });
+
+test('clear tickets: easy/normal 1, hard 2; each stage pays tickets for only 2 clears per game day',()=>{
+ let p=supplyProfile();p.gifts=0;const clear=(stage,difficulty,day='2026-09-23')=>{const r=R.completeRun(p,{stage,cleared:true,seconds:300,difficulty,day});p=r.profile;return r.reward;};
+ assert.equal(clear('CH01','easy').gifts,1);assert.equal(clear('CH01','hard').gifts,2);
+ const third=clear('CH01','hard');assert.equal(third.gifts,0);assert.equal(third.stageGift.capped,true);assert.ok(third.coins>0,'코인·별은 그대로');assert.equal(third.friendship,1);
+ assert.equal(clear('CH02','normal').gifts,1,'다른 단계는 따로 센다');assert.equal(R.stageGiftLeft(p,'CH02','2026-09-23'),1);assert.equal(R.stageGiftLeft(p,'CH01','2026-09-23'),0);
+ assert.equal(clear('CH01','hard','2026-09-24').gifts,2,'다음 날(아침 8시) 다시');assert.equal(R.stageGiftLeft(p,'CH01','2026-09-24'),1);assert.equal(R.stageGiftLeft(p,'CH02','2026-09-24'),2);
+ assert.equal(p.gifts,1+2+0+1+2);
+ const lost=R.completeRun(p,{stage:'CH03',cleared:false,seconds:100,day:'2026-09-24'});assert.equal(lost.reward.gifts,0);assert.equal(lost.reward.stageGift,null,'실패는 횟수에 안 들어감');
+});
+
+test('first 1-5 clear bonus stays on top of the difficulty tickets',()=>{
+ const p=supplyProfile();for(const id of ['CH01','CH02','CH03','CH04'])p.stages[id]={cleared:true,stars:1};
+ assert.equal(R.completeRun(p,{stage:'CH05',cleared:true,seconds:290,difficulty:'hard',day:'2026-09-23'}).reward.gifts,3);
+ assert.equal(R.completeRun(p,{stage:'CH05',cleared:true,seconds:290,difficulty:'easy',day:'2026-09-23'}).reward.gifts,2);
+});
+
+test('API: the third clear of the same stage in a day pays no ticket; the settlement day resets it',async()=>{
+ const p=supplyProfile();p.difficulty='hard';p.gifts=0;const env=await setup(p);let t=now;const win=async()=>{const s=await api(env,'/play/start',{stage:'CH01'},t);const r=await api(env,'/play/finish',{runId:s.runId,cleared:true,seconds:300},t+301000);t+=310000;return r;};
+ assert.equal((await win()).reward.gifts,2);assert.equal((await win()).reward.gifts,2);const third=await win();assert.equal(third.reward.gifts,0);assert.equal(third.reward.stageGift.capped,true);
+ t=Date.parse('2026-09-23T23:05Z');assert.equal((await win()).reward.gifts,2,'아침 8시 뒤 새 날');
+ assert.equal((await getProfile(env.DB,'qa')).profile.gifts,6);
+});

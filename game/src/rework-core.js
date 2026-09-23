@@ -9,6 +9,10 @@ export const SLOTS={attack:'공격 훈련',hp:'체력 훈련',speed:'기동 훈�
 export const GRADE_NAMES=['동','은','금'];
 export const GOLD_COPIES=7;
 export const SUPPLY_EXCHANGE_COST=300;   // 코인 300개 → 보급권 1장, 게임 날짜(아침 8시 기준)마다 1번
+// 성공 보급권(2026-09-23 사용자): 쉬움·보통 1장, 어려움 2장. 같은 단계는 게임 날짜(아침 8시)마다 2번 성공까지만 보급권 → 여러 단계를 하도록.
+export const CLEAR_GIFTS={easy:1,normal:1,hard:2};
+export const STAGE_GIFT_CLEARS_PER_DAY=2;
+export function stageGiftLeft(p,stage,day){const g=p?.stageGifts;return Math.max(0,STAGE_GIFT_CLEARS_PER_DAY-(day&&g?.day===day?(g.counts?.[stage]||0):0));}
 export const PART_LEVEL_STEP=.03;        // 레벨 1단계마다 그 스킬 피해 +3%(훈련 1단계와 같은 숫자)
 export const GRADE_STEP=.06;             // 메달 1단계마다 +6%(동 0 · 은 6 · 금 12). 배열이 아니라 곱셈이라 등급이 늘어도 NaN이 없다
 // 동물 친구 = 함께 있는 동안 계속 붙는 버프(2026-09-23, 사용자: "펫은 무용지물 → 버프 효과로"). buffs 키는 main.js 통합 스탯 키. 우정 3단계부터 ×1.2
@@ -25,9 +29,9 @@ export function petBuff(p,key){const pet=PETS[p?.activePet];if(!pet)return 0;con
 export const DIFFICULTIES = {
   // density: 적 수 배수(STAGES.density에 곱함). hpGrowth·atkGrowth: 1분마다 새로 나오는 적의 체력·공격력 추가 증가율(스킬이 커져도 후반이 심심하지 않게)
   // contactCap: 1초에 부딪혀서 잃을 수 있는 최대 체력 비율(둘러싸여도 빠져나올 시간). 모든 난이도: 처음 1분은 적 공격이 55%→100%로 서서히 세진다(main.js takeDamage)
-  easy:   { name: '쉬움',   stars: 1, desc: '적이 약하고 받는 피해가 적어요. 성공하면 별 1개.', enemyHp: .9,  enemySpd: .85, taken: .4,  density: 1,   hpGrowth: 0,   atkGrowth: 0,   contactCap: .25, special: 0 },
-  normal: { name: '보통',   stars: 2, desc: '기본 난이도예요. 시간이 갈수록 적이 조금씩 강해져요. 성공하면 별 2개.', enemyHp: 1, enemySpd: 1, taken: 1, density: 1.1, hpGrowth: .12, atkGrowth: .06, contactCap: .3, special: 0 },
-  hard:   { name: '어려움', stars: 3, desc: '적이 많고 튼튼하고 시간이 갈수록 더 강해져요. 원소 방패·단단 갑옷·날쌘이·회복이·쪼개지기 같은 특별한 적이 나와요. 성공하면 별 3개.', enemyHp: 1.2, enemySpd: 1.08, taken: 1.3, density: 1.2, hpGrowth: .3, atkGrowth: .1, contactCap: .35, special: .3 },
+  easy:   { name: '쉬움',   stars: 1, desc: '적이 약하고 받는 피해가 적어요. 성공하면 별 1개 · 보급권 1장.', enemyHp: .9,  enemySpd: .85, taken: .4,  density: 1,   hpGrowth: 0,   atkGrowth: 0,   contactCap: .25, special: 0 },
+  normal: { name: '보통',   stars: 2, desc: '기본 난이도예요. 시간이 갈수록 적이 조금씩 강해져요. 성공하면 별 2개 · 보급권 1장.', enemyHp: 1, enemySpd: 1, taken: 1, density: 1.1, hpGrowth: .12, atkGrowth: .06, contactCap: .3, special: 0 },
+  hard:   { name: '어려움', stars: 3, desc: '적이 많고 튼튼하고 시간이 갈수록 더 강해져요. 원소 방패·단단 갑옷·날쌘이·회복이·쪼개지기 같은 특별한 적이 나와요. 성공하면 별 3개 · 보급권 2장.', enemyHp: 1.2, enemySpd: 1.08, taken: 1.3, density: 1.2, hpGrowth: .3, atkGrowth: .1, contactCap: .35, special: .3 },
 };
 export const difficultyOf=p=>Object.hasOwn(DIFFICULTIES,p?.difficulty)?p.difficulty:'easy';
 // 어려움에서만 나오는 특별한 적(main.js가 동작·표시). weight: 뽑힐 비율. 엘리트(큰 적)는 늘 '원소 방패'.
@@ -115,7 +119,14 @@ export function completeRun(profile,{stage,cleared,seconds,litter=0,hpFraction=0
  const first=cleared&&!p.stages[stage]?.cleared,intro=['CH01','CH02'].includes(stage)&&!p.stages[stage]?.cleared;
  const goal=cleared&&litter>=st.target;
  const base=120+10*(index-1),coins=cleared?Math.floor(base*(intro?.6:1))+(first?120:0)+(index===5?60:0)+(goal?30:0):Math.floor(base*.6*Math.min(seconds/300,1));
- let gifts=cleared?1+(first&&index===5?1:0):0,friendship=cleared?1:0;
+ // 성공 보급권: 난이도별(쉬움·보통 1, 어려움 2) + 1-5 첫 성공 보너스 1. 같은 단계는 하루 2번 성공까지만(day는 서버가 넣음, 코인·우정·별은 그대로).
+ let stageGift=null,clearGifts=cleared?(CLEAR_GIFTS[difficulty]||1):0;
+ if(cleared&&day){
+  if(p.stageGifts?.day!==day)p.stageGifts={day,counts:{}};
+  const used=p.stageGifts.counts[stage]||0;if(used>=STAGE_GIFT_CLEARS_PER_DAY)clearGifts=0;else p.stageGifts.counts[stage]=used+1;
+  stageGift={left:STAGE_GIFT_CLEARS_PER_DAY-(p.stageGifts.counts[stage]||0),capped:!clearGifts,limit:STAGE_GIFT_CLEARS_PER_DAY};
+ }
+ let gifts=clearGifts+(first&&index===5?1:0),friendship=cleared?1:0;
  p.runs++;if(cleared)p.wins++;
  // 실패 격려(150초 이상 실패 2번): 우정은 매번, 보급권은 게임 날짜마다 1장까지(실패만 반복해 보급권을 모으지 못하게). day는 서버가 넣는다.
  if(!cleared&&seconds>=150){p.failRemainder++;if(p.failRemainder>=2){p.failRemainder-=2;friendship++;if(!day||p.failGiftDay!==day){gifts++;if(day)p.failGiftDay=day;}}}
@@ -136,7 +147,7 @@ export function completeRun(profile,{stage,cleared,seconds,litter=0,hpFraction=0
    partActivity.push({id,active});
   }
  }
- return {profile:p,reward:{coins,gifts,friendship,stars,first,partActivity,difficulty:own(DIFFICULTIES,difficulty)?difficulty:'easy',goal,notes:first?[st.unlock]:[]}};
+ return {profile:p,reward:{coins,gifts,friendship,stars,first,partActivity,stageGift,difficulty:own(DIFFICULTIES,difficulty)?difficulty:'easy',goal,notes:first?[st.unlock]:[]}};
 }
 // ctx.day = 서버가 넣는 게임 날짜(아침 8시 기준). 코인 교환처럼 하루 한 번인 작업에 쓴다.
 export function action(profile,a,rng=Math.random,ctx={}){

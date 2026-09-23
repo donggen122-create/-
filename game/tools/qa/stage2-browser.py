@@ -82,6 +82,20 @@ with sync_playwright() as pw:
         page.locator('.sg-nav [data-tab="friends"]').click();page.wait_for_timeout(300);assert '아직 못 만난 친구 6마리' in page.locator('#guardian-lobby').inner_text()
         page.locator('[data-do="pet-gift"]').click();page.wait_for_function("document.querySelector('dialog[open]')?.textContent.includes('친구가 되었어요')");close(page)
         page.screenshot(path=str(OUT/f'friends-{w}.png'),full_page=True);checks.append('unmet friend first')
+        # 11) 성공 보급권: 어려움 2장, 같은 단계는 하루 2번 성공까지
+        day=state(page)['passes']['day']
+        seed(page,uid,profile(coins=0,gifts=0,difficulty='hard',stages={'CH01':{'cleared':True,'stars':1},'CH02':{'cleared':True,'stars':1}},milestones={'firstPart':True},stageGifts={'day':day,'counts':{'CH01':1}}))
+        page.reload(wait_until='networkidle');lobby(page);close(page)
+        assert '오늘 보급권 1번 남음' in page.locator('[data-stage="CH01"]').inner_text()
+        page.screenshot(path=str(OUT/f'stage-gift-{w}.png'),full_page=True)
+        def clear_ch01():
+            page.locator('[data-stage="CH01"]').click();page.locator('#sg-start').click();page.locator('#levelup:not(.hidden)').wait_for()
+            page.evaluate('window.__debugGod=true');page.evaluate('window.__debugPilot(301)');page.locator('#btn-continue:enabled').wait_for(timeout=30000)
+            t=page.locator('#result-table').inner_text();page.screenshot(path=str(OUT/f'stage-gift-result-{w}.png'));page.locator('#btn-continue').click();page.wait_for_timeout(400);close(page);return t
+        t=clear_ch01();assert '+2' in t and '여기까지' in t,t
+        assert '오늘 보급권 끝' in page.locator('[data-stage="CH01"]').inner_text()
+        t=clear_ch01();assert '+0' in t and '2번 다 받았어요' in t,t
+        s=state(page)['profile'];assert s['gifts']==2,s['gifts'];checks.append('hard 2 tickets, 2 clears per stage per day')
         layout=page.evaluate("({w:innerWidth,doc:document.documentElement.scrollWidth})");assert layout['doc']<=w+1,layout
         results.append({'viewport':w,'passed':checks});ctx.close()
     b.close()

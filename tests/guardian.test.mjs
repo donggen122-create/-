@@ -67,7 +67,7 @@ test('rewards, two qualifying losses, guaranteed milestones and no pass rewards'
   r=R.completeRun(p,{stage:'CH01',cleared:false,seconds:150});p=r.profile;assert.equal(p.failRemainder,1);
   p=R.completeRun(p,{stage:'CH01',cleared:true,seconds:300}).profile;assert.equal(p.failRemainder,1);
   r=R.completeRun(p,{stage:'CH01',cleared:false,seconds:150});assert.equal(r.reward.gifts,1);assert.equal(r.profile.failRemainder,0);
-  p=R.completeRun(r.profile,{stage:'CH05',cleared:true,seconds:290,litter:5,bossSeconds:70,difficulty:'hard'}).profile;assert.equal(p.stages.CH05.stars,3);assert.equal(p.gifts,r.profile.gifts+2);assert.ok(!('passes' in p));
+  p=R.completeRun(r.profile,{stage:'CH05',cleared:true,seconds:290,litter:5,bossSeconds:70,difficulty:'hard'}).profile;assert.equal(p.stages.CH05.stars,3);assert.equal(p.gifts,r.profile.gifts+3,'어려움 2장 + 1-5 첫 성공 1장');assert.ok(!('passes' in p));
 });
 test('legacy migration preserves originals, gold, stars, equipment investment and animal roles',()=>{
   const old={currencies:{GOLD:900,DUST:75},hero:'minji',progress:{chapters:{CH02:{cleared:true,stars:3,bestClearS:200}}},inv:[{uid:1,id:'EQ01',grade:4,lv:2},{uid:2,id:'EQ01',grade:0,lv:0}],pets:{PT07:{lv:3},PT03:{lv:1}},activePet:'PT07',stats:{runs:20,clears:3}};
