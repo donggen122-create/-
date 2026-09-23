@@ -41,7 +41,9 @@ export const DIFFICULTIES = {
   // contactCap: 1초에 부딪혀서 잃을 수 있는 최대 체력 비율(둘러싸여도 빠져나올 시간). 모든 난이도: 처음 1분은 적 공격이 55%→100%로 서서히 세진다(main.js takeDamage)
   easy:   { name: '쉬움',   stars: 1, desc: '적이 약하고 받는 피해가 적어요. 성공하면 별 1개 · 보급권 1장.', enemyHp: .9,  enemySpd: .85, taken: .4,  density: 1,   hpGrowth: 0,   atkGrowth: 0,   contactCap: .25, special: 0 },
   normal: { name: '보통',   stars: 2, desc: '기본 난이도예요. 시간이 갈수록 적이 조금씩 강해져요. 성공하면 별 2개 · 보급권 1장.', enemyHp: 1, enemySpd: 1, taken: 1, density: 1.1, hpGrowth: .12, atkGrowth: .06, contactCap: .3, special: 0 },
-  hard:   { name: '어려움', stars: 3, desc: '적이 많고 튼튼하고 시간이 갈수록 더 강해져요. 원소 방패·단단 갑옷·날쌘이·회복이·쪼개지기 같은 특별한 적이 나와요. 성공하면 별 3개 · 보급권 2장.', enemyHp: 1.2, enemySpd: 1.08, taken: 1.3, density: 1.2, hpGrowth: .3, atkGrowth: .1, contactCap: .35, special: .3 },
+  // 어려움(2026-09-23 저녁 사용자: "유니크 이상 파츠 + 기본 능력치 40 이상이어야 간신히 클리어"): 자동 조종 1-3 어려움 10판씩 — 훈련 40·유니크 3개 4/10,
+  // 훈련 20·유니크 1/10, 훈련 40·파츠 없음 수준 1/10, 훈련 1 0/10(docs/28). 체력 ×5.5 · 받는 피해 ×4.8 · 1분마다 새 적 체력 +45%.
+  hard:   { name: '어려움', stars: 3, desc: '아주 어려워요! 기본 능력치(훈련) 40단계 이상과 유니크 이상 파츠가 있어야 겨우 버틸 수 있어요. 적이 아주 튼튼하고 세며 시간이 갈수록 더 강해져요. 원소 방패·단단 갑옷·날쌘이·회복이·쪼개지기 같은 특별한 적도 나와요. 성공하면 별 3개 · 보급권 2장.', enemyHp: 5.5, enemySpd: 1.08, taken: 4.8, density: 1.2, hpGrowth: .45, atkGrowth: .1, contactCap: .35, special: .3 },
 };
 export const difficultyOf=p=>Object.hasOwn(DIFFICULTIES,p?.difficulty)?p.difficulty:'easy';
 // 어려움에서만 나오는 특별한 적(main.js가 동작·표시). weight: 뽑힐 비율. 엘리트(큰 적)는 늘 '원소 방패'.
@@ -81,7 +83,9 @@ export function maxClear(p){return Math.max(0,...STAGES.filter(s=>p.stages?.[s.i
 export function stageUnlocked(p,id){const i=STAGES.findIndex(s=>s.id===id);return i===0||(i>0&&!!p.stages?.[STAGES[i-1].id]?.cleared);}
 export function availableTools(){return Object.keys(SKILLS);}
 export function durationFor(p,id){return ['CH01','CH02'].includes(id)&&!p.stages?.[id]?.cleared?180:id==='CH05'?240:300;}
-export function trainingCost(level){return level>=20?null:100+25*(level-1);}
+// 훈련(기본 능력치) 만렙 100(2026-09-23 저녁 사용자). 비용 식은 그대로(100 + 25×(단계-1)), 40단계까지 한 능력치에 22,425코인, 100단계까지 131,175코인.
+export const TRAINING_MAX=100;
+export function trainingCost(level){return level>=TRAINING_MAX?null:100+25*(level-1);}
 export const upgradeCost=trainingCost;
 export function partUpgradeCost(level){return level>=10?null:60+20*(level-1);}
 export function partResetRefund(level){const n=clampInt(level,1,10)-1;return 60*n+10*n*(n-1);}
@@ -109,7 +113,9 @@ export function runParts(p){return [...new Set(p.equippedParts||[])].filter(id=>
 export function skillDamageMultiplier(p,id){const combo=COMBOS[id];if(combo)return skillDamageMultiplier(p,combo.skill);return 1+partBonus(p,id)+elementBonus(p,SKILLS[id]?.element);}
 export function levelMultiplier(lv){return LEVEL_DAMAGE[clampInt(lv,1,5)-1];}
 export function supportValue(id,lv){const s=SUPPORTS[id];return s?s.values[clampInt(lv,1,3)-1]:0;}
-export function bonuses(p){return {atkPct:(p.training.attack-1)*.03,hpPct:(p.training.hp-1)*.03+(rainbowSet(p)?.05:0),speedPct:Math.min(.15,(p.training.speed-1)*.005),bossDmgPct:0,areaPct:0};}
+// 훈련 효과(공격·체력 단계마다 +3%, 이동 속도 31단계까지 0.5%씩 그 뒤 0.1%씩 → 100단계 +21.9%)
+export function trainingGain(stat,level){const n=Math.max(1,Math.floor(Number(level)||1));return stat==='speed'?Math.min(.15,(n-1)*.005)+Math.max(0,n-31)*.001:(n-1)*.03;}
+export function bonuses(p){return {atkPct:trainingGain('attack',p.training.attack),hpPct:trainingGain('hp',p.training.hp)+(rainbowSet(p)?.05:0),speedPct:trainingGain('speed',p.training.speed),bossDmgPct:0,areaPct:0};}
 // 개수 상한 없음(2차): 금 뒤에 남는 개수도 그대로 쌓는다. 금 파츠는 고르는 목록·원소 보급에서 빠지므로 "코인 60개" 낭비가 없다.
 export function addPart(p,id,qty=1){
  if(!own(PARTS,id))throw new Error('없는 파츠예요.');
