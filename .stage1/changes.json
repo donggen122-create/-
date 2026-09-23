@@ -1,0 +1,1 @@
+[{"path":"game/tools/qa/stage1-browser.py","before":"654c8c4eb314b36e0d90a0ce5137839880f936162ec9c01c653a208e791c0d7f","after":"ec4c806264f0ec2b1bd4d5b1fc6b9ae3bc96cc3f2020b45429c7f36d30036a2d","ops":[[4181,4181,"evaluate('(opt"],[4182,4184,"on)=>option."],[4192,4193,"'"]]}]
