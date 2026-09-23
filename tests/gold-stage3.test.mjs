@@ -73,9 +73,8 @@ test('V2 gold removes one non-boss hostile shot near the tops at most every four
 
 test('L1 gold chains the extra bolt to one more enemy at 30%; L2 gold zaps every 8th sting at 60%',()=>{
  for(const id of ['L1','EVO_L1']){const gold=combat(id,7),silver=combat(id,3);gold.run(1.2);silver.run(1.2);assert.ok(gold.hits.length>silver.hits.length,id);}
- const bee=combat('L2',7),plain=combat('L2',3);bee.run(20);plain.run(20);
- const extra=bee.hits.length-plain.hits.length;assert.ok(extra>0,'8번째 침마다 전기');
- const casts=bee.snap().casts.L2;assert.ok(extra<=Math.ceil(casts/8)+1,`${extra} ≤ ${casts}/8`);
+ const bee=combat('L2',7);bee.run(20);
+ const casts=bee.snap().casts.L2,zaps=bee.hits.length-casts;assert.ok(zaps>0,'8번째 침마다 전기');assert.ok(zaps<=Math.ceil(casts/8)+1,`${zaps} ≤ ${casts}/8`);
 });
 
 test('sustained gold on evolved skills stays within entity bounds (no endless chains)',()=>{

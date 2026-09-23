@@ -19,7 +19,12 @@ export const CLEAR_GIFTS={easy:1,normal:1,hard:2};
 export const STAGE_GIFT_CLEARS_PER_DAY=2;
 export function stageGiftLeft(p,stage,day){const g=p?.stageGifts;return Math.max(0,STAGE_GIFT_CLEARS_PER_DAY-(day&&g?.day===day?(g.counts?.[stage]||0):0));}
 export const PART_LEVEL_STEP=.03;        // 레벨 1단계마다 그 스킬 피해 +3%(훈련 1단계와 같은 숫자)
-export const GRADE_STEP=.06;             // 메달 1단계마다 +6%(동 0 · 은 6 · 금 12). 배열이 아니라 곱셈이라 등급이 늘어도 NaN이 없다
+// 등급 능력(2026-09-23 저녁 사용자: "전설인데 추가 능력이 더 좋아야"): 그 파츠 스킬의 피해·발동 간격.
+// 유니크부터 유니크 기능, 에픽부터 유니크 기능 강화(추가 공격 피해 2배 등), 전설은 30% 확률로 한 번 더 발동(팽이·벌은 +2개).
+export const GRADE_DAMAGE=[0,.10,.25,.45,.80];
+export const GRADE_INTERVAL=[1,1,.95,.85,.75];
+export const LEGEND_EXTRA_CAST=.3;
+export const GRADE_STEP=.06;             // (옛 값, 쓰지 않음) 등급 피해는 GRADE_DAMAGE
 // 동물 친구 = 함께 있는 동안 계속 붙는 버프(2026-09-23, 사용자: "펫은 무용지물 → 버프 효과로"). buffs 키는 main.js 통합 스탯 키. 우정 3단계부터 ×1.2
 export const PETS = {
   cat: { name: '야옹이', role: '새싹 자석', desc: '새싹 줍기 범위 +80%, 새싹 경험치 +15%', color: '#efac6a', buffs: { magnetPct: .8, xpPct: .15 } },
@@ -86,7 +91,10 @@ export function friendshipLevel(p){return [0,3,8,16,28].filter(n=>p.friendship>=
 export function setCounts(p){const counts=Object.fromEntries(Object.keys(ELEMENTS).map(e=>[e,0]));for(const id of new Set(p.equippedParts||[]))if(PARTS[id]&&p.parts?.[id]?.copies>0)counts[PARTS[id].element]++;return counts;}
 export function hasPart(p,skillId){const id=skillId.startsWith('PART_')?skillId:`PART_${skillId}`;return !!(p.equippedParts?.includes(id)&&p.parts?.[id]?.copies>0);}
 export function hasGold(p,skillId){if(!hasPart(p,skillId))return false;return grade(p.parts[skillId.startsWith('PART_')?skillId:`PART_${skillId}`].copies)>=2;}
-export function partBonus(p,skillId){if(!hasPart(p,skillId))return 0;const part=p.parts[skillId.startsWith('PART_')?skillId:`PART_${skillId}`];return (clampInt(part.level,1,10)-1)*PART_LEVEL_STEP+grade(part.copies)*GRADE_STEP;}
+export function partBonus(p,skillId){if(!hasPart(p,skillId))return 0;const part=p.parts[skillId.startsWith('PART_')?skillId:`PART_${skillId}`];return (clampInt(part.level,1,10)-1)*PART_LEVEL_STEP+GRADE_DAMAGE[grade(part.copies)];}
+// 장착한 파츠의 등급(없으면 -1)과 그에 따른 발동 간격 배수
+export function partGrade(p,skillId){if(!hasPart(p,skillId))return -1;return grade(p.parts[skillId.startsWith('PART_')?skillId:`PART_${skillId}`].copies);}
+export function partIntervalMul(p,skillId){const g=partGrade(p,skillId);return g<0?1:GRADE_INTERVAL[g];}
 export function elementBonus(p,element){return (setCounts(p)[element]||0)>=2?.04:0;}
 // 아직 전설이 아닌 파츠(보급에서 나올 수 있고, 첫 무료 파츠로 고를 수 있음)
 export function selectableParts(p){return Object.keys(PARTS).filter(id=>(p.parts?.[id]?.copies||0)<LEGEND_COPIES);}

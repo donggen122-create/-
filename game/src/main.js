@@ -4884,7 +4884,7 @@ function sgMaybeGuidance(){
   }
   if(R.pendingPart(p)&&R.selectableParts(p).length&&once('first-part-guide')){sgUI.firstPartDialog();return;}
   // 보급 규칙 안내(한 번, 2026-09-23 저녁 무작위·5등급 판): 1-1을 깬 학생만. 전 판 안내(supply-v2)는 대신한다.
-  if(p.stages?.CH01?.cleared&&once('supply-v3-notice'))sgUI.notify('파츠 보급이 바뀌었어요','이제 보급은 고르는 것 없이 10종 중 무작위! 운이 좋으면 한 번에 3개(18%)나 7개(2%)가 나와요. 같은 파츠를 모으면 노말(1개) → 레어(3개) → 유니크(7개) → 에픽(25개) → 전설(80개)로 올라가요. 전설은 아주 오래 모아야 해요. 성공 보급권은 쉬움·보통 1장, 어려움 2장이고 같은 단계는 하루 2번 성공까지 받아요. 코인 300개로 보급권 1장(하루 1번)도 바꿀 수 있어요.');
+  if(p.stages?.CH01?.cleared&&once('supply-v3-notice'))sgUI.notify('파츠 보급이 바뀌었어요','이제 보급은 고르는 것 없이 10종 중 무작위! 운이 좋으면 한 번에 3개(18%)나 7개(2%)가 나와요. 같은 파츠를 모으면 노말(1개) → 레어(3개) → 유니크(7개) → 에픽(25개) → 전설(80개)로 올라가요. 등급이 오를수록 그 스킬이 훨씬 강해지고, 전설은 피해 +80%에 30% 확률로 한 번 더 발동해요. 전설은 아주 오래 모아야 해요. 성공 보급권은 쉬움·보통 1장, 어려움 2장이고 같은 단계는 하루 2번 성공까지 받아요. 코인 300개로 보급권 1장(하루 1번)도 바꿀 수 있어요.');
 }
 const sgStorageKey=kind=>`seoho_v1_${kind}_${cloud.user||'guest'}`;
 function sgReadPending(kind){try{return JSON.parse(localStorage.getItem(sgStorageKey(kind))||'null');}catch{return null;}}

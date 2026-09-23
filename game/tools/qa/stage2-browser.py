@@ -59,15 +59,15 @@ with sync_playwright() as pw:
         # 5) 등급 5단계 표시(보관함·자세히)
         p1=profile(coins=400,gifts=6,stages={'CH01':{'cleared':True,'stars':1}},milestones={'firstPart':True},parts={'PART_F1':{'copies':80,'level':1},'PART_F2':{'copies':25,'level':1},'PART_W1':{'copies':7,'level':3},'PART_L2':{'copies':3,'level':1},'PART_V1':{'copies':1,'level':1}},equippedParts=['PART_F1','PART_L2','PART_W1'])
         seed(page,uid,p1);page.reload(wait_until='networkidle');lobby(page);close(page);page.locator('.sg-nav [data-tab="parts"]').click();page.wait_for_timeout(300)
-        cards=page.locator('.sg-parts-grid').inner_text();assert all(x in cards for x in ['전설','에픽','유니크','레어','노말','최고 등급','유니크 기능']),cards
+        cards=page.locator('.sg-parts-grid').inner_text();assert all(x in cards for x in ['전설','에픽','유니크','레어','노말','최고 등급','유니크 기능','전설 능력','에픽 강화']),cards
         page.locator('.sg-parts-grid').screenshot(path=str(OUT/f'grades-{w}.png'));checks.append('five grades shown')
         # 8) 칸이 가득 찼을 때 바꿔 끼우기(레벨 유지)
         page.locator('.sg-part-card:has-text("부메랑 회수 날개") [data-action="swap-part"]').click();page.locator('dialog[open] .sg-swap-list').wait_for()
         page.screenshot(path=str(OUT/f'swap-{w}.png'));page.locator('dialog[open] [data-swap="PART_W1"]').click();page.wait_for_function("document.querySelector('dialog[open]')?.textContent.includes('대신')");close(page)
         s=state(page)['profile'];assert 'PART_V1' in s['equippedParts'] and 'PART_W1' not in s['equippedParts'] and s['parts']['PART_W1']['level']==3,s;checks.append('swap keeps level')
         # 9) 자세히: 지금 → 다음 효과
-        page.locator('[data-detail="PART_F1"]').click();t=dialog_text(page);assert '이 스킬 피해 124 → 127' in t and '최고 등급(전설)' in t,t;page.screenshot(path=str(OUT/f'detail-{w}.png'));close(page)
-        page.locator('[data-detail="PART_F2"]').click();t=dialog_text(page);assert '80개가 되면 전설' in t,t;close(page)
+        page.locator('[data-detail="PART_F1"]').click();t=dialog_text(page);assert '이 스킬 피해 180 → 183' in t and '최고 등급(전설)' in t and '한 번 더 발동' in t,t;page.screenshot(path=str(OUT/f'detail-{w}.png'));close(page)
+        page.locator('[data-detail="PART_F2"]').click();t=dialog_text(page);assert '80개가 되면 전설' in t and '피해 +80%' in t,t;page.screenshot(path=str(OUT/f'detail-epic-{w}.png'));close(page)
         page.locator('[data-do="supply-help"]').click();t=dialog_text(page);assert '1개 80%' in t and '7개 2%' in t and '고를 수는 없어요' in t,t;close(page);checks.append('details current/next')
         txt=page.locator('#guardian-lobby').inner_text();assert all(x not in txt for x in ['3개는 총 +6%','특급','금 메달','5번째'])
         # 10) 친구: 못 만난 친구 먼저

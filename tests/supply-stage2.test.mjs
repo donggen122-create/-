@@ -46,7 +46,7 @@ test('grades by copies: 노말 1 · 레어 3 · 유니크 7 · 에픽 25 · 전�
  assert.deepEqual([1,2,3,6,7,24,25,79,80,300].map(R.grade),[0,0,1,1,2,2,3,3,4,4]);
  assert.deepEqual([0,1,3,7,24,25,80].map(R.nextGradeAt),[1,3,7,25,25,80,null]);
  const p=supplyProfile({PART_F1:80});p.parts.PART_F1.level=10;
- assert.ok(Math.abs(R.partBonus(p,'F1')-(.27+.24))<1e-9,'전설 +24% + Lv.10 +27%');assert.ok(Number.isFinite(R.skillDamageMultiplier(p,'F1')));
+ assert.ok(Math.abs(R.partBonus(p,'F1')-(.27+.80))<1e-9,'전설 +80% + Lv.10 +27%');assert.ok(Number.isFinite(R.skillDamageMultiplier(p,'F1')));
  assert.equal(R.hasGold(supplyProfile({PART_F1:7}),'F1'),true,'유니크부터 유니크 기능');assert.equal(R.hasGold(supplyProfile({PART_F1:6}),'F1'),false);
  const r=pull(supplyProfile({PART_F1:24}),()=>0);assert.equal(r.draw.id,'PART_F1');assert.equal(r.draw.gradeAfter,3);assert.match(r.message,/에픽 달성/);
  let q=supplyProfile();q.coins=5000;const start=q.coins;

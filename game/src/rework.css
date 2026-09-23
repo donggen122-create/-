@@ -111,3 +111,5 @@
 .sg-flip-gold{font-size:12px!important;color:#6b5000;background:#fff3c4;border-radius:8px;padding:5px 8px;line-height:1.45}
 .sg-stage-gift{display:block;font-size:10px;font-weight:700;color:#2c6b52;margin-top:2px}.sg-stage-gift.done{color:#8a6a2a}
 .sg-stage-gift-note{margin-top:8px}.sg-stage-gift-note .sg-icon{width:20px;height:20px}
+.sg-legend-ability{border-left:3px solid #e0b53c;background:linear-gradient(90deg,#fff3c4,#ffe8f4 60%,#e3f4ff);padding:6px 9px;border-radius:6px;font-size:12px!important;font-weight:700;color:#6b4500}
+.sg-grade-row{display:flex;align-items:center;gap:8px;flex-wrap:wrap;font-size:13px!important;margin:5px 0!important}.sg-grade-row .sg-medal{margin-left:0;min-width:52px}
