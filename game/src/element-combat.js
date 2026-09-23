@@ -113,7 +113,7 @@ export function createElementCombat({ U = 32, getPlayer, getEnemies, getBoss = (
         for (const dest of spreadSpots(n, e, .35, 2.4 * U)) {
           const flight = .4; const s = shot(id, p, angleTo(p, dest), 0, { kind, speed: Math.max(1, dist(p, dest)) / flight, life: flight, flight, lob: true, maxHits: 0, noContact: true, r: .45 * U });
           s.onExpire = () => {
-            const r = (kind === 'volcano' ? 1.7 : 1.4) * U, life = kind === 'volcano' ? 5 : 4 + (feature(id) === 'puddleLonger' ? 1 : 0);
+            const r = (kind === 'volcano' ? 1.7 : 1.4) * U, life = (kind === 'volcano' ? 5 : 4) + (feature(id) === 'puddleLonger' ? 1 : 0);
             if (feature(id) === 'puddleLonger') markPart(id);
             if (kind === 'volcano') blast(id, s, 1.7 * U * area(id), 1.6, { kind: 'boom', knock: .35, big: true });
             else blast(id, s, 1.0 * U * area(id), d.dmgCoef * 1.2, { kind: 'splashfire', knock: .1 });
@@ -126,9 +126,10 @@ export function createElementCombat({ U = 32, getPlayer, getEnemies, getBoss = (
         const n = kind === 'firework' ? 3 : count(id, 1);
         pickAngles(n, p, a, .5).forEach((ang, i) => after(i * .1, () => {   // 로켓마다 다른 적·다른 방향
           const s = shot(id, player(), ang, 0, { kind: kind === 'firework' ? 'frocket' : 'rocket', speed: 10 * U, r: .35 * U, life: 1.6, homing: feature(id) === 'homing' || kind === 'firework', maxHits: 1, noDirect: true });
-          if (s.homing && feature(id) === 'homing') markPart(id);
+          // 유도 기능은 실제 방향을 바꿀 때만 센다. 진화판은 폭발 크기로 구분한다.
           s.onHit = (t2, s2) => {
-            blast(id, s2, (kind === 'firework' ? 2.2 : 1.8) * U * area(id), d.dmgCoef, { kind: kind === 'firework' ? 'fwork' : 'boom', knock: .4, big: kind === 'firework' });
+            if (kind === 'firework' && feature(id) === 'homing') markPart(id);
+            blast(id, s2, (kind === 'firework' ? 2.2 * (feature(id) === 'homing' ? 1.15 : 1) : 1.8) * U * area(id), d.dmgCoef, { kind: kind === 'firework' ? 'fwork' : 'boom', knock: .4, big: kind === 'firework' });
             if (kind === 'firework') for (let k = 0; k < 6; k++) shot(id, s2, k / 6 * TAU + Math.random() * .3, .45, { kind: 'sparkshot', speed: 8 * U, life: .4, r: .3 * U, maxHits: 1 });
           };
         }));
@@ -136,8 +137,8 @@ export function createElementCombat({ U = 32, getPlayer, getEnemies, getBoss = (
       }
       case 'balloon': case 'kballoon': {
         const n = kind === 'kballoon' ? 2 : count(id, 1), big = kind === 'kballoon';
-        for (const ang of pickAngles(n, p, a, big ? .7 : .6)) shot(id, p, ang, d.dmgCoef, { kind, speed: 8 * U, r: (big ? .85 : .55) * U, life: 5, maxHits: 99, bounces: big ? 10 : 5 + (feature(id) === 'extraBounce' ? 2 : 0), knock: .15, onHit: (t, s) => {
-          if (feature(id) === 'extraBounce') markPart(id);
+        for (const ang of pickAngles(n, p, a, big ? .7 : .6)) shot(id, p, ang, d.dmgCoef, { kind, speed: 8 * U, r: (big ? .85 : .55) * U, life: 5, maxHits: 99, bounces: (big ? 10 : 5) + (feature(id) === 'extraBounce' ? 2 : 0), knock: .15, onHit: (t, s) => {
+          if (feature(id) === 'extraBounce' && s.bounces <= 2) markPart(id);
           blast(id, s, (big ? 1.8 : 1.2) * U * area(id), d.dmgCoef * .6, { kind: big ? 'ksplash' : 'splash', knock: .15 }); slow(t, .65, big ? 3 : 1.5);
           s.bounces--; if (s.bounces <= 0) { s.life = 0; return; }
           const next = closest(s, 8 * U, s.hit); if (next) s.angle = angleTo(s, next); else s.angle += Math.PI + (Math.random() - .5);
@@ -163,7 +164,7 @@ export function createElementCombat({ U = 32, getPlayer, getEnemies, getBoss = (
         const n = kind === 'boulder' ? 2 : count(id, 1), big = kind === 'boulder';
         for (const ang of pickAngles(n, p, a, big ? .6 : .5)) shot(id, p, ang, d.dmgCoef, { kind, speed: (big ? 6.5 : 10) * U, r: (big ? .95 : .45) * U, life: big ? 1.7 : 1.3, maxHits: big ? 99 : 1, knock: big ? .35 : .7, onHit: (t, s) => {
           fx(big ? 'crack' : 'dust', t, (big ? 1 : .8) * U, id); fx('sparks', t, .6 * U, id, { life: .3, maxLife: .3 }); onBlast?.(t, .6 * U, false);
-          if (!big && feature(id) === 'splitStone') { markPart(id); for (const dd of [-.6, .6]) shot(id, s, s.angle + dd, d.dmgCoef * .4, { kind: 'stone', speed: 8 * U, r: .25 * U, life: .5, maxHits: 1, small: true }); }
+          if (!s.partSplitDone && feature(id) === 'splitStone') { s.partSplitDone = true; markPart(id); for (const dd of [-.6, .6]) shot(id, s, s.angle + dd, d.dmgCoef * .4, { kind: 'stone', speed: 8 * U, r: .25 * U, life: .5, maxHits: 1, small: true }); }
         } });
         break;
       }
@@ -171,10 +172,15 @@ export function createElementCombat({ U = 32, getPlayer, getEnemies, getBoss = (
         // 구름마다 2.2칸 이상 떨어진 다른 적 머리 위(같은 자리에 겹쳐 떨어지지 않게)
         const n = kind === 'storm' ? 1 : count(id, 1);
         for (const at of spreadSpots(n, e, 0, 2.2 * U)) {
-          if (kind === 'storm') { field(id, at, 1.9 * U, d.dmgCoef, { kind: 'storm', life: 3, tickS: .375, maxTicks: 8, knock: .15, onTick: f => { fx('tbolt', { x: f.x + (Math.random() - .5) * f.r, y: f.y + (Math.random() - .5) * f.r * .6 }, f.r, id, { life: .3, maxLife: .3 }); onBlast?.(f, f.r, false); } }); }
+          if (kind === 'storm') { field(id, at, 1.9 * U, d.dmgCoef, { kind: 'storm', life: 3, tickS: .375, maxTicks: 8, knock: .15, onTick: f => { fx('tbolt', { x: f.x + (Math.random() - .5) * f.r, y: f.y + (Math.random() - .5) * f.r * .6 }, f.r, id, { life: .3, maxLife: .3 }); onBlast?.(f, f.r, false);
+            if (feature(id) === 'doubleBolt') {
+              const primary = closest(f, f.r), target = primary && closest(primary, 5 * U, new Set([primary]));
+              if (target) { hit(id, target, d.dmgCoef * .3, f); markPart(id); fx('bolt', target, .7 * U, id, { life: .25, maxLife: .25 }); }
+            }
+          } }); }
           else {
             fx('cloudmark', at, 1 * U, id, { life: .45, maxLife: .45 });
-            after(.45, () => { blast(id, at, 1.5 * U * area(id), d.dmgCoef, { kind: 'bolt', knock: .25 }); if (feature(id) === 'doubleBolt') { markPart(id); after(.2, () => blast(id, at, 1.5 * U * area(id), d.dmgCoef * .3, { kind: 'bolt' })); } });
+            after(.45, () => { blast(id, at, 1.5 * U * area(id), d.dmgCoef, { kind: 'bolt', knock: .25 }); if (feature(id) === 'doubleBolt') { after(.2, () => { blast(id, at, 1.5 * U * area(id), d.dmgCoef * .3, { kind: 'bolt' }); markPart(id); }); } });
           }
         }
         break;
@@ -222,7 +228,7 @@ export function createElementCombat({ U = 32, getPlayer, getEnemies, getBoss = (
   function updateShots(dt) {
     for (let i = shots.length - 1; i >= 0; i--) {
       const s = shots[i], old = { x: s.x, y: s.y }; s.age += dt; s.life -= dt;
-      if (s.homing && !s.returning) { const t = closest(s, 8 * U, s.hit); if (t) s.angle += clamp(turn(angleTo(s, t) - s.angle), -3 * dt, 3 * dt); }
+      if (s.homing && !s.returning) { const t = closest(s, 8 * U, s.hit); if (t) { const change = clamp(turn(angleTo(s, t) - s.angle), -3 * dt, 3 * dt); s.angle += change; if (s.kind === 'rocket' && !s.partGuided && Math.abs(change) > .0001 && feature(s.id) === 'homing') { s.partGuided = true; markPart(s.id); } } }
       if (s.returnAt && s.age >= s.returnAt) { if (!s.returning) { s.returning = true; s.hit.clear(); } s.angle = angleTo(s, player()); if (dist(s, player()) < .6 * U) { s.onReturn?.(); shots.splice(i, 1); continue; } }
       s.x += Math.cos(s.angle) * s.speed * dt; s.y += Math.sin(s.angle) * s.speed * dt;
       s.trail.push(old); if (s.trail.length > 6) s.trail.shift();
@@ -260,6 +266,7 @@ export function createElementCombat({ U = 32, getPlayer, getEnemies, getBoss = (
   }
   function triggerMine(m, chain = false) {
     const k = mines.indexOf(m); if (k < 0) return; mines.splice(k, 1);
+    if (feature(m.id) === 'mineWider') markPart(m.id);
     blast(m.id, m, m.r, m.coef, { kind: m.kind === 'molemine' ? 'bigdirt' : 'dirt', knock: .4, big: m.kind === 'molemine' });
     if (m.kind === 'molemine') { fx('chainring', m, 2.6 * U, m.id, { life: .4, maxLife: .4 }); for (const o of mines.filter(o => o !== m && dist(o, m) <= 2.6 * U)) after(.12, () => triggerMine(o, true)); }
   }
@@ -290,6 +297,6 @@ export function createElementCombat({ U = 32, getPlayer, getEnemies, getBoss = (
   const scene = () => ({ shots, fields, effects, orbits, mines, bees, beams, clock, U, player: player() });
   function draw(ctx, worldToScreen) { drawElementScene(ctx, scene(), worldToScreen, 'air'); }
   function drawGround(ctx, worldToScreen) { drawElementScene(ctx, scene(), worldToScreen, 'ground'); }
-  function snapshot() { return { time: clock, shots: shots.length, fields: fields.length, orbits: orbits.length, mines: mines.length, bees: bees.length, beams: beams.length, effects: effects.length, kinds: [...new Set([...shots, ...fields, ...effects, ...orbits, ...mines, ...bees, ...beams].map(e => e.kind))], shotAngles: shots.map(s => Number(s.angle.toFixed(2))), fieldSpots: fields.map(f => ({ x: Math.round(f.x), y: Math.round(f.y), r: Math.round(f.r) })), ...JSON.parse(JSON.stringify(stats)) }; }
+  function snapshot() { return { time: clock, shots: shots.length, scheduled: scheduled.length, shotDetails: shots.map(s=>({kind:s.kind,bounces:s.bounces,small:!!s.small,partSplitDone:!!s.partSplitDone})), fieldDetails: fields.map(f=>({kind:f.kind,life:f.life,age:f.age,maxTicks:f.maxTicks,ticks:f.ticks})), fields: fields.length, orbits: orbits.length, mines: mines.length, bees: bees.length, beams: beams.length, effects: effects.length, kinds: [...new Set([...shots, ...fields, ...effects, ...orbits, ...mines, ...bees, ...beams].map(e => e.kind))], shotAngles: shots.map(s => Number(s.angle.toFixed(2))), fieldSpots: fields.map(f => ({ x: Math.round(f.x), y: Math.round(f.y), r: Math.round(f.r) })), ...JSON.parse(JSON.stringify(stats)) }; }
   return { reset, update, draw, drawGround, snapshot };
 }

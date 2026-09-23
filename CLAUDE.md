@@ -1,5 +1,10 @@
 # 서호팡팡수호대 — Claude 작업 안내 (모든 PC 공통)
 
+
+## 2026-09-23 Codex 후속 작업 — 1차 오류 수리·성능 개선
+- 사용자가 Claude 중단 작업을 이어서 구현하도록 요청. 공통 1차 범위부터 적용하고, 서로 다른 2차 보급 경제·전설 제안은 보류한다.
+- 바뀐 규칙·실제 검증·배포 여부는 `docs/25_1차_개선_검증_기록.md`와 STATUS 맨 위를 확인한다. 아래의 이전 "구현 전" 안내는 과거 요청이며 이번 1차 수정을 되돌리지 않는다.
+
 서호초등학교 학생용 브라우저 게임. 실서버 https://seoho-pangpang.seoho-pangpang-server.workers.dev (Cloudflare Workers + D1 `seoho-pangpang-db`, 게임 파일과 API가 한 주소). 자세한 인수인계는 `HANDOFF.md`, 작업 기록은 `game/STATUS.md`(최신이 위).
 
 ## 다음 반영 요청 — 뽑기·파츠 강화 개편 (2026-09-23, 구현 전)

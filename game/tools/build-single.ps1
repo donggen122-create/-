@@ -17,7 +17,7 @@ function DataUri($p) {
 }
 
 # 의존 순서(앞 모듈이 뒤 모듈에 쓰인다). rework-*는 Codex 개편(Guardian v1) 모듈: core ← content·ui ← main
-$order = @("content.data", "themes", "content", "meta", "save", "assets", "cloud", "economy", "ecoui", "theme-effects", "element-content", "rework-core", "rework-content", "element-effects", "element-combat", "weapon-effects", "rework-ui", "music", "main")
+$order = @("content.data", "themes", "content", "meta", "save", "assets", "cloud", "economy", "ecoui", "theme-effects", "element-content", "rework-core", "rework-content", "element-effects", "element-combat", "weapon-effects", "rework-ui", "music", "runtime-performance", "main")
 $sb = New-Object System.Text.StringBuilder
 [void]$sb.AppendLine("var __m = {};")
 
@@ -70,6 +70,10 @@ foreach ($name in $order) {
 
   # export const/function X  →  const/function X  (이름은 모아서 모듈 객체로 반환)
   $names = [regex]::Matches($src, '(?m)^export\s+(?:async\s+)?(?:const|let|function|class)\s+(\w+)') | ForEach-Object { $_.Groups[1].Value }
+  # Re-exported data (rework-core -> element-content) must also be returned, not stripped into a bare block.
+  $lists = [regex]::Matches($src, '(?m)^export\s*\{([^}]*)\}\s*;')
+  foreach ($list in $lists) { $names += @($list.Groups[1].Value.Split(',') | ForEach-Object { $_.Trim() } | Where-Object { $_ }) }
+  $src = [regex]::Replace($src, '(?m)^export\s*\{[^}]*\}\s*;', '')
   $src = [regex]::Replace($src, '(?m)^export\s+', '')
   if ($src -match '(?m)^\s*export\s') { throw "$name.js: 변환하지 못한 export 구문이 있음" }
 

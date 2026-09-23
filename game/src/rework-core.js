@@ -71,7 +71,9 @@ export function friendshipLevel(p){return [0,3,8,16,28].filter(n=>p.friendship>=
 export function setCounts(p){const counts=Object.fromEntries(Object.keys(ELEMENTS).map(e=>[e,0]));for(const id of new Set(p.equippedParts||[]))if(PARTS[id]&&p.parts?.[id]?.copies>0)counts[PARTS[id].element]++;return counts;}
 export function hasPart(p,skillId){const id=skillId.startsWith('PART_')?skillId:`PART_${skillId}`;return !!(p.equippedParts?.includes(id)&&p.parts?.[id]?.copies>0);}
 export function partBonus(p,skillId){if(!hasPart(p,skillId))return 0;const part=p.parts[skillId.startsWith('PART_')?skillId:`PART_${skillId}`];return (clampInt(part.level,1,10)-1)*.02+[0,.06,.12][grade(part.copies)];}
-export function elementBonus(p,element){const n=setCounts(p)[element]||0;return n>=3?.06:n>=2?.04:0;}
+export function elementBonus(p,element){return (setCounts(p)[element]||0)>=2?.04:0;}
+export function selectableParts(p){return Object.keys(PARTS).filter(id=>(p.parts?.[id]?.copies||0)<7);}
+export function runParts(p){return [...new Set(p.equippedParts||[])].filter(id=>own(PARTS,id)&&p.parts?.[id]?.copies>0).slice(0,3);}
 export function skillDamageMultiplier(p,id){const combo=COMBOS[id];if(combo)return skillDamageMultiplier(p,combo.skill);return 1+partBonus(p,id)+elementBonus(p,SKILLS[id]?.element);}
 export function levelMultiplier(lv){return LEVEL_DAMAGE[clampInt(lv,1,5)-1];}
 export function supportValue(id,lv){const s=SUPPORTS[id];return s?s.values[clampInt(lv,1,3)-1]:0;}
@@ -89,7 +91,7 @@ export function pendingPart(p){return p?.stages?.CH01?.cleared&&!p.milestones?.f
 export function pendingPet(p){if(!p)return null;if(maxClear(p)>=3&&!p.milestones?.firstPet)return {key:'firstPet',ids:['cat','turtle','otter']};if(p.stages?.CH05?.cleared&&!p.milestones?.bossPet){const ids=Object.keys(PETS).filter(id=>!p.pets.includes(id));return {key:'bossPet',ids:ids.length?ids:['cat'],allOwned:!ids.length};}return null;}
 // 별 = 난이도(쉬움 1 · 보통 2 · 어려움 3). 난이도는 출동 전 settings로 프로필에 저장된 값을 서버가 그대로 읽는다(클라이언트가 보낸 값은 쓰지 않음).
 // 환경 목표(쓰레기 줍기)는 별 대신 코인 +30. bossSeconds·hpFraction은 기록용으로만 받는다.
-export function completeRun(profile,{stage,cleared,seconds,litter=0,hpFraction=0,bossSeconds=Infinity,skillIds=[],fusionIds=[],supportIds=[],difficulty=difficultyOf(profile)}) {
+export function completeRun(profile,{stage,cleared,seconds,litter=0,hpFraction=0,bossSeconds=Infinity,skillIds=[],fusionIds=[],supportIds=[],equippedPartIds=null,difficulty=difficultyOf(profile)}) {
  const p=clone(profile),index=Number(stage.slice(2)),st=STAGES[index-1],diff=DIFFICULTIES[difficulty]||DIFFICULTIES.easy;
  if(!st)throw new Error('없는 단계예요.');
  const first=cleared&&!p.stages[stage]?.cleared,intro=['CH01','CH02'].includes(stage)&&!p.stages[stage]?.cleared;
@@ -105,7 +107,17 @@ export function completeRun(profile,{stage,cleared,seconds,litter=0,hpFraction=0
  for(const id of new Set(skillIds))if(SKILLS[id])p.skillUsage[id]=(p.skillUsage[id]||0)+1;
  for(const id of new Set(fusionIds))if(COMBOS[id])p.fusionUsage[id]=(p.fusionUsage[id]||0)+1;
  p.supportUsage ||= {};for(const id of new Set(supportIds))if(SUPPORTS[id])p.supportUsage[id]=(p.supportUsage[id]||0)+1;
- return {profile:p,reward:{coins,gifts,friendship,stars,first,difficulty:own(DIFFICULTIES,difficulty)?difficulty:'easy',goal,notes:first?[st.unlock]:[]}};
+ const partActivity=[];
+ if(Array.isArray(equippedPartIds)){
+  p.partUsage ||= {};
+  const used=new Set([...skillIds,...fusionIds.map(id=>COMBOS[id]?.skill)]);
+  for(const id of [...new Set(equippedPartIds)].filter(id=>own(PARTS,id)).slice(0,3)){
+   const active=used.has(PARTS[id].skill),old=p.partUsage[id]||{};
+   p.partUsage[id]={equipped:(old.equipped||0)+1,active:(old.active||0)+(active?1:0)};
+   partActivity.push({id,active});
+  }
+ }
+ return {profile:p,reward:{coins,gifts,friendship,stars,first,partActivity,difficulty:own(DIFFICULTIES,difficulty)?difficulty:'easy',goal,notes:first?[st.unlock]:[]}};
 }
 export function action(profile,a,rng=Math.random){
  const p=clone(profile);let message='저장했어요.';
@@ -121,10 +133,10 @@ export function action(profile,a,rng=Math.random){
  }else if(a.kind==='reset-part'){
   check(own(PARTS,a.id)&&p.parts[a.id]?.copies>0,'아직 없는 파츠예요.');const refund=partResetRefund(p.parts[a.id].level);p.parts[a.id].level=1;p.coins+=refund;message=`강화를 1단계로 되돌리고 코인 ${refund}개를 돌려받았어요. 등급은 그대로예요.`;
  }else if(a.kind==='choose-part'){
-  const pending=pendingPart(p);check(pending?.ids.includes(a.id),'첫 파츠를 이미 받았거나 아직 받을 수 없어요.');p.milestones[pending.key]=true;message=addPart(p,a.id);
+  const pending=pendingPart(p);check(pending?.ids.includes(a.id),'첫 파츠를 이미 받았거나 아직 받을 수 없어요.');check(selectableParts(p).includes(a.id),'이미 특급인 파츠예요. 다른 파츠를 골라 주세요.');p.milestones[pending.key]=true;message=addPart(p,a.id);
  }else if(a.kind==='draw-part'){
   check(!!p.stages.CH01?.cleared,'1-1을 성공하면 뽑기가 열려요.');check(p.gifts>0,'뽑기권이 더 필요해요.');const count=p.giftCounts.part+1,choice=count%5===0;let selected;
-  if(choice){check(own(PARTS,a.id),'다섯 번째 뽑기예요. 원하는 파츠를 골라 주세요.');selected=a.id;}
+  if(choice){check(own(PARTS,a.id),'다섯 번째 뽑기예요. 원하는 파츠를 골라 주세요.');check(selectableParts(p).includes(a.id),'이미 특급인 파츠예요. 다른 파츠를 골라 주세요.');selected=a.id;}
   else{check(own(ELEMENTS,a.element),'원소를 골라 주세요.');const pool=Object.keys(PARTS).filter(id=>PARTS[id].element===a.element);selected=pool[Math.min(pool.length-1,Math.max(0,Math.floor(rng()*pool.length)))];}
   message=addPart(p,selected);p.gifts--;p.giftCounts.part=count;
  }else if(a.kind==='pet'){check(p.pets.includes(a.id),'아직 만나지 못한 친구예요.');p.activePet=a.id;message=`${PETS[a.id].name}와 함께 출동해요!`;}
@@ -165,7 +177,13 @@ export function cardChoices(p,skills,state={},hpFraction=1,rng=Math.random){
  validState(state);const pool=cardPool(p,skills,state),selected=[];
  const take=card=>{if(card){selected.push(card);pool.splice(pool.indexOf(card),1);}};
  for(const c of pool.filter(c=>c.kind==='evolve').slice(0,2))take(c);          // 진화 카드는 운에 맡기지 않는다
- if(!Object.keys(skills).length){for(let i=0;i<3;i++)takeWeighted(pool.filter(c=>c.kind==='skill-new'),pool,selected,rng);}   // 첫 선택은 스킬만
+ if(!Object.keys(skills).length){
+  // 첫 선택·다시 뽑기에도 내 파츠 스킬 한 장. 파츠가 없으면 종전 난수 흐름 그대로.
+  const owned=new Set(runParts(p).map(id=>PARTS[id].skill));
+  const preferred=pool.filter(c=>c.kind==='skill-new'&&owned.has(c.id));
+  if(preferred.length)take(preferred[Math.min(preferred.length-1,Math.max(0,Math.floor(rng()*preferred.length)))]);
+  while(selected.length<3&&pool.some(c=>c.kind==='skill-new'))takeWeighted(pool.filter(c=>c.kind==='skill-new'),pool,selected,rng);
+ }   // 첫 선택은 스킬만
  // 진화로 가는 길 보장: Lv.2 이상 스킬의 짝 지원품이 없으면 그 지원품 카드를 반드시 1장 넣는다
  if(selected.length<3){const need=Object.keys(skills).filter(id=>SKILLS[id]&&skills[id].lv>=2).flatMap(id=>SKILL_PARTNERS[id]).find(sid=>!state.supports[sid]);const card=need&&pool.find(c=>c.kind==='support-new'&&c.id===need);if(card)take(card);}
  // 키우던 스킬의 레벨업 카드도 1장 보장

@@ -16,9 +16,17 @@ function img(ctx, name, x, y, w, { angle = 0, alpha = 1, h = null, flip = false,
   ctx.save(); ctx.translate(x, y); ctx.rotate(angle); if (flip) ctx.scale(-1, 1); ctx.globalAlpha *= alpha; ctx.imageSmoothingEnabled = true;
   ctx.drawImage(im, -w / 2, -hh * anchorY, w, hh); ctx.restore(); return true;
 }
+const glowCache = new Map();
 function glow(ctx, x, y, r, color, alpha = .35) {
-  const g = ctx.createRadialGradient(x, y, r * .1, x, y, r); g.addColorStop(0, color); g.addColorStop(1, 'rgba(0,0,0,0)');
-  ctx.save(); ctx.globalAlpha *= alpha; ctx.globalCompositeOperation = 'lighter'; ctx.fillStyle = g; ctx.beginPath(); ctx.arc(x, y, r, 0, TAU); ctx.fill(); ctx.restore();
+  if(r<=0)return;
+  let image=glowCache.get(color);
+  if(!image){
+    image=typeof OffscreenCanvas!=='undefined'?new OffscreenCanvas(128,128):document.createElement('canvas');
+    image.width=image.height=128;const c=image.getContext('2d'),g=c.createRadialGradient(64,64,6.4,64,64,64);
+    g.addColorStop(0,color);g.addColorStop(1,'rgba(0,0,0,0)');c.fillStyle=g;c.fillRect(0,0,128,128);
+    if(glowCache.size>=24)glowCache.delete(glowCache.keys().next().value);glowCache.set(color,image);
+  }
+  ctx.save();ctx.globalAlpha*=alpha;ctx.globalCompositeOperation='lighter';ctx.imageSmoothingEnabled=true;ctx.drawImage(image,x-r,y-r,r*2,r*2);ctx.restore();
 }
 const frame = (list, t) => list[Math.max(0, Math.min(list.length - 1, Math.floor(t * list.length)))];
 const cycle = (list, t) => list[Math.floor(t) % list.length];

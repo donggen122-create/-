@@ -16,6 +16,7 @@ import {
 } from "./meta.js";
 import { SPRITES, UI_IMAGES, HEROES, tintedSprite, playSfx, isMuted, toggleMuted } from "./assets.js";
 import { music } from "./music.js";
+import { createFrameClock, createRenderQuality, setText, setWidth } from "./runtime-performance.js";
 import { createThemeEffects } from "./theme-effects.js";
 const themeFx = createThemeEffects(SPRITES);
 import { RAW_CHARACTERS } from "./content.data.js";
@@ -68,8 +69,10 @@ bgmOn();   // 처음 화면(시작 화면)부터. 자동 재생이 막히면 첫
 // 그리기 좌표는 항상 CSS 픽셀(viewW/viewH)을 쓰고, 백버퍼만 devicePixelRatio로 키운다.
 // (이렇게 해야 레티나 폰에서 픽셀아트가 흐려지지 않는다)
 let viewW = 0, viewH = 0;
+const renderQuality = createRenderQuality(window.devicePixelRatio || 1);
+let vignetteCache = null;
 function resize() {
-  const dpr = Math.min(window.devicePixelRatio || 1, 2);
+  const dpr = renderQuality.ratio;
   viewW = document.documentElement.clientWidth || window.innerWidth;
   viewH = document.documentElement.clientHeight || window.innerHeight;
   canvas.style.width = viewW + "px";
@@ -1319,6 +1322,7 @@ document.getElementById("btn-continue").addEventListener("click", () => {
   mode = "menu";
   sgRunProfile=null;
   bgmOn(true);   // 전투 뒤 로비로 돌아오면 테마곡을 처음부터
+  sgMaybeGuidance();
 });
 
 // ---------- 일시정지 (Esc / ⏸) ----------
@@ -4312,10 +4316,13 @@ function drawTelegraph(pat, bossScreen) {
   }
 }
 
+function onScreen(entity, margin=160) {
+  const q=worldToScreen(entity.x,entity.y);
+  return q.x>=-margin&&q.x<=viewW+margin&&q.y>=-margin&&q.y<=viewH+margin;
+}
 function draw() {
-  ctx.fillStyle = "#0d0d14";
-  ctx.fillRect(0, 0, viewW, viewH);
-  if (mode === "menu") return;
+  if (mode === "menu") { ctx.fillStyle = "#0d0d14"; ctx.fillRect(0, 0, viewW, viewH); return; }
+  // The floor is opaque: do not paint the same full-screen background twice.
 
   // 화면 흔들림(타격감): 카메라를 미세하게 흔든다. 판정에는 영향 없음.
   const shakeAmt = chapter?.theme === 1
@@ -4353,14 +4360,15 @@ function draw() {
   drawDarkZones();
   if (chapter?.theme === 1 && boss?.activePattern) themeFx.telegraph(ctx, boss.activePattern, boss, boss.telegraphT, runTime, U, worldToScreen);
   drawBeacon();
-  for (const d of decor) drawDecorItem(d);
+  for (const d of decor) if (onScreen(d, Math.max(180, d.h || 0))) drawDecorItem(d);
   for (const f of fields) drawField(f);      // 장판은 바닥에
   for (const t of traps) drawTrap(t);
   sgElements.drawGround(ctx, worldToScreen);   // 원소 스킬 바닥층(불 웅덩이·용암·지뢰·그림자) — 적·주인공 아래
-  for (const g of gems) drawGem(g);
+  for (const g of gems) if (onScreen(g, 48)) drawGem(g);
 
-  // 적
+  // 적 (화면 밖은 그리기만 생략; 이동·공격·정화 계산은 그대로)
   for (const e of enemies) {
+    if (!onScreen(e, 180)) continue;
     const s = worldToScreen(e.x, e.y);
     const def = ENEMIES[e.typeId];
     const bob = Math.sin(e.animT) * def.bobAmp;
@@ -4415,8 +4423,10 @@ function draw() {
   for (let i = chapter?.theme === 1 ? Math.max(0, deathFx.length - 64) : 0; i < deathFx.length; i++) drawDeathFx(deathFx[i]);
   if (chapter?.theme === 1) themeFx.draw(ctx, worldToScreen);
 
-  // 피해 숫자
-  for (const t of floatingTexts) {
+  // 숫자 그림만 최근 40개로 제한, 진화·보상 안내는 별도로 보존한다.
+  const visibleTexts = [...floatingTexts.filter(t=>t.big).slice(-8), ...floatingTexts.filter(t=>!t.big).slice(-40)];
+  for (const t of visibleTexts) {
+    if (!onScreen(t, 100)) continue;
     const s = worldToScreen(t.x, t.y);
     ctx.save();
     ctx.translate(s.x, s.y);
@@ -4436,12 +4446,17 @@ function draw() {
   // 비네트(황혼 분위기) — 어둠 지대 안이거나 시야 제한 규칙이면 시야가 좁아진다
   const inDark = isInDark(player.x, player.y);
   const vision = Math.min(inDark ? 0.62 : 1, runMods.vision || 1);
-  const inner = viewH * 0.35 * vision, outer = viewH * 0.75 * vision;
-  const vg = ctx.createRadialGradient(viewW / 2, viewH / 2, inner, viewW / 2, viewH / 2, outer);
-  const themed = !!chapter?.theme;               // 환경 테마 판은 밝게(가장자리만 살짝 어둡게)
+  const themed = !!chapter?.theme;
   const edge = vision < 1 ? (themed ? 0.75 : 0.9) : (themed ? 0.22 : 0.55);
-  vg.addColorStop(0, "rgba(0,0,0,0)"); vg.addColorStop(1, `rgba(${themed ? "40,50,20" : "5,4,10"},${edge})`);
-  ctx.fillStyle = vg; ctx.fillRect(0, 0, viewW, viewH);
+  const vgKey = `${viewW}:${viewH}:${vision}:${themed}`;
+  if (!vignetteCache || vignetteCache.key !== vgKey) {
+    const image = document.createElement('canvas');image.width=Math.ceil(viewW/2);image.height=Math.ceil(viewH/2);
+    const g=image.getContext('2d');g.scale(.5,.5);
+    const vg=g.createRadialGradient(viewW/2,viewH/2,viewH*.35*vision,viewW/2,viewH/2,viewH*.75*vision);
+    vg.addColorStop(0,'rgba(0,0,0,0)');vg.addColorStop(1,`rgba(${themed?'40,50,20':'5,4,10'},${edge})`);
+    g.fillStyle=vg;g.fillRect(0,0,viewW,viewH);vignetteCache={key:vgKey,image};
+  }
+  ctx.save();ctx.imageSmoothingEnabled=true;ctx.drawImage(vignetteCache.image,0,0,viewW,viewH);ctx.restore();
   if (inDark) {
     ctx.fillStyle = themed ? "#f0ff9a" : "#c9a8ff"; ctx.font = "bold 12px sans-serif"; ctx.textAlign = "center";
     ctx.fillText(themed ? "악취 구역 · 새싹 ×1.5" : "어둠 지대 · 보석 ×1.5", viewW / 2, viewH - 18);
@@ -4456,18 +4471,18 @@ function draw() {
 // ---------- HUD ----------
 function updateHud() {
   if (mode === "menu" || !player) return;
-  elHpbar.style.width = `${Math.max(0, (player.hp / player.hpMax) * 100)}%`;
-  elXpbar.style.width = `${Math.min(100, (player.xp / xpNeedFor(player.lvl)) * 100)}%`;
-  elLvl.textContent = `Lv.${player.lvl}${player.revives > 0 ? ` 💗${player.revives}` : ""}${player.shield > 1 ? ` 🛡${Math.round(player.shield)}` : ""}`;
+  setWidth(elHpbar, `${Math.max(0, (player.hp / player.hpMax) * 100).toFixed(1)}%`);
+  setWidth(elXpbar, runCfg.rework && player.sgChoices>=runCfg.cardCap ? "100%" : `${Math.min(100, (player.xp / xpNeedFor(player.lvl)) * 100).toFixed(1)}%`);
+  if(!runCfg.rework)setText(elLvl, `Lv.${player.lvl}${player.revives > 0 ? ` 💗${player.revives}` : ""}${player.shield > 1 ? ` 🛡${Math.round(player.shield)}` : ""}`);
   // 제한 시간 모드는 남은 시간, 그 외는 경과 시간
-  elTimer.textContent = runCfg.bossPhase ? "👾 보스전!" : runCfg.timeLimitS ? `⏳${formatTime(runCfg.timeLimitS - runTime)}` : formatTime(runTime);
+  setText(elTimer, runCfg.bossPhase ? (runCfg.rework ? `대장 구출 ${formatTime(360-runTime)}` : "👾 보스전!") : runCfg.timeLimitS ? `⏳${formatTime(runCfg.timeLimitS - runTime)}` : formatTime(runTime));
   const extra = runCfg.bossScore ? ` · 점수 ${Math.round(runStats.bossDamage / Math.max(1, chapter.enemyMult)).toLocaleString()}`
     : runCfg.floor ? ` · ${runCfg.floor}층`
     : runCfg.stages ? ` · 원정 ${runCfg.stage}/${runCfg.stages}`
     : runCfg.endless ? ` · 배수 ×${Math.pow(1.35, Math.floor(runTime / 300)).toFixed(2)}` : "";
-  elKillcount.textContent = `${chapter?.theme ? "정화" : "처치"} ${killCount}${extra}`;
+  setText(elKillcount, `${chapter?.theme ? "정화" : "처치"} ${killCount}${extra}`);
   const lumEl = document.getElementById("lum-bar");
-  lumEl.style.width = `${player.lum}%`;
+  setWidth(lumEl, `${player.lum}%`);
   document.getElementById("lum-wrap").classList.toggle("full", player.lum >= 100);
 }
 
@@ -4530,6 +4545,7 @@ function simTick(dt) {
 
 // ---------- Main loop ----------
 const FIXED_DT = 1 / 60;
+const frameClock = createFrameClock(FIXED_DT, 4);
 let lastT = performance.now();
 function loop(now) {
   let realDt = (now - lastT) / 1000;
@@ -4538,10 +4554,12 @@ function loop(now) {
   // 히트스톱: 큰 타격 직후 아주 짧게 시뮬을 멈춰 타격감을 준다(렌더는 계속).
   if (hitStopT > 0) {
     hitStopT -= realDt;
+    frameClock.reset();
   } else {
-    const steps = Math.min(600, Math.round(realDt * 60 * (debugFast ? 8 : 1)));
+    const steps = frameClock.advance(realDt, mode === "playing" && !document.hidden, debugFast ? 8 : 1);
     for (let i = 0; i < steps; i++) simTick(FIXED_DT);
   }
+  if(renderQuality.sample(realDt,mode==='playing'&&!debugFast&&hitStopT<=0&&!document.hidden))resize();
   draw();
   updateHud();
   sgHud();
@@ -4762,7 +4780,7 @@ btnTitleStart.addEventListener("click", () => {
   playSfx("cardSelect", 0.5);
   elTitle.classList.add("hidden");
   bgmOn();   // 시작 화면 → 로비는 처음부터 다시 틀지 않고 이어서
-  sgRefresh().catch(e=>sgUI.notify("서버 연결",e.message));     // 정화 장치(봉화)가 모아 둔 금화를 자동으로 받는다
+  sgRefresh().then(sgMaybeGuidance).catch(e=>sgUI.notify("서버 연결",e.message));     // 정화 장치(봉화)가 모아 둔 금화를 자동으로 받는다
 });
 
 // ---------- 서버 저장(클라우드) ----------
@@ -4837,6 +4855,7 @@ sgUI=new GuardianUI(elMenu,{
 });
 for(const id of ['sg-objective','sg-run-tools']){const el=document.createElement('div');el.id=id;document.body.append(el);}
 sgUI.render();
+sgUI.dialog.addEventListener('close',()=>queueMicrotask(sgMaybeGuidance));
 setInterval(()=>{if(cloud.loggedIn&&mode==='menu'&&!sgUI.busy&&!sgSettling)sgRefresh().catch(()=>{});},15000);
 connectCloud();
 log("게임 로드 완료. WASD/방향키로 이동, 공격은 자동입니다.");
@@ -4846,6 +4865,21 @@ function sgApplyServer(data) {
   sgState={...sgState,...data,error:null,user:cloud.user};
   if(data.profile) save.hero=data.profile.hero;
   refreshMenuMeta();
+}
+const sgShownGuidance=new Set();
+function sgMaybeGuidance(){
+  if(!cloud.loggedIn||mode!=='menu'||sgSettling||sgUI?.busy||sgUI?.dialog.open||!elTitle.classList.contains('hidden')||elMenu.classList.contains('hidden'))return;
+  const p=sgState.profile;if(!p)return;
+  const once=kind=>{
+    const key=sgStorageKey(kind);if(sgShownGuidance.has(key))return false;
+    try{if(localStorage.getItem(key)==='1')return false;localStorage.setItem(key,'1');}catch(e){}
+    sgShownGuidance.add(key);return true;
+  };
+  if(p.partsRepairNotice&&once('parts-fix-notice')){
+    const items=p.partsRepairNotice.details||[];
+    sgUI.notify('사라졌던 파츠를 돌려드렸어요',items.map(x=>`${R.PARTS[x.id]?.name||'파츠'}로 ${x.copies}개 복구${x.gifts?` · 넘치는 ${x.gifts}개는 뽑기권 ${x.gifts}장`:''}${x.refund?` · 강화 코인 ${x.refund}개 반환`:''}`).join(' / '));return;
+  }
+  if(R.pendingPart(p)&&R.selectableParts(p).length&&once('first-part-guide'))sgUI.firstPartDialog();
 }
 const sgStorageKey=kind=>`seoho_v1_${kind}_${cloud.user||'guest'}`;
 function sgReadPending(kind){try{return JSON.parse(localStorage.getItem(sgStorageKey(kind))||'null');}catch{return null;}}
@@ -4910,7 +4944,7 @@ function sgCardHTML(c){
   if(c.kind==='support-new'||c.kind==='support-up'){const d=R.SUPPORTS[c.id],lv=player.sgRun.supports[c.id]?.lv||0,pair=Object.values(R.COMBOS).filter(x=>x.support===c.id).map(x=>`${R.SKILLS[x.skill].name}${player.skills[x.skill]?' ✓':''}`).join(' / ');
     return `${sgSkillImg(d)}<span class="tag">지원품 · ${lv+1}/3단계</span><h3>${d.name}</h3><p>${d.desc}<br/><b>${d.label(lv+1)}</b></p><small>진화 짝<br/><b>${pair}</b></small>`;}
   const d=R.SKILLS[c.id],lv=player.skills[c.id]?.lv||0,partners=R.SKILL_PARTNERS[c.id].map(id=>`${R.SUPPORTS[id].name}${player.sgRun.supports[id]?' ✓':''}`).join(' / ');
-  return `${sgSkillImg(d)}<span class="tag">${R.ELEMENTS[d.element].name} · ${lv+1}/${R.RUN_RULES.maxSkillLevel}단계</span><h3>${d.name}</h3><p>${lv?d.levels[lv-1]:d.desc}</p><small>${R.RUN_RULES.maxSkillLevel}단계 + 짝 지원품이면 진화<br/><b>${partners}</b></small>${R.hasPart(sgRunProfile,c.id)?'<small class="sg-on">장착 파츠 적용</small>':''}`;
+  return `${sgSkillImg(d)}<span class="tag">${R.ELEMENTS[d.element].name} · ${lv+1}/${R.RUN_RULES.maxSkillLevel}단계</span><h3>${d.name}</h3><p>${lv?d.levels[lv-1]:d.desc}</p><small>${R.RUN_RULES.maxSkillLevel}단계 + 짝 지원품이면 진화<br/><b>${partners}</b></small>${R.hasPart(sgRunProfile,c.id)?`<small class="sg-on sg-my-part">${sgSkillImg(d)} 내 파츠 · ${R.PARTS['PART_'+c.id].name}</small>`:''}`;
 }
 function sgApplyCard(c){
   const result=R.applyRunCard(player.skills,player.sgRun,c);player.sgChoices++;
@@ -4974,30 +5008,33 @@ function sgGrowthTick(dt){
     decor.push({x:player.x+Math.cos(a)*3.8*U,y:player.y+Math.sin(a)*3.8*U,sprite:'t1_prop_litter',h:30,litter:true,flicker:0,opened:false});
   }
 }
+let sgHudSignature='';
 function sgHud(){
   const active=player&&['playing','paused','levelup'].includes(mode);
   const objective=document.getElementById('sg-objective'),tools=document.getElementById('sg-run-tools');
-  if(!active){objective.textContent='';tools.innerHTML='';return;}
+  if(!active){setText(objective,'');if(tools.childNodes.length)tools.replaceChildren();sgHudSignature='';return;}
   const st=R.STAGES[chapter.index],n=runStats.litter||0;
   const hard=runMods.special>0;
-  objective.textContent=runTime<10?'PC: 방향키 · WASD / 모바일: 화면을 끌어 이동해요':hard&&runTime<22?'어려움 ★★★ · 방패를 든 적에게는 방패 색깔 원소가 잘 안 통해요. 다른 원소나 기본 무기로 공격해요!':`쓰레기 줍기 ${Math.min(n,st.target)}/${st.target}${n>=st.target?' ✔ 코인 +30':''} · ${runCfg.bossPhase?'대장을 깨끗하게 해 주세요!':st.tip}`;
-  if(runCfg.bossPhase)elTimer.textContent=`대장 구출 ${formatTime(360-runTime)}`;
-  elLvl.textContent=`성장 ${Math.min(runCfg.cardCap,player.sgChoices||0)}/${runCfg.cardCap}${player.shield>1?' · 방패':''}`;
-  if((player.sgChoices||0)>=runCfg.cardCap)elXpbar.style.width='100%';
+  setText(objective,runTime<10?'PC: 방향키 · WASD / 모바일: 화면을 끌어 이동해요':hard&&runTime<22?'어려움 ★★★ · 방패를 든 적에게는 방패 색깔 원소가 잘 안 통해요. 다른 원소나 기본 무기로 공격해요!':`쓰레기 줍기 ${Math.min(n,st.target)}/${st.target}${n>=st.target?' ✔ 코인 +30':''} · ${runCfg.bossPhase?'대장을 깨끗하게 해 주세요!':st.tip}`);
+  // Main HUD owns the timer so it is not overwritten twice in one frame.
+  setText(elLvl,`성장 ${Math.min(runCfg.cardCap,player.sgChoices||0)}/${runCfg.cardCap}${player.shield>1?' · 방패':''}`);
+  // Main HUD also owns the XP bar.
   const sup=player.sgRun.supports||{};
+  const signature=sgRunProfile.weaponMode+'|'+Object.entries(player.skills).map(([id,v])=>id+':'+v.lv).join(',')+'|'+Object.entries(sup).map(([id,v])=>id+':'+v.lv).join(',');
+  if(signature===sgHudSignature)return;sgHudSignature=signature;
   const html=`<span title="기본 무기">${sgIcon('mode_'+sgRunProfile.weaponMode)}기본</span>`
     +Object.entries(player.skills).map(([id,v])=>{const d=R.SKILLS[id]||R.COMBOS[id];return `<span class="${R.COMBOS[id]?'sg-evo':''}" title="${d.name}">${sgSkillImg(d)}${R.COMBOS[id]?'진화':`${v.lv}/${R.RUN_RULES.maxSkillLevel}`}</span>`;}).join('')
     +Array.from({length:Math.max(0,R.RUN_RULES.skillSlots-Object.keys(player.skills).length)},()=>'<span class="sg-empty-slot">＋</span>').join('')
     +`<span class="sg-hud-gap"></span>`
     +Object.entries(sup).map(([id,v])=>{const d=R.SUPPORTS[id];return `<span class="sg-support" title="${d.name}">${sgSkillImg(d)}${v.lv}/3</span>`;}).join('')
     +Array.from({length:Math.max(0,R.RUN_RULES.supportSlots-Object.keys(sup).length)},()=>'<span class="sg-empty-slot sg-support">＋</span>').join('');
-  if(tools.innerHTML!==html)tools.innerHTML=html;
+  tools.innerHTML=html;
 }
 function sgEnd(cleared){
   if(sgSettling||mode==='result')return;
   mode='result';sgSettling=true;elBossLabel.textContent='';keys.clear();touchJoy.active=false;
   elLevelup.classList.add('hidden');elPause.classList.add('hidden');elResult.classList.remove('hidden');
-  const pending={requestId:crypto.randomUUID(),runId,cleared,seconds:Math.min(360,runTime),litter:runStats.litter||0,hpFraction:player.hp/player.hpMax,bossSeconds:runCfg.bossPhase?Math.max(0,runTime-runCfg.timeLimitS):null,skillIds:player.sgUsedSkills,fusionIds:player.sgUsedFusions,supportIds:player.sgUsedSupports||[],revives:runStats.revives||0};
+  const pending={requestId:crypto.randomUUID(),runId,cleared,seconds:Math.min(360,runTime),litter:runStats.litter||0,hpFraction:player.hp/player.hpMax,bossSeconds:runCfg.bossPhase?Math.max(0,runTime-runCfg.timeLimitS):null,skillIds:player.sgUsedSkills,fusionIds:player.sgUsedFusions,supportIds:player.sgUsedSupports||[],partEffects:sgElements.snapshot().parts,revives:runStats.revives||0};
   sgKeepPending('result',pending);sgSettle(pending);
 }
 async function sgSettle(pending){
@@ -5007,6 +5044,13 @@ async function sgSettle(pending){
     const r=await sgPost('/play/finish',pending);sgKeepPending('result',null);sgApplyServer({...r,active:null});
     const w=r.reward,dn=R.DIFFICULTIES[w.difficulty]?.name;elResultTitle.textContent=r.cleared?'우리 마을이 반짝반짝!':'멋진 도전이었어요!';
     elResultTable.innerHTML=`<tr><td colspan="2" style="text-align:center;font-size:28px;color:#ffd16e">${'★'.repeat(w.stars)}${'☆'.repeat(3-w.stars)}${dn?`<div style="font-size:13px;color:#cfe3ee">${dn} 난이도${r.cleared?` 성공 → 별 ${w.stars}개`:''}</div>`:''}</td></tr><tr><td>코인</td><td>+${w.coins}${w.goal?' (환경 목표 +30 포함)':''}</td></tr><tr><td>뽑기권</td><td>+${w.gifts}</td></tr><tr><td>우정</td><td>+${w.friendship}</td></tr><tr><td>이용권</td><td>${r.charged?'1장 사용':'그대로!'} · ${r.passes.remaining}장 남음</td></tr><tr><td colspan="2"><div class="sg-settlement">${r.cleared?(w.notes.join('<br/>')||'코인으로 훈련하고 파츠를 강화해 보세요.'):'실패해도 이용권은 줄지 않아요. 조금 쉬었다가 다시 도전해요.'}<br/>${R.STAGES.find(s=>s.id===r.stage).tip}</div></td></tr>`;
+    for(const activity of w.partActivity||[]){
+      const d=R.PARTS[activity.id];if(!d)continue;
+      const times=Object.entries(pending.partEffects||{}).filter(([id])=>(R.COMBOS[id]?.skill||id)===d.skill).reduce((n,[,v])=>n+(Number.isFinite(v)?Math.max(0,Math.floor(v)):0),0);
+      const row=document.createElement('tr'),name=document.createElement('td'),help=document.createElement('td');
+      name.textContent=d.name;help.textContent=!activity.active?`${R.SKILLS[d.skill].name}을 안 골라 이번 판에는 쉬었어요`:times?`기능이 ${times}번 발동했어요`:'스킬을 골랐어요 · 이번 판에는 추가 기능 발동 기록이 없어요';
+      row.append(name,help);elResultTable.append(row);
+    }
     playSfx('goldReward',.5);btn.textContent=R.pendingPet(r.profile)?'새 친구 만나러 가기':'마을로 돌아가기';btn.disabled=false;sgSettling=false;
   }catch(e){
     elResultTitle.textContent='결과를 안전하게 보관했어요';elResultTable.innerHTML='<tr><td id="sg-result-error"></td></tr><tr><td><button id="sg-retry-result">결과 확인 다시 하기</button></td></tr>';
