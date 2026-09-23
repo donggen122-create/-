@@ -25,7 +25,8 @@ jobs:
           node-version: '22'
       - name: Apply exact locally tested changes
         run: |
-          if test -f .stage1/apply.py; then python .stage1/apply.py; fi
+          cp .stage1/finalize.py "$RUNNER_TEMP/seoho-finalize.py"
+          python .stage1/apply.py
           mkdir -p game/tools/qa/out/stage1
       - name: Regression tests
         run: |
@@ -34,14 +35,12 @@ jobs:
           node --test tests/*.test.mjs | tee game/tools/qa/out/stage1/unit-tests.txt
       - name: Store verified source on isolated branch
         run: |
-          if test -d .stage1; then git rm -r .stage1; fi
+          git rm -r .stage1
           git add game server tests docs CLAUDE.md HANDOFF.md
-          if ! git diff --cached --quiet; then
-            git config user.name 'github-actions[bot]'
-            git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-            git commit -m 'fix: refine first-reward dialog and regression coverage'
-            git push origin HEAD:codex/seoho-parts-stage1-20260923
-          fi
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git commit -m 'fix: keep battle overlays out of skill selection dialogs'
+          git push origin HEAD:codex/seoho-parts-stage1-20260923
       - name: Build deployment copy and single file
         run: |
           python - <<'PY'
@@ -120,6 +119,13 @@ jobs:
           result={'deployed':False,'credentialConfigured':bool(os.getenv('CF_TOKEN')),'accountConfigured':bool(os.getenv('CF_ACCOUNT')),'note':'No deployment performed in verification workflow.'}
           Path('game/tools/qa/out/stage1/deployment.json').write_text(json.dumps(result,indent=2));print(json.dumps(result))
           PY
+      - name: Finalize verified records and return CI to read-only
+        if: steps.browser.outcome == 'success' && steps.perf.outcome == 'success' && steps.titles.outcome == 'success' && steps.bundle.outcome == 'success'
+        run: |
+          python "$RUNNER_TEMP/seoho-finalize.py"
+          git add CLAUDE.md HANDOFF.md game/STATUS.md docs/25* .github/workflows/seoho-verification.yml
+          git commit -m 'docs: record 64 checks and PC-phone verification; production deployment remains pending'
+          git push origin HEAD:codex/seoho-parts-stage1-20260923
       - name: Package implemented source and results
         if: always()
         run: |
