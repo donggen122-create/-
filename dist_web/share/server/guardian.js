@@ -1,6 +1,6 @@
-import { VERSION, SKILLS, COMBOS, SUPPORTS, action, completeRun, stageUnlocked, durationFor } from '../../game/src/rework-core.js';
+import { VERSION, SKILLS, COMBOS, SUPPORTS, runParts, action, completeRun, stageUnlocked, durationFor } from '../../game/src/rework-core.js';
 import { migrateLegacy } from './legacy-migration.js';
-import { migrateProfileV2 } from './profile-migration-v2.js';
+import { migrateProfileV2, needsPartsRepair, repairObsoleteParts, PARTS_FIX_SNAPSHOT } from './profile-migration-v2.js';
 
 export const DAILY_PASSES = 10;
 export const dayKey = (now=Date.now()) => new Date(now+3600000).toISOString().slice(0,10);
@@ -53,16 +53,16 @@ export async function getProfile(db,id){
     await db.prepare('INSERT OR IGNORE INTO guardian_profiles(user_id,state) VALUES(?,?)').bind(id,JSON.stringify(state)).run();
     row=await db.prepare('SELECT state,revision FROM guardian_profiles WHERE user_id=?').bind(id).first();}
   for(let retry=0;retry<6;retry++){
-    const profile=JSON.parse(row.state);
-    if(profile.version===VERSION)return {profile,revision:row.revision};
-    const next=migrateProfileV2(profile);
-    // Compare revision inside the batch, so a simultaneous administrator grant is never overwritten.
-    const changes=await db.batch([
-      db.prepare('INSERT OR IGNORE INTO guardian_profile_snapshots(user_id,target_version,state,revision,created_at) SELECT user_id,2,state,revision,? FROM guardian_profiles WHERE user_id=? AND revision=? AND json_extract(state,\'$.version\')=1').bind(Date.now(),id,row.revision),
-      db.prepare('UPDATE guardian_profiles SET state=?,revision=revision+1 WHERE user_id=? AND revision=? AND json_extract(state,\'$.version\')=1').bind(JSON.stringify(next),id,row.revision),
+    const profile=JSON.parse(row.state),isLegacy=profile.version!==VERSION;
+    if(!isLegacy&&!needsPartsRepair(profile))return {profile,revision:row.revision};
+    const next=isLegacy?migrateProfileV2(profile):repairObsoleteParts(profile);
+    const target=isLegacy?2:PARTS_FIX_SNAPSHOT;
+    // Snapshot + revision-checked write are atomic. Concurrent teacher grants are never overwritten.
+    await db.batch([
+      db.prepare('INSERT OR IGNORE INTO guardian_profile_snapshots(user_id,target_version,state,revision,created_at) SELECT user_id,?,state,revision,? FROM guardian_profiles WHERE user_id=? AND revision=?').bind(target,Date.now(),id,row.revision),
+      db.prepare('UPDATE guardian_profiles SET state=?,revision=revision+1 WHERE user_id=? AND revision=?').bind(JSON.stringify(next),id,row.revision),
     ]);
     row=await db.prepare('SELECT state,revision FROM guardian_profiles WHERE user_id=?').bind(id).first();
-    if(changes[1].meta.changes&&JSON.parse(row.state).version===VERSION)return {profile:JSON.parse(row.state),revision:row.revision};
   }
   throw new Error('저장 이전 중이에요. 잠시 뒤 다시 연결해 주세요.');
 }
@@ -73,6 +73,9 @@ export async function passStatus(db,id,now=Date.now()){
   return {day,baseRemaining,bonusRemaining,remaining:baseRemaining+bonusRemaining,resetAt:nextReset(now),serverNow:now,dailyLimit:10+(ev?ev.bonus:0),
     event:ev?{id:ev.id,day,title:ev.title,message:ev.message,greeting:ev.greeting,bonus:ev.bonus,dailyTotal:10+ev.bonus}:null};
 }
+export async function expireOldRuns(db,id,now){
+  return db.prepare("UPDATE play_runs SET status='expired',settled_at=? WHERE user_id=? AND status='active' AND started_at<?").bind(now,id,now-1800000).run();
+}
 async function status(db,id,now){const p=await getProfile(db,id);return {...p,passes:await passStatus(db,id,now)};}
 export async function guardianAPI(request,env,user,path,now=Date.now()){
   const db=env.DB,id=user.id,method=request.method;
@@ -80,6 +83,7 @@ export async function guardianAPI(request,env,user,path,now=Date.now()){
   const testClock=env.LOCAL_TEST_CLOCK==='true'&&localhost;
   if(localhost&&env.LOCAL_TEST_OFFSET_MS)now+=Number(env.LOCAL_TEST_OFFSET_MS)||0;   // 로컬 시험 전용: 날짜를 옮겨 이벤트 등을 확인(실서버에서는 무시)
   if(path==='/guardian'&&method==='GET'){
+    await expireOldRuns(db,id,now);
     await grantPassEvent(db,id,now);   // 이벤트 날이면 오늘 이벤트 이용권(하루 한 번)
     const active=await db.prepare("SELECT id,stage,started_at FROM play_runs WHERE user_id=? AND status='active'").bind(id).first();
     return reply({...await status(db,id,now),active});
@@ -94,17 +98,20 @@ export async function guardianAPI(request,env,user,path,now=Date.now()){
       const {profile,revision}=await getProfile(db,id);let result;
       // 별 = 출동할 때의 난이도(정산은 프로필의 difficulty를 읽음) → 도전 중에는 난이도를 못 바꾼다(2026-09-23)
       if(b.kind==='settings'&&b.difficulty!==undefined&&b.difficulty!==profile.difficulty&&await db.prepare("SELECT 1 FROM play_runs WHERE user_id=? AND status='active'").bind(id).first())return reply({error:'도전 중에는 난이도를 바꿀 수 없어요. 먼저 도전을 마무리해 주세요.',code:'ACTIVE_RUN'},409);
-      try{result=action(profile,b);}catch(e){return reply({error:e.message},400);}
-      const event=JSON.stringify({message:result.message});
+      // 게임 날짜(아침 8시 기준)는 서버가 넣는다(코인 교환 하루 1번). 보급 차례가 어긋나면 409 DRAW_MODE — 아무것도 바뀌지 않음.
+      try{result=action(profile,b,Math.random,{day:dayKey(now)});}catch(e){return e.code==='DRAW_MODE'?reply({error:e.message,code:e.code,mode:e.mode},409):reply({error:e.message},400);}
+      // 결과 카드(draw)까지 함께 저장해 같은 요청이 다시 오면(재접속) 같은 결과를 다시 보여 준다.
+      const event=JSON.stringify({message:result.message,...(result.draw?{draw:result.draw}:{})});
       const r=await db.batch([
         db.prepare('UPDATE guardian_profiles SET state=?,revision=revision+1 WHERE user_id=? AND revision=? AND NOT EXISTS(SELECT 1 FROM guardian_operations WHERE user_id=? AND id=?)').bind(JSON.stringify(result.profile),id,revision,id,b.requestId),
         db.prepare('INSERT INTO guardian_operations(user_id,id,result,created_at) SELECT ?,?,?,? WHERE changes()=1').bind(id,b.requestId,event,now),
       ]);
-      if(r[0].meta.changes)return reply({message:result.message,...await status(db,id,now)});
+      if(r[0].meta.changes)return reply({message:result.message,...(result.draw?{draw:result.draw}:{}),...await status(db,id,now)});
     }
     return reply({error:'다른 기기에서 저장 중이에요. 잠시 뒤 다시 눌러 주세요.'},409);
   }
   if(path==='/play/start'&&method==='POST'){
+    await expireOldRuns(db,id,now);
     const old=await db.prepare('SELECT * FROM play_runs WHERE id=? AND user_id=?').bind(b.requestId,id).first();
     if(old)return old.status==='active'?reply({runId:old.id,duration:old.duration,...await status(db,id,now)}):reply({error:'이미 끝난 도전이에요.'},409);
     const {profile}=await getProfile(db,id);
@@ -112,9 +119,9 @@ export async function guardianAPI(request,env,user,path,now=Date.now()){
     await grantPassEvent(db,id,now);
     const duration=durationFor(profile,b.stage),day=dayKey(now);
     const r=await db.batch([
-      db.prepare("UPDATE play_runs SET status='expired',settled_at=? WHERE user_id=? AND status='active' AND started_at<?").bind(now,id,now-7200000),
+      db.prepare("UPDATE play_runs SET status='expired',settled_at=? WHERE user_id=? AND status='active' AND started_at<?").bind(now,id,now-1800000),
       db.prepare('INSERT OR IGNORE INTO play_days(user_id,day) VALUES(?,?)').bind(id,day),
-      db.prepare("INSERT INTO play_runs(id,user_id,stage,started_at,duration) SELECT ?,?,?,?,? FROM play_days WHERE user_id=? AND day=? AND base_used+bonus_used<10+bonus_granted AND NOT EXISTS(SELECT 1 FROM play_runs WHERE user_id=? AND status='active')").bind(b.requestId,id,b.stage,now,duration,id,day,id),
+      db.prepare("INSERT INTO play_runs(id,user_id,stage,started_at,duration,result) SELECT ?,?,?,?,?,? FROM play_days WHERE user_id=? AND day=? AND base_used+bonus_used<10+bonus_granted AND NOT EXISTS(SELECT 1 FROM play_runs WHERE user_id=? AND status='active')").bind(b.requestId,id,b.stage,now,duration,JSON.stringify({loadout:{equippedParts:runParts(profile)}}),id,day,id),
     ]);
     if(!r[2].meta.changes){const active=await db.prepare("SELECT id,stage FROM play_runs WHERE user_id=? AND status='active'").bind(id).first();return reply({error:active?'진행 중인 도전이 있어요. 먼저 마무리해 주세요.':'오늘 이용권을 다 썼어요. 내일 아침 8시에 다시 만나요!',code:active?'ACTIVE_RUN':'NO_PASSES',active,passes:await passStatus(db,id,now)},409);}
     return reply({runId:b.requestId,duration,...await status(db,id,now)});
@@ -136,7 +143,8 @@ export async function guardianAPI(request,env,user,path,now=Date.now()){
       const skillIds=Array.isArray(b.skillIds)?b.skillIds.filter(s=>SKILLS[s]).slice(0,15):[];
       const fusionIds=Array.isArray(b.fusionIds)?b.fusionIds.filter(s=>COMBOS[s]).slice(0,4):[];
       const supportIds=Array.isArray(b.supportIds)?b.supportIds.filter(s=>SUPPORTS[s]).slice(0,8):[];
-      const result=completeRun(profile,{stage:run.stage,cleared,seconds,litter:Math.max(0,Math.min(99,Math.floor(Number(b.litter)||0))),hpFraction:Math.max(0,Math.min(1,Number(b.hpFraction)||0)),bossSeconds:Number.isFinite(b.bossSeconds)&&b.bossSeconds>=0?b.bossSeconds:Infinity,skillIds,fusionIds,supportIds});
+      const equippedPartIds=run.result?JSON.parse(run.result).loadout?.equippedParts:null;
+      const result=completeRun(profile,{day:dayKey(now),equippedPartIds,stage:run.stage,cleared,seconds,litter:Math.max(0,Math.min(99,Math.floor(Number(b.litter)||0))),hpFraction:Math.max(0,Math.min(1,Number(b.hpFraction)||0)),bossSeconds:Number.isFinite(b.bossSeconds)&&b.bossSeconds>=0?b.bossSeconds:Infinity,skillIds,fusionIds,supportIds});
       const event={reward:result.reward,cleared,stage:run.stage,runId,charged:cleared?1:0};
       try{
         const r=await db.batch([
