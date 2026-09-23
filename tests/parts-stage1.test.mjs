@@ -130,3 +130,8 @@ test('unchanged HUD text causes zero DOM writes',()=>{
  let changes=0,text='same';const node={get textContent(){return text;},set textContent(v){changes++;text=v;}};
  for(let i=0;i<1000;i++)setText(node,'same');assert.equal(changes,0);assert.equal(setText(node,'changed'),true);assert.equal(changes,1);
 });
+
+test('null obsolete entries are cleaned once instead of trapping profile loading',async()=>{
+ const p=partProfile();p.parts.PART_E3=null;const env=await setup(p);
+ const first=await getProfile(env.DB,'qa'),next=await getProfile(env.DB,'qa');assert.deepEqual(first,next);assert.equal(Object.hasOwn(first.profile.parts,'PART_E3'),false);assert.equal(first.profile.gifts,p.gifts);
+});

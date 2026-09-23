@@ -64,3 +64,7 @@
 .sg-my-part {display:flex!important;align-items:center;gap:5px;padding:6px;border-radius:8px;background:#e7f7dc;color:#245538!important;font-weight:700;}
 .sg-my-part img {width:24px!important;height:24px!important;}
 @media(max-width:480px){.sg-first-grid{gap:7px;}.sg-first-grid button{font-size:13px;padding:8px;}.sg-dialog{max-height:85dvh;overflow-y:auto;}}
+
+.sg-first-heading{position:sticky;top:0;background:#fff;display:flex;align-items:center;justify-content:space-between;gap:8px;z-index:1;padding:8px 0;}
+.sg-first-heading h2{margin:0;}
+.sg-first-heading button{white-space:nowrap;flex-shrink:0;}

@@ -17,7 +17,7 @@ export function repairObsoleteParts(previous){
  const p=structuredClone(previous);if(!needsPartsRepair(p))return p;
  p.milestones||={};p.parts||={};const details=[];
  for(const [oldId,id] of Object.entries(OBSOLETE_PARTS)){
-  const old=p.parts[oldId];if(!old)continue;
+  const old=p.parts[oldId];if(!old){delete p.parts[oldId];continue;}
   const n=copies(old.copies),refund=partResetRefund(old.level||1),overflow=transfer(p,id,n);
   p.coins=(p.coins||0)+refund;details.push({from:oldId,id,copies:n,refund,gifts:overflow});delete p.parts[oldId];
  }

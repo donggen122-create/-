@@ -23,8 +23,14 @@ def setup(browser,w,h,uid,p,dsf=1):
     page=ctx.new_page();page.on('pageerror',lambda e: errors.append(str(e)))
     page.goto(BASE,wait_until='networkidle');page.locator('#login-id').fill(uid);page.locator('#login-pw').fill('qa_local_1234')
     page.locator('#btn-register').click();page.locator('#btn-title-start').wait_for(state='visible');seed(ctx,uid,p)
-    page.locator('#btn-title-start').click();page.locator('#guardian-lobby .sg-nav').wait_for();page.wait_for_timeout(500)
+    enter_lobby(page);page.locator('#guardian-lobby .sg-nav').wait_for();page.wait_for_timeout(500)
     return ctx,page
+
+def enter_lobby(page):
+    # The title button pulses continuously; wait for readiness, then issue a real pointer click without a stability wait.
+    page.locator('#btn-title-start').wait_for(state='visible')
+    page.wait_for_function("!document.querySelector('#btn-title-start').disabled")
+    page.locator('#btn-title-start').click(force=True)
 
 def screen(page,name):
     page.screenshot(path=str(OUT/f'{name}.png'),full_page=True)
@@ -44,11 +50,11 @@ with sync_playwright() as pw:
             assert page.locator('[data-first-part="PART_F1"]').is_disabled()
             screen(page,f'local-first-part-{width}')
             page.locator('[data-first-part="PART_W1"]').click();page.wait_for_function("document.querySelector('dialog[open]')?.textContent.includes('획득')")
-            close_dialog(page);page.reload(wait_until='networkidle');page.locator('#btn-title-start').click();page.wait_for_timeout(500)
+            close_dialog(page);page.reload(wait_until='networkidle');enter_lobby(page);page.wait_for_timeout(500)
             assert page.locator('dialog[open] [data-first-part]').count()==0,'first reward repeated'
             screen(page,f'local-lobby-{width}')
             p=profile(coins=400,gifts=5,stages={'CH01':{'cleared':True,'stars':1}},parts={'PART_F1':{'copies':7,'level':1},'PART_W1':{'copies':1,'level':2},'PART_E1':{'copies':1,'level':1}},equippedParts=['PART_F1','PART_W1','PART_E1'],giftCounts={'part':4,'pet':0},milestones={'firstPart':True})
-            seed(ctx,uid,p);page.reload(wait_until='networkidle');page.locator('#btn-title-start').click();page.wait_for_timeout(400)
+            seed(ctx,uid,p);page.reload(wait_until='networkidle');enter_lobby(page);page.wait_for_timeout(400)
             page.locator('.sg-nav [data-tab="parts"]').click();assert page.locator('#sg-draw-part option[value="PART_F1"]').is_disabled()
             assert '3개는 총 +6%' not in page.locator('#guardian-lobby').inner_text()
             page.locator('#sg-draw-part').select_option('PART_W1');screen(page,f'local-parts-{width}')
@@ -68,7 +74,7 @@ with sync_playwright() as pw:
         ctx,page=setup(browser,1280,850,f'qa_new_{int(time.time())%10000}',profile())
         page.locator('#sg-start').click();page.locator('#levelup:not(.hidden)').wait_for();page.evaluate('window.__debugGod=true');page.evaluate('window.__debugPilot(181)')
         page.locator('#btn-continue:enabled').wait_for(timeout=30000);page.locator('#btn-continue').click();page.locator('dialog[open] [data-first-part]').first.wait_for()
-        close_dialog(page);page.reload(wait_until='networkidle');page.locator('#btn-title-start').click();page.wait_for_timeout(500)
+        close_dialog(page);page.reload(wait_until='networkidle');enter_lobby(page);page.wait_for_timeout(500)
         assert page.locator('dialog[open] [data-first-part]').count()==0
         results.append({'intro_clear':'passed','guide_after_clear':'once'});ctx.close()
     else:
@@ -80,7 +86,7 @@ with sync_playwright() as pw:
         page.evaluate("window.__sgCombatLoad(['EVO_F1','EVO_L1','EVO_V2','EVO_W1']);")
         if page.locator('#levelup:not(.hidden)').count():page.locator('#card-row .card').first.click()
         session=ctx.new_cdp_session(page);session.send('Emulation.setCPUThrottlingRate',{'rate':4})
-        page.wait_for_timeout(8000)
+        page.wait_for_timeout(24000)
         data=page.evaluate("""async()=>{window.__qaPerf.calls={};window.__qaPerf.hud=0;const frames=[];let last=performance.now();const begin=last;await new Promise(resolve=>{function f(t){frames.push(t-last);last=t;if(t-begin<6000)requestAnimationFrame(f);else resolve();}requestAnimationFrame(f);});frames.shift();const sorted=[...frames].sort((a,b)=>a-b),sum=frames.reduce((a,b)=>a+b,0),snap=window.__sgSnapshot();return {fps:1000*frames.length/sum,meanMs:sum/frames.length,p90:sorted[Math.floor(sorted.length*.9)],frames:frames.length,canvasRatio:document.querySelector('#game').width/innerWidth,calls:window.__qaPerf.calls,hudMutations:window.__qaPerf.hud,mode:snap.mode,runTime:snap.runTime,enemies:snap.enemies,skills:Object.keys(snap.skills)};}""")
         session.send('Emulation.setCPUThrottlingRate',{'rate':1});screen(page,f'local-tablet-{args.label}');results.append({'label':args.label,**data});ctx.close()
     browser.close()

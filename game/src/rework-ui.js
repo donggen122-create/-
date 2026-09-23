@@ -54,7 +54,7 @@ export class GuardianUI {
   }
   firstPartDialog(){
     const p=this.state().profile;if(!R.pendingPart(p))return;
-    this.openDialog(`<h2>첫 파츠를 골라요</h2><p>원하는 파츠 1개를 무료로 받아요. 빈 칸이 있으면 바로 장착해요.</p><div class="sg-first-grid">${entries(R.PARTS).map(([id,d])=>`<button data-first-part="${id}" ${(p.parts?.[id]?.copies||0)>=7?'disabled':''}>${partIcon(id)}<b>${esc(d.name)}</b><small>${esc(R.SKILLS[d.skill].name)} · 가짐 ${p.parts?.[id]?.copies||0}개</small><span>${esc(d.desc)}</span>${(p.parts?.[id]?.copies||0)>=7?'<small>이미 특급이에요</small>':''}</button>`).join('')}</div><button data-close>나중에</button>`);
+    this.openDialog(`<div class="sg-first-heading"><h2>첫 파츠를 골라요</h2><button data-close>나중에</button></div><p>원하는 파츠 1개를 무료로 받아요. 빈 칸이 있으면 바로 장착해요.</p><div class="sg-first-grid">${entries(R.PARTS).map(([id,d])=>`<button data-first-part="${id}" ${(p.parts?.[id]?.copies||0)>=7?'disabled':''}>${partIcon(id)}<b>${esc(d.name)}</b><small>${esc(R.SKILLS[d.skill].name)} · 가짐 ${p.parts?.[id]?.copies||0}개</small><span>${esc(d.desc)}</span>${(p.parts?.[id]?.copies||0)>=7?'<small>이미 특급이에요</small>':''}</button>`).join('')}</div><button data-close>나중에</button>`);
     this.dialog.querySelectorAll('[data-first-part]').forEach(button=>button.onclick=async()=>{
       if(this.busy)return;this.dialog.querySelectorAll('button').forEach(b=>b.disabled=true);
       this.dialog.close();await this.perform({kind:'choose-part',id:button.dataset.firstPart});
