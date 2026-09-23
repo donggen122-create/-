@@ -5,6 +5,21 @@ import { migrateProfileV2 } from './profile-migration-v2.js';
 export const DAILY_PASSES = 10;
 export const dayKey = (now=Date.now()) => new Date(now+3600000).toISOString().slice(0,10);
 export const nextReset = (now=Date.now()) => (Math.floor((now+3600000)/86400000)+1)*86400000-3600000;
+// 특별 이벤트(2026-09-23 사용자 요청): 추석 연휴 게임 날짜(아침 8시 기준) 2026-09-24·25·26에는 하루 이용권 20장 = 기본 10 + 이벤트 10.
+// 이벤트 10장은 선생님 추가 지급과 같은 길(play_admin_grants → 트리거가 play_days.bonus_granted에 더함)로 사람마다 하루 한 번만 들어가고
+// (request_id = event-<id>-<날짜>, 중복 무시), 다음 아침 8시에 다른 추가분처럼 사라진다. 학생 화면 알림은 passes.event로 보낸다.
+export const PASS_EVENTS = [
+  { id:'chuseok2026', days:['2026-09-24','2026-09-25','2026-09-26'], bonus:10, title:'추석 특별 이벤트', note:'추석 이벤트: 이용권 2배',
+    message:'9월 24일부터 26일까지 추석 연휴 동안 매일 이용권이 20장(2배)으로 채워져요!',
+    greeting:'풍성한 한가위 보내세요! 가족과 함께 즐겁고 행복한 추석 되세요.' },
+];
+export const activePassEvent = (now=Date.now()) => { const day=dayKey(now); return PASS_EVENTS.find(e=>e.days.includes(day))||null; };
+export async function grantPassEvent(db,id,now=Date.now()){
+  const ev=activePassEvent(now);if(!ev)return null;
+  const day=dayKey(now);
+  await db.prepare('INSERT OR IGNORE INTO play_admin_grants(request_id,user_id,day,passes,gold,note,created_at) VALUES(?,?,?,?,0,?,?)').bind(`event-${ev.id}-${day}`,id,day,ev.bonus,ev.note,now).run();
+  return ev;
+}
 const reply=(data,status=200)=>Response.json(data,{status,headers:{'Cache-Control':'no-store'}});
 const uuid=s=>typeof s==='string'&&/^[a-zA-Z0-9_-]{12,80}$/.test(s);
 const integer=(v,min,max)=>Number.isInteger(v)&&v>=min&&v<=max;
@@ -54,13 +69,18 @@ export async function getProfile(db,id){
 export async function passStatus(db,id,now=Date.now()){
   const day=dayKey(now),r=await db.prepare('SELECT * FROM play_days WHERE user_id=? AND day=?').bind(id,day).first();
   const baseRemaining=10-(r?.base_used||0), bonusRemaining=(r?.bonus_granted||0)-(r?.bonus_used||0);
-  return {day,baseRemaining,bonusRemaining,remaining:baseRemaining+bonusRemaining,resetAt:nextReset(now),serverNow:now,dailyLimit:10};
+  const ev=activePassEvent(now);
+  return {day,baseRemaining,bonusRemaining,remaining:baseRemaining+bonusRemaining,resetAt:nextReset(now),serverNow:now,dailyLimit:10+(ev?ev.bonus:0),
+    event:ev?{id:ev.id,day,title:ev.title,message:ev.message,greeting:ev.greeting,bonus:ev.bonus,dailyTotal:10+ev.bonus}:null};
 }
 async function status(db,id,now){const p=await getProfile(db,id);return {...p,passes:await passStatus(db,id,now)};}
 export async function guardianAPI(request,env,user,path,now=Date.now()){
   const db=env.DB,id=user.id,method=request.method;
-  const testClock=env.LOCAL_TEST_CLOCK==='true'&&['localhost','127.0.0.1','[::1]'].includes(new URL(request.url).hostname);
+  const localhost=['localhost','127.0.0.1','[::1]'].includes(new URL(request.url).hostname);
+  const testClock=env.LOCAL_TEST_CLOCK==='true'&&localhost;
+  if(localhost&&env.LOCAL_TEST_OFFSET_MS)now+=Number(env.LOCAL_TEST_OFFSET_MS)||0;   // 로컬 시험 전용: 날짜를 옮겨 이벤트 등을 확인(실서버에서는 무시)
   if(path==='/guardian'&&method==='GET'){
+    await grantPassEvent(db,id,now);   // 이벤트 날이면 오늘 이벤트 이용권(하루 한 번)
     const active=await db.prepare("SELECT id,stage,started_at FROM play_runs WHERE user_id=? AND status='active'").bind(id).first();
     return reply({...await status(db,id,now),active});
   }
@@ -89,6 +109,7 @@ export async function guardianAPI(request,env,user,path,now=Date.now()){
     if(old)return old.status==='active'?reply({runId:old.id,duration:old.duration,...await status(db,id,now)}):reply({error:'이미 끝난 도전이에요.'},409);
     const {profile}=await getProfile(db,id);
     if(!stageUnlocked(profile,b.stage))return reply({error:'앞 단계를 먼저 성공해 주세요.'},400);
+    await grantPassEvent(db,id,now);
     const duration=durationFor(profile,b.stage),day=dayKey(now);
     const r=await db.batch([
       db.prepare("UPDATE play_runs SET status='expired',settled_at=? WHERE user_id=? AND status='active' AND started_at<?").bind(now,id,now-7200000),
@@ -111,6 +132,7 @@ export async function guardianAPI(request,env,user,path,now=Date.now()){
       const seconds=Math.min(360,testClock?b.seconds:Math.min(b.seconds,elapsed+2));
       if(cleared&&(seconds+3<run.duration||seconds>360))return reply({error:'도전 결과를 확인할 수 없어요.'},400);
       const {profile,revision}=await getProfile(db,id);
+      if(cleared)await grantPassEvent(db,id,now);   // 이벤트 날 정산일의 이벤트 이용권(없으면 넣음)
       const skillIds=Array.isArray(b.skillIds)?b.skillIds.filter(s=>SKILLS[s]).slice(0,15):[];
       const fusionIds=Array.isArray(b.fusionIds)?b.fusionIds.filter(s=>COMBOS[s]).slice(0,4):[];
       const supportIds=Array.isArray(b.supportIds)?b.supportIds.filter(s=>SUPPORTS[s]).slice(0,8):[];
@@ -137,8 +159,10 @@ export async function guardianAdmin(request,env,sub,method,now=Date.now()){
   if(sub==='passes'&&method==='GET'){
     const rows=(await db.prepare('SELECT u.id,u.display_id,d.base_used,d.bonus_granted,d.bonus_used FROM users u LEFT JOIN play_days d ON d.user_id=u.id AND d.day=? ORDER BY u.created_at').bind(dayKey(now)).all()).results;
     const users=rows.map(u=>{const baseRemaining=10-(u.base_used||0),bonusRemaining=(u.bonus_granted||0)-(u.bonus_used||0);return {id:u.id,display_id:u.display_id,baseRemaining,bonusRemaining,remaining:baseRemaining+bonusRemaining,resetAt:nextReset(now)};});
-    const audit=(await db.prepare('SELECT request_id,user_id,day,passes,gold,note,created_at FROM play_admin_grants ORDER BY created_at DESC LIMIT 100').all()).results;
-    return reply({users,audit,now});
+    // 이벤트 자동 지급(request_id event-…)은 학생마다 하루 한 줄씩 생기므로 기록 목록에서 뺀다
+    const audit=(await db.prepare("SELECT request_id,user_id,day,passes,gold,note,created_at FROM play_admin_grants WHERE request_id NOT LIKE 'event-%' ORDER BY created_at DESC LIMIT 100").all()).results;
+    const ev=activePassEvent(now);
+    return reply({users,audit,now,event:ev?{id:ev.id,title:ev.title,bonus:ev.bonus,days:ev.days}:null});
   }
   if(sub==='grant-passes'&&method==='POST'){
     let b;try{b=await request.json();}catch{return reply({error:'입력 형식을 확인해 주세요.'},400);}

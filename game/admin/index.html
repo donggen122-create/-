@@ -103,6 +103,7 @@
         <input id="g-note" placeholder="메모(예: 1반 수업 보상)" style="width:200px" />
         <button class="primary" id="btn-grant-all">전체 지급</button>
       </div>
+      <div class="note" id="event-note" style="color:#2c5aa0;font-weight:700"></div>
       <div class="note">기본 이용권은 매일 <b>한국 시간 오전 8시, 10장</b>으로 초기화됩니다. 성공할 때만 1장 사용하며 실패는 무료입니다. 관리자 추가분은 즉시 반영되고 <b>다음 오전 8시에 만료</b>됩니다. 학생 화면은 로비에서 15초 안에 갱신됩니다. 코인은 만료되지 않습니다. 미션·선물로 이용권을 지급할 수 없습니다.</div>
     </div>
 
@@ -201,6 +202,9 @@ async function enter() {
 async function load() {
   const [d, grants] = await Promise.all([api("stats"), api("passes")]);
   USERS = d.users; AUDIT = grants.audit; NOW = d.now;
+  // 특별 이벤트(추석 등): 이벤트 날에는 학생이 접속하면 하루 이용권이 자동으로 더 들어간다(표의 "추가"에 포함)
+  const ev = grants.event;
+  $("#event-note").textContent = ev ? `🌕 ${ev.title} 진행 중: 학생이 접속하면 하루 이용권 ${10 + ev.bonus}장(기본 10 + 이벤트 ${ev.bonus}장)이 돼요. 이벤트분은 아래 표의 "추가"에 포함되고, 지급 기록에는 나오지 않아요.` : "";
   $("#login").hidden = true; $("#main").hidden = false; $("#btn-refresh").hidden = false; $("#btn-logout").hidden = false; applyRole();
   render();
 }

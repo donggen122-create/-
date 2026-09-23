@@ -4,6 +4,13 @@
 단일 파일판: `powershell -ExecutionPolicy Bypass -File game/tools/build-single.ps1` → `dist_single/LUMEN.html`(모듈·이미지·효과음을 한 파일에 합침). 서버 없이 더블클릭으로 열리고 파일째 전달 가능. 소스를 고친 뒤에는 다시 실행해야 반영된다.
 Node.js/Python이 없어서 순수 ES 모듈 + Canvas2D + PowerShell 정적 서버로 구현했다. 데이터는 `tools/build-content.ps1`이 `data/*.csv/json`에서 `src/content.data.js`로 자동 생성한다.
 
+## 00000000000000000000000. 추석 특별 이벤트 — 9/24~26 이용권 2배 + 로그인 팝업 (2026-09-23)
+- 사용자 요청: 9월 24~26일 추석 기간 이용권 하루 20장(특별 이벤트), 로그인하면 "추석 이벤트, 이용권 2배" 알림과 추석 인사 팝업, 닫기·오늘 하루 다시 보지 않기 버튼, 팝업은 24~26일에만.
+- **서버 `server/src/guardian.js`**: `PASS_EVENTS`(id `chuseok2026`, 게임 날짜 2026-09-24·25·26, +10장, 제목·안내·인사 문구) + `activePassEvent(now)` + `grantPassEvent()`. 이벤트 10장은 선생님 추가 지급과 같은 길(`play_admin_grants` → 트리거가 `play_days.bonus_granted`에 더함, request_id `event-chuseok2026-<날짜>`로 사람마다 하루 한 번, 중복 무시)이라 표·트리거를 바꾸지 않았다. GET `/guardian`·`/play/start`·(성공한) `/play/finish`에서 지급. `passStatus`가 `event`(제목·안내·인사·dailyTotal 20)와 `dailyLimit`를 보낸다. 이용권 날짜는 원래처럼 **아침 8시 기준** → 실제로는 **24일 오전 8시 ~ 27일 오전 8시**가 20장. 관리 API `passes`의 지급 기록에서 이벤트 자동 지급은 뺌(학생마다 하루 한 줄씩 생기므로), `event`를 함께 보냄.
+- **학생 화면**: `main.js sgMaybeEventPopup()` — 로그인(자동 로그인 포함) 직후 `passes.event`가 있으면 팝업(보름달·"이용권 2배!"·기간 안내·남은 이용권·추석 인사). "닫기"는 이번만(다음 로그인 때 또 뜸), "오늘 하루 다시 보지 않기"는 localStorage `seoho_event_hide_<아이디>_<이벤트>_<날짜>`로 그 날(아침 8시 기준) 동안 그 아이디는 안 뜸. 로비 이용권 표시가 "추석 2배", 이용권 안내창도 이벤트 문구. CSS `rework.css`(.sg-event…).
+- **관리 페이지**: 이벤트 날 "🌕 추석 특별 이벤트 진행 중 — 하루 20장(표의 '추가'에 포함, 지급 기록에는 안 나옴)" 안내.
+- **확인**: 검사 39/39(guardian에 이벤트 검사: 24일 오전 8시 전 10장, 24일 20장·여러 번 접속해도 한 번만·20번 성공 뒤 막힘, 26일 밤 20장, 27일 오전 8시 10장, 기록 목록 제외). 로컬 서버 날짜를 9/24로 옮겨(.dev.vars `LOCAL_TEST_OFFSET_MS`, localhost에서만 동작 — 확인 뒤 지움) 로그인 팝업 PC·휴대폰 캡처, 닫기 → 다시 뜸, 다시 보지 않기 → 안 뜸(저장 키 확인), 로비 "추석 2배 20" 확인.
+
 ## 0000000000000000000000. 메인 테마곡 — 시작 화면·로비 배경음 (2026-09-23)
 - 사용자 요청(붙여 넣은 작업 설명): 메인 테마곡을 넣고 실서버 배포. 음원은 프로젝트 GitHub 저장소 `claude/blissful-gates-t7nrbc` 브랜치의 `game/audio/main-theme.mp3`(3.58MB) → `game/assets/audio/main-theme.mp3`(출처는 ASSET_CREDITS.md).
 - **`game/src/music.js`**(새 모듈): `<audio loop>` 하나, `music.play({restart})`·`stop()`·`syncMute()`·`state()`. 자동 재생이 막히면(play() 거부) 첫 pointerdown/keydown 때 재생. 음소거는 효과음과 같은 상태(`assets.js isMuted`, localStorage `lumen_muted`).

@@ -114,3 +114,16 @@ test('difficulty is locked during an active run and decides the stars at settlem
   assert.equal(won.reward.stars,3);assert.equal(won.reward.difficulty,'hard');assert.equal(won.profile.stages.CH01.stars,3);
   const easy=await api(env,'/guardian/action',{requestId:uid(),kind:'settings',difficulty:'easy'},start+181000);assert.equal(easy.status,200,'도전이 끝나면 다시 바꿀 수 있다');
 });
+test('Chuseok event: 2026-09-24..26 (8am KST days) give 20 passes a day, granted once, shown as passes.event, hidden from admin audit', async()=>{
+  const env=await setup();
+  const before=Date.parse('2026-09-23T22:59:00Z'), d24=Date.parse('2026-09-24T01:00:00Z'), lastDay=Date.parse('2026-09-26T22:59:00Z'), after=Date.parse('2026-09-26T23:00:00Z');
+  const pre=await api(env,'/guardian',null,before);assert.equal(pre.passes.remaining,10);assert.equal(pre.passes.event,null,'24일 아침 8시 전은 평소');
+  const g=await api(env,'/guardian',null,d24);assert.equal(g.passes.remaining,20);assert.equal(g.passes.event.id,'chuseok2026');assert.equal(g.passes.event.dailyTotal,20);
+  assert.equal((await api(env,'/guardian',null,d24+60000)).passes.remaining,20,'여러 번 접속해도 한 번만 더해진다');
+  for(let i=0;i<20;i++){const r=await run(env,true,d24+i*400000);assert.equal(r.passes.remaining,19-i);}
+  const blocked=await api(env,'/play/start',{requestId:uid(),stage:'CH01'},d24+20*400000);assert.equal(blocked.code,'NO_PASSES');
+  const last=await api(env,'/guardian',null,lastDay);assert.equal(last.passes.day,'2026-09-26');assert.equal(last.passes.remaining,20);
+  const done=await api(env,'/guardian',null,after);assert.equal(done.passes.day,'2026-09-27');assert.equal(done.passes.remaining,10);assert.equal(done.passes.event,null,'27일 아침 8시부터 평소');
+  const admin=await guardianAdmin(new Request('http://local/api/admin/passes'),env,'passes','GET',d24);const body=await admin.json();
+  assert.ok(body.audit.every(a=>!String(a.request_id).startsWith('event-')),'이벤트 자동 지급은 기록 목록에 없음');assert.equal(body.event.id,'chuseok2026');
+});

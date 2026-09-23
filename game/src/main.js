@@ -4685,6 +4685,7 @@ window.__eco = ECO;
 window.__cloud = cloud;
 window.__refresh = () => { writeSave(save); refreshMenuMeta(); };
 window.__guardian=()=>sgState;
+window.__sgEventPopup=()=>{sgMaybeEventPopup();return !!document.querySelector('dialog.sg-dialog[open] .sg-event');};
 window.__bgm=()=>({...music.state(),mode,sound:elSound?{hidden:elSound.hidden,text:elSound.textContent}:null,hudMute:elMute.textContent,stored:(()=>{try{return localStorage.getItem('lumen_muted');}catch(e){return null;}})()});
 window.__sgCard=(c)=>sgApplyCard(c);
 window.__sgSnapshot=()=>({runTime,mode,skills:player?.skills,run:player?.sgRun,cards:currentCards,choices:player?.sgChoices,litter:runStats.litter,weapon:sgWeapon.snapshot(),elements:sgElements.snapshot(),difficulty:sgRunProfile?.difficulty,hurt:{contact:Math.round(runStats.hurtContact||0),hit:Math.round(runStats.hurtHit||0),blast:Math.round(runStats.hurtBlast||0)},enemyTypes:enemies.reduce((o,e)=>{o[e.typeId]=(o[e.typeId]||0)+1;return o;},{}),enemies:enemies.length,special:enemies.reduce((o,e)=>{if(e.sgTrait)o[e.sgTrait]=(o[e.sgTrait]||0)+1;return o;},{})});
@@ -4782,6 +4783,18 @@ async function afterLogin(info) {
   sgState={profile:null,passes:null,user:cloud.user,active:null,error:null};
   try{await sgRefresh();setCloudState('ok');}catch(e){sgState.error=e.message;setCloudState('error',e.message);}
   refreshTitle();refreshMenuMeta();
+  sgMaybeEventPopup();
+}
+// 특별 이벤트 알림(2026-09-23 추석): 서버가 이벤트 날(아침 8시 기준 게임 날짜)에만 passes.event를 보낸다 → 로그인할 때 팝업.
+// "닫기"는 이번만 닫고(다음 로그인 때 또 뜸), "오늘 하루 다시 보지 않기"는 그 날 동안 이 아이디로는 안 띄운다(localStorage).
+function sgMaybeEventPopup(){
+  const ev=sgState.passes?.event;if(!ev||!cloud.loggedIn||mode!=='menu')return;
+  const hideKey=`seoho_event_hide_${cloud.user}_${ev.id}_${ev.day}`;
+  try{if(localStorage.getItem(hideKey)==='1')return;}catch(e){}
+  const t=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+  sgUI.openDialog(`<div class="sg-event"><div class="sg-event-moon" aria-hidden="true">🌕</div><span class="sg-event-tag">${t(ev.title)}</span><h2>이용권 2배!</h2><p class="sg-event-msg">${t(ev.message)}</p><p class="sg-event-count">오늘 남은 이용권 <b>${t(sgState.passes.remaining)}</b>장 · 아침 8시마다 ${t(ev.dailyTotal)}장으로 채워져요</p><p class="sg-event-greet">🌾 ${t(ev.greeting)} 🌾</p></div><div class="sg-event-btns"><button class="sg-primary" data-close>닫기</button><button id="sg-event-hide">오늘 하루 다시 보지 않기</button></div>`);
+  const hide=document.getElementById('sg-event-hide');
+  if(hide)hide.onclick=()=>{try{localStorage.setItem(hideKey,'1');}catch(e){}sgUI.dialog.close();};
 }
 
 async function submitLogin(register) {
