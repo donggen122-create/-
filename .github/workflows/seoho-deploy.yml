@@ -1,0 +1,66 @@
+# 실서버 배포(휴대폰에서도): seoho-game 최신 커밋에 deploy-* 태그를 올리면 검사 → 마지막 배포 확인 → dist_web 동기화 → wrangler deploy → 기록 커밋.
+# Claude에게 "배포해"라고 하면 태그를 올린다. deploy-force-* 태그는 마지막 배포가 기록과 달라도(Codex 배포를 합친 뒤) 배포한다.
+# 필요한 저장소 비밀값: CLOUDFLARE_API_TOKEN(Workers 편집 권한). CLOUDFLARE_ACCOUNT_ID는 토큰이 계정 하나만 볼 때는 없어도 된다.
+# (기본 브랜치 main은 다른 프로젝트라 "Run workflow" 버튼 대신 태그로 시작한다.)
+name: Seoho deploy
+on:
+  push:
+    tags: ['deploy-*']
+permissions:
+  contents: write
+concurrency:
+  group: seoho-deploy
+  cancel-in-progress: false
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    env:
+      CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+      CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+      TAG: ${{ github.ref_name }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: 배포 연결·대상 확인
+        run: |
+          if [ -z "$CLOUDFLARE_API_TOKEN" ]; then echo "::error::저장소 비밀값 CLOUDFLARE_API_TOKEN이 없어요. GitHub 저장소 Settings → Secrets and variables → Actions에 넣어 주세요."; exit 1; fi
+          git fetch -q origin seoho-game
+          if [ "$(git rev-parse HEAD)" != "$(git rev-parse origin/seoho-game)" ]; then echo "::error::태그가 seoho-game 최신 커밋이 아니에요. 최신 커밋에 태그를 다시 올려 주세요."; exit 1; fi
+      - name: 검사
+        run: node --test tests/*.test.mjs
+      - name: 배포 도구 설치
+        working-directory: server
+        run: npm ci --no-audit --no-fund
+      - name: 마지막 배포 확인(check-live)
+        run: node game/tools/ci-deploy.mjs check ${{ startsWith(github.ref_name, 'deploy-force-') }}
+      - name: dist_web 동기화
+        run: node game/tools/ci-deploy.mjs sync
+      - name: 배포
+        working-directory: server
+        run: |
+          set -o pipefail
+          npx wrangler deploy --message "github $TAG" 2>&1 | tee ../deploy-output.txt
+      - name: 배포 버전 기록·실서버 확인
+        run: |
+          node game/tools/ci-deploy.mjs record deploy-output.txt
+          node game/tools/ci-deploy.mjs health
+      - name: 기록을 seoho-game에 올리기
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          cp server/.last_deploy_version /tmp/last_deploy_version
+          tar -cf /tmp/share.tar dist_web/share
+          for i in 1 2 3; do
+            git fetch -q origin seoho-game && git checkout -q -B seoho-game origin/seoho-game
+            cp /tmp/last_deploy_version server/.last_deploy_version && tar -xf /tmp/share.tar
+            git add server/.last_deploy_version dist_web/share
+            git diff --cached --quiet || git commit -q -m "deploy: $(cat server/.last_deploy_version) ($TAG)"
+            git push -q origin seoho-game && exit 0
+            sleep 5
+          done
+          echo "::error::배포는 끝났지만 기록 커밋을 올리지 못했어요. server/.last_deploy_version을 직접 올려 주세요."; exit 1
