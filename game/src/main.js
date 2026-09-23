@@ -4883,8 +4883,8 @@ function sgMaybeGuidance(){
     sgUI.notify('사라졌던 파츠를 돌려드렸어요',items.map(x=>`${R.PARTS[x.id]?.name||'파츠'}로 ${x.copies}개 복구${x.gifts?` · 넘치는 ${x.gifts}개는 보급권 ${x.gifts}장`:''}${x.refund?` · 강화 코인 ${x.refund}개 반환`:''}`).join(' / '));return;
   }
   if(R.pendingPart(p)&&R.selectableParts(p).length&&once('first-part-guide')){sgUI.firstPartDialog();return;}
-  // 2차 개편 안내(한 번): 이름이 바뀐 것과 새 보급 규칙. 1-1을 깬 학생만(옛 이름을 본 적이 있는 학생).
-  if(p.stages?.CH01?.cleared&&once('supply-v2-notice'))sgUI.notify('파츠 보급이 새로워졌어요','이름이 바뀌었어요: 뽑기 → 보급, 뽑기권 → 보급권, 특급 → 금 메달, 강화 → 레벨 올리기. 보급 1번에 파츠 1개, 5번째마다 원하는 파츠 3개! 파츠가 3종보다 적으면 없는 파츠를 골라 받아요. 코인 300개로 보급권 1장도 바꿀 수 있어요(하루 1번). 금 메달이 되면 파츠마다 새 기능이 하나 더 생겨요! 성공 보급권은 쉬움·보통 1장, 어려움 2장이고, 같은 단계는 하루 2번 성공까지 받아요. 여러 단계에 도전해 보세요.');
+  // 보급 규칙 안내(한 번, 2026-09-23 저녁 무작위·5등급 판): 1-1을 깬 학생만. 전 판 안내(supply-v2)는 대신한다.
+  if(p.stages?.CH01?.cleared&&once('supply-v3-notice'))sgUI.notify('파츠 보급이 바뀌었어요','이제 보급은 고르는 것 없이 10종 중 무작위! 운이 좋으면 한 번에 3개(18%)나 7개(2%)가 나와요. 같은 파츠를 모으면 노말(1개) → 레어(3개) → 유니크(7개) → 에픽(25개) → 전설(80개)로 올라가요. 전설은 아주 오래 모아야 해요. 성공 보급권은 쉬움·보통 1장, 어려움 2장이고 같은 단계는 하루 2번 성공까지 받아요. 코인 300개로 보급권 1장(하루 1번)도 바꿀 수 있어요.');
 }
 const sgStorageKey=kind=>`seoho_v1_${kind}_${cloud.user||'guest'}`;
 function sgReadPending(kind){try{return JSON.parse(localStorage.getItem(sgStorageKey(kind))||'null');}catch{return null;}}

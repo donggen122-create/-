@@ -71,9 +71,17 @@
 
 /* 2026-09-23 2차 개편: 파츠 보급·메달(동·은·금)·결과 카드(1.2초 뒤집기, 결과 전 힌트 없음) */
 .sg-medal{display:inline-flex;align-items:center;justify-content:center;min-width:28px;height:24px;padding:0 7px;border-radius:12px;font:800 12px system-ui,sans-serif;border:1.5px solid;flex-shrink:0;margin-left:auto}
-.sg-medal-0{background:#f6e6d8;color:#8a4f22;border-color:#c98a57}
-.sg-medal-1{background:#eef2f5;color:#4f6272;border-color:#9fb0bd}
-.sg-medal-2{background:#fff3c4;color:#8a6200;border-color:#e0b53c}
+/* 등급 5단계(2026-09-23 저녁): 노말 회색 · 레어 파랑 · 유니크 보라 · 에픽 주황 · 전설 무지개 금 */
+.sg-medal-0{background:#eef1f3;color:#56626b;border-color:#aab5bd}
+.sg-medal-1{background:#e3f0fb;color:#1f5f94;border-color:#6aa6d8}
+.sg-medal-2{background:#f1e8fb;color:#63359a;border-color:#a77bd6}
+.sg-medal-3{background:#fdeedd;color:#9a4a0c;border-color:#e89a4c}
+.sg-medal-4{background:linear-gradient(90deg,#fff3c4,#ffe0f0,#dff3ff);color:#7a4d00;border-color:#e0b53c;box-shadow:0 0 0 2px #fff6d6}
+.sg-grade-ladder{display:flex;flex-wrap:wrap;align-items:center;gap:4px;margin:10px 0 4px}.sg-grade-ladder>i{color:#8aa0ae;font-style:normal}
+.sg-grade-ladder .sg-medal{margin-left:0;height:auto;padding:3px 7px;flex-direction:column;line-height:1.15}.sg-grade-ladder small{font-size:10px;font-weight:600;opacity:.8}
+.sg-supply-go{display:flex;align-items:center;justify-content:center;gap:8px;font-size:17px!important;min-height:58px}.sg-supply-go .sg-icon{width:28px;height:28px}
+.sg-flip-luck{font-weight:900;color:#1f5f94;font-size:15px!important;margin:0!important}.sg-flip-luck.big{color:#b8420f;font-size:18px!important}
+.sg-flip-front.sg-grade-3{border-color:#e89a4c}.sg-flip-front.sg-grade-4{border-color:#e0b53c;background:linear-gradient(180deg,#fffdf3,#fff4fb)}
 .sg-supply .sg-inline{margin-top:6px}
 .sg-supply .sg-gift-dots>i.sg-dot-pick{border-color:#e0b53c;color:#8a6200;font-weight:800;background:#fff8dc}.sg-supply .sg-gift-dots>i.sg-dot-pick.on{background:#ffe8a3}
 .sg-exchange{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:14px;padding-top:12px;border-top:1px dashed #c7d6df;font-size:13px}

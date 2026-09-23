@@ -27,11 +27,11 @@ test('invalid equipped entries cannot grant a card; no-part RNG calls retain ori
  const cards=R.cardChoices(p,{}, {},1,()=>{calls++;return .3;});assert.equal(calls,3);
  assert.deepEqual(cards,R.cardChoices(R.freshProfile(),{},{},1,()=>.3));assert.deepEqual(p.parts,{});
 });
-test('completed choice is rejected without consuming rewards or free milestone',()=>{
- const p=partProfile();p.parts.PART_F1.copies=7;p.giftCounts.part=4;const before=structuredClone(p);
- assert.throws(()=>R.action(p,{kind:'draw-part',mode:'pick',id:'PART_F1'}),/금/);
- assert.throws(()=>R.action(p,{kind:'choose-part',id:'PART_F1'}),/금/);assert.deepEqual(p,before);
- const next=R.action(p,{kind:'draw-part',mode:'pick',id:'PART_W1'}).profile;assert.equal(next.gifts,19);assert.equal(next.giftCounts.part,5);assert.equal(next.parts.PART_W1.copies,3);
+test('completed (legendary) choice is rejected without consuming rewards or free milestone',()=>{
+ const p=partProfile();p.parts.PART_F1.copies=80;p.giftCounts.part=4;const before=structuredClone(p);
+ assert.throws(()=>R.action(p,{kind:'draw-part',mode:'pick',id:'PART_F1'}),e=>e.code==='DRAW_MODE');
+ assert.throws(()=>R.action(p,{kind:'choose-part',id:'PART_F1'}),/전설/);assert.deepEqual(p,before);
+ const next=R.action(p,{kind:'draw-part',mode:'random'},()=>0).profile;assert.equal(next.gifts,19);assert.equal(next.giftCounts.part,5);assert.equal(next.parts.PART_F1.copies,80,'전설 파츠는 안 나옴');
 });
 test('first reward stays one free part and does not advance draw counter',()=>{
  const p=partProfile([]),next=R.action(p,{kind:'choose-part',id:'PART_L1'}).profile;
@@ -112,7 +112,7 @@ test('server records run-start equipment, counts evolved use, and never doubles 
 });
 test('full-part choice is rejected by API too and leaves currency and counter intact',async()=>{
  const p=partProfile();p.parts.PART_F1.copies=7;p.giftCounts.part=4;const env=await setup(p);
- const r=await api(env,'/guardian/action',{kind:'draw-part',mode:'pick',id:'PART_F1'});assert.equal(r.status,400);assert.deepEqual((await getProfile(env.DB,'qa')).profile,p);
+ const r=await api(env,'/guardian/action',{kind:'draw-part',mode:'pick',id:'PART_F1'});assert.equal(r.status,409);assert.equal(r.code,'DRAW_MODE');assert.deepEqual((await getProfile(env.DB,'qa')).profile,p);
 });
 for(const hz of [30,60,120,144])test(`fixed step advances exactly 60 simulated ticks in one second at ${hz}Hz`,()=>{
  const clock=createFrameClock();let ticks=0;for(let i=0;i<hz;i++)ticks+=clock.advance(1/hz);assert.equal(ticks,60);

@@ -59,7 +59,7 @@ export function createElementCombat({ U = 32, getPlayer, getEnemies, getBoss = (
   const part = id => !!R.hasPart?.(getProfile(), baseId(id));
   const feature = id => part(id) ? R.PARTS[`PART_${baseId(id)}`]?.feature : null;
   const markPart = id => { stats.parts[id] = (stats.parts[id] || 0) + 1; };
-  // 금 메달(같은 파츠 7개) 기능(3차, docs/23): 일반·진화 양쪽. 추가 공격은 원래보다 약하고, 추가로 생긴 것은 다시 추가를 만들지 않는다(small/sub).
+  // 유니크 등급(같은 파츠 7개, 옛 금 메달) 기능(docs/26·27): 일반·진화 양쪽. 추가 공격은 원래보다 약하고, 추가로 생긴 것은 다시 추가를 만들지 않는다(small/sub).
   const gold = id => part(id) && !!R.hasGold?.(getProfile(), baseId(id));
   const trail = (id, at, r, life) => field(id, at, r, 0, { kind: 'trail', life, tickS: .3, maxTicks: Math.ceil(life / .3), onTick: f => { for (const e of within(f, f.r)) slow(e, .6, .5); } });
   const MAXLV = RUN_RULES.maxSkillLevel;

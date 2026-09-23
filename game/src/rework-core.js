@@ -5,9 +5,14 @@ export const VERSION = 2;
 export const PASS_NOTICE = '매일 아침 8시에 기본 이용권이 10장으로 새로 채워져요. 성공하면 1장, 실패하면 0장! 기본 이용권으로 하루에 10번 성공할 수 있어요. 선생님이 추가로 지급한 이용권은 다음 아침 8시까지 사용할 수 있어요. 이용권은 미션이나 보급에서 나오지 않아요.';
 export const TOOLS=SKILLS, SETS=ELEMENTS;
 export const SLOTS={attack:'공격 훈련',hp:'체력 훈련',speed:'기동 훈련'};
-// 2차 개편(docs/23 §4): 등급은 메달(동 1개 · 은 3개 · 금 7개), 코인은 "레벨 올리기", 뽑기는 "보급"이라고 부른다. 서버 안 이름(draw-part·gifts)은 그대로.
-export const GRADE_NAMES=['동','은','금'];
-export const GOLD_COPIES=7;
+// 파츠 등급(2026-09-23 저녁 사용자 결정, docs/27): 같은 파츠를 모으면 자동 승급 — 노말 1 · 레어 3 · 유니크 7 · 에픽 25 · 전설 80개.
+// 전설은 열심히 해도 두 달 이상(모의 3,000번: 매일 하는 학생 중앙 약 73일, 운이 아주 좋아도 약 62일). 뽑기는 "보급", 코인은 "레벨 올리기"라고 부른다.
+export const GRADE_NAMES=['노말','레어','유니크','에픽','전설'];
+export const GRADE_COPIES=[1,3,7,25,80];
+export const GOLD_COPIES=7;                // 유니크(옛 금): 파츠마다 유니크 기능이 열리는 개수
+export const LEGEND_COPIES=80;
+// 보급 1번 = 10종 중 무작위 파츠(전설 파츠 제외)를 운으로 1개 80% · 3개 18% · 7개 2%. 고르는 것은 없다(사용자: "선택지를 주지 말자, 운이 필요하게").
+export const SUPPLY_BUNDLES=[{qty:1,chance:.8},{qty:3,chance:.18},{qty:7,chance:.02}];
 export const SUPPLY_EXCHANGE_COST=300;   // 코인 300개 → 보급권 1장, 게임 날짜(아침 8시 기준)마다 1번
 // 성공 보급권(2026-09-23 사용자): 쉬움·보통 1장, 어려움 2장. 같은 단계는 게임 날짜(아침 8시)마다 2번 성공까지만 보급권 → 여러 단계를 하도록.
 export const CLEAR_GIFTS={easy:1,normal:1,hard:2};
@@ -75,25 +80,23 @@ export function trainingCost(level){return level>=20?null:100+25*(level-1);}
 export const upgradeCost=trainingCost;
 export function partUpgradeCost(level){return level>=10?null:60+20*(level-1);}
 export function partResetRefund(level){const n=clampInt(level,1,10)-1;return 60*n+10*n*(n-1);}
-export function grade(copies){return copies>=GOLD_COPIES?2:copies>=3?1:0;}
-export function nextGradeAt(copies){return copies<3?3:copies<GOLD_COPIES?GOLD_COPIES:null;}
+export function grade(copies){const n=Number(copies)||0;let g=0;for(let i=1;i<GRADE_COPIES.length;i++)if(n>=GRADE_COPIES[i])g=i;return g;}
+export function nextGradeAt(copies){return GRADE_COPIES.find(n=>n>(Number(copies)||0))??null;}
 export function friendshipLevel(p){return [0,3,8,16,28].filter(n=>p.friendship>=n).length;}
 export function setCounts(p){const counts=Object.fromEntries(Object.keys(ELEMENTS).map(e=>[e,0]));for(const id of new Set(p.equippedParts||[]))if(PARTS[id]&&p.parts?.[id]?.copies>0)counts[PARTS[id].element]++;return counts;}
 export function hasPart(p,skillId){const id=skillId.startsWith('PART_')?skillId:`PART_${skillId}`;return !!(p.equippedParts?.includes(id)&&p.parts?.[id]?.copies>0);}
 export function hasGold(p,skillId){if(!hasPart(p,skillId))return false;return grade(p.parts[skillId.startsWith('PART_')?skillId:`PART_${skillId}`].copies)>=2;}
 export function partBonus(p,skillId){if(!hasPart(p,skillId))return 0;const part=p.parts[skillId.startsWith('PART_')?skillId:`PART_${skillId}`];return (clampInt(part.level,1,10)-1)*PART_LEVEL_STEP+grade(part.copies)*GRADE_STEP;}
 export function elementBonus(p,element){return (setCounts(p)[element]||0)>=2?.04:0;}
-export function selectableParts(p){return Object.keys(PARTS).filter(id=>(p.parts?.[id]?.copies||0)<GOLD_COPIES);}
+// 아직 전설이 아닌 파츠(보급에서 나올 수 있고, 첫 무료 파츠로 고를 수 있음)
+export function selectableParts(p){return Object.keys(PARTS).filter(id=>(p.parts?.[id]?.copies||0)<LEGEND_COPIES);}
 // 서로 다른 원소 파츠 3개를 끼우면 최대 체력 +5%(2차). 같은 원소 2개(+4%)와 동시에는 될 수 없다.
 export function rainbowSet(p){const ids=runParts(p);return ids.length===3&&new Set(ids.map(id=>PARTS[id].element)).size===3;}
-// 이번 보급의 종류: pick(5번째: 금이 아닌 파츠를 골라 3개) → new(가진 종류 3개 미만: 없는 파츠를 골라 1개) → element(원소 고르기, 금 제외 반반 1개). 모두 금이면 null.
-export function drawMode(p){
- if(!selectableParts(p).length)return null;
- if(((p.giftCounts?.part||0)+1)%5===0)return 'pick';
- return Object.keys(PARTS).filter(id=>p.parts?.[id]?.copies>0).length<3?'new':'element';
-}
-export function elementPool(p,element){return Object.keys(PARTS).filter(id=>PARTS[id].element===element&&(p.parts?.[id]?.copies||0)<GOLD_COPIES);}
+// 보급 방식은 하나(random). 화면이 이 값을 함께 보내야 하고, 옛 화면(pick·new·element)은 새로고침 안내로 거절한다. 모두 전설이면 null.
+export function drawMode(p){return selectableParts(p).length?'random':null;}
+export function bundleFor(roll){let acc=0;for(const b of SUPPLY_BUNDLES){acc+=b.chance;if(roll<acc)return b.qty;}return SUPPLY_BUNDLES[0].qty;}
 export function drawMessage(d){const name=PARTS[d.id]?.name||'파츠';if(d.isNew)return `${name}${d.qty>1?` ×${d.qty}`:''} 획득!${d.autoEquipped?' 빈 칸에 끼웠어요.':''}`;return `${name} ×${d.qty} · ${d.before}→${d.after}개${d.gradeAfter>d.gradeBefore?` · ${GRADE_NAMES[d.gradeAfter]} 달성!`:''}`;}
+export function hasUnique(p,skillId){return hasGold(p,skillId);}
 export function runParts(p){return [...new Set(p.equippedParts||[])].filter(id=>own(PARTS,id)&&p.parts?.[id]?.copies>0).slice(0,3);}
 export function skillDamageMultiplier(p,id){const combo=COMBOS[id];if(combo)return skillDamageMultiplier(p,combo.skill);return 1+partBonus(p,id)+elementBonus(p,SKILLS[id]?.element);}
 export function levelMultiplier(lv){return LEVEL_DAMAGE[clampInt(lv,1,5)-1];}
@@ -170,16 +173,14 @@ export function action(profile,a,rng=Math.random,ctx={}){
  }else if(a.kind==='reset-part'){
   check(own(PARTS,a.id)&&p.parts[a.id]?.copies>0,'아직 없는 파츠예요.');const refund=partResetRefund(p.parts[a.id].level);p.parts[a.id].level=1;p.coins+=refund;message=`레벨을 1로 되돌리고 코인 ${refund}개를 돌려받았어요. 메달과 개수는 그대로예요.`;
  }else if(a.kind==='choose-part'){
-  const pending=pendingPart(p);check(pending?.ids.includes(a.id),'첫 파츠를 이미 받았거나 아직 받을 수 없어요.');check(selectableParts(p).includes(a.id),'이미 금인 파츠예요. 다른 파츠를 골라 주세요.');p.milestones[pending.key]=true;draw={...addPart(p,a.id),mode:'first'};message=drawMessage(draw);
+  const pending=pendingPart(p);check(pending?.ids.includes(a.id),'첫 파츠를 이미 받았거나 아직 받을 수 없어요.');check(selectableParts(p).includes(a.id),'이미 전설인 파츠예요. 다른 파츠를 골라 주세요.');p.milestones[pending.key]=true;draw={...addPart(p,a.id),mode:'first'};message=drawMessage(draw);
  }else if(a.kind==='draw-part'){
   check(!!p.stages.CH01?.cleared,'1-1을 성공하면 보급이 열려요.');check(p.gifts>0,'보급권이 더 필요해요.');p.giftCounts ||= {part:0,pet:0};
-  const mode=drawMode(p);check(mode,'모든 파츠가 금이에요!');
-  // 차례 확인: 화면이 알고 있는 차례와 서버 판단이 다르면(다른 기기·옛 화면) 아무것도 바꾸지 않고 거절한다.
-  if(a.mode!==mode){const e=new Error(a.mode?'보급 차례가 바뀌었어요. 화면을 다시 불러올게요.':'보급 규칙이 새로워졌어요. 화면을 새로고침해 주세요.');e.code='DRAW_MODE';e.mode=mode;throw e;}
-  let selected,qty=1;
-  if(mode==='pick'){check(own(PARTS,a.id)&&selectableParts(p).includes(a.id),'금이 아닌 파츠를 골라 주세요.');selected=a.id;qty=3;}
-  else if(mode==='new'){check(own(PARTS,a.id)&&!(p.parts[a.id]?.copies>0),'아직 없는 파츠를 골라 주세요.');selected=a.id;}
-  else{check(own(ELEMENTS,a.element)&&a.element!=='neutral','원소를 골라 주세요.');const pool=elementPool(p,a.element);check(pool.length,'이 원소 파츠는 모두 금이에요. 다른 원소를 골라 주세요.');selected=pool[pickIndex(pool.length)];}
+  const mode=drawMode(p);check(mode,'모든 파츠가 전설이에요!');
+  // 옛 화면(원소 고르기·5번째 선택)이 보낸 요청은 아무것도 바꾸지 않고 새로고침을 안내한다(보급권 그대로).
+  if(a.mode!==mode){const e=new Error('보급 규칙이 새로워졌어요. 화면을 새로고침해 주세요.');e.code='DRAW_MODE';e.mode=mode;throw e;}
+  // 고르는 것 없음: 전설이 아닌 10종 중 무작위 1종, 개수는 운(1·3·7개). 화면이 보낸 id·element는 무시한다.
+  const pool=selectableParts(p),selected=pool[pickIndex(pool.length)],qty=bundleFor(Math.max(0,Math.min(.999999999,rng())));
   draw={...addPart(p,selected,qty),mode};p.gifts--;p.giftCounts.part=(p.giftCounts.part||0)+1;message=drawMessage(draw);
  }else if(a.kind==='buy-supply'){
   check(!!p.stages.CH01?.cleared,'1-1을 성공하면 보급이 열려요.');check(typeof ctx.day==='string'&&ctx.day,'서버에서만 바꿀 수 있어요.');

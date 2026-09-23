@@ -63,7 +63,7 @@ const EVO_DATA = [
   { id: "EVO_L2", skill: "L2", support: "S2", name: "벌떼 소환", kind: "swarm", sprite: "lightning_swarm", interval: 0.4, dmgCoef: 0.9, desc: "벌 5마리가 적을 따라가는 침을 쏴요." },
 ];
 
-// 파츠(로비 성장, Codex v2 규칙 유지): 스킬당 1개. feature는 element-combat.js가 읽는 기능 키. gold = 금 메달(7개) 기능(3차, 일반·진화 양쪽).
+// 파츠(로비 성장, Codex v2 규칙 유지): 스킬당 1개. feature는 element-combat.js가 읽는 기능 키. gold = 유니크 등급(같은 파츠 7개) 기능(일반·진화 양쪽).
 const PART_DATA = [
   { id: "PART_F1", skill: "F1", name: "불꽃병 기름통", feature: "puddleLonger", desc: "불 웅덩이가 1초 더 오래 타요.", gold: "웅덩이·용암 안에서 작은 불꽃이 1.2초마다 터져요(피해 50%)." },
   { id: "PART_F2", skill: "F2", name: "로켓 유도 날개", feature: "homing", desc: "로켓이 적을 따라 방향을 조금씩 바꿔요.", gold: "맞히면 작은 보조 로켓 1발이 다른 적을 따라가요(피해 50%, 보조 로켓은 더 나오지 않아요)." },

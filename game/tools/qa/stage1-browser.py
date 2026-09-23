@@ -44,7 +44,7 @@ with sync_playwright() as pw:
     if not args.perf_only:
         for width,height in [(1280,850),(375,812)]:
             uid=f'qa_{width}_{int(time.time())%10000}'
-            p=profile(coins=400,gifts=5,stages={'CH01':{'cleared':True,'stars':1}},parts={'PART_F1':{'copies':7,'level':1}},equippedParts=['PART_F1'])
+            p=profile(coins=400,gifts=5,stages={'CH01':{'cleared':True,'stars':1}},parts={'PART_F1':{'copies':80,'level':1}},equippedParts=['PART_F1'])   # 전설(80개) 파츠는 첫 선택에서 막힘
             ctx,page=setup(browser,width,height,uid,p)
             page.locator('dialog[open] [data-first-part="PART_W1"]').wait_for()
             assert page.locator('[data-first-part="PART_F1"]').is_disabled()
@@ -55,9 +55,10 @@ with sync_playwright() as pw:
             screen(page,f'local-lobby-{width}')
             p=profile(coins=400,gifts=5,stages={'CH01':{'cleared':True,'stars':1}},parts={'PART_F1':{'copies':7,'level':1},'PART_W1':{'copies':1,'level':2},'PART_E1':{'copies':1,'level':1}},equippedParts=['PART_F1','PART_W1','PART_E1'],giftCounts={'part':4,'pet':0},milestones={'firstPart':True})
             seed(ctx,uid,p);page.reload(wait_until='networkidle');enter_lobby(page);page.wait_for_timeout(400)
-            page.locator('.sg-nav [data-tab="parts"]').click();assert page.locator('#sg-draw-part option[value="PART_F1"]').evaluate('(option)=>option.disabled')
+            page.locator('.sg-nav [data-tab="parts"]').click();page.wait_for_timeout(200)
+            assert page.locator('#sg-draw-part, #sg-draw-element').count()==0,'보급에는 고르는 칸이 없다'
             assert '3개는 총 +6%' not in page.locator('#guardian-lobby').inner_text()
-            page.locator('#sg-draw-part').select_option('PART_W1');screen(page,f'local-parts-{width}')
+            screen(page,f'local-parts-{width}')
             page.locator('[data-do="draw-part"]').click();page.wait_for_function("!!document.querySelector('dialog[open] .sg-flip')");close_dialog(page)
             state=page.evaluate("async()=>await(await fetch('/api/guardian',{headers:{Authorization:'Bearer '+localStorage.lumen_token}})).json()")
             assert state['profile']['gifts']==4 and state['profile']['giftCounts']['part']==5,state
@@ -70,7 +71,7 @@ with sync_playwright() as pw:
             assert '이번 판에는' in page.locator('#result-table').inner_text() or '발동' in page.locator('#result-table').inner_text()
             layout=page.evaluate("({w:innerWidth,doc:document.documentElement.scrollWidth,dialog:document.querySelector('dialog')?.getBoundingClientRect().width})")
             assert layout['doc']<=width+1,layout
-            results.append({'viewport':width,'result':'passed','checks':['first reward once','full part disabled','draw cost/counter','equipped first skill','result usage','no horizontal overflow']});ctx.close()
+            results.append({'viewport':width,'result':'passed','checks':['first reward once','legendary part disabled','draw cost/counter','equipped first skill','result usage','no horizontal overflow']});ctx.close()
         # Genuine introductory clear -> continue -> first reward modal (not just a seeded eligible account).
         ctx,page=setup(browser,1280,850,f'qa_new_{int(time.time())%10000}',profile())
         page.locator('#sg-start').click();page.locator('#levelup:not(.hidden)').wait_for();page.evaluate('window.__debugGod=true');page.evaluate('window.__debugPilot(181)')

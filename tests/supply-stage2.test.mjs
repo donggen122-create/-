@@ -1,4 +1,4 @@
-// 2차 개편(docs/23 §4·§6): 보급 1개 / 5번째 고른 파츠 3개 / 처음 3종 고르기 / 금 제외, 메달·레벨, 친구 먼저 만나기, 코인 교환, 실패 보급권 상한.
+// 파츠 보급(docs/27): 고르는 것 없는 무작위 + 개수 운(1·3·7), 등급 노말~전설(1·3·7·25·80개), 레벨, 친구 먼저 만나기, 코인 교환, 실패 보급권 상한, 성공 보급권(어려움 2장·단계당 하루 2번).
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
@@ -10,59 +10,62 @@ const rngSeed=seed=>()=>{seed=(Math.imul(seed,1664525)+1013904223)>>>0;return se
 function supplyProfile(parts={PART_F1:1}){const p=R.freshProfile();p.stages.CH01={cleared:true,stars:1};p.milestones.firstPart=true;p.gifts=30;for(const [id,n] of Object.entries(parts))p.parts[id]={copies:n,level:1};p.equippedParts=Object.keys(parts).slice(0,3);return p;}
 const draw=(p,a,rng)=>R.action(p,{kind:'draw-part',...a},rng);
 
-test('supply turn order: 5th pick first, then pick-a-new-part until 3 kinds, then element; all gold closes',()=>{
- assert.equal(R.drawMode(supplyProfile()),'new');
- assert.equal(R.drawMode(supplyProfile({PART_F1:1,PART_W1:1,PART_V1:1})),'element');
- const four=supplyProfile();four.giftCounts.part=4;assert.equal(R.drawMode(four),'pick','개편 전에 4번 보급했으면 다음은 선택 회차');
- const gold=supplyProfile(Object.fromEntries(Object.keys(R.PARTS).map(id=>[id,7])));assert.equal(R.drawMode(gold),null);
- assert.throws(()=>draw(gold,{mode:'element',element:'fire'}),/모든 파츠가 금/);
+const pull=(p,rng)=>R.action(p,{kind:'draw-part',mode:'random'},rng);
+
+test('supply is random only: one mode, no choices; all legendary closes',()=>{
+ assert.equal(R.drawMode(supplyProfile()),'random');
+ const legend=supplyProfile(Object.fromEntries(Object.keys(R.PARTS).map(id=>[id,80])));assert.equal(R.drawMode(legend),null);
+ assert.throws(()=>pull(legend),/모든 파츠가 전설/);
+ const p=supplyProfile(),r=R.action(p,{kind:'draw-part',mode:'random',id:'PART_L2',element:'fire'},()=>.05);
+ assert.equal(r.draw.id,Object.keys(R.PARTS)[0],'보낸 id·원소는 무시하고 무작위');
 });
 
-test('mismatched or missing turn is refused with DRAW_MODE and changes nothing',()=>{
+test('old screens (element / 5th pick / new-part pick / no mode) are refused with DRAW_MODE and change nothing',()=>{
  const p=supplyProfile(),before=structuredClone(p);
- for(const a of [{mode:'element',element:'fire'},{element:'fire'},{mode:'pick',id:'PART_W1'}]){
-  let err;try{draw(p,a);}catch(e){err=e;}assert.equal(err?.code,'DRAW_MODE');assert.equal(err.mode,'new');
+ for(const a of [{mode:'element',element:'fire'},{element:'fire'},{mode:'pick',id:'PART_W1'},{mode:'new',id:'PART_W1'}]){
+  let err;try{draw(p,a);}catch(e){err=e;}assert.equal(err?.code,'DRAW_MODE');assert.equal(err.mode,'random');assert.match(err.message,/새로고침/);
  }
  assert.deepEqual(p,before);
- assert.throws(()=>draw(p,{mode:'new',id:'PART_F1'}),/아직 없는 파츠/,'가진 파츠는 새 파츠로 고를 수 없다');
 });
 
-test('ordinary supply is exactly one part; the 5th is three of the chosen part; no 60-coin conversion',()=>{
- let p=supplyProfile({PART_F1:5,PART_W1:1,PART_V1:1});p.giftCounts.part=4;
- const r=draw(p,{mode:'pick',id:'PART_F1'});
- assert.deepEqual(r.draw,{id:'PART_F1',qty:3,before:5,after:8,gradeBefore:1,gradeAfter:2,isNew:false,autoEquipped:false,mode:'pick'});
- assert.equal(r.profile.coins,p.coins);assert.equal(r.profile.gifts,p.gifts-1);assert.match(r.message,/금 달성/);
- p=supplyProfile({PART_F1:1,PART_W1:1,PART_V1:1});
- for(let seed=1;seed<=200;seed++){const x=draw(p,{mode:'element',element:'fire'},rngSeed(seed));assert.equal(x.draw.qty,1);assert.equal(Object.values(x.profile.parts).reduce((n,v)=>n+v.copies,0),4);}
+test('luck bundles: 1 part 80%, 3 parts 18%, 7 parts 2%; every part equally likely',()=>{
+ const p=supplyProfile(),rng=rngSeed(7),qty={1:0,3:0,7:0},ids={};const N=20000;
+ for(let i=0;i<N;i++){const r=pull(p,rng);qty[r.draw.qty]++;ids[r.draw.id]=(ids[r.draw.id]||0)+1;assert.equal(r.profile.gifts,p.gifts-1);assert.equal(r.profile.coins,p.coins);}
+ assert.ok(Math.abs(qty[1]/N-.8)<.015&&Math.abs(qty[3]/N-.18)<.015&&Math.abs(qty[7]/N-.02)<.005,JSON.stringify(qty));
+ assert.equal(Object.keys(ids).length,10);for(const n of Object.values(ids))assert.ok(Math.abs(n/N-.1)<.015,JSON.stringify(ids));
+ assert.deepEqual([.5,.85,.99].map(R.bundleFor),[1,3,7]);
 });
 
-test('gold parts never come from element supply; the other part is certain',()=>{
- const p=supplyProfile({PART_F1:7,PART_W1:1,PART_V1:1});
- for(let seed=1;seed<=1000;seed++)assert.equal(draw(p,{mode:'element',element:'fire'},rngSeed(seed)).draw.id,'PART_F2');
- const both=supplyProfile({PART_F1:7,PART_F2:9,PART_W1:1}),before=structuredClone(both);
- assert.throws(()=>draw(both,{mode:'element',element:'fire'}),/모두 금/);assert.deepEqual(both,before);
+test('legendary parts never come out again; the rest share the chance',()=>{
+ const p=supplyProfile({PART_F1:80,PART_W1:120});
+ for(let seed=1;seed<=500;seed++){const r=pull(p,rngSeed(seed));assert.ok(!['PART_F1','PART_W1'].includes(r.draw.id),r.draw.id);}
 });
 
-test('worst luck still reaches gold within 10 supplies from one copy',()=>{
- let p=supplyProfile({PART_F1:1,PART_W1:1,PART_V1:1});const worst=()=>.99;   // 원소 보급은 늘 다른 쪽이 나오는 최악의 운
- for(let i=1;i<=10;i++)p=draw(p,R.drawMode(p)==='pick'?{mode:'pick',id:'PART_F1'}:{mode:'element',element:'fire'},worst).profile;
- assert.ok(p.parts.PART_F1.copies>=7,JSON.stringify(p.parts));assert.equal(R.grade(p.parts.PART_F1.copies),2);
-});
-
-test('new-part picks count as supplies and auto-equip into an empty slot',()=>{
- const p=supplyProfile(),r=draw(p,{mode:'new',id:'PART_L2'});
- assert.equal(r.profile.giftCounts.part,1);assert.equal(r.draw.isNew,true);assert.equal(r.draw.autoEquipped,true);assert.deepEqual(r.profile.equippedParts,['PART_F1','PART_L2']);
- assert.match(r.message,/빈 칸에 끼웠어요/);
-});
-
-test('medals and levels: grade × 6% and level × 3% stay finite beyond seven copies',()=>{
- const p=supplyProfile({PART_F1:15});p.parts.PART_F1.level=10;
- assert.equal(R.GRADE_NAMES.join(''),'동은금');
- assert.ok(Math.abs(R.partBonus(p,'F1')-(.27+.12))<1e-9);assert.ok(Number.isFinite(R.skillDamageMultiplier(p,'F1')));
- assert.equal(R.nextGradeAt(1),3);assert.equal(R.nextGradeAt(3),7);assert.equal(R.nextGradeAt(8),null);
+test('grades by copies: 노말 1 · 레어 3 · 유니크 7 · 에픽 25 · 전설 80; old 동·은·금 keep their place',()=>{
+ assert.deepEqual(R.GRADE_NAMES,['노말','레어','유니크','에픽','전설']);
+ assert.deepEqual([1,2,3,6,7,24,25,79,80,300].map(R.grade),[0,0,1,1,2,2,3,3,4,4]);
+ assert.deepEqual([0,1,3,7,24,25,80].map(R.nextGradeAt),[1,3,7,25,25,80,null]);
+ const p=supplyProfile({PART_F1:80});p.parts.PART_F1.level=10;
+ assert.ok(Math.abs(R.partBonus(p,'F1')-(.27+.24))<1e-9,'전설 +24% + Lv.10 +27%');assert.ok(Number.isFinite(R.skillDamageMultiplier(p,'F1')));
+ assert.equal(R.hasGold(supplyProfile({PART_F1:7}),'F1'),true,'유니크부터 유니크 기능');assert.equal(R.hasGold(supplyProfile({PART_F1:6}),'F1'),false);
+ const r=pull(supplyProfile({PART_F1:24}),()=>0);assert.equal(r.draw.id,'PART_F1');assert.equal(r.draw.gradeAfter,3);assert.match(r.message,/에픽 달성/);
  let q=supplyProfile();q.coins=5000;const start=q.coins;
  for(let i=0;i<9;i++)q=R.action(q,{kind:'upgrade-part',id:'PART_F1'}).profile;assert.equal(q.parts.PART_F1.level,10);assert.equal(start-q.coins,1260);
  q=R.action(q,{kind:'reset-part',id:'PART_F1'}).profile;assert.equal(q.coins,start,'레벨 되돌리기 전후 코인 합계가 같다');
+});
+
+test('legendary takes a long time: in 300 simulated students nobody gets one before 240 draws, median over 380',()=>{
+ const firsts=[];
+ for(let seed=1;seed<=300;seed++){let p=R.freshProfile();p.stages.CH01={cleared:true,stars:1};p.gifts=1e6;const rng=rngSeed(seed);let n=0,r;
+  do{n++;r=pull(p,rng);p=r.profile;}while(r.draw.gradeAfter<4);firsts.push(n);}
+ firsts.sort((a,b)=>a-b);assert.ok(firsts[0]>=240,`가장 빠른 학생 ${firsts[0]}번`);assert.ok(firsts[150]>=380,`중앙 ${firsts[150]}번`);
+});
+
+test('first free part is still a choice (not legendary) and a new part fills an empty slot',()=>{
+ const p=supplyProfile({PART_F1:80});p.milestones.firstPart=false;
+ assert.throws(()=>R.action(p,{kind:'choose-part',id:'PART_F1'}),/전설/);
+ const r=R.action(p,{kind:'choose-part',id:'PART_L2'});assert.equal(r.draw.isNew,true);assert.equal(r.draw.autoEquipped,true);assert.match(r.message,/빈 칸에 끼웠어요/);
+ assert.equal(r.profile.giftCounts.part,0,'첫 무료 파츠는 보급 횟수에 안 들어감');
 });
 
 test('three different elements add 5% max HP; same-element pair keeps +4% only',()=>{
@@ -113,12 +116,12 @@ const now=Date.parse('2026-09-23T01:00Z');let serial=0;const uid=()=>`stage2_tes
 async function setup(p){const DB=new D1();DB.sql.prepare('INSERT INTO users(id,display_id,pw_hash,salt,created_at) VALUES(?,?,?,?,?)').run('qa','qa','x','y',now);await migrate(DB);DB.sql.prepare('INSERT INTO guardian_profiles(user_id,state) VALUES(?,?)').run('qa',JSON.stringify(p||R.freshProfile()));return {DB};}
 async function api(env,path,body,t=now){const res=await guardianAPI(new Request('http://local/api'+path,{method:body?'POST':'GET',...(body?{body:JSON.stringify({clientVersion:2,requestId:uid(),...body})}:{})}),env,{id:'qa'},path,t);return {status:res.status,...await res.json()};}
 
-test('API: stale turn returns 409 DRAW_MODE with the right turn and keeps tickets; replay returns the same card',async()=>{
+test('API: old screens get 409 DRAW_MODE and keep tickets; replay returns the same random card',async()=>{
  const p=supplyProfile({PART_F1:1,PART_W1:1,PART_V1:1}),env=await setup(p);
  const stale=await api(env,'/guardian/action',{kind:'draw-part',mode:'pick',id:'PART_F1'});
- assert.equal(stale.status,409);assert.equal(stale.code,'DRAW_MODE');assert.equal(stale.mode,'element');assert.deepEqual((await getProfile(env.DB,'qa')).profile,p);
+ assert.equal(stale.status,409);assert.equal(stale.code,'DRAW_MODE');assert.equal(stale.mode,'random');assert.deepEqual((await getProfile(env.DB,'qa')).profile,p);
  const old=await api(env,'/guardian/action',{kind:'draw-part',element:'fire'});assert.equal(old.code,'DRAW_MODE','옛 화면(차례 정보 없음)도 새로고침 안내');
- const req={requestId:'replay_draw_request_1',kind:'draw-part',mode:'element',element:'wind'};
+ const req={requestId:'replay_draw_request_1',kind:'draw-part',mode:'random'};
  const first=await api(env,'/guardian/action',req),again=await api(env,'/guardian/action',req);
  assert.deepEqual(again.draw,first.draw);assert.equal(again.profile.gifts,p.gifts-1);assert.equal(again.profile.giftCounts.part,1);
 });
