@@ -1,0 +1,31 @@
+name: Seoho verification
+on:
+  push:
+    branches: [codex/seoho-parts-stage1-20260923]
+permissions:
+  contents: read
+concurrency:
+  group: seoho-check-${{ github.ref }}
+  cancel-in-progress: true
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Baseline regression tests
+        run: node --test tests/*.test.mjs
+      - name: Package tracked project for verification
+        if: always()
+        run: git archive --format=tar.gz -o "$RUNNER_TEMP/seoho-source.tar.gz" HEAD
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: seoho-source-${{ github.sha }}
+          path: ${{ runner.temp }}/seoho-source.tar.gz
+          retention-days: 3
