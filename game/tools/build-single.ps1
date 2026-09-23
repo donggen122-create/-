@@ -11,13 +11,13 @@ $utf8 = New-Object System.Text.UTF8Encoding $false
 function ReadText($p) { return [System.IO.File]::ReadAllText($p, [System.Text.Encoding]::UTF8) }
 function DataUri($p) {
   $ext = [System.IO.Path]::GetExtension($p).ToLower()
-  $mime = @{ ".png" = "image/png"; ".ogg" = "audio/ogg"; ".jpg" = "image/jpeg"; ".woff2" = "font/woff2"; ".svg" = "image/svg+xml" }[$ext]
+  $mime = @{ ".png" = "image/png"; ".ogg" = "audio/ogg"; ".mp3" = "audio/mpeg"; ".jpg" = "image/jpeg"; ".woff2" = "font/woff2"; ".svg" = "image/svg+xml" }[$ext]
   if (-not $mime) { throw "알 수 없는 에셋 형식: $p" }
   return "data:$mime;base64," + [Convert]::ToBase64String([System.IO.File]::ReadAllBytes($p))
 }
 
 # 의존 순서(앞 모듈이 뒤 모듈에 쓰인다). rework-*는 Codex 개편(Guardian v1) 모듈: core ← content·ui ← main
-$order = @("content.data", "themes", "content", "meta", "save", "assets", "cloud", "economy", "ecoui", "theme-effects", "element-content", "rework-core", "rework-content", "element-effects", "element-combat", "weapon-effects", "rework-ui", "main")
+$order = @("content.data", "themes", "content", "meta", "save", "assets", "cloud", "economy", "ecoui", "theme-effects", "element-content", "rework-core", "rework-content", "element-effects", "element-combat", "weapon-effects", "rework-ui", "music", "main")
 $sb = New-Object System.Text.StringBuilder
 [void]$sb.AppendLine("var __m = {};")
 
@@ -45,6 +45,10 @@ foreach ($name in $order) {
     param($m)
     $dir = @{ IMG_BASE = "sprites"; AUDIO_BASE = "audio"; UI_BASE = "ui" }[$m.Groups[1].Value]
     return '"' + (DataUri (Join-Path $root "assets\$dir\$($m.Groups[2].Value)")) + '"'
+  })
+  # 배경음(music.js "./assets/audio/main-theme.mp3") → data URI
+  $src = [regex]::Replace($src, '"\./assets/(audio/[\w.\-]+\.mp3)"', {
+    param($m) return '"' + (DataUri (Join-Path $root ("assets\" + $m.Groups[1].Value.Replace("/", "\")))) + '"'
   })
   # 템플릿 문자열 안의 ./assets/seoho_v1/…, elements_v2/…, sprites/heroes/…, ./assets/${폴더식}/icons/… → ${__asset(`…`)}
   # 경로 뒤쪽은 ${…} 식(안에 따옴표가 있을 수 있음) 또는 따옴표·공백·$ 가 아닌 글자들로 이어진다

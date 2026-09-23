@@ -4,12 +4,20 @@
 단일 파일판: `powershell -ExecutionPolicy Bypass -File game/tools/build-single.ps1` → `dist_single/LUMEN.html`(모듈·이미지·효과음을 한 파일에 합침). 서버 없이 더블클릭으로 열리고 파일째 전달 가능. 소스를 고친 뒤에는 다시 실행해야 반영된다.
 Node.js/Python이 없어서 순수 ES 모듈 + Canvas2D + PowerShell 정적 서버로 구현했다. 데이터는 `tools/build-content.ps1`이 `data/*.csv/json`에서 `src/content.data.js`로 자동 생성한다.
 
+## 0000000000000000000000. 메인 테마곡 — 시작 화면·로비 배경음 (2026-09-23)
+- 사용자 요청(붙여 넣은 작업 설명): 메인 테마곡을 넣고 실서버 배포. 음원은 프로젝트 GitHub 저장소 `claude/blissful-gates-t7nrbc` 브랜치의 `game/audio/main-theme.mp3`(3.58MB) → `game/assets/audio/main-theme.mp3`(출처는 ASSET_CREDITS.md).
+- **`game/src/music.js`**(새 모듈): `<audio loop>` 하나, `music.play({restart})`·`stop()`·`syncMute()`·`state()`. 자동 재생이 막히면(play() 거부) 첫 pointerdown/keydown 때 재생. 음소거는 효과음과 같은 상태(`assets.js isMuted`, localStorage `lumen_muted`).
+- **`main.js` 연결**: 처음 화면부터 재생(`bgmOn()`), 시작 화면 → 로비는 이어서, 출동(`sgStart`에서 서버가 출동을 받아 준 뒤) 정지(`bgmOff()`), 결과 화면 "계속"으로 로비 복귀 시 처음부터(`bgmOn(true)`), 🏠(#btn-to-title)는 이어서. 오른쪽 위 소리 버튼 `#btn-sound`(index.html, 시작 화면·로비에서만 보이고 전투 중 숨김) — 전투 HUD `#btn-mute`와 같은 상태·같은 아이콘. 로비 머리글은 버튼과 안 겹치게 오른쪽 여백(`rework.css`).
+- **확인(로컬)**: `game/tools/qa/bgm-flow.js`(헤드리스 Edge `--autoplay`, `shot.cjs`에 `--autoplay` 옵션 추가) — 시작 화면 재생 → 로비 이어서(시간 계속 증가) → 출동 정지·버튼 숨김 → 결과 화면 정지 유지 → 로비 복귀 처음부터(0.45초) → 🏠 이어서 → 소리 끔(두 버튼 🔇, 저장 "1") → 켬. 자동 재생 차단: 앱 브라우저에서 play()를 한 번 거부시킨 뒤 실제 클릭 한 번으로 재생 시작 확인. 시작 화면·로비 PC·휴대폰 캡처에서 버튼 겹침 없음.
+- 단일 파일판: `build-single.ps1`에 mp3(data URI)와 music 모듈 순서 추가.
+
 ## 000000000000000000000. 선생님 계정(관리 페이지에서 삭제·초기화 뺀 화면) · GitHub로 여러 PC 작업 준비 (2026-09-23 오전)
 - 사용자 요청: "다른 컴퓨터에서도 작업하려니 파일 위치를 모른다 → 깃허브로(배포는 클라우드플레어 그대로)" + "선생님들용 관리자 페이지: 지금 시스템에서 계정 삭제·초기화만 빼고" + 선생님 계정 아이디·비밀번호 지정(값은 Cloudflare 비밀값 `TEACHER_ID`·`TEACHER_PW`에만, 문서에 적지 않음).
 - **선생님 계정**(`server/src/index.js admin()`, `game/admin/index.html`): `/admin/` 한 곳에서 비밀번호로 역할 구분(관리자와 아이디가 같아도 됨). 선생님 계정 = 통계·접속 중·비번 바꾸기·잠금·선물·전체 지급 가능, **학생 계정 삭제·진행 초기화·그림 보내기 불가** — 화면에서 버튼을 숨기고 서버도 403으로 거절. 선생님 토큰 `t만료.서명`(서명 키에 선생님 아이디·비밀번호 포함 → 바꾸면 기존 로그인 풀림), 선생님 비밀번호 10번 틀리면 15분 동안 선생님 로그인만 잠금(관리자는 영향 없음). 선생님 지급 기록은 메모 앞에 `[선생님]`. 관리자 화면에 "선생님 계정" 칸(설정 상태·**선생님 화면 미리보기**). `GET /api/admin/me`·`config`, `POST /api/admin/as-teacher` 추가, health `adminRoles:true`. 검사 `tests/admin-roles.test.mjs`(5개) → 전체 38/38.
 - **GitHub 준비**: `.gitignore`(비밀값 `server/.dev.vars`·node_modules·`.wrangler`·`dist_single`·dist_web의 복사본 부분 제외), `.gitattributes`(`* -text`, 줄바꿈 변환 없음), 루트 `CLAUDE.md`(모든 PC의 Claude가 읽는 작업 규칙), `README.md` 맨 위 안내, HANDOFF 명령 갱신. 스크립트에서 이 PC 경로 제거: `game/tools/env.ps1`(node·git·gh·python 찾기), `sync-dist.ps1`(game→dist_web 거울 복사 + `-Share` 공유 폴더 사본), `dev-server.ps1`(= launch.json "wrangler"), `deploy.ps1`(검사→check-live→동기화→배포→버전 기록→health), `setup.ps1`(새 PC: 설치 확인·npm·로컬 전용 .dev.vars·로컬 DB 표), `check-live.ps1`(node 경로 제거, 다른 PC 배포 안내). 이 PC 임시 폴더에만 있던 확인 도구를 `game/tools/qa/`로 옮김(`capture.ps1`·`admin-capture.ps1`·`sim.ps1`, 결과는 `qa/out/` git 제외). 한글 든 .ps1은 UTF-8 BOM.
 - dist_web에서 오래된 사본 2개(ASSET_CREDITS.md, 픽셀이 같은 title_hoya.png)가 game/ 것으로 바뀜. 비밀값·관리자 값이 들어간 파일·zip이 없는지 전체 검사(없음). 올릴 크기 약 150MB(가장 큰 파일 25MB).
-- **남은 것**: 이 PC에 Git이 없어 첫 올리기는 사용자가 Git·GitHub CLI 설치와 GitHub 로그인을 한 뒤 진행(비공개 저장소 `seoho-pangpang`).
+- **저장소**(사용자 지정): GitHub `donggen122-create/-`의 `seoho-game` 브랜치. 이 저장소는 **공개**이고 `main`에는 다른 프로젝트(가계부)가 있어 따로 브랜치로 올린다. 올리기 전 공개해도 되는지 확인: 비밀값·관리자/선생님 값·개인 이메일·PC 사용자 경로 없음, 그림은 학교 엠블럼·테스터 모집 포스터(QR)·캐릭터 시트·게임 화면(테스트 계정)뿐, 학생 목록이 보이는 관리 페이지 캡처는 `game/tools/qa/out/`(git 제외).
+- **배포**: 67b09c33(선생님 계정 서버·화면) → 89baec42(비밀값 `TEACHER_ID`·`TEACHER_PW` 넣기) → aa2a5d02(관리 페이지: 접속 안 한 학생에게도 초록 점이 보이던 오래된 버그 수정 — CSS `display`가 `hidden`을 덮어씀, 휴대폰 제목 줄바꿈). 실서버 확인(비밀번호 대신 스크립트 열쇠): 선생님 설정 켜짐·아이디가 관리자와 같음, 선생님 토큰으로 통계·접속 200, 삭제·초기화·그림 목록·미리보기 발급 403. 실서버 선생님 화면 PC·휴대폰, 관리자 화면(선생님 계정 칸) 캡처 확인.
 
 ## 00000000000000000000. 난이도 3단계(별 1·2·3) · 어려움의 특별한 적 · 무기 원소 삭제 · 불 장판 축소 · 같은 방향 겹침 방지 (2026-09-23 오전, 배포 6fbe0784)
 - 사용자 요청: "난이도 쉬움·보통·어려움 → 별 1·2·3개. 무기 원소 설정은 삭제, 무기는 근거리·원거리만. 어려움에는 특수 저항·능력을 가진 몬스터. 불꽃병과 그 진화가 너무 커서 맵을 가림(투명하게·작게). 스킬들이 같은 방향으로 겹쳐 날아가지 않게(다른 스킬도)."

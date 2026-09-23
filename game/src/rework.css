@@ -37,3 +37,6 @@
 .sg-traits .sg-record{display:flex;flex-direction:column;align-items:flex-start;gap:2px;padding:8px 0}.sg-traits .sg-record small{color:#5b6f7c;line-height:1.5}.sg-trait-dot{display:inline-block;width:12px;height:12px;border-radius:50%;margin-right:6px;vertical-align:-1px;border:2px solid #1d2530}
 /* 2026-09-23 난이도 3단계: 휴대폰에서 고르기 칸이 좁아 글자가 줄바꿈·잘리던 것, 환경 목표 안내가 칸 밖으로 나가던 것 */
 .sg-options label{flex:1 1 170px}#guardian-lobby .sg-options select{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.sg-goal{display:flow-root}
+
+/* 2026-09-23 메인 테마곡: 오른쪽 위 소리 버튼(#btn-sound, 지름 42px)과 로비 머리글의 계정 버튼이 겹치지 않게 */
+.sg-mode .sg-header{padding-right:62px}

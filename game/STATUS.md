@@ -4,6 +4,13 @@
 단일 파일판: `powershell -ExecutionPolicy Bypass -File game/tools/build-single.ps1` → `dist_single/LUMEN.html`(모듈·이미지·효과음을 한 파일에 합침). 서버 없이 더블클릭으로 열리고 파일째 전달 가능. 소스를 고친 뒤에는 다시 실행해야 반영된다.
 Node.js/Python이 없어서 순수 ES 모듈 + Canvas2D + PowerShell 정적 서버로 구현했다. 데이터는 `tools/build-content.ps1`이 `data/*.csv/json`에서 `src/content.data.js`로 자동 생성한다.
 
+## 0000000000000000000000. 메인 테마곡 — 시작 화면·로비 배경음 (2026-09-23)
+- 사용자 요청(붙여 넣은 작업 설명): 메인 테마곡을 넣고 실서버 배포. 음원은 프로젝트 GitHub 저장소 `claude/blissful-gates-t7nrbc` 브랜치의 `game/audio/main-theme.mp3`(3.58MB) → `game/assets/audio/main-theme.mp3`(출처는 ASSET_CREDITS.md).
+- **`game/src/music.js`**(새 모듈): `<audio loop>` 하나, `music.play({restart})`·`stop()`·`syncMute()`·`state()`. 자동 재생이 막히면(play() 거부) 첫 pointerdown/keydown 때 재생. 음소거는 효과음과 같은 상태(`assets.js isMuted`, localStorage `lumen_muted`).
+- **`main.js` 연결**: 처음 화면부터 재생(`bgmOn()`), 시작 화면 → 로비는 이어서, 출동(`sgStart`에서 서버가 출동을 받아 준 뒤) 정지(`bgmOff()`), 결과 화면 "계속"으로 로비 복귀 시 처음부터(`bgmOn(true)`), 🏠(#btn-to-title)는 이어서. 오른쪽 위 소리 버튼 `#btn-sound`(index.html, 시작 화면·로비에서만 보이고 전투 중 숨김) — 전투 HUD `#btn-mute`와 같은 상태·같은 아이콘. 로비 머리글은 버튼과 안 겹치게 오른쪽 여백(`rework.css`).
+- **확인(로컬)**: `game/tools/qa/bgm-flow.js`(헤드리스 Edge `--autoplay`, `shot.cjs`에 `--autoplay` 옵션 추가) — 시작 화면 재생 → 로비 이어서(시간 계속 증가) → 출동 정지·버튼 숨김 → 결과 화면 정지 유지 → 로비 복귀 처음부터(0.45초) → 🏠 이어서 → 소리 끔(두 버튼 🔇, 저장 "1") → 켬. 자동 재생 차단: 앱 브라우저에서 play()를 한 번 거부시킨 뒤 실제 클릭 한 번으로 재생 시작 확인. 시작 화면·로비 PC·휴대폰 캡처에서 버튼 겹침 없음.
+- 단일 파일판: `build-single.ps1`에 mp3(data URI)와 music 모듈 순서 추가.
+
 ## 000000000000000000000. 선생님 계정(관리 페이지에서 삭제·초기화 뺀 화면) · GitHub로 여러 PC 작업 준비 (2026-09-23 오전)
 - 사용자 요청: "다른 컴퓨터에서도 작업하려니 파일 위치를 모른다 → 깃허브로(배포는 클라우드플레어 그대로)" + "선생님들용 관리자 페이지: 지금 시스템에서 계정 삭제·초기화만 빼고" + 선생님 계정 아이디·비밀번호 지정(값은 Cloudflare 비밀값 `TEACHER_ID`·`TEACHER_PW`에만, 문서에 적지 않음).
 - **선생님 계정**(`server/src/index.js admin()`, `game/admin/index.html`): `/admin/` 한 곳에서 비밀번호로 역할 구분(관리자와 아이디가 같아도 됨). 선생님 계정 = 통계·접속 중·비번 바꾸기·잠금·선물·전체 지급 가능, **학생 계정 삭제·진행 초기화·그림 보내기 불가** — 화면에서 버튼을 숨기고 서버도 403으로 거절. 선생님 토큰 `t만료.서명`(서명 키에 선생님 아이디·비밀번호 포함 → 바꾸면 기존 로그인 풀림), 선생님 비밀번호 10번 틀리면 15분 동안 선생님 로그인만 잠금(관리자는 영향 없음). 선생님 지급 기록은 메모 앞에 `[선생님]`. 관리자 화면에 "선생님 계정" 칸(설정 상태·**선생님 화면 미리보기**). `GET /api/admin/me`·`config`, `POST /api/admin/as-teacher` 추가, health `adminRoles:true`. 검사 `tests/admin-roles.test.mjs`(5개) → 전체 38/38.

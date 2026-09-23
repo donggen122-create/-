@@ -21,9 +21,9 @@
 | `data/`, `docs/` | 원 기획서 CSV/JSON·문서 19장. `data` → `game/tools/build-content.ps1` → `game/src/content.data.js` |
 
 ## GitHub로 여러 PC에서 작업 (2026-09-23~)
-- 저장소: GitHub 비공개 저장소 `seoho-pangpang`(첫 올리기는 사용자 GitHub 로그인 뒤). Claude가 읽는 공통 규칙은 루트 `CLAUDE.md`(모든 PC에서 자동으로 읽힘) — PC마다 다른 Claude 메모 대신 여기에 둔다.
-- 새 PC: Git·Node.js 설치 → `git clone` → `powershell -NoProfile -ExecutionPolicy Bypass -File game\tools\setup.ps1`(npm 설치·로컬 비밀값 파일·로컬 DB 표) → `server`에서 `npx wrangler login`(브라우저 허용).
-- 작업 시작 `git pull` → 작업 → 배포 `game\tools\deploy.ps1 -Message "..."`(검사·Codex/다른 PC 배포 확인·dist_web 동기화·배포·버전 기록) → `git add -A; git commit; git push`(server/.last_deploy_version 포함 — 다른 PC의 check-live가 이 기록으로 "내 배포"를 안다).
+- 저장소: GitHub `donggen122-create/-`의 **`seoho-game` 브랜치**(사용자 지정, 2026-09-23). **공개 저장소**이고 `main`은 다른 프로젝트(가계부)라 건드리지 않는다. Claude가 읽는 공통 규칙은 루트 `CLAUDE.md`(모든 PC에서 자동으로 읽힘) — PC마다 다른 Claude 메모 대신 여기에 둔다.
+- 새 PC: Git·Node.js 설치 → `git clone -b seoho-game https://github.com/donggen122-create/-.git seoho-game` → `powershell -NoProfile -ExecutionPolicy Bypass -File game\tools\setup.ps1`(npm 설치·로컬 비밀값 파일·로컬 DB 표) → `server`에서 `npx wrangler login`(브라우저 허용).
+- 작업 시작 `git pull` → 작업 → 배포 `game\tools\deploy.ps1 -Message "..."`(검사·Codex/다른 PC 배포 확인·dist_web 동기화·배포·버전 기록) → `git add -A; git commit; git push origin seoho-game`(server/.last_deploy_version 포함 — 다른 PC의 check-live가 이 기록으로 "내 배포"를 안다).
 - git에 안 올리는 것(.gitignore): `server/.dev.vars`(비밀값), node_modules, `.wrangler`(로컬 DB), `dist_single/`, dist_web 중 game/에서 복사해 오는 부분(src·assets·admin·index.html·ASSET_CREDITS.md). `.gitattributes`의 `* -text`로 줄바꿈 변환 없이 바이트 그대로.
 - 스크립트는 경로가 PC마다 달라도 된다: `game/tools/env.ps1`이 node·git·gh·python을 찾아 준다. 한글이 든 .ps1은 UTF-8 BOM으로 저장(PowerShell 5.1).
 

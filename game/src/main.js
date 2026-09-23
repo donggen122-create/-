@@ -15,6 +15,7 @@ import {
   CHALLENGES, RULES, challengeMods, MODES,
 } from "./meta.js";
 import { SPRITES, UI_IMAGES, HEROES, tintedSprite, playSfx, isMuted, toggleMuted } from "./assets.js";
+import { music } from "./music.js";
 import { createThemeEffects } from "./theme-effects.js";
 const themeFx = createThemeEffects(SPRITES);
 import { RAW_CHARACTERS } from "./content.data.js";
@@ -48,10 +49,21 @@ const elControlsHint = document.getElementById("controls-hint");
 const elResultTitle = document.getElementById("result-title");
 const elResultTable = document.getElementById("result-table");
 const elMute = document.getElementById("btn-mute");
+const elSound = document.getElementById("btn-sound");   // 시작 화면·로비용 음소거 버튼(오른쪽 위). 전투 HUD의 #btn-mute와 같은 상태
 
-function refreshMuteBtn() { elMute.textContent = isMuted() ? "🔇" : "🔊"; }
-elMute.addEventListener("click", () => { toggleMuted(); refreshMuteBtn(); });
+function refreshMuteBtn() {
+  const icon = isMuted() ? "🔇" : "🔊";
+  elMute.textContent = icon;
+  if (elSound) { elSound.textContent = icon; elSound.title = isMuted() ? "소리 켜기" : "소리 끄기"; }
+}
+function onMuteToggle() { toggleMuted(); refreshMuteBtn(); music.syncMute(); }
+elMute.addEventListener("click", onMuteToggle);
+elSound?.addEventListener("click", onMuteToggle);
 refreshMuteBtn();
+// 메인 테마곡(2026-09-23): 시작 화면·로비에서 반복 재생, 전투 시작하면 멈춤(bgmOff), 전투 뒤 로비로 오면 처음부터(bgmOn(true))
+function bgmOn(restart = false) { if (elSound) elSound.hidden = false; music.play({ restart }); }
+function bgmOff() { if (elSound) elSound.hidden = true; music.stop(); }
+bgmOn();   // 처음 화면(시작 화면)부터. 자동 재생이 막히면 첫 클릭·키 입력 때 시작
 
 // 그리기 좌표는 항상 CSS 픽셀(viewW/viewH)을 쓰고, 백버퍼만 devicePixelRatio로 키운다.
 // (이렇게 해야 레티나 폰에서 픽셀아트가 흐려지지 않는다)
@@ -1306,6 +1318,7 @@ document.getElementById("btn-continue").addEventListener("click", () => {
   elMenu.classList.remove("hidden");
   mode = "menu";
   sgRunProfile=null;
+  bgmOn(true);   // 전투 뒤 로비로 돌아오면 테마곡을 처음부터
 });
 
 // ---------- 일시정지 (Esc / ⏸) ----------
@@ -1339,6 +1352,7 @@ document.getElementById("btn-to-title").addEventListener("click", () => {
   playSfx("uiClick", 0.4);
   document.getElementById("title").classList.remove("hidden");
   refreshTitle();
+  bgmOn();   // 로비 → 시작 화면은 끊지 않고 이어서
 });
 
 // ---------- Helpers ----------
@@ -4671,6 +4685,7 @@ window.__eco = ECO;
 window.__cloud = cloud;
 window.__refresh = () => { writeSave(save); refreshMenuMeta(); };
 window.__guardian=()=>sgState;
+window.__bgm=()=>({...music.state(),mode,sound:elSound?{hidden:elSound.hidden,text:elSound.textContent}:null,hudMute:elMute.textContent,stored:(()=>{try{return localStorage.getItem('lumen_muted');}catch(e){return null;}})()});
 window.__sgCard=(c)=>sgApplyCard(c);
 window.__sgSnapshot=()=>({runTime,mode,skills:player?.skills,run:player?.sgRun,cards:currentCards,choices:player?.sgChoices,litter:runStats.litter,weapon:sgWeapon.snapshot(),elements:sgElements.snapshot(),difficulty:sgRunProfile?.difficulty,hurt:{contact:Math.round(runStats.hurtContact||0),hit:Math.round(runStats.hurtHit||0),blast:Math.round(runStats.hurtBlast||0)},enemyTypes:enemies.reduce((o,e)=>{o[e.typeId]=(o[e.typeId]||0)+1;return o;},{}),enemies:enemies.length,special:enemies.reduce((o,e)=>{if(e.sgTrait)o[e.sgTrait]=(o[e.sgTrait]||0)+1;return o;},{})});
 window.__sgCombatLoad=(ids,profile={},supports={})=>{player.skills=Object.fromEntries(ids.map(id=>[id,{lv:R.RUN_RULES.maxSkillLevel,cd:0}]));player.pendingLevels=0;player.sgChoices=runCfg.cardCap;player.sgRun={consumed:[],fusionCount:0,supports:Object.fromEntries(Object.entries(supports).map(([k,v])=>[k,{lv:v}])),partnerOffers:{}};if(mode==='levelup'){mode='playing';elLevelup.classList.add('hidden');}Object.assign(sgRunProfile,profile);sgElements.reset();sgWeapon.reset();return window.__sgSnapshot();};
@@ -4745,6 +4760,7 @@ function refreshTitle() {
 btnTitleStart.addEventListener("click", () => {
   playSfx("cardSelect", 0.5);
   elTitle.classList.add("hidden");
+  bgmOn();   // 시작 화면 → 로비는 처음부터 다시 틀지 않고 이어서
   sgRefresh().catch(e=>sgUI.notify("서버 연결",e.message));     // 정화 장치(봉화)가 모아 둔 금화를 자동으로 받는다
 });
 
@@ -4853,6 +4869,7 @@ async function sgStart(stage){
   const r=await sgPost('/play/start',{stage,clientVersion:2,requestId:crypto.randomUUID()});
   sgApplyServer({...r,active:{id:r.runId,stage}});sgRunToken=r.runId;sgServerDuration=r.duration;
   selectedChapterId=stage;selectedMode='M01';
+  bgmOff();   // 출동해서 전투가 시작되면 테마곡 정지(서버가 출동을 받아 준 뒤에만 — 실패하면 로비 음악은 계속)
   newRun(stage,'M01');
   mode='playing';elMenu.classList.add('hidden');elResult.classList.add('hidden');
   keys.clear();touchJoy.active=false;sgUI?.dialog.close();
