@@ -1,146 +1,22 @@
-name: Seoho verification
+name: Seoho regression checks
 on:
   push:
-    branches: [codex/seoho-parts-stage1-20260923]
+    branches: [seoho-game]
+    paths: ['game/src/**', 'server/src/**', 'tests/**', '.github/workflows/seoho-verification.yml']
+  pull_request:
+    branches: [seoho-game]
 permissions:
-  contents: write
-defaults:
-  run:
-    shell: bash
-concurrency:
-  group: seoho-check-${{ github.ref }}
-  cancel-in-progress: true
+  contents: read
 jobs:
-  verify:
-    if: github.ref == 'refs/heads/codex/seoho-parts-stage1-20260923'
+  regression:
     runs-on: ubuntu-latest
-    timeout-minutes: 20
+    timeout-minutes: 5
     steps:
       - uses: actions/checkout@v4
         with:
-          ref: codex/seoho-parts-stage1-20260923
-          fetch-depth: 0
+          persist-credentials: false
       - uses: actions/setup-node@v4
         with:
           node-version: '22'
-      - name: Apply exact locally tested changes
-        run: |
-          cp .stage1/finalize.py "$RUNNER_TEMP/seoho-finalize.py"
-          python .stage1/apply.py
-          mkdir -p game/tools/qa/out/stage1
-      - name: Regression tests
-        run: |
-          node --check game/src/main.js
-          node --check game/src/rework-ui.js
-          node --test tests/*.test.mjs | tee game/tools/qa/out/stage1/unit-tests.txt
-      - name: Store verified source on isolated branch
-        run: |
-          git rm -r .stage1
-          git add game server tests docs CLAUDE.md HANDOFF.md
-          git config user.name 'github-actions[bot]'
-          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git commit -m 'fix: keep battle overlays out of skill selection dialogs'
-          git push origin HEAD:codex/seoho-parts-stage1-20260923
-      - name: Build deployment copy and single file
-        run: |
-          python - <<'PY'
-          from pathlib import Path
-          import shutil
-          for name in ['src','assets','admin']:
-            target=Path('dist_web')/name
-            if target.exists():shutil.rmtree(target)
-            shutil.copytree(Path('game')/name,target)
-          for name in ['index.html','ASSET_CREDITS.md']:shutil.copyfile(Path('game')/name,Path('dist_web')/name)
-          PY
-          pwsh -NoLogo -NoProfile -File game/tools/build-single.ps1
-      - name: Validate Cloudflare bundle without deploying
-        id: bundle
-        continue-on-error: true
-        run: |
-          npm ci --prefix server
-          cd server
-          npx wrangler deploy --dry-run 2>&1 | tee ../game/tools/qa/out/stage1/wrangler-dry-run.log
-      - name: Install browser test tools
-        run: |
-          pip install playwright==1.55.0
-          python -m playwright install --with-deps chromium
-      - name: Browser account and gameplay checks
-        id: browser
-        continue-on-error: true
-        run: |
-          node game/tools/qa/node-server.mjs >game/tools/qa/out/stage1/server.log 2>&1 &
-          for n in $(seq 1 30); do curl -sf http://localhost:8797/api/health && break || sleep 1; done
-          python game/tools/qa/stage1-browser.py --label ui 2>&1 | tee game/tools/qa/out/stage1/browser.log
-          python -c "import json; d=json.load(open('game/tools/qa/out/stage1/ui-browser-results.json')); assert len(d['results'])==3 and not d['pageErrors']"
-      - name: Before and after tablet comparison
-        id: perf
-        continue-on-error: true
-        run: |
-          mkdir -p "$RUNNER_TEMP/seoho-before"
-          git archive 53046ee85246f909b60d0bd8bf944ccf281cd973 | tar -x -C "$RUNNER_TEMP/seoho-before"
-          SEOHO_QA_ROOT="$RUNNER_TEMP/seoho-before" PORT=8798 node game/tools/qa/node-server.mjs >game/tools/qa/out/stage1/baseline-server.log 2>&1 &
-          for n in $(seq 1 30); do curl -sf http://localhost:8798/api/health && break || sleep 1; done
-          python game/tools/qa/stage1-browser.py --url http://localhost:8798 --perf-only --label before 2>&1 | tee game/tools/qa/out/stage1/perf-before.log
-          python game/tools/qa/stage1-browser.py --perf-only --label after 2>&1 | tee game/tools/qa/out/stage1/perf-after.log
-      - name: Read-only production and single-file browser captures
-        id: titles
-        continue-on-error: true
-        run: |
-          python - <<'PY'
-          import json
-          from pathlib import Path
-          from playwright.sync_api import sync_playwright
-          out=Path('game/tools/qa/out/stage1');results=[]
-          with sync_playwright() as p:
-            browser=p.chromium.launch(headless=True,args=['--disable-dev-shm-usage'])
-            for kind,url in [('live','https://seoho-pangpang.seoho-pangpang-server.workers.dev/'),('single',Path('dist_single/LUMEN.html').resolve().as_uri())]:
-              for width in [1280,375]:
-                page=browser.new_page(viewport={'width':width,'height':850 if width==1280 else 812});errors=[]
-                page.on('pageerror',lambda e:errors.append(str(e)))
-                try:
-                  response=page.goto(url,wait_until='networkidle',timeout=60000);page.wait_for_timeout(1000)
-                  page.screenshot(path=str(out/f'{kind}-title-{width}.png'),full_page=True)
-                  results.append({'kind':kind,'width':width,'status':response.status if response else None,'title':page.title(),'pageErrors':errors})
-                except Exception as e:results.append({'kind':kind,'width':width,'error':str(e),'pageErrors':errors})
-                page.close()
-            browser.close()
-          (out/'live-and-single.json').write_text(json.dumps(results,ensure_ascii=False,indent=2))
-          print(json.dumps(results,ensure_ascii=False))
-          assert len(results)==4 and all(not r.get('error') and not r['pageErrors'] for r in results)
-          PY
-      - name: Check deployment credential availability without exposing values
-        env:
-          CF_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN || secrets.CF_API_TOKEN }}
-          CF_ACCOUNT: ${{ secrets.CLOUDFLARE_ACCOUNT_ID || secrets.CF_ACCOUNT_ID }}
-        run: |
-          python - <<'PY'
-          import os,json
-          from pathlib import Path
-          result={'deployed':False,'credentialConfigured':bool(os.getenv('CF_TOKEN')),'accountConfigured':bool(os.getenv('CF_ACCOUNT')),'note':'No deployment performed in verification workflow.'}
-          Path('game/tools/qa/out/stage1/deployment.json').write_text(json.dumps(result,indent=2));print(json.dumps(result))
-          PY
-      - name: Finalize verified records and return CI to read-only
-        if: steps.browser.outcome == 'success' && steps.perf.outcome == 'success' && steps.titles.outcome == 'success' && steps.bundle.outcome == 'success'
-        run: |
-          python "$RUNNER_TEMP/seoho-finalize.py"
-          git add CLAUDE.md HANDOFF.md game/STATUS.md docs/25* .github/workflows/seoho-verification.yml
-          git commit -m 'docs: record 64 checks and PC-phone verification; production deployment remains pending'
-          git push origin HEAD:codex/seoho-parts-stage1-20260923
-      - name: Package implemented source and results
-        if: always()
-        run: |
-          mkdir -p game/tools/qa/out/stage1
-          git rev-parse HEAD >game/tools/qa/out/stage1/source-commit.txt
-          tar -czf "$RUNNER_TEMP/seoho-implemented-source.tar.gz" game/src game/tools/qa/node-server.mjs game/tools/qa/stage1-browser.py game/tools/build-single.ps1 server/src tests docs/25* game/STATUS.md CLAUDE.md HANDOFF.md
-      - uses: actions/upload-artifact@v4
-        if: always()
-        with:
-          name: seoho-stage1-${{ github.run_id }}
-          path: |
-            game/tools/qa/out/stage1/
-            dist_single/LUMEN.html
-            ${{ runner.temp }}/seoho-implemented-source.tar.gz
-          retention-days: 5
-      - name: Require all verification steps
-        if: steps.browser.outcome != 'success' || steps.perf.outcome != 'success' || steps.titles.outcome != 'success' || steps.bundle.outcome != 'success'
-        run: exit 1
+      - run: node --check game/src/main.js && node --check game/src/rework-ui.js
+      - run: node --test tests/*.test.mjs
