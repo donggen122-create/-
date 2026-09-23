@@ -4866,6 +4866,8 @@ function sgApplyServer(data) {
   if(data.profile) save.hero=data.profile.hero;
   refreshMenuMeta();
 }
+// 받침에 맞는 목적격 조사: 물대포를 · 불꽃병을
+const sgObj=s=>{const c=String(s).charCodeAt(String(s).length-1)-0xAC00;return `${s}${c>=0&&c<11172&&c%28===0?'를':'을'}`;};
 const sgShownGuidance=new Set();
 function sgMaybeGuidance(){
   if(!cloud.loggedIn||mode!=='menu'||sgSettling||sgUI?.busy||sgUI?.dialog.open||!elTitle.classList.contains('hidden')||elMenu.classList.contains('hidden'))return;
@@ -5048,11 +5050,18 @@ async function sgSettle(pending){
       const d=R.PARTS[activity.id];if(!d)continue;
       const times=Object.entries(pending.partEffects||{}).filter(([id])=>(R.COMBOS[id]?.skill||id)===d.skill).reduce((n,[,v])=>n+(Number.isFinite(v)?Math.max(0,Math.floor(v)):0),0);
       const row=document.createElement('tr'),name=document.createElement('td'),help=document.createElement('td');
-      name.textContent=d.name;help.textContent=!activity.active?`${R.SKILLS[d.skill].name}을 안 골라 이번 판에는 쉬었어요`:times?`기능이 ${times}번 발동했어요`:'스킬을 골랐어요 · 이번 판에는 추가 기능 발동 기록이 없어요';
+      name.textContent=d.name;help.textContent=!activity.active?`${sgObj(R.SKILLS[d.skill].name)} 안 골라 이번 판에는 쉬었어요`:times?`기능이 ${times}번 발동했어요`:'스킬을 골랐어요 · 이번 판에는 추가 기능 발동 기록이 없어요';
       row.append(name,help);elResultTable.append(row);
     }
     playSfx('goldReward',.5);btn.textContent=R.pendingPet(r.profile)?'새 친구 만나러 가기':'마을로 돌아가기';btn.disabled=false;sgSettling=false;
   }catch(e){
+    // 30분 넘게 멈춘 판은 서버가 이미 정리했다(보상 없음·이용권 그대로). 다시 해도 같은 답이므로 결과 화면에 갇히지 않게 바로 돌아가게 한다.
+    if(e.data?.code==='EXPIRED'){
+      sgKeepPending('result',null);sgApplyServer({active:null});
+      elResultTitle.textContent='오래 멈춘 도전이 정리됐어요';elResultTable.innerHTML='<tr><td id="sg-result-error"></td></tr>';
+      document.getElementById('sg-result-error').textContent=e.message;
+      btn.textContent='마을로 돌아가기';btn.disabled=false;sgSettling=false;return;
+    }
     elResultTitle.textContent='결과를 안전하게 보관했어요';elResultTable.innerHTML='<tr><td id="sg-result-error"></td></tr><tr><td><button id="sg-retry-result">결과 확인 다시 하기</button></td></tr>';
     document.getElementById('sg-result-error').textContent=e.message;
     document.getElementById('sg-retry-result').onclick=()=>sgSettle(pending);

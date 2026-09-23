@@ -10,6 +10,8 @@ const skillIcon=id=>spriteImg(R.SKILLS[id]||R.COMBOS[id])||icon(`skill_${id}`),p
 const elements=()=>entries(R.ELEMENTS).filter(([id])=>id!=='neutral');
 const desc=d=>d.desc||d.behavior||'',ingredients=d=>d.ingredients||d.skills||[],partSkill=d=>d.skill||d.skillId;
 const gradeName=c=>(R.GRADE_NAMES||['일반','강화','특급'])[R.grade(c)];
+// 받침에 맞는 목적격 조사(물대포를 · 불꽃병을)
+const objJosa=s=>{const t=String(s||''),c=t.charCodeAt(t.length-1)-0xAC00;return c>=0&&c<11172&&c%28===0?'를':'을';};
 const partBonus=d=>Math.round(((d?.level||1)-1)*2+R.grade(d?.copies||1)*6);
 const partOptions=(p,preferUsed=false)=>entries(R.PARTS).sort(([ai,a],[bi,b])=>Number((p.parts?.[ai]?.copies||0)>=7)-Number((p.parts?.[bi]?.copies||0)>=7)||(preferUsed?(p.skillUsage?.[partSkill(b)]||0)-(p.skillUsage?.[partSkill(a)]||0):0)).map(([id,d])=>`<option value="${id}" ${(p.parts?.[id]?.copies||0)>=7?'disabled':''}>${(p.parts?.[id]?.copies||0)>=7?'특급 완성 · ':''}${preferUsed&&p.skillUsage?.[partSkill(d)]?'사용한 스킬 · ':''}${esc(d.name)}</option>`).join('');
 // 기본 무기는 근거리·원거리만(무기 원소 설정은 2026-09-23에 없앰). 난이도는 쉬움 ★ · 보통 ★★ · 어려움 ★★★.
@@ -95,7 +97,7 @@ export class GuardianUI {
   }
   details(id){
     const d=R.PARTS[id];if(!d)return;const skill=partSkill(d),combos=entries(R.COMBOS).filter(([,c])=>c.skill===skill);
-    this.openDialog(`<div class="sg-dialog-icon">${partIcon(id)}</div><h2>${esc(d.name)}</h2><p>${esc(desc(d))}</p><p>첫 획득부터 기능이 열려요. 장착 후 <strong>${esc(R.SKILLS[skill]?.name)}</strong>을 획득하면 적용돼요.</p><div class="sg-detail-recipes">${combos.map(([,c])=>`<p>${esc(R.SKILLS[skill]?.name)} Lv.3 + ${esc(R.SUPPORTS[c.support]?.name)}<br/><strong>→ ${esc(c.name)}</strong></p>`).join('')}</div><p><b>진화한 뒤:</b> ${esc(({F1:'용암이 1초 더 오래 남아요.',F2:'불꽃놀이 로켓의 폭발 범위가 15% 넓어져요.',W1:'큰 풍선이 2번 더 튕겨요.',E1:'바위가 처음 맞을 때 작은 돌 2개로 갈라져요.',L1:'낙뢰마다 다른 적에게 피해 30%의 추가 번개가 떨어져요.'})[skill]||desc(d))}</p><p class="sg-footnote">강화 단계마다 피해 +2%, 강화 등급 +6%, 특급 등급 +12%. 피해 증가와 파츠 기능 모두 진화 뒤에도 적용돼요.</p><button class="sg-primary" data-close>확인</button>`);
+    this.openDialog(`<div class="sg-dialog-icon">${partIcon(id)}</div><h2>${esc(d.name)}</h2><p>${esc(desc(d))}</p><p>첫 획득부터 기능이 열려요. 장착 후 <strong>${esc(R.SKILLS[skill]?.name)}</strong>${objJosa(R.SKILLS[skill]?.name)} 획득하면 적용돼요.</p><div class="sg-detail-recipes">${combos.map(([,c])=>`<p>${esc(R.SKILLS[skill]?.name)} Lv.3 + ${esc(R.SUPPORTS[c.support]?.name)}<br/><strong>→ ${esc(c.name)}</strong></p>`).join('')}</div><p><b>진화한 뒤:</b> ${esc(({F1:'용암이 1초 더 오래 남아요.',F2:'불꽃놀이 로켓의 폭발 범위가 15% 넓어져요.',W1:'큰 풍선이 2번 더 튕겨요.',E1:'바위가 처음 맞을 때 작은 돌 2개로 갈라져요.',L1:'낙뢰마다 다른 적에게 피해 30%의 추가 번개가 떨어져요.'})[skill]||desc(d))}</p><p class="sg-footnote">강화 단계마다 피해 +2%, 강화 등급 +6%, 특급 등급 +12%. 피해 증가와 파츠 기능 모두 진화 뒤에도 적용돼요.</p><button class="sg-primary" data-close>확인</button>`);
   }
   async click(e){
     const b=e.target.closest('button');if(!b||b.disabled||this.busy)return;
