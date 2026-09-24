@@ -4,7 +4,7 @@
 - `docs/31_화면크기_대응_효과_점검.md`, `docs/30_2장_대기오염_구현.md`. 다음 "배포해" 때 둘 다 올라간다.
 - 슈퍼 계정: 배포 뒤 게임에서 `qasuper` 가입 → 관리 API `POST /api/admin/test-profile {"id":"qasuper"}`(관리자만, qa 계정만). 관리자 아이디·비밀번호는 파일·문서·커밋에 절대 적지 않는다(사용자가 환경 변수 `SEOHO_ADMIN_ID`/`SEOHO_ADMIN_PW`로 줄 때만 읽기).
 - 점검 도구: `game/tools/qa/responsive-audit.py`(화면 크기), `game/tools/qa/fx-audit.py`(효과가 화면·주인공을 얼마나 덮는지, `--no-ghost`로 예전 모습). 격리 서버 `node game/tools/qa/node-server.mjs`(8797).
-- 휴대폰 멀리서 보기(사용자 선택): `main.js worldZoom` — 짧은 쪽 16칸, 375px 0.73배. viewW/viewH = 보이는 세계 크기, screenW/screenH = 실제 화면. 화면에 붙는 그림은 `screenSpace()`로 그린다.
+- 스킬 크기 상한 +35%(넘치면 피해로, `element-combat.js SIZE_BONUS_CAP`)와 휴대폰 멀리서 보기 둘 다 사용자 확인("둘 다 적용해"). 휴대폰 멀리서 보기: `main.js worldZoom` — 짧은 쪽 16칸, 375px 0.73배. viewW/viewH = 보이는 세계 크기, screenW/screenH = 실제 화면. 화면에 붙는 그림은 `screenSpace()`로 그린다.
 
 ## 2026-09-24. 2장 「대기오염 공장 지대」 6~10단계 구현 완료 (배포 대기)
 - 사용자 그림 9장으로 CH06~CH10·적 5종·2-5 굴뚝 가스 대왕·장 이동 막대·장별 색을 만들었다. 자세히 `docs/30_2장_대기오염_구현.md`. 사용자가 "배포해"라고 하면 deploy/ 브랜치로 배포.
