@@ -41,7 +41,7 @@ const SUPPORT_DATA = [
   { id: "S2", element: "wind", name: "자석 팔찌", stat: "magnetPct", values: [1.0, 2.0, 3.0], desc: "새싹을 더 멀리서 주워요.", based: "탄력 자석" },
   { id: "S3", element: "wind", name: "바람 운동화", stat: "speedPct", values: [0.12, 0.20, 0.28], desc: "더 빨리 달려요.", based: "운동화" },
   { id: "S4", element: "fire", name: "불꽃 고추", stat: "dmgPct", values: [0.20, 0.35, 0.50], desc: "공격력이 세져요.", based: "고화력 총알" },
-  { id: "S5", element: "water", name: "큰 물통", stat: "areaPct", values: [0.20, 0.35, 0.50], desc: "모든 스킬이 더 커져요.", based: "고성능 연료" },
+  { id: "S5", element: "water", name: "큰 물통", stat: "areaPct", values: [0.20, 0.35, 0.50], desc: "모든 스킬이 커져요(최대 +35%). 더 커질 수 없으면 대신 더 세져요.", based: "고성능 연료" },
   { id: "S6", element: "water", name: "이슬 물병", stat: "regenPct", values: [0.006, 0.010, 0.015], desc: "체력을 계속 회복해요.", based: "에너지 드링크" },
   { id: "S7", element: "earth", name: "튼튼 도시락", stat: "hpPct", values: [0.30, 0.50, 0.70], desc: "최대 체력이 늘어나요.", based: "피트니스 안내서" },
   { id: "S8", element: "earth", name: "흙 방패", stat: "takenPct", values: [-0.15, -0.25, -0.35], desc: "받는 피해가 줄어요.", based: "부랑자의 갑옷" },

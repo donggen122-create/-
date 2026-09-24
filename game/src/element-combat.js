@@ -12,6 +12,7 @@ const clamp = (x, a, b) => Math.max(a, Math.min(b, x));
 const turn = a => Math.atan2(Math.sin(a), Math.cos(a));
 const segmentDistance = (p, a, b) => { const dx = b.x - a.x, dy = b.y - a.y, t = clamp(((p.x - a.x) * dx + (p.y - a.y) * dy) / (dx * dx + dy * dy || 1), 0, 1); return Math.hypot(p.x - a.x - t * dx, p.y - a.y - t * dy); };
 export const DEF = { ...SKILLS, ...COMBOS };
+export const SIZE_BONUS_CAP = .35;   // 스킬 크기 보너스 상한(+35%). 넘치는 보너스는 절반만큼 피해로(아래 area·sizeDmg)
 export const COMBAT_TUNING = Object.fromEntries(Object.entries(DEF).map(([id, d]) => [id, d.interval]));
 
 export function elementDamageMultiplier(profile, id) { return R.skillDamageMultiplier ? R.skillDamageMultiplier(profile, id) : 1; }
@@ -71,13 +72,19 @@ export function createElementCombat({ U = 32, getPlayer, getEnemies, getBoss = (
   const lv = id => clamp(player().skills?.[id]?.lv || 1, 1, MAXLV);
   const level = id => COMBOS[id] ? LEVEL_DAMAGE[LEVEL_DAMAGE.length - 1] : LEVEL_DAMAGE[lv(id) - 1];
   const count = (id, base, step = 1) => COMBOS[id] ? base : base + (lv(id) - 1) * step;     // Lv.2·Lv.3마다 개수 +step
-  const area = id => (mods().areaMul || 1) * (COMBOS[id] ? 1.2 : 1 + (lv(id) - 1) * .08);
+  // 크기(2026-09-24 사용자 "오브젝트들이 너무 커지기만 한다, 두더지 폭발이 무식하게 크다"): 크기 보너스(큰 물통·물범이·진화·단계·넓히는 파츠)를
+  // 곱하지 않고 더해서 크기는 최대 +35%까지만, 넘치는 보너스는 그 절반만큼 피해로 바꾼다.
+  // 예) 두더지 폭탄밭 + 큰 물통 3단계 + 물범이 + 파츠: 전에는 크기 ×2.65(폭발 반지름 6.4칸) → 이제 크기 ×1.35(2.8칸)·피해 ×1.43
+  const partSize = id => { const f = feature(id); return f === 'mineWider' ? .3 : f === 'widerOrbit' ? .25 : f === 'homing' && COMBOS[id] ? .15 : 0; };
+  const sizeBonus = id => (mods().areaMul || 1) - 1 + (COMBOS[id] ? .2 : (lv(id) - 1) * .08) + partSize(id);
+  const area = id => 1 + Math.min(SIZE_BONUS_CAP, sizeBonus(id));
+  const sizeDmg = id => 1 + Math.max(0, sizeBonus(id) - SIZE_BONUS_CAP) * .5;
   const element = id => DEF[id]?.element || 'wind';
   function fx(kind, at, r, id, extra = {}) { effects.push({ kind, x: at.x, y: at.y, r, element: element(id), life: .4, maxLife: .4, ...extra }); if (effects.length > 140) effects.splice(0, effects.length - 140); }
   function after(delay, fn) { if (scheduled.length < 260) scheduled.push({ at: clock + delay, fn }); }
   function hit(id, e, coef, at = player(), knock = 0) {
     if (!e || e.hp <= 0 || coef <= 0) return;
-    const amount = Math.max(0, player().atk || 30) * coef * level(id) * elementDamageMultiplier(getProfile(), id) * (mods().dmgMul || 1);
+    const amount = Math.max(0, player().atk || 30) * coef * level(id) * elementDamageMultiplier(getProfile(), id) * (mods().dmgMul || 1) * sizeDmg(id);
     damage(e, amount, { x: e.x - at.x, y: e.y - at.y }, knock, element(id));   // 5번째 인자 = 원소(어려움의 저항 적 판정)
     stats.hits[id] = (stats.hits[id] || 0) + 1; stats.damage[id] = (stats.damage[id] || 0) + amount;
   }
@@ -108,7 +115,7 @@ export function createElementCombat({ U = 32, getPlayer, getEnemies, getBoss = (
       // 적이 오는 길목에 심는다(가장 가까운 적 방향 ±35°, 1.6~3.2칸). 적이 가까이(1.2칸) 오면 터진다 — 밟아야만 터지던 것을 고침(적중률)
       const max = kind === 'molefield' ? 12 : count(id, 4, 2); if (mines.filter(m => m.id === id).length >= max) return false;
       const ang = e ? a + (Math.random() - .5) * 1.2 : Math.random() * TAU, r = (1.6 + Math.random() * 1.6) * U; claim(e);
-      mines.push({ id, x: p.x + Math.cos(ang) * r, y: p.y + Math.sin(ang) * r, life: 25, age: 0, kind: kind === 'molefield' ? 'molemine' : 'mine', element: element(id), coef: d.dmgCoef, r: (kind === 'molefield' ? 2.4 : 1.9) * (feature(id) === 'mineWider' ? 1.3 : 1) * U * area(id) });
+      mines.push({ id, x: p.x + Math.cos(ang) * r, y: p.y + Math.sin(ang) * r, life: 25, age: 0, kind: kind === 'molefield' ? 'molemine' : 'mine', element: element(id), coef: d.dmgCoef, r: (kind === 'molefield' ? 2.1 : 1.9) * U * area(id) });   // 폭탄밭 2.4→2.1칸(연쇄로 여러 개가 한꺼번에 터진다)
       stats.casts[id] = (stats.casts[id] || 0) + 1; return true;
     }
     if (!e) return false;
@@ -138,7 +145,7 @@ export function createElementCombat({ U = 32, getPlayer, getEnemies, getBoss = (
           // 유도 기능은 실제 방향을 바꿀 때만 센다. 진화판은 폭발 크기로 구분한다.
           s.onHit = (t2, s2) => {
             if (kind === 'firework' && feature(id) === 'homing') markPart(id);
-            blast(id, s2, (kind === 'firework' ? 2.2 * (feature(id) === 'homing' ? 1.15 : 1) : 1.8) * U * area(id), d.dmgCoef, { kind: kind === 'firework' ? 'fwork' : 'boom', knock: .4, big: kind === 'firework' });
+            blast(id, s2, (kind === 'firework' ? 2.2 : 1.8) * U * area(id), d.dmgCoef, { kind: kind === 'firework' ? 'fwork' : 'boom', knock: .4, big: kind === 'firework' });
             if (kind === 'firework') for (let k = 0; k < 6; k++) shot(id, s2, k / 6 * TAU + Math.random() * .3, .45, { kind: 'sparkshot', speed: 8 * U, life: .4, r: .3 * U, maxHits: 1 });
             const t3 = gold(id) && !s2.sub ? closest(s2, 7 * U, new Set([t2])) : null;
             if (t3) { markPart(id); shot(id, s2, angleTo(s2, t3), 0, { kind: 'rocket', speed: 11 * U, r: .25 * U, life: 1.2, homing: true, partGuided: true, maxHits: 1, noDirect: true, sub: true, onHit: (t4, s4) => blast(id, s4, 1.1 * U * area(id), d.dmgCoef * .5 * gp(id), { kind: 'boom', knock: .2 }) }); }
@@ -214,7 +221,7 @@ export function createElementCombat({ U = 32, getPlayer, getEnemies, getBoss = (
     const p = player(); orbits = [];
     for (const [id, st] of Object.entries(p.skills || {})) {
       const d = DEF[id]; if (!d || !['orbit', 'typhoon'].includes(d.kind)) continue;
-      const big = d.kind === 'typhoon', n = (big ? 5 : count(id, 2)) + (legend(id) ? 2 : 0), radius = (big ? 2.3 : 1.7) * U * area(id) * (feature(id) === 'widerOrbit' ? 1.25 : 1), r = (big ? .95 : .6) * U;
+      const big = d.kind === 'typhoon', n = (big ? 5 : count(id, 2)) + (legend(id) ? 2 : 0), radius = (big ? 2.3 : 1.7) * U * area(id), r = (big ? .95 : .6) * U;   // 넓히는 파츠는 area(partSize) 안에
       const interval = (big ? .35 : (lv(id) >= 3 ? .38 : .45)) * (mods().intervalMul || 1) * pint(id);
       st.v2OrbitHits ??= new Map();
       for (const [e, t] of st.v2OrbitHits) if (e.hp <= 0 || clock - t > 2) st.v2OrbitHits.delete(e);

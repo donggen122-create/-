@@ -51,9 +51,9 @@ function combat(id,part,targets=Array.from({length:18},(_,i)=>({id:i,x:48+(i%6)*
 test('F1 evolved lava is six seconds with part, five without',()=>{
  for(const [part,life] of [[true,6],[false,5]]){const f=combat('EVO_F1',part);f.run(.5);const s=f.engine.snapshot();assert.equal(s.fields,3);for(const d of s.fieldDetails)assert.ok(Math.abs(d.life+d.age-life)<1e-8);assert.equal(s.parts.EVO_F1||0,part?3:0);}
 });
-test('F2 evolved part adds 15% radius only; no part means original radius',()=>{
+test('F2 evolved part adds +15% size bonus (within the +35% size cap); no part means original radius',()=>{
  const base=combat('EVO_F2',false),boost=combat('EVO_F2',true);base.run(.35);boost.run(.35);
- assert.ok(base.blasts.length&&boost.blasts.length);assert.ok(Math.abs(boost.blasts[0]/base.blasts[0]-1.15)<1e-9);assert.ok(boost.engine.snapshot().parts.EVO_F2>0);assert.equal(base.engine.snapshot().parts.EVO_F2,undefined);
+ assert.ok(base.blasts.length&&boost.blasts.length);assert.ok(Math.abs(boost.blasts[0]/base.blasts[0]-1.35/1.2)<1e-9);   // 진화 +20% → +20%+15% = +35%(상한)assert.ok(boost.engine.snapshot().parts.EVO_F2>0);assert.equal(base.engine.snapshot().parts.EVO_F2,undefined);
 });
 test('W1 evolved balloon gains two extra bounces, with no premature activation credit',()=>{
  for(const part of [false,true]){const f=combat('EVO_W1',part,[{x:220,y:0,hp:1e9,radiusU:.4}]);f.run(.01);for(const s of f.engine.snapshot().shotDetails)assert.equal(s.bounces,part?12:10);assert.equal(f.engine.snapshot().parts.EVO_W1,undefined);}
