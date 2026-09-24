@@ -71,7 +71,7 @@ export class GuardianUI {
     });
   }
   state(){return this.c.getState();}
-  openDialog(markup,lock=false){if(lock)this.dialog.dataset.lock='1';else delete this.dialog.dataset.lock;this.dialog.innerHTML=markup;this.dialog.querySelectorAll('[data-close]').forEach(b=>b.onclick=()=>this.dialog.close());if(!this.dialog.open)this.dialog.showModal();}
+  openDialog(markup,lock=false){this.dialog.classList.remove('sg-wide');if(lock)this.dialog.dataset.lock='1';else delete this.dialog.dataset.lock;this.dialog.innerHTML=markup;this.dialog.querySelectorAll('[data-close]').forEach(b=>b.onclick=()=>this.dialog.close());if(!this.dialog.open)this.dialog.showModal();}
   notify(title,text){this.openDialog(`<h2>${esc(title)}</h2><p>${esc(text||'서버에 저장했어요.')}</p><button class="sg-primary" data-close>확인</button>`);}
   render(){
     const {profile:p,passes,user,error,active}=this.state();
@@ -90,10 +90,10 @@ export class GuardianUI {
     else if(R.pendingPart(p)&&available)task={tab:'parts',text:'첫 성공 보상 · 원하는 파츠 1개 받기',first:true};
     else if(!p.milestones?.firstGear)task={tab:'gear',text:'첫 장비 · 원거리·근거리 무기 1개씩 무료로 받기'};
     else if(R.pendingPet(p))task={tab:'friends',text:'함께 출동할 첫 친구 고르기'};
-    else if(p.stages.CH01?.cleared&&p.gifts>0&&available)task={tab:'parts',text:`보급권 ${p.gifts}장이 있어요 · 파츠 보급 받으러 가기`};
+    else if(p.stages.CH01?.cleared&&p.gifts>0&&available)task={tab:'parts',text:`보급권 ${p.gifts}장이 있어요 · 파츠 보급 받으러 가기`,gifts:true};
     else if(R.runParts(p).length<3&&Object.keys(p.parts).some(id=>R.PARTS[id]&&!p.equippedParts.includes(id)))task={tab:'parts',text:'빈 파츠 칸에 가진 파츠 끼우기'};
     else if(R.gearIdsFor(p.hero).some(id=>R.gearMergeReady(p,id)))task={tab:'gear',text:'장비를 합성해 등급을 올릴 수 있어요'};
-    if(!task||(!task.first&&!task.hero&&this.tab===task.tab))return '';
+    if(!task||(!task.first&&!task.hero&&(this.tab===task.tab||(this.tab==='gear'&&task.gifts))))return '';   // 장비 탭에는 보급 줄이 바로 있어 보급권 안내는 숨긴다
     return `<button class="sg-milestone sg-next-task" ${task.hero?'data-do="hero-dialog"':task.first?'data-do="first-part-dialog"':`data-tab="${task.tab}"`}>${icon('gift')}<span><small>다음 할 일</small><strong>${esc(task.text)} →</strong></span></button>`;
   }
   firstPartDialog(){
@@ -205,27 +205,65 @@ export class GuardianUI {
   // ---- 장비 탭(2026-09-24, docs/34): 가운데 캐릭터 둘레 6칸 · 세트 2/4/6 막대 · 장비 보급(파츠와 같은 보급권) · 보관함(합성·끼우기) ----
   gearAlert(p){return !R.heroLocked(p)||!p.milestones?.firstGear||R.gearIdsFor(p.hero).some(id=>R.gearMergeReady(p,id));}
   heroPick(){const p=this.state().profile,now=(p?.runs||0)>0?p.hero:null;return `<div class="sg-hero-choice sg-hero-pick">${[['hoya','호야','야구복 세트 · 교복 세트'],['minji','민지','피구복 세트 · 교복 세트']].map(([id,name,detail])=>`<button data-pick-hero="${id}">${now===id?'<span class="sg-hero-now-tag">지금 쓰는 캐릭터</span>':''}<img src="./assets/sprites/heroes/${id}_idle_1.png" alt=""/><b>${name}</b><small>${detail}</small></button>`).join('')}</div>`;}
+  // 장비 탭(2026-09-24 밤 사용자 "장비창 편의성이 떨어진다. 장비 누르면 인벤토리 창이 뜨고 보유 아이템 보이는 형식, 스크롤 많이 안 내려도 되게"):
+  // 한 화면 = 캐릭터 둘레 6칸 · 세트 요약(세트당 한 줄) · 보급/보관함 한 줄. 칸을 누르면 그 칸의 내 장비 창(끼우기·빼기·합성), 세트 줄을 누르면 세트 효과 창, 보관함은 12개 아이콘 격자.
   gear(p,passes){
     preloadSupply();
     const hero=p.hero==='minji'?'minji':'hoya';
     if(!R.heroLocked(p))return `<div class="sg-heading"><div><span class="sg-eyebrow">EQUIPMENT</span><h1>먼저 함께할 캐릭터를 골라요</h1><p>한 번 고르면 바꿀 수 없어요. 장비는 고른 캐릭터 것만 나와요. 호야와 민지는 능력이 똑같아요.</p></div></div><div class="sg-panel">${this.heroPick()}</div>`;
     const eq=p.equippedGear||{},gb=R.gearBonuses(p),sets=[`${hero}_ranged`,`${hero}_melee`],first=!p.milestones?.firstGear,open=!!p.stages.CH01?.cleared,pool=R.gearDrawPool(p).length,worn=R.GEAR_SLOTS.filter(s=>R.GEAR[eq[s]]).length;
-    const slot=s=>{const id=eq[s],it=R.GEAR[id],g=it?R.gearGrade(p,id):-1;return it?`<button class="sg-gear-slot on" data-gear-detail="${id}" style="--set:${it.color};grid-area:${s}">${gearIcon(id)}<span><small>${R.GEAR_SLOT_NAMES[s]}</small><b>${esc(it.name)}</b></span><span class="sg-medal sg-medal-${g}">${R.GRADE_NAMES[g]}</span></button>`:`<div class="sg-gear-slot" style="grid-area:${s}">${slotIcon(s)}<span><small>${R.GEAR_SLOT_NAMES[s]}</small><b>빈칸</b></span></div>`;};
+    const ids=R.gearIdsFor(hero),owned=ids.filter(id=>R.gearGrade(p,id)>=0).length,readyN=ids.filter(id=>R.gearMergeReady(p,id)).length;
+    // 칸: 눌러서 그 칸 장비 창. 배지: 합성 가능 · 빈 칸인데 낄 장비가 있음
+    const slot=s=>{const id=eq[s],it=R.GEAR[id],g=it?R.gearGrade(p,id):-1,mine=ids.filter(x=>R.GEAR[x].slot===s),ready=mine.some(x=>R.gearMergeReady(p,x)),canWear=!it&&mine.some(x=>R.gearGrade(p,x)>=0);
+      const badge=ready?'<i class="sg-slot-badge">합성!</i>':canWear?'<i class="sg-slot-badge">끼우기</i>':'';
+      return `<button class="sg-gear-slot ${it?'on':''} ${this.justSlot===s?'sg-just':''}" data-gear-slot="${s}" style="${it?`--set:${it.color};`:''}grid-area:${s}" aria-label="${R.GEAR_SLOT_NAMES[s]} 칸 · ${it?esc(it.name):'빈칸'}">${badge}${it?gearIcon(id):slotIcon(s)}<span><small>${R.GEAR_SLOT_NAMES[s]}${it?`<i class="sg-medal sg-medal-${g}">${R.GRADE_NAMES[g]}</i>`:''}</small><b>${it?esc(it.name):'빈칸'}</b></span></button>`;};
+    if(!this.busy)this.justSlot=null;   // 작업 중(busy) 렌더에서는 남겨 두었다가 끝난 뒤 렌더에서 반짝
     const weapon=R.GEAR[eq.weapon],mode=weapon?weapon.type:(p.weaponMode||'melee');
-    const doll=`<div class="sg-gear-doll">${R.GEAR_SLOTS.map(slot).join('')}<div class="sg-gear-hero" style="grid-area:hero"><img src="./assets/sprites/heroes/${hero}_idle_1.png" alt="${heroName(hero)}"/><small>${heroName(hero)} · ${typeName(mode)}</small></div></div>`;
-    const setBar=set=>{const d=R.GEAR_SETS[set],n=gb.sets[set]||0,t=R.GEAR_SET_TEXT[d.type];return `<div class="sg-gear-set ${n>=2?'on':''}" style="--set:${d.color}"><div class="sg-gear-set-head"><b>${esc(d.name)} <small>${typeName(d.type)}</small></b><span class="sg-gear-pips" aria-label="${n}개 착용">${Array.from({length:6},(_,i)=>`<i class="${i<n?'on':''}"></i>`).join('')}</span><small>${n}/6</small></div><ul>${R.GEAR_SET_SIZES.map(k=>`<li class="${n>=k?'on':''}"><b>${k}세트</b> ${esc(t[k])}</li>`).join('')}</ul></div>`;};
+    const doll=`<div class="sg-gear-doll">${R.GEAR_SLOTS.map(slot).join('')}<div class="sg-gear-hero" style="grid-area:hero"><img src="./assets/sprites/heroes/${hero}_idle_1.png" alt="${heroName(hero)}"/><small>${heroName(hero)} · ${typeName(mode)} · ${worn}/6</small><button class="sg-inline" data-do="gear-help">장비 규칙</button></div></div>`;
+    // 세트 한 줄: 이름 · 6칸 점 · 2/4/6 켜짐(누르면 자세히)
+    const setRow=set=>{const d=R.GEAR_SETS[set],n=gb.sets[set]||0;return `<button class="sg-gear-setrow ${n>=2?'on':''}" data-gear-set="${set}" style="--set:${d.color}"><span class="sg-gear-setname"><b>${esc(d.name)}</b><small>${typeName(d.type)} · ${d.type==='ranged'?'사거리·공격':'체력·방어'}</small></span><span class="sg-gear-pips" aria-label="${n}개 착용">${Array.from({length:6},(_,i)=>`<i class="${i<n?'on':''}"></i>`).join('')}</span><span class="sg-gear-tiers">${R.GEAR_SET_SIZES.map(k=>`<i class="${n>=k?'on':''}">${k}</i>`).join('')}</span></button>`;};
     const base=R.GEAR_SLOTS.map(s=>eq[s]).filter(id=>R.GEAR[id]&&R.GEAR[id].hero===hero).flatMap(id=>entries(R.GEAR[id].base).map(([k,v])=>[k,v*R.GEAR_GRADE_MULT[R.gearGrade(p,id)]]));
     const sum={};for(const [k,v] of base)sum[k]=(sum[k]||0)+v;
     const total=entries(sum).map(([k,v])=>gearStat(k,v)).filter(Boolean).join(' · ');
     const firstPanel=first?`<section class="sg-panel sg-first-part sg-gear-first"><span class="sg-eyebrow">첫 장비 · 무료</span><h2>원거리·근거리 무기를 1개씩 받아요</h2><p>둘 다 받아요. 먼저 끼울 무기를 눌러 주세요. 끼운 무기가 공격 방식을 정하고, 장비 탭에서 언제든 바꿔 낄 수 있어요.</p><div class="sg-gear-first-grid">${sets.map(set=>{const id=`${set}_weapon`,it=R.GEAR[id];return `<button data-first-gear="${id}" style="--set:${it.color}">${gearIcon(id)}<b>${esc(it.name)}</b><small>${typeName(it.type)} · ${it.type==='ranged'?'멀리서 공을 던져요':'가까이서 휘둘러요'} · ${esc(it.setName)}</small><span>${esc(gearBase(it,0))}</span><em>이 무기 먼저 끼우기</em></button>`;}).join('')}</div></section>`:'';
     const odds=R.SUPPLY_BUNDLES.map(b=>`${b.qty}개 ${Math.round(b.chance*100)}%`).join(' · ');
-    const supply=`<section class="sg-panel sg-draw-panel sg-gear-supply"><div><span class="sg-eyebrow">장비 보급 · 보급권 1장</span><h2>${pool?`${heroName(hero)} 장비 12종 중 무작위!`:'모든 장비가 전설이에요!'}</h2><p>${open?`파츠 보급과 같은 보급권을 써요. 운이 좋으면 여러 개! <b>${odds}</b>. 같은 장비를 모아 <b>합성</b>하면 등급이 올라요.`:'1-1 첫 성공 후 열려요. 모은 보급권은 보관돼요.'}</p>${gradeLadder()}<button class="sg-inline" data-do="gear-help">자세히</button></div><div><button class="sg-primary sg-supply-go" data-do="draw-gear" ${open&&p.gifts>0&&pool?'':'disabled'}>${icon('gift')} 장비 보급 받기 · 보급권 1장</button><p class="sg-footnote">보급권 ${p.gifts}장 있어요. 파츠 보급과 함께 써요.</p></div></section>`;
-    const card=id=>{const it=R.GEAR[id],item=p.gear?.[id],g=R.gearGrade(p,id),on=eq[it.slot]===id,ready=R.gearMergeReady(p,id),next=g>=0&&g<R.GRADE_COPIES.length-1?R.GRADE_COPIES[g+1]:null;
+    const bar=`<div class="sg-gear-bar"><div class="sg-gear-bar-supply">${icon('gift')}<span><b>장비 보급 · 보급권 ${p.gifts}장</b><small>${open?(pool?`${heroName(hero)} 장비 12종 중 무작위 · ${odds}`:'모든 장비가 전설이에요!'):'1-1 첫 성공 후 열려요'}</small></span><button class="sg-primary" data-do="draw-gear" ${open&&p.gifts>0&&pool?'':'disabled'}>보급 받기</button></div>
+</div>`;
+    return `<div class="sg-heading sg-gear-heading"><div><span class="sg-eyebrow">EQUIPMENT</span><h1>${heroName(hero)}의 장비</h1><p>칸을 누르면 가진 장비를 골라 끼워요. 같은 세트를 2·4·6개 끼우면 세트 효과!</p></div><button class="sg-gear-bagbtn ${readyN?'sg-merge-ready':''}" data-do="gear-bag">${icon('gift')}<span><b>보관함 ${owned}/12</b><small>${readyN?`합성 가능 ${readyN}개`:'한눈에 보기'}</small></span></button></div>
+    ${firstPanel}<div class="sg-gear-top">${doll}<div class="sg-gear-sets">${sets.map(setRow).join('')}<p class="sg-footnote">${total?`지금 장비 능력: ${esc(total)}`:'장비를 끼우면 여기에 능력이 모여요.'}</p></div></div>${bar}`;
+  }
+  // 칸 보관함 창: 그 칸에 낄 수 있는 내 장비(원거리 세트 · 근거리 세트) — 끼우기 · 빼기 · 합성 · 자세히
+  gearSlotDialog(slot){
+    const p=this.state().profile;if(!p||!R.GEAR_SLOTS.includes(slot))return;const hero=p.hero==='minji'?'minji':'hoya',eq=p.equippedGear||{},gb=R.gearBonuses(p);
+    const row=id=>{const it=R.GEAR[id],g=R.gearGrade(p,id),item=p.gear?.[id],on=eq[slot]===id,ready=R.gearMergeReady(p,id),next=g>=0&&g<R.GRADE_COPIES.length-1?R.GRADE_COPIES[g+1]:null;
+      const n=gb.sets[it.set]||0,after=on?n:n+1;   // 끼우면 그 세트 개수
       const sp=g>=2?gearSpecialLines(it,g).filter(x=>x.on).map(x=>x.text).join(' · '):`유니크부터 · ${it.special.text[0]}`;
-      return `<article class="sg-panel sg-gear-card ${on?'sg-equipped':''} ${g<0?'sg-unowned':''} ${ready?'sg-merge-ready':''}" style="--set:${it.color}"><div class="sg-panel-title">${gearIcon(id)}<div><span class="sg-eyebrow">${R.GEAR_SLOT_NAMES[it.slot]} · ${g<0?'미보유':R.GRADE_NAMES[g]}${on?' · 착용 중':''}</span><h3>${esc(it.name)}</h3></div>${g>=0?`<span class="sg-medal sg-medal-${g}">${R.GRADE_NAMES[g]}</span>`:''}</div><p>${esc(gearBase(it,Math.max(0,g)))}</p><p class="sg-gear-special ${g>=2?'on':''}"><b>${esc(it.special.name)}</b> ${esc(sp)}</p>${g>=0?`<div class="sg-gear-progress"><div class="sg-meter"><i style="width:${next?Math.min(100,item.copies/next*100):100}%"></i></div><small>${item.copies}개${next?` / ${next}개면 ${R.GRADE_NAMES[g+1]} 합성`:' · 최고 등급'}</small></div>`:''}<div class="sg-gear-actions">${ready?`<button class="sg-primary sg-merge" data-action="merge-gear" data-id="${id}">합성 → ${R.GRADE_NAMES[g+1]}</button>`:''}${g<0?'<small>보급으로 받을 수 있어요</small>':on?`<button data-action="unequip-gear" data-slot="${it.slot}">빼기</button>`:`<button data-action="equip-gear" data-id="${id}">끼우기</button>`}<button class="sg-inline" data-gear-detail="${id}">자세히</button></div></article>`;};
-    const inv=sets.map(set=>{const d=R.GEAR_SETS[set];return `<div class="sg-section-heading"><h2>${esc(d.name)} <small>${typeName(d.type)} · ${d.type==='ranged'?'사거리·공격':'체력·방어'}</small></h2><small>${R.GEAR_SLOTS.filter(sl=>R.gearGrade(p,`${set}_${sl}`)>=0).length} / 6종 보유</small></div><div class="sg-grid sg-gear-grid">${R.GEAR_SLOTS.map(sl=>card(`${set}_${sl}`)).join('')}</div>`;}).join('');
-    return `<div class="sg-heading"><div><span class="sg-eyebrow">EQUIPMENT</span><h1>${heroName(hero)}의 장비</h1><p>투구·갑옷·신발·장갑·목걸이·무기 6칸. 같은 세트를 2·4·6개 끼우면 세트 효과가 생겨요.</p></div><span class="sg-progress">착용 ${worn} / 6</span></div>
-    ${firstPanel}<div class="sg-gear-top">${doll}<div class="sg-gear-sets">${sets.map(setBar).join('')}<p class="sg-footnote">${total?`지금 장비 능력: ${esc(total)}`:'장비를 끼우면 여기에 능력이 모여요.'}</p></div></div>${supply}${inv}`;
+      return `<div class="sg-slot-item ${on?'on':''} ${g<0?'sg-unowned':''} ${ready?'sg-merge-ready':''}" style="--set:${it.color}">${gearIcon(id)}<div class="sg-slot-info"><p class="sg-slot-name"><b>${esc(it.name)}</b>${g>=0?`<span class="sg-medal sg-medal-${g}">${R.GRADE_NAMES[g]}</span>`:'<span class="sg-slot-none">없음</span>'}</p><small>${esc(it.setName)} · ${typeName(it.type)}${g>=0&&!on?` · 끼우면 세트 ${after}/6`:''}</small><small>${esc(gearBase(it,Math.max(0,g)))}</small><small class="sg-gear-special ${g>=2?'on':''}"><b>${esc(it.special.name)}</b> ${esc(sp)}</small>${g>=0?`<div class="sg-gear-progress"><div class="sg-meter"><i style="width:${next?Math.min(100,item.copies/next*100):100}%"></i></div><small>${item.copies}개${next?` / ${next}개면 ${R.GRADE_NAMES[g+1]} 합성`:' · 최고 등급'}</small></div>`:''}</div>
+        <div class="sg-slot-acts">${ready?`<button class="sg-primary sg-merge" data-slot-act="merge-gear" data-id="${id}">합성 → ${R.GRADE_NAMES[g+1]}</button>`:''}${g<0?'<small>보급으로 받아요</small>':on?`<span class="sg-on-tag">착용 중</span><button data-slot-act="unequip-gear">빼기</button>`:`<button class="sg-primary" data-slot-act="equip-gear" data-id="${id}">끼우기</button>`}<button class="sg-inline" data-slot-detail="${id}">자세히</button></div></div>`;};
+    this.openDialog(`<div class="sg-slot-dlg"><div class="sg-slot-head">${eq[slot]&&R.GEAR[eq[slot]]?gearIcon(eq[slot]):slotIcon(slot)}<h2>${R.GEAR_SLOT_NAMES[slot]} 칸</h2><button class="sg-x" data-close aria-label="닫기">×</button></div>${slot==='weapon'?'<p class="sg-footnote">끼운 무기가 공격 방식(원거리·근거리)을 정해요.</p>':''}<div class="sg-slot-list">${[`${hero}_ranged_${slot}`,`${hero}_melee_${slot}`].map(row).join('')}</div><p class="sg-footnote">같은 장비를 모으면 [합성]으로 등급이 올라요. 장비는 장비 보급에서 받아요.</p></div>`);
+    this.dialog.querySelectorAll('[data-slot-detail]').forEach(b=>b.onclick=()=>this.gearDetail(b.dataset.slotDetail));
+    this.dialog.querySelectorAll('[data-slot-act]').forEach(b=>b.onclick=async()=>{if(this.busy)return;const k=b.dataset.slotAct;this.dialog.close();this.justSlot=slot;await this.perform(k==='unequip-gear'?{kind:k,slot}:{kind:k,id:b.dataset.id});});
+  }
+  // 세트 효과 창: 2·4·6 효과와 이 세트 6칸의 내 장비
+  gearSetDialog(set){
+    const p=this.state().profile,d=R.GEAR_SETS[set];if(!p||!d)return;const n=R.gearBonuses(p).sets[set]||0,eq=p.equippedGear||{};
+    const items=R.GEAR_SLOTS.map(sl=>{const id=`${set}_${sl}`,g=R.gearGrade(p,id),on=eq[sl]===id;return `<button class="sg-bag-cell ${g<0?'sg-unowned':''} ${on?'on':''}" data-bag-id="${id}" style="--set:${d.color}">${gearIcon(id)}<small>${R.GEAR_SLOT_NAMES[sl]}</small>${g>=0?`<span class="sg-medal sg-medal-${g}">${R.GRADE_NAMES[g]}</span>`:'<span class="sg-slot-none">없음</span>'}${on?'<i class="sg-bag-on">착용</i>':''}</button>`;}).join('');
+    this.openDialog(`<div class="sg-slot-head"><span class="sg-gear-setdot" style="--set:${d.color}"></span><h2>${esc(d.name)} <small>${typeName(d.type)}</small></h2><button class="sg-x" data-close aria-label="닫기">×</button></div><p>같은 세트를 끼운 개수만큼 효과가 켜져요. 지금 <b>${n}/6</b>.</p><div class="sg-rules sg-gear-rules">${R.GEAR_SET_SIZES.map(k=>`<p class="sg-grade-row ${n>=k?'on':''}"><b class="sg-tier ${n>=k?'on':''}" style="--set:${d.color}">${k}세트</b> ${esc(R.GEAR_SET_TEXT[d.type][k])}${n>=k?' ✓':''}</p>`).join('')}</div><div class="sg-bag-grid sg-bag-6">${items}</div>`);
+    this.dialog.classList.add('sg-wide');
+    this.dialog.querySelectorAll('[data-bag-id]').forEach(b=>b.onclick=()=>this.gearDetail(b.dataset.bagId));
+  }
+  // 보관함: 내 캐릭터 장비 12개를 세트별 아이콘 격자로(누르면 자세히 — 끼우기·합성은 자세히에서)
+  gearBagDialog(){
+    const p=this.state().profile;if(!p)return;const hero=p.hero==='minji'?'minji':'hoya',eq=p.equippedGear||{};
+    const cell=id=>{const it=R.GEAR[id],g=R.gearGrade(p,id),on=eq[it.slot]===id,ready=R.gearMergeReady(p,id);return `<button class="sg-bag-cell ${g<0?'sg-unowned':''} ${on?'on':''} ${ready?'sg-merge-ready':''}" data-bag-id="${id}" style="--set:${it.color}">${gearIcon(id)}<small>${esc(it.name)}</small>${g>=0?`<span class="sg-medal sg-medal-${g}">${R.GRADE_NAMES[g]} ${p.gear[id].copies}</span>`:'<span class="sg-slot-none">없음</span>'}${on?'<i class="sg-bag-on">착용</i>':''}${ready?'<i class="sg-bag-ready">합성!</i>':''}</button>`;};
+    this.openDialog(`<div class="sg-slot-head">${icon('gift')}<h2>장비 보관함</h2><button class="sg-x" data-close aria-label="닫기">×</button></div>${[`${hero}_ranged`,`${hero}_melee`].map(set=>`<p class="sg-bag-title" style="--set:${R.GEAR_SETS[set].color}"><b>${esc(R.GEAR_SETS[set].name)}</b> <small>${typeName(R.GEAR_SETS[set].type)}</small></p><div class="sg-bag-grid sg-bag-6">${R.GEAR_SLOTS.map(sl=>cell(`${set}_${sl}`)).join('')}</div>`).join('')}<p class="sg-footnote">장비를 누르면 자세히 보고 끼우거나 합성할 수 있어요. 숫자는 모은 개수예요.</p>`);
+    this.dialog.classList.add('sg-wide');
+    this.dialog.querySelectorAll('[data-bag-id]').forEach(b=>b.onclick=()=>this.gearDetail(b.dataset.bagId));
+  }
+  toast(text){
+    if(typeof document==='undefined'||!text)return;let t=document.getElementById('sg-toast');
+    if(!t){t=document.createElement('div');t.id='sg-toast';t.setAttribute('role','status');document.body.append(t);}
+    t.textContent=text;t.classList.remove('show');void t.offsetWidth;t.classList.add('show');clearTimeout(this.toastT);this.toastT=setTimeout(()=>t.classList.remove('show'),1900);
   }
   gearDetail(id){
     const p=this.state().profile,it=R.GEAR[id];if(!it||!p)return;const g=R.gearGrade(p,id),item=p.gear?.[id],set=R.GEAR_SETS[it.set],eq=p.equippedGear?.[it.slot]===id;
@@ -296,6 +334,9 @@ export class GuardianUI {
     const {profile:p,passes}=this.state();
     if(b.dataset.detail){this.details(b.dataset.detail);return;}
     if(b.dataset.gearDetail){this.gearDetail(b.dataset.gearDetail);return;}
+    if(b.dataset.gearSlot){this.gearSlotDialog(b.dataset.gearSlot);return;}
+    if(b.dataset.gearSet){this.gearSetDialog(b.dataset.gearSet);return;}
+    if(b.dataset.do==='gear-bag'){this.gearBagDialog();return;}
     if(b.dataset.pickHero){this.heroConfirm(b.dataset.pickHero);return;}
     if(b.dataset.firstGear){await this.perform({kind:'choose-first-gear',id:b.dataset.firstGear});return;}
     if(b.dataset.do==='hero-dialog'){this.heroDialog();return;}
@@ -324,7 +365,7 @@ export class GuardianUI {
   }
   async perform(a){
     this.busy=true;this.render();
-    try{const r=await this.c.action(a);if(r.draw)this.showDrawResult(r.draw);else this.notify(['gift','choose-pet'].includes(a.kind)?'새로운 만남!':'저장했어요',r.message);}
+    try{const r=await this.c.action(a);if(r.draw)this.showDrawResult(r.draw);else if(['equip-gear','unequip-gear'].includes(a.kind))this.toast(r.message);else this.notify(['gift','choose-pet'].includes(a.kind)?'새로운 만남!':'저장했어요',r.message);}
     catch(e){
       // 다른 기기·옛 화면 때문에 보급 차례가 어긋나면 서버가 아무것도 바꾸지 않고 거절한다 → 새로 불러와 맞는 칸을 보여 준다.
       if(e.data?.code==='DRAW_MODE'){try{await this.c.refresh();}catch(err){}this.notify('보급 규칙이 바뀌었어요','화면을 새로 불러왔어요. 다시 눌러 주세요. 보급권은 그대로예요.');}
