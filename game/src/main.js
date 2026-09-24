@@ -151,7 +151,7 @@ const sgDamage=(target,raw,dir={x:0,y:0},knock=0,source=null)=>{
   if(source==='weapon'&&target.hp<=0&&sgGear.sp.absorb)sgGearAbsorb();
 };
 // 지원품(판 안 카드) 효과: 통합 스탯 키로 합산(stat()에서 더함). 스킬 엔진·기본 무기에는 mods로 전달
-function sgSupportStat(key){let v=0;const sup=player?.sgRun?.supports;if(sup)for(const id in sup){const d=R.SUPPORTS[id];if(d&&d.stat===key)v+=R.supportValue(id,sup[id].lv);}if(sgRunProfile)v+=R.petBuff(sgRunProfile,key);return v;}   // 지원품 + 동물 친구 버프
+function sgSupportStat(key){let v=0;const sup=player?.sgRun?.supports;if(sup)for(const id in sup){const d=R.SUPPORTS[id];if(d&&d.stat===key)v+=R.supportValue(id,sup[id].lv);}if(sgRunProfile)v+=R.petBuff(sgRunProfile,key);if(key==='intervalPct'&&sgPet.hasteUntil>runTime)v+=.25;return v;}   // 지원품 + 동물 친구 버프(+ 야옹이 바람 질주)
 // ---- 장비 특수 효과(2026-09-24, docs/34): 유니크 1 · 에픽 2 · 전설 3 단계(runBonus.gearSpecials). 값은 R.GEAR_SPECIALS의 v[유니크, 에픽] ----
 const sgGear={sp:{},lastHurt:-99,lastFocus:-99,sturdyReady:0,sturdyUntil:-1,stealNext:0,stealUntil:-1,catchNext:0,calmNext:0,calmReady:false,shieldNext:0};
 const sgGearV=(type,slot)=>{const d=R.GEAR_SPECIALS[type][slot],t=sgGear.sp[d.key]||0;return t?d.v[t>=2?1:0]:0;};
@@ -183,14 +183,14 @@ function sgGearBlock(){   // 침착: 준비되면 다음 피해 1번을 막는�
   return true;
 }
 // ---- 동물 친구 특수 능력(2026-09-24 밤, docs/37): 함께 출동한 친구가 유니크 1 · 에픽 2 · 전설 3단계(R.petSpecial). 값은 R.PETS[id].special.v[유니크, 에픽] ----
-// 수달이 물방울 폭탄(적이 많은 곳) · 꼬북이 등껍질 보호막 · 아기사슴 새싹 치유(체력 40% 아래) · 야옹이 냥냥 자석(새싹 모두 끌어오기)
-const sgPet={key:null,tier:0,next:0,bloomReady:0,speedUntil:-1};
+// 1 생존 꼬북이 등껍질 방패(보호막·전설 부활) · 2 속도 야옹이 바람 질주(3초 공격 속도) · 3 공격 수달이 물방울 폭탄(적이 많은 곳) · 4 성장 아기사슴 새싹 자석(새싹 모두 끌어오기)
+const sgPet={key:null,tier:0,next:0,hasteUntil:-1,speedUntil:-1};
 const sgPetV=()=>{const sp=R.PETS[sgRunProfile?.activePet]?.special;return sp?sp.v[sgPet.tier>=2?1:0]:0;};
 function sgPetCount(key){if(runStats){runStats.pet ||= {};runStats.pet[key]=(runStats.pet[key]||0)+1;}}
 function sgPetStart(){
-  const s=sgRunProfile?R.petSpecial(sgRunProfile):null;Object.assign(sgPet,{key:s?.key||null,tier:s?.tier||0,bloomReady:0,speedUntil:-1});
-  sgPet.next=['splash','shell','magnet'].includes(sgPet.key)?Math.min(sgPetV(),5):0;   // 첫 발동은 판 시작 5초 안
-  if(sgPet.key==='bloom'&&sgPet.tier>=3)runBonus.revive=(runBonus.revive||0)+1;         // 전설 사슴: 판마다 1번 쓰러져도 일어남(부활)
+  const s=sgRunProfile?R.petSpecial(sgRunProfile):null;Object.assign(sgPet,{key:s?.key||null,tier:s?.tier||0,hasteUntil:-1,speedUntil:-1});
+  sgPet.next=sgPet.key?Math.min(sgPetV(),5):0;   // 첫 발동은 판 시작 5초 안
+  if(sgPet.key==='shell'&&sgPet.tier>=3)runBonus.revive=(runBonus.revive||0)+1;         // 전설 꼬북이: 판마다 1번 쓰러져도 일어남(부활)
 }
 // 물방울 폭탄 목표: 주인공 9칸 안의 적 중 (최대 24마리만 살펴) 주변 1.6칸에 적이 가장 많은 곳부터 n곳
 function sgPetSplashTargets(n){
@@ -201,7 +201,7 @@ function sgPetSplashTargets(n){
   return out;
 }
 function sgPetSpecialTick(m){
-  const k=sgPet.key;if(!k||k==='bloom'||runTime<sgPet.next)return;
+  const k=sgPet.key;if(!k||runTime<sgPet.next)return;
   if(k==='splash'){
     const targets=sgPetSplashTargets(sgPet.tier>=3?3:1);if(!targets.length){sgPet.next=runTime+.5;return;}
     sgPet.next=runTime+sgPetV();sgPetCount('splash');
@@ -215,18 +215,13 @@ function sgPetSpecialTick(m){
     sgPet.next=runTime+sgPetV();sgPetCount('shell');
     player.shield=Math.max(player.shield||0,player.hpMax*(sgPet.tier>=2?.15:.10));
     blasts.push({x:player.x,y:player.y,radius:1.3*U,life:.45,maxLife:.45,color:'#82d876'});
-    if(sgPet.tier>=3)sgPush(3*U,1.4);
-  }else if(k==='magnet'){
-    sgPet.next=runTime+sgPetV();let n=0;for(const g of gems){g.pull=true;n++;}
-    if(n){sgPetCount('magnet');hitFx.push({x:m.x,y:m.y,life:.5,maxLife:.5,color:'#ffd27a'});}
-    if(sgPet.tier>=3)sgPet.speedUntil=runTime+3;
+  }else if(k==='dash'){   // 바람 질주: 3초 동안 공격 속도 +25%(sgSupportStat intervalPct), 전설은 이동 속도 +30%도
+    sgPet.next=runTime+sgPetV();sgPet.hasteUntil=runTime+3;if(sgPet.tier>=3)sgPet.speedUntil=runTime+3;sgPetCount('dash');
+    hitFx.push({x:player.x,y:player.y,life:.45,maxLife:.45,color:'#ffd27a'});
+  }else if(k==='magnet'){   // 새싹 자석: 새싹을 모두 끌어온다(전설: 끌어온 새싹 경험치 +50%)
+    sgPet.next=runTime+sgPetV();let n=0;for(const g of gems){g.pull=true;if(sgPet.tier>=3)g.petBoost=true;n++;}
+    if(n){sgPetCount('magnet');hitFx.push({x:m.x,y:m.y,life:.5,maxLife:.5,color:'#b8ec7a'});}
   }
-}
-function sgPetAfterHurt(){   // 새싹 치유: 체력 40% 아래로 떨어지면 회복(쿨타임)
-  if(sgPet.key!=='bloom'||player.hp<=0||player.hp>=player.hpMax*.4||runTime<sgPet.bloomReady)return;
-  sgPet.bloomReady=runTime+sgPetV();player.hp=Math.min(player.hpMax,player.hp+player.hpMax*(sgPet.tier>=2?.30:.25));sgPetCount('bloom');
-  blasts.push({x:player.x,y:player.y,radius:1.6*U,life:.45,maxLife:.45,color:'#a7e070'});
-  floatingTexts.push({x:player.x,y:player.y-30,text:'새싹 치유!',life:1,vy:-40,scale:0,color:'#b8ec7a'});
 }
 function sgGearTakenMul(){
   let m=1;const low=player.hp<player.hpMax*.3;
@@ -2693,7 +2688,7 @@ function takeDamage(raw) {
   player.shieldIdle = 0;
   player.hp -= d;
   if(d>0)player.sgHurt=true;
-  if (d > 0) { player.hitCount = (player.hitCount || 0) + 1; sgGear.lastHurt = runTime; sgGearAfterHurt(); sgPetAfterHurt(); }
+  if (d > 0) { player.hitCount = (player.hitCount || 0) + 1; sgGear.lastHurt = runTime; sgGearAfterHurt(); }
   if (boss && d > 0) starTrack.bossNoHit = false;       // 최종 보스전 무피해 실패
   return d;
 }
@@ -3142,7 +3137,7 @@ function updateGems(dt) {
       g.y += Math.sin(angle) * sp * U * dt;
     }
     if (d < 14) {
-      gainXp(g.value * (1 + stat("xpPct")));
+      gainXp(g.value * (1 + stat("xpPct")) * (g.petBoost ? 1.5 : 1));   // petBoost: 전설 아기사슴이 끌어온 새싹
       runStats.gems++; addLuminance(0.25);
       if (isInDark(player.x, player.y)) runStats.darkGems++;
       hitFx.push({ x: g.x, y: g.y, life: 0.25, maxLife: 0.25, color: "#8fd8ff", vfxKind: "pickup" });
@@ -5619,7 +5614,7 @@ async function sgSettle(pending){
     const r=await sgPost('/play/finish',pending);sgKeepPending('result',null);sgApplyServer({...r,active:null});
     sgHardLoss=!r.cleared&&r.reward?.difficulty==='hard'?(r.stage||null):null;   // 어려움 실패 → 로비로 돌아가면 준비 권장치 안내
     const w=r.reward,dn=R.DIFFICULTIES[w.difficulty]?.name;elResultTitle.textContent=r.cleared?'우리 마을이 반짝반짝!':'멋진 도전이었어요!';
-    elResultTable.innerHTML=`<tr><td colspan="2" style="text-align:center;font-size:28px;color:#ffd16e">${'★'.repeat(w.stars)}${'☆'.repeat(3-w.stars)}${dn?`<div style="font-size:13px;color:#cfe3ee">${dn} 난이도${r.cleared?` 성공 → 별 ${w.stars}개`:''}</div>`:''}</td></tr><tr><td>코인</td><td>+${w.coins}${w.goal?' (환경 목표 +30 포함)':''}</td></tr><tr><td>보급권</td><td>+${w.gifts}${w.stageGift?.capped?' · 오늘 이 단계는 2번 다 받았어요. 다른 단계에 도전해 봐요!':w.stageGift?(w.stageGift.left?` · 오늘 이 단계 ${w.stageGift.left}번 더`:' · 오늘 이 단계 보급권은 여기까지! 다른 단계는 또 받아요'):''}</td></tr><tr><td>미션</td><td>${w.missions?.length?`완료! 보급권 +${w.missions.reduce((n,m)=>n+m.gifts,0)} · ${w.missions.map(m=>m.name).join(', ')}`:'오늘의 미션은 모험 화면에서 확인해요'}</td></tr><tr><td>이용권</td><td>${r.charged?'1장 사용':'그대로!'} · ${r.passes.remaining}장 남음</td></tr><tr><td colspan="2"><div class="sg-settlement">${r.cleared?(w.notes.join('<br/>')||'코인으로 훈련하고 파츠 레벨을 올려 보세요.'):'실패해도 이용권은 줄지 않아요. 조금 쉬었다가 다시 도전해요.'}<br/>${R.STAGES.find(s=>s.id===r.stage).tip}</div></td></tr>`;
+    elResultTable.innerHTML=`<tr><td colspan="2" style="text-align:center;font-size:28px;color:#ffd16e">${'★'.repeat(w.stars)}${'☆'.repeat(3-w.stars)}${dn?`<div style="font-size:13px;color:#cfe3ee">${dn} 난이도${r.cleared?` 성공 → 별 ${w.stars}개`:''}</div>`:''}</td></tr><tr><td>코인</td><td>+${w.coins}${w.goal?' (환경 목표 +30 포함)':''}${w.petCoinPct>0?` · 친구 코인 +${Math.round(w.petCoinPct*1000)/10}%`:''}</td></tr><tr><td>보급권</td><td>+${w.gifts}${w.stageGift?.capped?' · 오늘 이 단계는 2번 다 받았어요. 다른 단계에 도전해 봐요!':w.stageGift?(w.stageGift.left?` · 오늘 이 단계 ${w.stageGift.left}번 더`:' · 오늘 이 단계 보급권은 여기까지! 다른 단계는 또 받아요'):''}</td></tr><tr><td>미션</td><td>${w.missions?.length?`완료! 보급권 +${w.missions.reduce((n,m)=>n+m.gifts,0)} · ${w.missions.map(m=>m.name).join(', ')}`:'오늘의 미션은 모험 화면에서 확인해요'}</td></tr><tr><td>이용권</td><td>${r.charged?'1장 사용':'그대로!'} · ${r.passes.remaining}장 남음</td></tr><tr><td colspan="2"><div class="sg-settlement">${r.cleared?(w.notes.join('<br/>')||'코인으로 훈련하고 파츠 레벨을 올려 보세요.'):'실패해도 이용권은 줄지 않아요. 조금 쉬었다가 다시 도전해요.'}<br/>${R.STAGES.find(s=>s.id===r.stage).tip}</div></td></tr>`;
     for(const activity of w.partActivity||[]){
       const d=R.PARTS[activity.id];if(!d)continue;
       const times=Object.entries(pending.partEffects||{}).filter(([id])=>(R.COMBOS[id]?.skill||id)===d.skill).reduce((n,[,v])=>n+(Number.isFinite(v)?Math.max(0,Math.floor(v)):0),0);

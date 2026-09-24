@@ -503,3 +503,4 @@
 .sg-dialog .sg-missions{gap:6px;margin:8px 0}
 .sg-dialog .sg-mission{padding:7px 10px}
 @media(max-width:480px){.sg-dialog .sg-mission-text b{font-size:13.5px}.sg-dialog .sg-mission-text small{font-size:11px}.sg-mission{gap:8px}}
+.sg-pet-role b{display:inline-grid;place-items:center;width:18px;height:18px;border-radius:50%;background:var(--pet-color,#8fb8a0);color:#fff;font-size:11px;margin-right:4px;vertical-align:1px}

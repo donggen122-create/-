@@ -12,12 +12,14 @@ const rngSeed=seed=>()=>{seed=(Math.imul(seed,1664525)+1013904223)>>>0;return se
 function base(){const p=R.freshProfile();p.stages.CH01={cleared:true,stars:1};p.milestones.firstPart=true;p.gifts=30;return p;}
 const D='2026-09-24';
 
-test('four friends only; old sparrow → cat, seal → otter; friendship becomes cards for the friend in use',()=>{
- assert.deepEqual(R.PET_IDS,['otter','turtle','deer','cat']);
+test('four friends = four directions (1 survival · 2 speed · 3 attack · 4 growth/coins); old sparrow → cat, seal → otter; friendship becomes cards',()=>{
+ assert.deepEqual(R.PET_IDS,['turtle','cat','otter','deer']);assert.deepEqual(R.PET_IDS.map(id=>R.PETS[id].no),[1,2,3,4]);
+ assert.deepEqual(Object.keys(R.PETS.turtle.buffs),['takenPct','hpPct','regenPct']);assert.deepEqual(Object.keys(R.PETS.cat.buffs),['speedPct','intervalPct']);
+ assert.deepEqual(Object.keys(R.PETS.otter.buffs),['dmgPct','areaPct']);assert.deepEqual(Object.keys(R.PETS.deer.buffs),['xpPct','magnetPct','coinPct']);
  const old={...base(),pets:['cat','sparrow','seal','deer','otter'],activePet:'seal',friendship:28};delete old.petCopies;delete old.petVersion;
  const p=R.migratePets(old);
  assert.deepEqual(p.petCopies,{cat:2,otter:2+7,deer:1},'참새·물범이는 합쳐지고, 우정 28 → 함께 출동하던 친구(물범이 → 수달이)에 7장');
- assert.equal(p.activePet,'otter');assert.deepEqual(p.pets,['otter','deer','cat']);assert.equal(R.petGrade(p,'otter'),2,'9장 = 유니크');
+ assert.equal(p.activePet,'otter');assert.deepEqual(p.pets,['cat','otter','deer']);assert.equal(R.petGrade(p,'otter'),2,'9장 = 유니크');
  assert.ok(!('friendship' in p));assert.deepEqual(p.petMigration,{pets:['cat','sparrow','seal','deer','otter'],activePet:'seal',friendship:28,bonus:7,to:'otter'});
  assert.deepEqual(R.migratePets(p),p,'여러 번 해도 같다');
  const none={...base(),pets:[],activePet:null,friendship:3};delete none.petVersion;const q=R.migratePets(none);
@@ -37,13 +39,13 @@ test('friend supply: one ticket, random friend, 1·3·7 cards, grades like parts
  assert.equal(r.profile.activePet,r.draw.id,'첫 친구는 바로 함께 출동');assert.ok(r.profile.pets.includes(r.draw.id));
  const counts={1:0,3:0,7:0};for(let seed=1;seed<=2000;seed++){const d=R.action(base(),{kind:'draw-pet'},rngSeed(seed)).draw;counts[d.qty]++;}
  assert.ok(counts[1]>1400&&counts[3]>250&&counts[7]>10,JSON.stringify(counts));
- p=base();p.petCopies={otter:80,turtle:80,deer:80};p.pets=['otter','turtle','deer'];p.activePet='otter';
+ p=base();p.petCopies={otter:80,turtle:80,deer:80};p.pets=['turtle','otter','deer'];p.activePet='otter';
  for(let i=0;i<5;i++)assert.equal(R.action(p,{kind:'draw-pet'},Math.random).draw.id,'cat','전설 친구는 안 나옴');
  p.petCopies.cat=80;assert.throws(()=>R.action(p,{kind:'draw-pet'}),/모든 친구가 전설/);
  const locked=R.freshProfile();locked.gifts=3;assert.throws(()=>R.action(locked,{kind:'draw-pet'}),/1-1을 성공/);
  const empty=base();empty.gifts=0;assert.throws(()=>R.action(empty,{kind:'draw-pet'}),/보급권/);
- p=base();p.petCopies={deer:6};p.pets=['deer'];p.activePet='deer';const up=R.action(p,{kind:'draw-pet'},()=>.6).draw;   // 0.6 → 3번째 친구(deer), 장수 운 0.6 → 1장
- assert.equal(up.id,'deer');assert.equal(up.gradeBefore,1);assert.equal(up.gradeAfter,2,'7장 = 유니크');
+ p=base();p.petCopies={otter:6};p.pets=['otter'];p.activePet='otter';const up=R.action(p,{kind:'draw-pet'},()=>.6).draw;   // 0.6 → 3번째 친구(otter), 장수 운 0.6 → 1장
+ assert.equal(up.id,'otter');assert.equal(up.gradeBefore,1);assert.equal(up.gradeAfter,2,'7장 = 유니크');
 });
 
 test('old "friend meeting" requests change nothing and ask for a refresh',()=>{
@@ -68,7 +70,18 @@ test('buffs grow with the grade; specials open at unique (1) → epic (2) → le
  assert.deepEqual(at(7).sp,{id:'otter',key:'splash',tier:1});assert.equal(at(25).sp.tier,2);assert.equal(at(80).sp.tier,3);
  assert.ok(Math.abs(at(80).dmg-.12*2.2)<1e-9);assert.equal(R.petBuff(p,'takenPct'),0,'다른 친구 버프는 없음');
  p.activePet='cat';assert.equal(R.petBuff(p,'dmgPct'),0,'없는 친구가 함께 출동 중이면 0');
- assert.equal(R.petBuffText('turtle',0),'받는 피해 -12% · 시작 보호막(최대 체력) +10%');assert.equal(R.petBuffText('cat',4).split(' · ')[1],'공격 간격 -13.2%');
+ assert.equal(R.petBuffText('turtle',0),'받는 피해 -10% · 최대 체력 +10% · 초당 체력 회복 +0.4%');assert.equal(R.petBuffText('cat',4),'이동 속도 +17.6% · 공격 속도 +17.6%');
+ assert.equal(R.petBuffText('deer',2),'새싹 경험치 +22.5% · 새싹 줍기 범위 +75% · 코인 획득 +15%');
+ assert.deepEqual(R.PET_IDS.map(id=>R.PETS[id].special.key),['shell','dash','splash','magnet']);
+});
+
+test('4 growth friend (deer): coin gain +% on every settlement, using the friend taken into the run',()=>{
+ const p=base();p.petCopies={deer:7,otter:1};p.pets=['otter','deer'];p.activePet='deer';
+ const plain=R.completeRun({...p,activePet:'otter'},{stage:'CH01',cleared:true,seconds:300}).reward,withDeer=R.completeRun(p,{stage:'CH01',cleared:true,seconds:300}).reward;
+ assert.equal(plain.petCoinPct,0);assert.equal(withDeer.petCoinPct,.15,'유니크 ×1.5 = +15%');assert.equal(withDeer.coins,Math.floor(plain.coins*1.15));
+ assert.equal(R.completeRun(p,{stage:'CH01',cleared:true,seconds:300,pet:'otter'}).reward.petCoinPct,0,'출동할 때 수달이였으면 코인 보너스 없음');
+ assert.equal(R.completeRun(p,{stage:'CH01',cleared:true,seconds:300,pet:null}).reward.petCoinPct,0,'친구 없이 출동');
+ const fail=R.completeRun(p,{stage:'CH01',cleared:false,seconds:300}).reward;assert.ok(fail.coins>0&&fail.petCoinPct===.15,'실패 코인에도');
 });
 
 test('daily missions: five × 2 tickets = 10 a day, paid the moment they are done; reset at the next game day',()=>{
@@ -103,6 +116,6 @@ test('API: stored old friends are converted once with a snapshot; pet supply and
  const d=await api(env,'/guardian/action',{kind:'draw-pet'});assert.equal(d.status,200,d.error);assert.equal(d.draw.mode,'pet');assert.equal(d.profile.gifts,29);
  const t=await api(env,'/guardian/action',{kind:'train',stat:'attack'});assert.match(t.message,/미션 완료/);assert.equal(t.profile.gifts,31);assert.equal(t.profile.missions.day,'2026-09-24');
  const old2=await api(env,'/guardian/action',{kind:'gift',type:'pet'});assert.equal(old2.status,409);assert.equal(old2.code,'DRAW_MODE');
- const s=await api(env,'/play/start',{stage:'CH01'});assert.equal(s.status,200,s.error);const f=await api(env,'/play/finish',{runId:s.runId,cleared:true,seconds:300,litter:3},now+301000);assert.equal(f.status,200,f.error);
+ const s=await api(env,'/play/start',{stage:'CH01'});assert.equal(s.status,200,s.error);assert.equal(JSON.parse(env.DB.sql.prepare('SELECT result FROM play_runs WHERE id=?').get(s.runId).result).loadout.pet,'turtle','출동할 때 친구 저장');const f=await api(env,'/play/finish',{runId:s.runId,cleared:true,seconds:300,litter:3},now+301000);assert.equal(f.status,200,f.error);
  assert.deepEqual(f.reward.missions.map(m=>m.id),['win1','goal1']);assert.equal(f.profile.gifts,31+f.reward.gifts+4);
 });

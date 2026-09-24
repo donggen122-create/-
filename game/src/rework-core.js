@@ -35,32 +35,34 @@ export const GRADE_INTERVAL=[1,1,.95,.85,.75];
 export const LEGEND_EXTRA_CAST=.3;
 export const GRADE_STEP=.06;             // (옛 값, 쓰지 않음) 등급 피해는 GRADE_DAMAGE
 // 동물 친구(2026-09-24 밤 사용자 "4종으로 줄이고 유니크부터 특수능력 추가. 보급권으로"): 4종 · 친구 카드를 모아 등급(파츠·장비와 같은 1/3/7/25/80장).
-// 함께 출동한 친구 1마리의 버프(buffs, main.js 통합 스탯 키) × 등급 배율 + 유니크부터 특수 능력(유니크 1 · 에픽 2 · 전설 3단계, main.js sgPetTick).
-// 옛 6종: 참새 → 야옹이(이동 속도·공격 간격을 합침), 물범이 → 수달이(스킬 범위를 합침). 우정은 없앴다(migratePets가 함께 출동하던 친구 카드로 바꿈).
+// 네 방향(사용자 "1 생존 · 2 이속 공속 · 3 공격력 및 공격범위 · 4 새싹 경험치 및 코인 획득량"): 앞의 셋은 판 안 강화, 4번은 성장·재화.
+// 함께 출동한 친구 1마리의 버프(buffs, main.js 통합 스탯 키 · coinPct는 서버 정산) × 등급 배율 + 유니크부터 특수 능력(유니크 1 · 에픽 2 · 전설 3단계, main.js sgPetTick).
+// 동물은 그대로 두고 역할만 새로: 참새 → 야옹이(속도), 물범이 → 수달이(범위)로 합침. 우정은 없앴다(migratePets가 함께 출동하던 친구 카드로 바꿈).
 export const PET_GRADE_MULT=[1,1.25,1.5,1.8,2.2];
 export const PETS = {
-  otter: { name: '수달이', role: '공격 도우미', color: '#70bdd1', buffs: { dmgPct: .12, areaPct: .10 },
+  turtle: { no: 1, name: '꼬북이', role: '생존', color: '#82b876', buffs: { takenPct: -.10, hpPct: .10, regenPct: .004 },
+    special: { key: 'shell', name: '등껍질 방패', v: [15, 10], text: ['15초마다 보호막(최대 체력 10%)', '10초마다 · 보호막 15%', '판마다 1번 쓰러져도 일어남'] } },
+  cat: { no: 2, name: '야옹이', role: '이동·공격 속도', color: '#efac6a', buffs: { speedPct: .08, intervalPct: .08 },
+    special: { key: 'dash', name: '바람 질주', v: [10, 7], text: ['10초마다 3초 동안 공격 속도 +25%', '7초마다(더 자주)', '그 3초 동안 이동 속도도 +30%'] } },
+  otter: { no: 3, name: '수달이', role: '공격력·범위', color: '#70bdd1', buffs: { dmgPct: .12, areaPct: .10 },
     special: { key: 'splash', name: '물방울 폭탄', v: [5, 3.5], text: ['5초마다 적이 많은 곳에 물방울 폭탄(주변 적 모두 피해)', '3.5초마다 · 폭탄 피해 1.5배', '물방울 폭탄 3개를 한꺼번에'] } },
-  turtle: { name: '꼬북이', role: '방어 도우미', color: '#82b876', buffs: { takenPct: -.12, shieldStart: .10 },
-    special: { key: 'shell', name: '등껍질 방패', v: [15, 10], text: ['15초마다 보호막(최대 체력 10%)', '10초마다 · 보호막 15%', '보호막이 생길 때 주변 적 밀쳐내기'] } },
-  deer: { name: '아기사슴', role: '회복 도우미', color: '#a7be70', buffs: { regenPct: .006, hpPct: .12 },
-    special: { key: 'bloom', name: '새싹 치유', v: [30, 20], text: ['체력이 40% 아래로 떨어지면 체력 25% 회복(30초에 1번)', '20초에 1번 · 30% 회복', '판마다 1번 쓰러져도 일어남'] } },
-  cat: { name: '야옹이', role: '날쌘 도우미', color: '#efac6a', buffs: { speedPct: .08, intervalPct: .06, magnetPct: .5, xpPct: .10 },
-    special: { key: 'magnet', name: '냥냥 자석', v: [20, 12], text: ['20초마다 화면의 새싹을 모두 끌어오기', '12초마다(더 자주)', '끌어올 때 3초 동안 이동 속도 +30%'] } },
+  deer: { no: 4, name: '아기사슴', role: '새싹 경험치·코인', color: '#a7be70', buffs: { xpPct: .15, magnetPct: .5, coinPct: .10 },
+    special: { key: 'magnet', name: '새싹 자석', v: [20, 12], text: ['20초마다 화면의 새싹을 모두 끌어오기', '12초마다(더 자주)', '끌어온 새싹 경험치 +50%'] } },
 };
 export const PET_IDS=Object.keys(PETS);
 export const PET_MERGE={sparrow:'cat',seal:'otter'};
 export const PET_VERSION=2;
-const PET_STAT={dmgPct:'모든 스킬 피해',areaPct:'스킬 범위',takenPct:'받는 피해',shieldStart:'시작 보호막(최대 체력)',regenPct:'초당 체력 회복',hpPct:'최대 체력',speedPct:'이동 속도',intervalPct:'공격 간격',magnetPct:'새싹 줍기 범위',xpPct:'새싹 경험치'};
+const PET_STAT={dmgPct:'모든 스킬 피해',areaPct:'스킬 범위',takenPct:'받는 피해',regenPct:'초당 체력 회복',hpPct:'최대 체력',speedPct:'이동 속도',intervalPct:'공격 속도',magnetPct:'새싹 줍기 범위',xpPct:'새싹 경험치',coinPct:'코인 획득'};
 const pctLabel=v=>{const x=Math.round(Math.abs(v)*1000)/10;return `${x}%`;};
-// 그 등급의 버프 한 줄(화면·검사 공용). 공격 간격·받는 피해는 줄어드는 것이 좋은 것이라 "-"
-export function petBuffText(id,g=0){const pet=PETS[id];if(!pet)return '';const m=PET_GRADE_MULT[Math.max(0,Math.min(4,g|0))];return Object.entries(pet.buffs).map(([k,v])=>`${PET_STAT[k]} ${k==='intervalPct'||v<0?'-':'+'}${pctLabel(v*m)}`).join(' · ');}
+// 그 등급의 버프 한 줄(화면·검사 공용). intervalPct(공격 간격 줄이기)는 "공격 속도 +"로, 받는 피해는 "-"로 보여 준다
+export function petBuffText(id,g=0){const pet=PETS[id];if(!pet)return '';const m=PET_GRADE_MULT[Math.max(0,Math.min(4,g|0))];return Object.entries(pet.buffs).map(([k,v])=>`${PET_STAT[k]} ${v<0?'-':'+'}${pctLabel(v*m)}`).join(' · ');}
 export const petCopies=(p,id)=>Math.max(0,Math.floor(Number(p?.petCopies?.[id])||0));
 export const hasPet=(p,id)=>own(PETS,id)&&petCopies(p,id)>0;
 export function petGrade(p,id){const c=petCopies(p,id);return c>0?grade(c):-1;}
 // 함께 출동한 친구의 특수 능력 단계: 0 없음 · 1 유니크 · 2 에픽 · 3 전설
 export function petSpecial(p){const id=p?.activePet,g=hasPet(p,id)?petGrade(p,id):-1;return g>=2?{id,key:PETS[id].special.key,tier:g-1}:null;}
-export function petBuff(p,key){const id=p?.activePet;if(!hasPet(p,id))return 0;return (PETS[id].buffs[key]||0)*PET_GRADE_MULT[petGrade(p,id)];}
+export function petBuffFor(p,id,key){if(!hasPet(p,id))return 0;return (PETS[id].buffs[key]||0)*PET_GRADE_MULT[petGrade(p,id)];}
+export function petBuff(p,key){return petBuffFor(p,p?.activePet,key);}
 export function petDrawPool(p){return PET_IDS.filter(id=>petCopies(p,id)<LEGEND_COPIES);}
 export const needsPetMigration=p=>!!p&&p.petVersion!==PET_VERSION;
 // 옛 친구(6종 · 우정 0~28) → 4종 친구 카드. 가진 친구마다 1장(참새·물범이는 합쳐진 친구에), 우정 4마다 함께 출동하던 친구에게 1장 더
@@ -296,13 +298,15 @@ export function pendingPart(p){return p?.stages?.CH01?.cleared&&!p.milestones?.f
 export function pendingPet(p){if(!p)return null;if(maxClear(p)>=3&&!p.milestones?.firstPet)return {key:'firstPet',ids:[...PET_IDS],qty:1};if(p.stages?.CH05?.cleared&&!p.milestones?.bossPet)return {key:'bossPet',ids:[...PET_IDS],qty:3};return null;}
 // 별 = 난이도(쉬움 1 · 보통 2 · 어려움 3). 난이도는 출동 전 settings로 프로필에 저장된 값을 서버가 그대로 읽는다(클라이언트가 보낸 값은 쓰지 않음).
 // 환경 목표(쓰레기 줍기)는 별 대신 코인 +30. bossSeconds·hpFraction은 기록용으로만 받는다.
-export function completeRun(profile,{stage,cleared,seconds,litter=0,hpFraction=0,bossSeconds=Infinity,skillIds=[],fusionIds=[],supportIds=[],equippedPartIds=null,difficulty=difficultyOf(profile),day=null}) {
+export function completeRun(profile,{stage,cleared,seconds,litter=0,hpFraction=0,bossSeconds=Infinity,skillIds=[],fusionIds=[],supportIds=[],equippedPartIds=null,pet=undefined,difficulty=difficultyOf(profile),day=null}) {
  const p=migratePets(profile),index=Number(stage.slice(2)),st=STAGES[index-1],diff=DIFFICULTIES[difficulty]||DIFFICULTIES.easy;
  if(!st)throw new Error('없는 단계예요.');
  const first=cleared&&!p.stages[stage]?.cleared,intro=['CH01','CH02'].includes(stage)&&!p.stages[stage]?.cleared;
  const goal=cleared&&litter>=st.target;
  const base=120+10*(index-1),mult=COIN_MULT[difficulty]??1;
- const coins=cleared?Math.floor((Math.floor(base*(intro?.6:1))+(first?120:0)+(index%5===0?60:0)+(goal?30:0))*mult):Math.floor(base*.6*Math.min(seconds/300,1)*Math.min(mult,1));
+ const baseCoins=cleared?Math.floor((Math.floor(base*(intro?.6:1))+(first?120:0)+(index%5===0?60:0)+(goal?30:0))*mult):Math.floor(base*.6*Math.min(seconds/300,1)*Math.min(mult,1));
+ // 4번 친구(아기사슴) 코인 획득 +%: 출동할 때 함께한 친구(서버가 도전 시작 때 저장한 pet, 없으면 지금 친구)
+ const petCoinPct=Math.round(petBuffFor(p,pet===undefined?p.activePet:pet,'coinPct')*1000)/1000,coins=Math.floor(baseCoins*(1+petCoinPct));
  // 성공 보급권: 난이도별(쉬움·보통 1, 어려움 2) + 대왕 단계(1-5·2-5) 첫 성공 보너스 1. 같은 단계는 하루 2번 성공까지만(day는 서버가 넣음, 코인·우정·별은 그대로).
  let stageGift=null,clearGifts=cleared?(CLEAR_GIFTS[difficulty]||1):0;
  if(cleared&&day){
@@ -333,7 +337,7 @@ export function completeRun(profile,{stage,cleared,seconds,litter=0,hpFraction=0
    partActivity.push({id,active});
   }
  }
- return {profile:p,reward:{coins,gifts,missions,stars,first,partActivity,stageGift,difficulty:own(DIFFICULTIES,difficulty)?difficulty:'easy',goal,notes:first?[st.unlock]:[]}};
+ return {profile:p,reward:{coins,petCoinPct,gifts,missions,stars,first,partActivity,stageGift,difficulty:own(DIFFICULTIES,difficulty)?difficulty:'easy',goal,notes:first?[st.unlock]:[]}};
 }
 // ctx.day = 서버가 넣는 게임 날짜(아침 8시 기준). 코인 교환처럼 하루 한 번인 작업에 쓴다.
 export function action(profile,a,rng=Math.random,ctx={}){

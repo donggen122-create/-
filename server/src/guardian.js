@@ -123,7 +123,7 @@ export async function guardianAPI(request,env,user,path,now=Date.now()){
     const r=await db.batch([
       db.prepare("UPDATE play_runs SET status='expired',settled_at=? WHERE user_id=? AND status='active' AND started_at<?").bind(now,id,now-1800000),
       db.prepare('INSERT OR IGNORE INTO play_days(user_id,day) VALUES(?,?)').bind(id,day),
-      db.prepare("INSERT INTO play_runs(id,user_id,stage,started_at,duration,result) SELECT ?,?,?,?,?,? FROM play_days WHERE user_id=? AND day=? AND base_used+bonus_used<10+bonus_granted AND NOT EXISTS(SELECT 1 FROM play_runs WHERE user_id=? AND status='active')").bind(b.requestId,id,b.stage,now,duration,JSON.stringify({loadout:{equippedParts:runParts(profile)}}),id,day,id),
+      db.prepare("INSERT INTO play_runs(id,user_id,stage,started_at,duration,result) SELECT ?,?,?,?,?,? FROM play_days WHERE user_id=? AND day=? AND base_used+bonus_used<10+bonus_granted AND NOT EXISTS(SELECT 1 FROM play_runs WHERE user_id=? AND status='active')").bind(b.requestId,id,b.stage,now,duration,JSON.stringify({loadout:{equippedParts:runParts(profile),pet:profile.activePet??null}}),id,day,id),
     ]);
     if(!r[2].meta.changes){const active=await db.prepare("SELECT id,stage FROM play_runs WHERE user_id=? AND status='active'").bind(id).first();return reply({error:active?'진행 중인 도전이 있어요. 먼저 마무리해 주세요.':'오늘 이용권을 다 썼어요. 내일 아침 8시에 다시 만나요!',code:active?'ACTIVE_RUN':'NO_PASSES',active,passes:await passStatus(db,id,now)},409);}
     return reply({runId:b.requestId,duration,...await status(db,id,now)});
@@ -145,8 +145,9 @@ export async function guardianAPI(request,env,user,path,now=Date.now()){
       const skillIds=Array.isArray(b.skillIds)?b.skillIds.filter(s=>SKILLS[s]).slice(0,15):[];
       const fusionIds=Array.isArray(b.fusionIds)?b.fusionIds.filter(s=>COMBOS[s]).slice(0,4):[];
       const supportIds=Array.isArray(b.supportIds)?b.supportIds.filter(s=>SUPPORTS[s]).slice(0,8):[];
-      const equippedPartIds=run.result?JSON.parse(run.result).loadout?.equippedParts:null;
-      const result=completeRun(profile,{day:dayKey(now),equippedPartIds,stage:run.stage,cleared,seconds,litter:Math.max(0,Math.min(99,Math.floor(Number(b.litter)||0))),hpFraction:Math.max(0,Math.min(1,Number(b.hpFraction)||0)),bossSeconds:Number.isFinite(b.bossSeconds)&&b.bossSeconds>=0?b.bossSeconds:Infinity,skillIds,fusionIds,supportIds});
+      const loadout=run.result?JSON.parse(run.result).loadout:null,equippedPartIds=loadout?.equippedParts??null;
+      const pet=loadout&&Object.hasOwn(loadout,'pet')?loadout.pet:undefined;   // 출동할 때의 친구(코인 +%). 배포 전에 시작한 도전은 지금 친구
+      const result=completeRun(profile,{day:dayKey(now),equippedPartIds,pet,stage:run.stage,cleared,seconds,litter:Math.max(0,Math.min(99,Math.floor(Number(b.litter)||0))),hpFraction:Math.max(0,Math.min(1,Number(b.hpFraction)||0)),bossSeconds:Number.isFinite(b.bossSeconds)&&b.bossSeconds>=0?b.bossSeconds:Infinity,skillIds,fusionIds,supportIds});
       const event={reward:result.reward,cleared,stage:run.stage,runId,charged:cleared?1:0};
       try{
         const r=await db.batch([
