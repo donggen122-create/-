@@ -71,7 +71,7 @@ export class GuardianUI {
     });
   }
   state(){return this.c.getState();}
-  openDialog(markup,lock=false){this.dialog.classList.remove('sg-wide');if(lock)this.dialog.dataset.lock='1';else delete this.dialog.dataset.lock;this.dialog.innerHTML=markup;this.dialog.querySelectorAll('[data-close]').forEach(b=>b.onclick=()=>this.dialog.close());if(!this.dialog.open)this.dialog.showModal();}
+  openDialog(markup,lock=false){this.dialog.classList.remove('sg-wide');if(lock)this.dialog.dataset.lock='1';else delete this.dialog.dataset.lock;this.dialog.innerHTML=markup;this.dialog.querySelectorAll('[data-close]').forEach(b=>b.onclick=()=>this.dialog.close());if(!this.dialog.open)this.dialog.showModal();this.dialog.scrollTop=0;}   // 긴 창이 아래 버튼으로 스크롤돼 제목이 잘리지 않게
   notify(title,text){this.openDialog(`<h2>${esc(title)}</h2><p>${esc(text||'서버에 저장했어요.')}</p><button class="sg-primary" data-close>확인</button>`);}
   render(){
     const {profile:p,passes,user,error,active}=this.state();
@@ -80,7 +80,7 @@ export class GuardianUI {
     const pendingPet=R.pendingPet(p),pendingPart=R.pendingPart(p);
     this.root.innerHTML=`<header class="sg-header"><div class="sg-brand">${icon('element_wind')}<span>서호팡팡<small>수호대</small></span></div><div class="sg-wallet"><button data-do="passes" aria-label="이용권 안내">${icon('pass')}<b>${passes?.remaining??'…'}</b><span>${passes?.event?'추석 2배':'이용권'}</span></button><div>${icon('coin')}<b>${p.coins.toLocaleString()}</b><span>코인</span></div><button data-tab="parts" aria-label="파츠 보급과 보급권">${icon('gift')}<b>${p.gifts}</b><span>보급권</span></button></div><button class="sg-account" data-do="account" aria-label="계정과 캐릭터 선택">${esc(user)} 님</button></header>
     <main class="sg-main" aria-live="polite">${active?'<div class="sg-notice">마무리하지 않은 도전이 있어요. <button data-do="abandon">이용권 차감 없이 정리하기</button></div>':''}${this.nextTask(p)}${this[this.tab](p,passes)}</main>
-    <nav class="sg-nav" aria-label="수호대 메뉴">${[['adventure','map','모험'],['training','mode_melee','훈련'],['parts','part_PART_F1','파츠'],['gear','shield','장비'],['friends','heart','친구'],['book','book','도감']].map(([id,im,label])=>`<button data-tab="${id}" class="${this.tab===id?'on':''}" aria-current="${this.tab===id?'page':'false'}">${icon(im)}<span>${label}${id==='parts'&&p.gifts>0?` <b class="sg-count-badge" aria-label="보급권 ${p.gifts}장">${p.gifts}</b>`:''}${id==='gear'&&this.gearAlert(p)?' <b class="sg-count-badge" aria-label="장비 할 일">!</b>':''}</span></button>`).join('')}</nav>`;
+    <nav class="sg-nav" aria-label="수호대 메뉴">${[['adventure','map','모험'],['training','mode_melee','훈련'],['parts','part_PART_F1','파츠'],['gear','shield','장비'],['friends','heart','친구'],['book','book','도감']].map(([id,im,label])=>`<button data-tab="${id}" class="${this.tab===id?'on':''}" aria-current="${this.tab===id?'page':'false'}">${icon(im)}<span>${label}${id==='parts'&&p.gifts>0?` <b class="sg-count-badge" aria-label="보급권 ${p.gifts}장">${p.gifts}</b>`:''}${id==='gear'&&this.gearAlert(p)?' <b class="sg-count-badge" aria-label="장비 할 일">!</b>':''}${id==='friends'&&pendingPet?' <b class="sg-count-badge" aria-label="친구 고르기">!</b>':''}</span></button>`).join('')}</nav>`;
     if(this.busy)this.root.querySelectorAll('button,select').forEach(b=>b.disabled=true);
   }
   nextTask(p){
@@ -93,7 +93,7 @@ export class GuardianUI {
     else if(p.stages.CH01?.cleared&&p.gifts>0&&available)task={tab:'parts',text:`보급권 ${p.gifts}장이 있어요 · 파츠 보급 받으러 가기`,gifts:true};
     else if(R.runParts(p).length<3&&Object.keys(p.parts).some(id=>R.PARTS[id]&&!p.equippedParts.includes(id)))task={tab:'parts',text:'빈 파츠 칸에 가진 파츠 끼우기'};
     else if(R.gearIdsFor(p.hero).some(id=>R.gearMergeReady(p,id)))task={tab:'gear',text:'장비를 합성해 등급을 올릴 수 있어요'};
-    if(!task||(!task.first&&!task.hero&&(this.tab===task.tab||(this.tab==='gear'&&task.gifts))))return '';   // 장비 탭에는 보급 줄이 바로 있어 보급권 안내는 숨긴다
+    if(!task||(!task.first&&!task.hero&&(this.tab===task.tab||(['gear','friends'].includes(this.tab)&&task.gifts))))return '';   // 장비·친구 탭에는 보급 줄이 바로 있어 보급권 안내는 숨긴다
     return `<button class="sg-milestone sg-next-task" ${task.hero?'data-do="hero-dialog"':task.first?'data-do="first-part-dialog"':`data-tab="${task.tab}"`}>${icon('gift')}<span><small>다음 할 일</small><strong>${esc(task.text)} →</strong></span></button>`;
   }
   firstPartDialog(){
@@ -126,7 +126,7 @@ export class GuardianUI {
   chapterView(p,passes,chapter,stages){
     const st=R.STAGES.find(s=>s.id===this.stage),duration=R.durationFor(p,st.id),done=stages.filter(s=>p.stages[s.id]?.cleared).length,pictures=chapter.pictures,label=`${chapter.n}-${stages.indexOf(st)+1}`;
     const weaponGear=R.GEAR[p.equippedGear?.weapon],mode=weaponGear?weaponGear.type:(p.weaponMode||'melee'),difficulty=R.difficultyOf(p),weaponName=mode==='melee'?(p.hero==='minji'?'연필':'검'):(p.hero==='minji'?'피구공':'야구 배트');
-    return `<div class="sg-heading"><div><span class="sg-eyebrow">${chapter.eyebrow} · ${esc(chapter.name)}</span><h1>${esc(chapter.title)}</h1><p>${esc(chapter.sub)}</p></div><span class="sg-progress">${done} / 5 정화</span></div>
+    return `<div class="sg-heading"><div><span class="sg-eyebrow">${chapter.eyebrow} · ${esc(chapter.name)}</span><h1>${esc(chapter.title)}</h1><p>${esc(chapter.sub)}</p></div><div class="sg-heading-side"><span class="sg-progress">${done} / 5 정화</span>${this.missionButton(p,passes)}</div></div>
     <div class="sg-stage-map">${stages.map((s,i)=>{const open=R.stageUnlocked(p,s.id);return `<button class="sg-stage ${s.id===this.stage?'selected':''} ${p.stages[s.id]?.cleared?'cleared':''}" data-stage="${s.id}" ${open?'':'disabled'} aria-label="${chapter.n}-${i+1} ${esc(s.name)}${open?'':' 잠김'}"><span class="sg-stage-number">${chapter.n}-${i+1}</span><img src="./assets/sprites/${chapter.art}/${pictures[i]}.png" alt=""/><strong>${esc(s.name)}</strong><span class="sg-stars">${open?stars(p.stages[s.id]?.stars||0):'앞 단계 성공 후'}</span>${open&&passes?.day&&R.stageGiftLeft(p,s.id,passes.day)<R.STAGE_GIFT_CLEARS_PER_DAY?`<small class="sg-stage-gift ${R.stageGiftLeft(p,s.id,passes.day)?'':'done'}">${R.stageGiftLeft(p,s.id,passes.day)?`오늘 보급권 ${R.stageGiftLeft(p,s.id,passes.day)}번 남음`:'오늘 보급권 끝'}</small>`:''}</button>`;}).join('')}</div>
     <div class="sg-departure"><div class="sg-hero-scene ${chapter.n==='2'?`sg-chapter-art ${p.stages.CH10?.cleared?'clean':''}`:''}"><img class="sg-hero" src="./assets/sprites/heroes/${p.hero==='minji'?'minji':'hoya'}_idle_1.png" alt="${p.hero==='hoya'?'호야':'민지'}"/>${p.activePet?petImage(p.activePet):'<span class="sg-future-pet">1-3 성공 후<br/>친구 선택</span>'}<span>${esc(weaponName)} · ${mode==='ranged'?'원거리':'근거리'} ${R.heroLocked(p)?'<button data-tab="gear" class="sg-inline">장비 보기</button>':'<button data-do="hero-dialog" class="sg-inline">캐릭터 고르기</button>'}</span></div><div class="sg-brief"><span class="sg-eyebrow">선택한 모험 · ${label}</span><h2>${esc(st.name)}</h2><p>${esc(st.story)}</p><div class="sg-goal">${icon('element_wind')} ${esc(st.goal)} <small>환경 목표 · 성공하면 코인 +30</small></div><div class="sg-options"><label>난이도<select id="sg-difficulty">${entries(R.DIFFICULTIES).map(([id,d])=>`<option value="${id}" ${difficulty===id?'selected':''}>${esc(d.name)} ${starText(d.stars)}</option>`).join('')}</select></label><label>기본 무기<select id="sg-weapon-mode" ${weaponGear?'disabled title="무기 장비가 공격 방식을 정해요"':''}><option value="melee" ${mode==='melee'?'selected':''}>근거리 · ${p.hero==='minji'?'연필':'검'}</option><option value="ranged" ${mode==='ranged'?'selected':''}>원거리 · ${p.hero==='minji'?'피구공':'야구 배트'}</option></select></label></div><div id="sg-difficulty-help" class="sg-weapon-help" aria-live="polite">${difficultyHelp(difficulty)}</div><div id="sg-hard-ready">${difficulty==='hard'?this.hardLine(p,st.id):''}</div><div id="sg-weapon-help" class="sg-weapon-help" aria-live="polite">${weaponHelp(mode,p.hero)}${weaponGear?`<span class="sg-gear-mode-note">무기 장비 <b>${esc(weaponGear.name)}</b>${subjJosa(weaponGear.name)} 공격 방식을 정해요. 장비 탭에서 무기를 바꾸면 바뀌어요.</span>`:''}</div><small>성공하면 난이도만큼 별을 받아요: 쉬움 ★ · 보통 ★★ · 어려움 ★★★. 성공 보급권은 쉬움·보통 1장, <b>어려움 2장</b>. 같은 단계는 하루 2번 성공까지 받아요(아침 8시에 다시).</small>${passes?.day?`<div class="sg-goal sg-stage-gift-note">${icon('gift')} 오늘 이 단계 보급권: ${R.stageGiftLeft(p,st.id,passes.day)?`<b>${R.stageGiftLeft(p,st.id,passes.day)}번 더 받을 수 있어요</b>`:'<b>다 받았어요</b> · 다른 단계에 도전하면 또 받아요'}</div>`:''}<div class="sg-run-summary">${icon('mode_melee')} 기본 무기 1개 <span>+</span> ${skillIcon('F1')} 원소 스킬 4칸 <span>+</span> ${supportIcon('S4')} 지원품 4칸</div><button id="sg-start" class="sg-primary sg-start" data-do="start" ${passes?.remaining>0&&!this.state().active?'':'disabled'}>${passes?.remaining===0?'내일 아침 8시에 만나요':'출동하기'} ${icon('arrow')}</button><small class="sg-pass-hint">${duration===180?'첫 성공까지 3분':R.isBossStage(st.id)?'4분 뒤 대장 등장 · 최대 6분':'5분 도전'} · 성공할 때 이용권 1장</small></div></div>
     <div class="sg-feature-strip"><div><b>원소 스킬 10 · 지원품 8</b><span>모든 스테이지에서 획득</span></div><div><b>스킬 3단계 + 짝 지원품</b><span>금색 카드로 진화 10종</span></div><div><b>실패해도 다시 도전</b><span>이용권은 성공할 때만 차감</span></div></div>`;
@@ -188,6 +188,7 @@ export class GuardianUI {
     this.dialog.querySelector('[data-do="flip-on"]')?.addEventListener('click',e=>{remember(false);e.target.textContent='다음부터 상자 연출을 보여 줘요';e.target.disabled=true;});
   }
   showDrawResult(d){
+    if(d?.mode==='pet'||d?.mode==='choose-pet'){this.showPetResult(d);return;}
     if(R.GEAR[d?.id]){this.showGearResult(d);return;}
     const part=R.PARTS[d?.id];if(!part)return;
     const up=d.gradeAfter>Math.max(0,d.gradeBefore),skill=R.SKILLS[part.skill],next=toNext(d.after);
@@ -291,7 +292,7 @@ export class GuardianUI {
   }
   gearDetail(id){
     const p=this.state().profile,it=R.GEAR[id];if(!it||!p)return;const g=R.gearGrade(p,id),item=p.gear?.[id],set=R.GEAR_SETS[it.set],eq=p.equippedGear?.[it.slot]===id;
-    const grades=R.GRADE_NAMES.map((n,i)=>`<p class="sg-grade-row ${i===g?'on':''}"><span class="sg-medal sg-medal-${i}">${n}</span> ${esc(gearBase(it,i))}${i===g?' <b>← 지금</b>':''}</p>`).join('');
+    const grades=R.GRADE_NAMES.map((n,i)=>`<p class="sg-grade-row ${i===g?'on':''}"><span class="sg-medal sg-medal-${i}">${n}</span><span>${esc(gearBase(it,i))}${i===g?' <b>← 지금</b>':''}</span></p>`).join('');
     const sp=gearSpecialLines(it,g).map(x=>`<p class="${x.on?'on':''}"><b>${x.name}</b> ${esc(x.text)}${x.on?' ✓':''}</p>`).join('');
     const own=p.hero===it.hero,next=g>=0&&g<R.GRADE_COPIES.length-1?R.GRADE_COPIES[g+1]:null;
     this.openDialog(`<div class="sg-dialog-icon">${gearIcon(id,'big')}</div><h2>${esc(it.name)}</h2><p>${esc(set.name)} · ${typeName(it.type)} · ${R.GEAR_SLOT_NAMES[it.slot]}${g>=0?` · ${item.copies}개 가짐${next?` (${next}개면 ${R.GRADE_NAMES[g+1]} 합성)`:''}`:' · 아직 없음'}</p>${it.slot==='weapon'?`<p>이 무기를 끼우면 <b>${typeName(it.type)}</b>으로 싸워요.</p>`:''}<div class="sg-rules sg-gear-rules"><h3>등급별 능력</h3>${grades}<h3>특수 효과 · ${esc(it.special.name)}</h3><div class="sg-gear-sp">${sp}</div><h3>${esc(set.name)} 효과(같은 세트 개수)</h3>${R.GEAR_SET_SIZES.map(k=>`<p><b>${k}세트</b> ${esc(R.GEAR_SET_TEXT[it.type][k])}</p>`).join('')}</div><div class="sg-gear-dialog-actions">${g>=0&&own?(R.gearMergeReady(p,id)?`<button class="sg-primary" data-gear-act="merge-gear">합성 → ${R.GRADE_NAMES[g+1]}</button>`:'')+(eq?`<button data-gear-act="unequip-gear">빼기</button>`:`<button class="sg-primary" data-gear-act="equip-gear">끼우기</button>`):''}<button data-close>닫기</button></div>`);
@@ -333,9 +334,51 @@ export class GuardianUI {
     this.dialog.querySelectorAll('[data-first-gear-dialog]').forEach(b=>b.onclick=async()=>{if(this.busy)return;this.dialog.close();await this.perform({kind:'choose-first-gear',id:b.dataset.firstGearDialog});});
   }
   unlockDialog(){delete this.dialog.dataset.lock;}
+  // ---- 동물 친구(2026-09-24 밤 사용자 "4종으로 줄이고 유니크부터 특수능력 추가. 보급권으로", docs/37) ----
+  // 한 화면: 4종 카드(그림 · 등급 · 카드 막대 · 지금 버프 · 특수 능력) + 친구 보급 한 줄. 그림·[자세히]를 누르면 등급별 표.
   friends(p){
-    const pending=R.pendingPet(p),lv=R.friendshipLevel(p),open=!!p.stages.CH01?.cleared,n=p.giftCounts.pet||0,unowned=Object.keys(R.PETS).filter(id=>!p.pets.includes(id)),choice=(n+1)%5===0&&unowned.length>0,locked=!unowned.length&&p.friendship>=28;
-    return `<div class="sg-heading"><div><span class="sg-eyebrow">COMPANIONS</span><h1>함께 출동할 친구</h1><p>한 마리와 함께 출동해요. 함께 있는 동안 효과가 계속 붙어요. 모든 친구가 우정 단계를 공유해요.</p></div><span class="sg-progress">우정 ${lv}단계 · ${p.friendship}/28</span></div>${pending?`<div class="sg-notice">${pending.key==='firstPet'?'1-3 성공 보상! 처음 함께할 친구를 선택하세요.':'새 친구 한 마리를 선택할 수 있어요.'}</div>`:''}<div class="sg-grid sg-pets">${entries(R.PETS).map(([id,d])=>{const owned=p.pets.includes(id),choose=pending?.ids.includes(id);return `<article class="sg-panel ${p.activePet===id?'sg-equipped':''}" style="--pet-color:${d.color}">${petImage(id)}<span class="sg-eyebrow">${esc(d.role)}</span><h2>${esc(d.name)}</h2><p>${esc(d.desc)}</p><button ${owned||choose?'':'disabled'} data-action="${choose?'choose-pet':'pet'}" data-id="${id}">${choose?'이 친구 선택':p.activePet===id?'함께 출동 중':owned?'함께 출동하기':'아직 만나지 않았어요'}</button></article>`;}).join('')}</div><section class="sg-panel sg-draw-panel"><div><span class="sg-eyebrow">친구 만나기 · 보급권 1장 · 파츠와 따로 세요</span><h2>${locked?'친구를 모두 만났어요!':choice?'이번에는 새 친구를 직접 선택!':unowned.length?`아직 못 만난 친구 ${unowned.length}마리가 먼저 와요`:'다시 만나면 우정 +1'}</h2><p>${!open?'1-1 첫 성공 후 열려요.':locked?'우정도 가득해요! 보급권은 파츠에 써요.':unowned.length?'못 만난 친구 중 한 마리가 찾아와요. 누구나 6번이면 모두 만나요.':'모두 만났어요. 다시 만나면 우정 +1이에요.'}</p><small>5번째마다 만나고 싶은 친구를 직접 골라요. 이용권은 나오지 않아요.</small></div><div>${choice?`<label>새 친구<select id="sg-gift-pet">${unowned.map(id=>`<option value="${id}">${esc(R.PETS[id].name)}</option>`).join('')}</select></label>`:''}<button class="sg-primary" data-do="pet-gift" ${open&&p.gifts>0&&!locked?'':'disabled'}>${locked?'모두 만났어요':'친구 만나기 · 보급권 1장'}</button></div></section><div class="sg-panel sg-help"><h3>함께한 만큼 커지는 우정</h3><p>성공할 때 우정 +1. 150초 이상 도전하고 실패한 판도 두 번 모이면 우정 +1이에요. 우정 3단계부터 친구 효과가 20% 좋아져요. 친구는 스킬 진화 재료가 아니에요.</p></div>`;
+    preloadSupply();
+    const pending=R.pendingPet(p),open=!!p.stages.CH01?.cleared,pool=R.petDrawPool(p).length,act=R.hasPet(p,p.activePet)?p.activePet:null;
+    const odds=R.SUPPLY_BUNDLES.map(b=>`${b.qty}장 ${Math.round(b.chance*100)}%`).join(' · '),mig=p.petMigration;
+    let seen=false;try{seen=localStorage.getItem('seoho_pet_mig_seen')==='1';}catch(e){}
+    const migNote=mig&&!seen&&!this.petMigSeen?`<div class="sg-notice sg-pet-mig">친구가 4종으로 새로워졌어요! 참새는 야옹이, 물범이는 수달이와 하나가 되었어요.${mig.bonus&&R.PETS[mig.to]?` 우정 ${mig.friendship}은 <b>${esc(R.PETS[mig.to].name)} 카드 ${mig.bonus}장</b>으로 바뀌었어요.`:''} <button class="sg-inline" data-do="pet-mig-ok">알겠어요</button></div>`:'';
+    const card=id=>{
+      const d=R.PETS[id],c=R.petCopies(p,id),g=R.petGrade(p,id),owned=c>0,choose=!!pending?.ids.includes(id),on=act===id,next=R.nextGradeAt(c),lo=R.GRADE_COPIES[Math.max(0,g)],pct=owned?(next?Math.round((c-lo)/(next-lo)*100):100):0,tier=g>=2?g-1:0,sp=d.special;
+      const spText=tier?[sp.text[0],tier>=2?`에픽: ${sp.text[1]}`:'',tier>=3?`전설: ${sp.text[2]}`:''].filter(Boolean).join(' · '):`유니크(${R.GRADE_COPIES[2]}장)부터 · ${sp.text[0]}`;
+      const btn=choose?`이 친구 고르기${pending.qty>1?` · 카드 ${pending.qty}장`:''}`:on?'함께 출동 중':owned?'함께 출동하기':'보급에서 만나요';
+      return `<article class="sg-panel sg-pet-card ${on?'sg-equipped':''} ${owned?'':'sg-unowned'} ${choose?'sg-pet-choose':''}" style="--pet-color:${d.color}"><button class="sg-pet-pic" data-pet-detail="${id}" aria-label="${esc(d.name)} 자세히">${petImage(id)}</button><div class="sg-pet-body"><div class="sg-pet-name"><h2>${esc(d.name)}</h2>${owned?`<span class="sg-medal sg-medal-${g}">${R.GRADE_NAMES[g]}</span>`:''}<small>${esc(d.role)}</small></div>${owned?`<div class="sg-pet-meter"><span><i style="width:${pct}%"></i></span><small>${c}장${next?` · ${R.GRADE_NAMES[R.grade(next)]}까지 ${next-c}장`:' · 최고 등급'}</small></div>`:''}<p class="sg-pet-buff">${esc(R.petBuffText(id,Math.max(0,g)))}</p><p class="sg-pet-sp ${tier?'on':''}"><b>${tier?'':'🔒 '}${esc(sp.name)}</b> ${esc(spText)}</p><div class="sg-pet-actions"><button class="${choose?'sg-primary':''}" ${owned||choose?'':'disabled'} data-action="${choose?'choose-pet':'pet'}" data-id="${id}">${btn}</button><button class="sg-inline" data-pet-detail="${id}">자세히</button></div></div></article>`;};
+    return `<div class="sg-heading sg-pet-heading"><div><span class="sg-eyebrow">COMPANIONS</span><h1>함께 출동할 친구</h1><p>한 마리와 함께 출동해요. 같은 친구 카드를 모으면 등급이 오르고, 유니크부터 특수 능력이 생겨요.</p></div><span class="sg-progress">${act?`${esc(R.PETS[act].name)} · ${R.GRADE_NAMES[R.petGrade(p,act)]}`:'1-3 성공 후'}</span></div>
+    ${pending?`<div class="sg-notice sg-pet-pending">${pending.key==='firstPet'?'1-3 성공 보상! 함께할 친구를 1마리 골라요(카드 1장).':'1-5 성공 보상! 친구를 1마리 골라 카드 3장을 받아요. 가진 친구도 고를 수 있어요.'}</div>`:''}${migNote}
+    <div class="sg-pet-grid">${R.PET_IDS.map(card).join('')}</div>
+    <div class="sg-gear-bar"><div class="sg-gear-bar-supply">${icon('gift')}<span><b>친구 보급 · 보급권 ${p.gifts}장</b><small>${open?(pool?`4종 중 무작위 · ${odds}`:'모든 친구가 전설이에요!'):'1-1 첫 성공 후 열려요'}</small></span><button class="sg-primary" data-do="draw-pet" ${open&&p.gifts>0&&pool?'':'disabled'}>보급 받기</button></div></div>
+    <p class="sg-footnote">같은 친구 카드 ${R.GRADE_NAMES.map((n,i)=>`${n} ${R.GRADE_COPIES[i]}장`).join(' → ')}. 버프는 ${R.GRADE_NAMES.map((n,i)=>`${n} ×${R.PET_GRADE_MULT[i]}`).join(' · ')}. <button class="sg-inline" data-do="pet-help">친구 규칙</button></p>`;
+  }
+  petDetail(id){
+    const p=this.state().profile,d=R.PETS[id];if(!d||!p)return;const c=R.petCopies(p,id),g=R.petGrade(p,id),on=p.activePet===id;
+    const grades=R.GRADE_NAMES.map((n,i)=>`<p class="sg-grade-row ${i===g?'on':''}"><span class="sg-medal sg-medal-${i}">${n}</span><span>${R.GRADE_COPIES[i]}장 · ${esc(R.petBuffText(id,i))}${i===g?' <b>← 지금</b>':''}</span></p>`).join('');
+    const sp=['유니크','에픽','전설'].map((n,i)=>`<p class="${g>=i+2?'on':''}"><b>${n}</b> ${esc(d.special.text[i])}${g>=i+2?' ✓':''}</p>`).join('');
+    this.openDialog(`<div class="sg-dialog-icon">${petImage(id,'sg-pet-big')}</div><h2>${esc(d.name)}</h2><p>${esc(d.role)} · ${c?`카드 ${c}장${R.nextGradeAt(c)?` (${R.nextGradeAt(c)}장이면 ${R.GRADE_NAMES[R.grade(R.nextGradeAt(c))]})`:''}`:'아직 못 만났어요 · 친구 보급에서 만나요'}</p><div class="sg-rules sg-gear-rules"><h3>등급별 버프(함께 출동할 때)</h3>${grades}<h3>특수 능력 · ${esc(d.special.name)}</h3><div class="sg-gear-sp">${sp}</div></div><div class="sg-gear-dialog-actions">${c&&!on?`<button class="sg-primary" data-pet-go="${id}">함께 출동하기</button>`:''}<button data-close>닫기</button></div>`);
+    this.dialog.querySelector('[data-pet-go]')?.addEventListener('click',async()=>{if(this.busy)return;this.dialog.close();await this.perform({kind:'pet',id});});
+  }
+  petHelp(){
+    this.openDialog(`<h2>친구 규칙</h2><div class="sg-rules"><p><b>친구 4마리</b> 수달이(공격) · 꼬북이(방어) · 아기사슴(회복) · 야옹이(날쌘). 한 마리와 함께 출동하면 그 친구 버프가 판 내내 붙어요.</p><p><b>보급</b> 보급권 1장으로 4종 중 무작위 친구 카드(전설이 된 친구는 빼고). ${R.SUPPLY_BUNDLES.map(b=>`${b.qty}장 ${Math.round(b.chance*100)}%`).join(' · ')}. 파츠·장비 보급과 같은 보급권이에요.</p><p><b>등급</b> 같은 친구 카드를 모으면 저절로 올라가요. ${R.GRADE_NAMES.map((n,i)=>`${n} ${R.GRADE_COPIES[i]}장`).join(' → ')}. 버프는 ${R.GRADE_NAMES.map((n,i)=>`${n} ×${R.PET_GRADE_MULT[i]}`).join(' · ')}.</p><p><b>특수 능력</b> 유니크에서 열리고, 에픽에서 강해지고, 전설에서 하나 더 생겨요.</p><p><b>친구 선물</b> 1-3 첫 성공 때 친구 1마리 카드 1장, 1-5 첫 성공 때 친구 1마리 카드 3장을 골라요(보급권을 쓰지 않아요).</p><p><b>바뀐 점</b> 참새는 야옹이, 물범이는 수달이와 하나가 되었어요. 우정은 없어지고, 우정 4마다 함께 출동하던 친구 카드 1장으로 바뀌었어요.</p></div><button class="sg-primary" data-close>확인</button>`);
+  }
+  showPetResult(d){
+    const pet=R.PETS[d?.id];if(!pet)return;const up=d.gradeAfter>Math.max(0,d.gradeBefore),next=toNext(d.after),sp=pet.special,choice=d.mode==='choose-pet';
+    const unlocked=up&&d.gradeAfter>=2?`<p class="sg-flip-gold">${d.gradeAfter===2?`특수 능력이 열렸어요! ${esc(sp.name)} · ${esc(sp.text[0])}`:`${R.GRADE_NAMES[d.gradeAfter]} 능력 · ${esc(sp.text[d.gradeAfter-2])}`}</p>`:'';
+    const front=`${petImage(d.id,'sg-pet-big')}<h2>${esc(pet.name)} 카드 ×${d.qty}</h2>${d.isNew?`<p class="sg-flip-new">새 친구! ${esc(pet.role)}</p><p>${esc(R.petBuffText(d.id,d.gradeAfter))}</p>`:`<p class="sg-flip-count">${d.before}장 → <b>${d.after}장</b></p>`}<p>${medal(d.after)} ${up?`<b>${gradeName(d.after)} 달성!</b>`:next?`${next.name}까지 ${next.left}장`:'최고 등급'}</p>${unlocked}`;
+    const level=up?(d.gradeAfter>=3?3:2):d.qty>=7?2:d.qty>=3?1:0;
+    this.supplyShow({box:'part',label:choice?'친구 선물':'친구 보급',noBox:choice,front,grade:d.gradeAfter,level:choice?Math.max(1,level):level,banner:up?`${gradeName(d.after)} 달성!`:d.qty>=7?'대박! 7장':d.qty>=3?'행운! 3장':d.isNew?'새 친구!':''});
+  }
+  // ---- 일일 미션(2026-09-24 밤 사용자 "보급권 수급을 위한 미션 시스템. 일일미션 깨면 하루에 10개씩 추가로", docs/37) ----
+  // 5개 × 보급권 2장. 해내는 순간 서버가 보급권을 넣는다(받기 버튼 없음). 모험 화면 제목 옆 버튼 → 목록 창.
+  missionButton(p,passes){
+    const list=R.missionList(p,passes?.day),done=list.filter(m=>m.done),got=done.reduce((n,m)=>n+m.gifts,0);
+    return `<button class="sg-mission-btn ${done.length===list.length?'all':''}" data-do="missions">${icon('gift')}<span><b>오늘의 미션 ${done.length}/${list.length}</b><small>${done.length===list.length?'모두 해냈어요!':`보급권 ${got}/${R.MISSION_GIFTS}장 받음`}</small></span></button>`;
+  }
+  missionDialog(){
+    const {profile:p,passes}=this.state();if(!p)return;const list=R.missionList(p,passes?.day);
+    this.openDialog(`<h2>오늘의 미션</h2><p class="sg-mission-intro">해내면 바로 보급권! 다 하면 하루 <b>${R.MISSION_GIFTS}장</b>. 아침 8시에 새로 시작해요.</p><div class="sg-missions">${list.map(m=>`<div class="sg-mission ${m.done?'done':''}"><span class="sg-mission-check" aria-hidden="true">${m.done?'✓':''}</span><span class="sg-mission-text"><b>${esc(m.name)}</b>${m.hint?`<small>${esc(m.hint)}</small>`:''}<span class="sg-mission-bar"><i style="width:${Math.round(m.now/m.target*100)}%"></i></span></span><em>${m.done?'받았어요':`${m.now}/${m.target}`}<small>보급권 +${m.gifts}</small></em></div>`).join('')}</div><p class="sg-footnote sg-mission-foot">보급권은 파츠·장비·친구 보급에 써요. 이용권은 나오지 않아요.</p><button class="sg-primary" data-close>확인</button>`);
   }
   book(p){
     const tab=['skills','supports','combos'].includes(this.bookTab)?this.bookTab:'skills',f=this.bookFilter;
@@ -384,13 +427,17 @@ export class GuardianUI {
     if(b.dataset.do==='buy-supply'){await this.perform({kind:'buy-supply'});return;}
     if(b.dataset.do==='supply-help'){this.supplyHelp();return;}
     if(b.dataset.action==='swap-part'){this.swapDialog(b.dataset.id);return;}
-    if(b.dataset.do==='pet-gift'){await this.perform({kind:'gift',type:'pet',pet:this.root.querySelector('#sg-gift-pet')?.value});return;}
+    if(b.dataset.petDetail){this.petDetail(b.dataset.petDetail);return;}
+    if(b.dataset.do==='draw-pet'){await this.perform({kind:'draw-pet'});return;}
+    if(b.dataset.do==='pet-help'){this.petHelp();return;}
+    if(b.dataset.do==='missions'){this.missionDialog();return;}
+    if(b.dataset.do==='pet-mig-ok'){this.petMigSeen=true;try{localStorage.setItem('seoho_pet_mig_seen','1');}catch(e){}this.render();return;}
     if(b.dataset.action){await this.perform({kind:b.dataset.action,id:b.dataset.id,stat:b.dataset.stat,slot:b.dataset.slot});return;}
     if(b.dataset.do==='refresh'||b.dataset.do==='abandon'){this.busy=true;try{await this.c[b.dataset.do==='refresh'?'refresh':'abandon']();}catch(err){this.notify('확인해 주세요',err.message);}finally{this.busy=false;this.render();}}
   }
   async perform(a){
     this.busy=true;this.render();
-    try{const r=await this.c.action(a);if(r.draw)this.showDrawResult(r.draw);else if(['equip-gear','unequip-gear'].includes(a.kind))this.toast(r.message);else this.notify(['gift','choose-pet'].includes(a.kind)?'새로운 만남!':'저장했어요',r.message);}
+    try{const r=await this.c.action(a);if(r.draw)this.showDrawResult(r.draw);else if(['equip-gear','unequip-gear','pet'].includes(a.kind))this.toast(r.message);else this.notify(/미션 완료/.test(r.message)?'미션 완료!':'저장했어요',r.message);}
     catch(e){
       // 다른 기기·옛 화면 때문에 보급 차례가 어긋나면 서버가 아무것도 바꾸지 않고 거절한다 → 새로 불러와 맞는 칸을 보여 준다.
       if(e.data?.code==='DRAW_MODE'){try{await this.c.refresh();}catch(err){}this.notify('보급 규칙이 바뀌었어요','화면을 새로 불러왔어요. 다시 눌러 주세요. 보급권은 그대로예요.');}

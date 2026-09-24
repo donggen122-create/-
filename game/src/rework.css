@@ -441,3 +441,65 @@
 .sg-hard-line.ok{background:#e8f6ec;border-color:#86c79a;color:#185849!important}
 .sg-hard-line .sg-inline{min-height:0!important;padding:0 4px!important;font-size:13px!important}
 @media(max-width:480px){.sg-ready{font-size:12px}.sg-ready td{padding:5px 4px}}
+
+/* ---- 동물 친구 4종 · 등급 · 특수 능력(2026-09-24 밤, docs/37): 카드 가로 배치(그림 왼쪽), PC 2열 · 폰 1열 ---- */
+.sg-pet-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.sg-pet-card{display:grid;grid-template-columns:104px minmax(0,1fr);gap:4px 14px;align-items:start;padding:14px 16px!important;border-top:3px solid var(--pet-color,#8fb8a0)}
+.sg-pet-card.sg-unowned .sg-pet-pic img{filter:grayscale(.85) opacity(.55)}
+.sg-pet-card.sg-pet-choose{border:2px solid #d6b360;background:#fff9ea}
+#guardian-lobby .sg-pet-pic{padding:0!important;border:0!important;background:none!important;box-shadow:none!important;min-height:0!important;border-radius:14px}
+.sg-pet-pic>.sg-pet{width:104px;height:104px;display:block}
+.sg-pet-body{min-width:0;display:flex;flex-direction:column;gap:5px}
+.sg-pet-name{display:flex;align-items:center;flex-wrap:wrap;gap:4px 8px}
+.sg-pet-name h2{margin:0!important;font-size:19px!important}
+.sg-pet-name .sg-medal{margin-left:0}
+.sg-pet-name small{font-size:12px!important;color:var(--sg-sub);margin-left:auto}
+.sg-pet-meter{display:flex;align-items:center;gap:8px}
+.sg-pet-meter>span{flex:1;height:7px;border-radius:4px;background:#e3ebf1;overflow:hidden}
+.sg-pet-meter>span>i{display:block;height:100%;background:var(--pet-color,#4387a1)}
+.sg-pet-meter small{font-size:11.5px!important;white-space:nowrap;color:var(--sg-sub)}
+.sg-pet-buff{margin:0!important;font-size:13px!important;font-weight:700;color:#2c5467}
+.sg-pet-sp{margin:0!important;font-size:12.5px!important;line-height:1.5;color:#7b8a94;background:#f3f6f8;border-radius:9px;padding:6px 8px}
+.sg-pet-sp.on{color:#4d2a78;background:#f3ecfb}
+.sg-pet-sp b{margin-right:3px}
+.sg-pet-actions{display:flex;align-items:center;gap:8px}
+#guardian-lobby .sg-pet-actions>button:first-child{flex:1;min-height:40px;padding:7px 10px!important;font-size:13px!important}
+#guardian-lobby .sg-pet-actions>.sg-inline{min-height:0!important}
+.sg-pet-mig b{color:#63359a}
+.sg-pet-big{width:120px!important;height:120px!important;object-fit:contain}
+.sg-dialog-icon>.sg-pet-big{display:block;margin:0 auto}
+.sg-sup-card>.sg-pet{width:112px;height:112px;object-fit:contain}
+@media(max-width:760px){
+ .sg-pet-grid{grid-template-columns:1fr;gap:8px}
+ .sg-pet-card{grid-template-columns:78px minmax(0,1fr);gap:3px 10px;padding:10px 12px!important}
+ .sg-pet-pic>.sg-pet{width:78px;height:78px}
+ .sg-pet-name h2{font-size:17px!important}
+ .sg-pet-buff{font-size:12px!important}
+ .sg-pet-sp{font-size:11.5px!important;padding:5px 7px}
+ #guardian-lobby .sg-pet-actions>button:first-child{min-height:36px;font-size:12px!important}
+ .sg-pet-heading p{display:none}
+}
+/* ---- 일일 미션(모험 화면 제목 옆 버튼 · 목록 창) ---- */
+.sg-heading-side{display:flex;flex-direction:column;align-items:flex-end;gap:8px;flex-shrink:0}
+#guardian-lobby .sg-mission-btn{display:flex;align-items:center;gap:8px;text-align:left;border-radius:14px;padding:8px 12px!important;background:#fff8e4!important;border:1.5px solid #e6c26a!important;min-height:0}
+#guardian-lobby .sg-mission-btn.all{background:#e8f6ec!important;border-color:#86c79a!important}
+.sg-mission-btn>.sg-icon{width:26px;height:26px;flex-shrink:0}
+.sg-mission-btn b{display:block;font-size:13px}.sg-mission-btn small{display:block;font-size:11px!important;color:#7a5a12}
+.sg-missions{display:flex;flex-direction:column;gap:8px;margin:10px 0}
+.sg-mission{display:grid;grid-template-columns:28px minmax(0,1fr) auto;gap:10px;align-items:center;padding:9px 10px;border:1.5px solid var(--sg-line);border-radius:12px;background:#fbfdfe}
+.sg-mission.done{background:#e8f6ec;border-color:#9fd0ae}
+.sg-mission-check{width:26px;height:26px;border-radius:50%;border:2px solid #b9c9d3;display:grid;place-items:center;font-weight:900;color:#fff}
+.sg-mission.done .sg-mission-check{background:#2f9a6a;border-color:#2f9a6a}
+.sg-mission-text{min-width:0;display:flex;flex-direction:column;gap:2px;line-height:1.35}
+.sg-mission-text b{font-size:14px}.sg-mission-text small{font-size:11.5px;color:var(--sg-sub)}
+.sg-mission-bar{height:6px;border-radius:3px;background:#e3ebf1;overflow:hidden;margin-top:3px}
+.sg-mission-bar>i{display:block;height:100%;background:#e0a92e}
+.sg-mission.done .sg-mission-bar>i{background:#2f9a6a}
+.sg-mission>em{font-style:normal;font-weight:900;font-size:13px;text-align:right;white-space:nowrap;line-height:1.3}
+.sg-mission>em small{display:block;font-weight:700;font-size:11px;color:#9a6a00}
+@media(max-width:760px){.sg-heading-side{gap:6px}#guardian-lobby .sg-mission-btn{padding:6px 8px!important}.sg-mission-btn>.sg-icon{width:20px;height:20px}.sg-mission-btn b{font-size:12px}.sg-mission-btn small{font-size:10px!important}}
+.sg-dialog .sg-mission-intro{margin:4px 0!important;line-height:1.55;font-size:14px}
+.sg-dialog .sg-mission-foot{margin-top:6px!important;line-height:1.5}
+.sg-dialog .sg-missions{gap:6px;margin:8px 0}
+.sg-dialog .sg-mission{padding:7px 10px}
+@media(max-width:480px){.sg-dialog .sg-mission-text b{font-size:13.5px}.sg-dialog .sg-mission-text small{font-size:11px}.sg-mission{gap:8px}}

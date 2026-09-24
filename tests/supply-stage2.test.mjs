@@ -81,16 +81,6 @@ test('full slots: equipping asks which part to replace; levels stay on the remov
  assert.throws(()=>R.action(p,{kind:'equip-part',id:'PART_E1',replace:'PART_E2'}),/바꿀 파츠/);
 });
 
-test('friends: unmet friends come first, six meetings meet everyone; locked at all met + friendship 28',()=>{
- for(let seed=1;seed<=300;seed++){
-  let p=supplyProfile();const rng=rngSeed(seed);
-  for(let i=0;i<6;i++){const pet=Object.keys(R.PETS).find(id=>!p.pets.includes(id));p=R.action(p,{kind:'gift',type:'pet',pet},rng).profile;}
-  assert.equal(p.pets.length,6);
- }
- let p=supplyProfile();p.pets=Object.keys(R.PETS);p.friendship=27;p=R.action(p,{kind:'gift',type:'pet'}).profile;assert.equal(p.friendship,28);
- const before=structuredClone(p);assert.throws(()=>R.action(p,{kind:'gift',type:'pet'}),/보급권은 파츠에/);assert.deepEqual(p,before);
-});
-
 test('coin exchange: three times per game day at 300 → 450 → 600 coins, only with a server day',()=>{
  const p=supplyProfile();p.coins=2000;const D='2026-09-23',buy=(q,day=D)=>R.action(q,{kind:'buy-supply'},Math.random,{day}).profile;
  assert.throws(()=>R.action(p,{kind:'buy-supply'}),/서버/);
@@ -102,9 +92,9 @@ test('coin exchange: three times per game day at 300 → 450 → 600 coins, only
  const old=supplyProfile();old.coins=1000;old.supplyBuyDay=D;assert.equal(R.supplyExchangeCost(old,D),450,'옛 기록(하루 1번 규칙)으로 오늘 이미 1번 바꾼 학생은 다음 값부터');
 });
 
-test('failure encouragement gives at most one supply ticket per game day; friendship still grows',()=>{
- let p=supplyProfile();const g=p.gifts,f=p.friendship,fail=day=>{p=R.completeRun(p,{stage:'CH01',cleared:false,seconds:200,day}).profile;};
- for(let i=0;i<4;i++)fail('2026-09-23');assert.equal(p.gifts,g+1);assert.equal(p.friendship,f+2);
+test('failure encouragement gives at most one supply ticket per game day',()=>{
+ let p=supplyProfile();const g=p.gifts,fail=day=>{p=R.completeRun(p,{stage:'CH01',cleared:false,seconds:200,day}).profile;};
+ for(let i=0;i<4;i++)fail('2026-09-23');assert.equal(p.gifts,g+1);assert.ok(!('friendship' in p),'우정은 없앴다');
  fail('2026-09-24');fail('2026-09-24');assert.equal(p.gifts,g+2);
  const cleared=R.completeRun(p,{stage:'CH01',cleared:true,seconds:300,day:'2026-09-24'});assert.equal(cleared.reward.gifts,1,'성공 보급권은 그대로');
 });
@@ -145,10 +135,10 @@ test('API: failure supply cap follows the settlement day',async()=>{
 test('clear tickets: easy/normal 1, hard 2; each stage pays tickets for only 2 clears per game day',()=>{
  let p=supplyProfile();p.gifts=0;const clear=(stage,difficulty,day='2026-09-23')=>{const r=R.completeRun(p,{stage,cleared:true,seconds:300,difficulty,day});p=r.profile;return r.reward;};
  assert.equal(clear('CH01','easy').gifts,1);assert.equal(clear('CH01','hard').gifts,2);
- const third=clear('CH01','hard');assert.equal(third.gifts,0);assert.equal(third.stageGift.capped,true);assert.ok(third.coins>0,'코인·별은 그대로');assert.equal(third.friendship,1);
+ const third=clear('CH01','hard');assert.equal(third.gifts,0);assert.equal(third.stageGift.capped,true);assert.ok(third.coins>0,'코인·별은 그대로');assert.deepEqual(third.missions.map(m=>m.id),['win3'],'일일 미션은 보급권 상한과 따로');
  assert.equal(clear('CH02','normal').gifts,1,'다른 단계는 따로 센다');assert.equal(R.stageGiftLeft(p,'CH02','2026-09-23'),1);assert.equal(R.stageGiftLeft(p,'CH01','2026-09-23'),0);
  assert.equal(clear('CH01','hard','2026-09-24').gifts,2,'다음 날(아침 8시) 다시');assert.equal(R.stageGiftLeft(p,'CH01','2026-09-24'),1);assert.equal(R.stageGiftLeft(p,'CH02','2026-09-24'),2);
- assert.equal(p.gifts,1+2+0+1+2);
+ assert.equal(p.gifts,1+2+0+1+2+(2+2)+2,'성공 보급권 + 일일 미션(첫 성공·3번 성공, 다음 날 첫 성공)');
  const lost=R.completeRun(p,{stage:'CH03',cleared:false,seconds:100,day:'2026-09-24'});assert.equal(lost.reward.gifts,0);assert.equal(lost.reward.stageGift,null,'실패는 횟수에 안 들어감');
 });
 
@@ -162,5 +152,5 @@ test('API: the third clear of the same stage in a day pays no ticket; the settle
  const p=supplyProfile();p.difficulty='hard';p.gifts=0;const env=await setup(p);let t=now;const win=async()=>{const s=await api(env,'/play/start',{stage:'CH01'},t);const r=await api(env,'/play/finish',{runId:s.runId,cleared:true,seconds:300},t+301000);t+=310000;return r;};
  assert.equal((await win()).reward.gifts,2);assert.equal((await win()).reward.gifts,2);const third=await win();assert.equal(third.reward.gifts,0);assert.equal(third.reward.stageGift.capped,true);
  t=Date.parse('2026-09-23T23:05Z');assert.equal((await win()).reward.gifts,2,'아침 8시 뒤 새 날');
- assert.equal((await getProfile(env.DB,'qa')).profile.gifts,6);
+ assert.equal((await getProfile(env.DB,'qa')).profile.gifts,6+(2+2)+2,'일일 미션 보급권 포함');
 });

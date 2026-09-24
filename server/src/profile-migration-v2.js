@@ -1,4 +1,4 @@
-import {freshProfile,PARTS,partResetRefund} from '../../game/src/rework-core.js';
+import {freshProfile,PARTS,partResetRefund,migratePets} from '../../game/src/rework-core.js';
 
 export const GEAR_PART_MAP={water_WPN:'PART_W1',water_ARM:'PART_W2',water_BTS:'PART_W2',wind_WPN:'PART_V1',wind_ARM:'PART_V2',wind_BTS:'PART_V2',seed_WPN:'PART_E1',seed_ARM:'PART_E2',seed_BTS:'PART_E2'};
 export const OBSOLETE_PARTS={PART_E3:'PART_E2',PART_V3:'PART_V2',PART_W3:'PART_W2'};
@@ -36,5 +36,7 @@ export function migrateProfileV2(previous){
  p.giftCounts={part:previous.giftCounts?.gear||0,pet:previous.giftCounts?.pet||0};
  p.weaponMode='melee';p.weaponElement='neutral';p.skillUsage={};p.fusionUsage={};
  delete p.gear;delete p.equipped;delete p.levels;delete p.starter;
- return p;
+ // 친구(2026-09-24 밤): 옛 6종·우정 → 4종 친구 카드. freshProfile의 빈 카드 값이 옛 친구를 가리지 않게 지우고 바꾼다.
+ delete p.petCopies;delete p.petVersion;
+ return migratePets(p);
 }

@@ -101,6 +101,6 @@ test('시험용 슈퍼 계정: 관리자만, qa로 시작하는 계정만 모든
   const r = await call(env, '/admin/test-profile', { token: owner, body: { id: 'qasuper' } });
   assert.equal(r.status, 200); assert.equal(r.stages, 10); assert.equal(r.parts, 10); assert.deepEqual(r.training, { attack: 100, hp: 100, speed: 100 });
   const row = env.DB.sql.prepare("SELECT state FROM guardian_profiles WHERE user_id='qasuper'").get(), p = JSON.parse(row.state);
-  assert.ok(p.stages.CH10.cleared && p.parts.PART_L2.copies === 80 && p.pets.length === 6 && p.coins === 999999 && p.testAccount);
+  assert.ok(p.stages.CH10.cleared && p.parts.PART_L2.copies === 80 && p.pets.length === 4 && p.petCopies.otter === 80 && p.coins === 999999 && p.testAccount);
   assert.equal(env.DB.sql.prepare("SELECT COUNT(*) c FROM guardian_profiles WHERE user_id='student1' AND state LIKE '%testAccount%'").get().c, 0);
 });

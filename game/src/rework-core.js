@@ -34,16 +34,74 @@ export const GRADE_DAMAGE=[0,.10,.25,.45,.80];
 export const GRADE_INTERVAL=[1,1,.95,.85,.75];
 export const LEGEND_EXTRA_CAST=.3;
 export const GRADE_STEP=.06;             // (옛 값, 쓰지 않음) 등급 피해는 GRADE_DAMAGE
-// 동물 친구 = 함께 있는 동안 계속 붙는 버프(2026-09-23, 사용자: "펫은 무용지물 → 버프 효과로"). buffs 키는 main.js 통합 스탯 키. 우정 3단계부터 ×1.2
+// 동물 친구(2026-09-24 밤 사용자 "4종으로 줄이고 유니크부터 특수능력 추가. 보급권으로"): 4종 · 친구 카드를 모아 등급(파츠·장비와 같은 1/3/7/25/80장).
+// 함께 출동한 친구 1마리의 버프(buffs, main.js 통합 스탯 키) × 등급 배율 + 유니크부터 특수 능력(유니크 1 · 에픽 2 · 전설 3단계, main.js sgPetTick).
+// 옛 6종: 참새 → 야옹이(이동 속도·공격 간격을 합침), 물범이 → 수달이(스킬 범위를 합침). 우정은 없앴다(migratePets가 함께 출동하던 친구 카드로 바꿈).
+export const PET_GRADE_MULT=[1,1.25,1.5,1.8,2.2];
 export const PETS = {
-  cat: { name: '야옹이', role: '새싹 자석', desc: '새싹 줍기 범위 +80%, 새싹 경험치 +15%', color: '#efac6a', buffs: { magnetPct: .8, xpPct: .15 } },
-  turtle: { name: '꼬북이', role: '든든한 방패', desc: '받는 피해 -15%, 시작할 때 체력 10% 보호막', color: '#82b876', buffs: { takenPct: -.15, shieldStart: .1 } },
-  otter: { name: '수달이', role: '힘 도우미', desc: '모든 스킬 피해 +15%', color: '#70bdd1', buffs: { dmgPct: .15 } },
-  sparrow: { name: '참새', role: '바람 도우미', desc: '이동 속도 +12%, 공격 간격 -10%', color: '#ceab81', buffs: { speedPct: .12, intervalPct: .10 } },
-  deer: { name: '아기사슴', role: '치료 도우미', desc: '초당 체력 0.8% 회복, 최대 체력 +15%', color: '#a7be70', buffs: { regenPct: .008, hpPct: .15 } },
-  seal: { name: '물범이', role: '범위 도우미', desc: '모든 스킬 범위 +20%', color: '#87c9db', buffs: { areaPct: .2 } },
+  otter: { name: '수달이', role: '공격 도우미', color: '#70bdd1', buffs: { dmgPct: .12, areaPct: .10 },
+    special: { key: 'splash', name: '물방울 폭탄', v: [5, 3.5], text: ['5초마다 적이 많은 곳에 물방울 폭탄(주변 적 모두 피해)', '3.5초마다 · 폭탄 피해 1.5배', '물방울 폭탄 3개를 한꺼번에'] } },
+  turtle: { name: '꼬북이', role: '방어 도우미', color: '#82b876', buffs: { takenPct: -.12, shieldStart: .10 },
+    special: { key: 'shell', name: '등껍질 방패', v: [15, 10], text: ['15초마다 보호막(최대 체력 10%)', '10초마다 · 보호막 15%', '보호막이 생길 때 주변 적 밀쳐내기'] } },
+  deer: { name: '아기사슴', role: '회복 도우미', color: '#a7be70', buffs: { regenPct: .006, hpPct: .12 },
+    special: { key: 'bloom', name: '새싹 치유', v: [30, 20], text: ['체력이 40% 아래로 떨어지면 체력 25% 회복(30초에 1번)', '20초에 1번 · 30% 회복', '판마다 1번 쓰러져도 일어남'] } },
+  cat: { name: '야옹이', role: '날쌘 도우미', color: '#efac6a', buffs: { speedPct: .08, intervalPct: .06, magnetPct: .5, xpPct: .10 },
+    special: { key: 'magnet', name: '냥냥 자석', v: [20, 12], text: ['20초마다 화면의 새싹을 모두 끌어오기', '12초마다(더 자주)', '끌어올 때 3초 동안 이동 속도 +30%'] } },
 };
-export function petBuff(p,key){const pet=PETS[p?.activePet];if(!pet)return 0;const v=pet.buffs[key]||0;return v*(friendshipLevel(p)>=3?1.2:1);}
+export const PET_IDS=Object.keys(PETS);
+export const PET_MERGE={sparrow:'cat',seal:'otter'};
+export const PET_VERSION=2;
+const PET_STAT={dmgPct:'모든 스킬 피해',areaPct:'스킬 범위',takenPct:'받는 피해',shieldStart:'시작 보호막(최대 체력)',regenPct:'초당 체력 회복',hpPct:'최대 체력',speedPct:'이동 속도',intervalPct:'공격 간격',magnetPct:'새싹 줍기 범위',xpPct:'새싹 경험치'};
+const pctLabel=v=>{const x=Math.round(Math.abs(v)*1000)/10;return `${x}%`;};
+// 그 등급의 버프 한 줄(화면·검사 공용). 공격 간격·받는 피해는 줄어드는 것이 좋은 것이라 "-"
+export function petBuffText(id,g=0){const pet=PETS[id];if(!pet)return '';const m=PET_GRADE_MULT[Math.max(0,Math.min(4,g|0))];return Object.entries(pet.buffs).map(([k,v])=>`${PET_STAT[k]} ${k==='intervalPct'||v<0?'-':'+'}${pctLabel(v*m)}`).join(' · ');}
+export const petCopies=(p,id)=>Math.max(0,Math.floor(Number(p?.petCopies?.[id])||0));
+export const hasPet=(p,id)=>own(PETS,id)&&petCopies(p,id)>0;
+export function petGrade(p,id){const c=petCopies(p,id);return c>0?grade(c):-1;}
+// 함께 출동한 친구의 특수 능력 단계: 0 없음 · 1 유니크 · 2 에픽 · 3 전설
+export function petSpecial(p){const id=p?.activePet,g=hasPet(p,id)?petGrade(p,id):-1;return g>=2?{id,key:PETS[id].special.key,tier:g-1}:null;}
+export function petBuff(p,key){const id=p?.activePet;if(!hasPet(p,id))return 0;return (PETS[id].buffs[key]||0)*PET_GRADE_MULT[petGrade(p,id)];}
+export function petDrawPool(p){return PET_IDS.filter(id=>petCopies(p,id)<LEGEND_COPIES);}
+export const needsPetMigration=p=>!!p&&p.petVersion!==PET_VERSION;
+// 옛 친구(6종 · 우정 0~28) → 4종 친구 카드. 가진 친구마다 1장(참새·물범이는 합쳐진 친구에), 우정 4마다 함께 출동하던 친구에게 1장 더
+// (우정 28 = +7장 → 유니크, 우정 8 = +2장 → 레어). 원래 값은 petMigration에 남긴다. 몇 번 불러도 같은 결과.
+export function migratePets(previous){
+ const p=structuredClone(previous);if(!needsPetMigration(p))return p;
+ const copies={},mapped=id=>own(PETS,PET_MERGE[id]||id)?PET_MERGE[id]||id:null;
+ for(const old of Array.isArray(p.pets)?p.pets:[]){const id=mapped(old);if(id)copies[id]=(copies[id]||0)+1;}
+ const wanted=mapped(p.activePet),active=wanted&&copies[wanted]?wanted:PET_IDS.find(id=>copies[id])||null;
+ const friendship=Math.max(0,Math.min(28,Math.floor(Number(p.friendship)||0))),bonus=active?Math.floor(friendship/4):0;
+ if(bonus)copies[active]+=bonus;
+ if(p.pets?.length||friendship)p.petMigration={pets:[...(p.pets||[])],activePet:p.activePet??null,friendship,bonus,to:active};
+ p.petCopies=copies;p.pets=PET_IDS.filter(id=>copies[id]>0);p.activePet=active;p.petVersion=PET_VERSION;delete p.friendship;
+ return p;
+}
+export function addPetCards(p,id,qty=1){
+ if(!own(PETS,id))throw new Error('없는 친구예요.');p.petCopies ||= {};
+ const before=petCopies(p,id),after=Math.min(LEGEND_COPIES,before+Math.max(1,Math.floor(qty)));
+ p.petCopies[id]=after;p.pets=PET_IDS.filter(x=>petCopies(p,x)>0);if(!hasPet(p,p.activePet))p.activePet=id;
+ return {id,qty,before,after,gradeBefore:before?grade(before):-1,gradeAfter:grade(after),isNew:!before,mode:'pet'};
+}
+export function petDrawMessage(d){const pet=PETS[d.id];if(d.isNew)return `${pet.name} 친구 카드${d.qty>1?` ×${d.qty}`:''}! 새 친구를 만났어요.`;return `${pet.name} 카드 ×${d.qty} · ${d.before}→${d.after}장${d.gradeAfter>d.gradeBefore?` · ${GRADE_NAMES[d.gradeAfter]} 달성!`:''}`;}
+// 일일 미션(2026-09-24 밤 사용자 "보급권 수급을 위한 미션 시스템. 일일미션 깨면 하루에 10개씩 추가로"): 게임 날짜(아침 8시)마다 5개 × 보급권 2장 = 10장.
+// 다 하는 순간 보급권이 바로 들어온다(받기 버튼 없음 → 못 받고 넘어가는 날이 없음). 진행은 서버가 정산(completeRun)·작업(action)에서 센다(ctx.day).
+export const MISSIONS=[
+ {id:'win1',name:'도전 1번 성공하기',key:'wins',target:1,gifts:2},
+ {id:'goal1',name:'환경 목표 1번 해내기',key:'goals',target:1,gifts:2,hint:'성공하면서 쓰레기 줍기·밸브 잠그기까지'},
+ {id:'grow1',name:'훈련·파츠 레벨 1번 올리기',key:'grows',target:1,gifts:2,hint:'훈련 탭 · 파츠 탭에서 코인으로'},
+ {id:'win3',name:'도전 3번 성공하기',key:'wins',target:3,gifts:2},
+ {id:'win5',name:'도전 5번 성공하기',key:'wins',target:5,gifts:2},
+];
+export const MISSION_GIFTS=MISSIONS.reduce((n,m)=>n+m.gifts,0);
+export function missionState(p,day){const m=p?.missions;return m&&day&&m.day===day?{day,counts:{...m.counts},done:[...m.done]}:{day:day||null,counts:{},done:[]};}
+export function missionList(p,day){const m=missionState(p,day);return MISSIONS.map(ms=>({...ms,now:Math.min(ms.target,m.counts[ms.key]||0),done:m.done.includes(ms.id)}));}
+function missionProgress(p,day,key,n=1){
+ if(!day||!n)return [];if(p.missions?.day!==day)p.missions={day,counts:{},done:[]};
+ const m=p.missions,done=[];m.counts[key]=(m.counts[key]||0)+n;
+ for(const ms of MISSIONS)if(ms.key===key&&!m.done.includes(ms.id)&&m.counts[key]>=ms.target){m.done.push(ms.id);p.gifts=(p.gifts||0)+ms.gifts;done.push({id:ms.id,name:ms.name,gifts:ms.gifts});}
+ return done;
+}
+const missionNote=done=>done.length?` · 미션 완료! 보급권 +${done.reduce((n,m)=>n+m.gifts,0)}`:'';
 // 난이도 3단계(2026-09-23 사용자 요청): 성공하면 쉬움 ★ · 보통 ★★ · 어려움 ★★★. 배수는 main.js sgRunConfig가 쓰고, special은 "특별한 능력을 가진 적" 비율(어려움만).
 export const DIFFICULTIES = {
   // density: 적 수 배수(STAGES.density에 곱함). hpGrowth·atkGrowth: 1분마다 새로 나오는 적의 체력·공격력 추가 증가율(스킬이 커져도 후반이 심심하지 않게)
@@ -98,7 +156,7 @@ const clampInt=(n,min,max)=>Math.max(min,Math.min(max,Math.floor(Number(n)||min)
 export function freshProfile(legacy={}) {
  const stages={};
  for(const s of STAGES){const old=legacy.progress?.chapters?.[s.id];if(old?.cleared){const count=Array.isArray(old.stars)?old.stars.filter(Boolean).length:Number(old.stars)||1;stages[s.id]={cleared:true,stars:Math.min(3,Math.max(1,count)),best:old.bestClearS||300};}}
- return {version:VERSION,coins:0,gifts:0,training:{attack:1,hp:1,speed:1},parts:{},equippedParts:[],pets:[],activePet:null,friendship:0,stages,runs:0,wins:0,failRemainder:0,giftCounts:{part:0,pet:0},milestones:{},difficulty:'easy',weaponMode:'melee',hero:legacy.hero==='minji'?'minji':'hoya',heroLocked:false,gear:{},equippedGear:{},skillUsage:{},fusionUsage:{},migratedAtVersion:VERSION};
+ return {version:VERSION,coins:0,gifts:0,training:{attack:1,hp:1,speed:1},parts:{},equippedParts:[],pets:[],petCopies:{},petVersion:PET_VERSION,activePet:null,stages,runs:0,wins:0,failRemainder:0,giftCounts:{part:0,pet:0},milestones:{},difficulty:'easy',weaponMode:'melee',hero:legacy.hero==='minji'?'minji':'hoya',heroLocked:false,gear:{},equippedGear:{},skillUsage:{},fusionUsage:{},migratedAtVersion:VERSION};
 }
 export function maxClear(p){return Math.max(0,...STAGES.filter(s=>p.stages?.[s.id]?.cleared).map(s=>Number(s.id.slice(2))));}
 export function stageUnlocked(p,id){const i=STAGES.findIndex(s=>s.id===id);return i===0||(i>0&&!!p.stages?.[STAGES[i-1].id]?.cleared);}
@@ -116,7 +174,6 @@ export function partUpgradeCost(level){return level>=10?null:60+20*(level-1);}
 export function partResetRefund(level){const n=clampInt(level,1,10)-1;return 60*n+10*n*(n-1);}
 export function grade(copies){const n=Number(copies)||0;let g=0;for(let i=1;i<GRADE_COPIES.length;i++)if(n>=GRADE_COPIES[i])g=i;return g;}
 export function nextGradeAt(copies){return GRADE_COPIES.find(n=>n>(Number(copies)||0))??null;}
-export function friendshipLevel(p){return [0,3,8,16,28].filter(n=>p.friendship>=n).length;}
 export function setCounts(p){const counts=Object.fromEntries(Object.keys(ELEMENTS).map(e=>[e,0]));for(const id of new Set(p.equippedParts||[]))if(PARTS[id]&&p.parts?.[id]?.copies>0)counts[PARTS[id].element]++;return counts;}
 export function hasPart(p,skillId){const id=skillId.startsWith('PART_')?skillId:`PART_${skillId}`;return !!(p.equippedParts?.includes(id)&&p.parts?.[id]?.copies>0);}
 export function hasGold(p,skillId){if(!hasPart(p,skillId))return false;return grade(p.parts[skillId.startsWith('PART_')?skillId:`PART_${skillId}`].copies)>=2;}
@@ -209,7 +266,7 @@ export function hardReadiness(p,stageId){
  for(const it of items)it.ok=it.now>=it.need;
  return {chapter:ch,items,ready:items.every(it=>it.ok),missing:items.filter(it=>!it.ok).length};
 }
-// 시험용 슈퍼 계정(2026-09-24 사용자 "테스트 목적의 슈퍼 계정"): 모든 단계 성공(별 3) · 훈련 · 파츠 10종 · 친구 6마리 · 코인·보급권 넉넉히.
+// 시험용 슈퍼 계정(2026-09-24 사용자 "테스트 목적의 슈퍼 계정"): 모든 단계 성공(별 3) · 훈련 · 파츠 10종 · 친구 4마리(파츠와 같은 카드 수) · 코인·보급권 넉넉히.
 // 서버 관리 API(/api/admin/test-profile)가 'qa'로 시작하는 계정에만 쓴다. copies 80 = 전설, 25 = 에픽. 주인공·무기·난이도는 그대로 둔다.
 export const TEST_ACCOUNT_RE=/^qa[a-z0-9_]{0,10}$/;
 export function superTestProfile(base,{training=100,copies=80,level=10}={}){
@@ -217,7 +274,8 @@ export function superTestProfile(base,{training=100,copies=80,level=10}={}){
  p.training={attack:t,hp:t,speed:t};p.coins=999999;p.gifts=99;
  for(const s of STAGES)p.stages[s.id]={...(p.stages[s.id]||{}),cleared:true,stars:3};
  p.parts=Object.fromEntries(Object.keys(PARTS).map(id=>[id,{copies:clampInt(copies,1,LEGEND_COPIES),level:clampInt(level,1,10)}]));
- p.equippedParts=Object.keys(PARTS).slice(0,3);p.pets=Object.keys(PETS);p.activePet=p.activePet&&PETS[p.activePet]?p.activePet:'otter';p.friendship=28;
+ p.equippedParts=Object.keys(PARTS).slice(0,3);
+ const petN=clampInt(copies,1,LEGEND_COPIES);p.petCopies=Object.fromEntries(PET_IDS.map(id=>[id,petN]));p.pets=[...PET_IDS];p.petVersion=PET_VERSION;delete p.friendship;p.activePet=own(PETS,p.activePet)?p.activePet:'otter';
  p.milestones={...(p.milestones||{}),firstPart:true,firstPet:true,bossPet:true,firstGear:true};p.testAccount=true;
  // 장비(2026-09-24): 내 캐릭터 장비 12종을 같은 개수·그 개수의 등급으로, 원거리 세트 6개 장착
  p.heroLocked=true;p.gear=Object.fromEntries(gearIdsFor(p.hero).map(id=>[id,{copies:clampInt(copies,1,LEGEND_COPIES),grade:grade(clampInt(copies,1,LEGEND_COPIES))}]));
@@ -233,13 +291,13 @@ export function addPart(p,id,qty=1){
  const autoEquipped=!p.equippedParts.includes(id)&&p.equippedParts.length<3;if(autoEquipped)p.equippedParts.push(id);
  return {id,qty,before,after,gradeBefore:isNew?-1:grade(before),gradeAfter:grade(after),isNew,autoEquipped};
 }
-export function addPet(p,id){if(p.pets.includes(id)){if(p.friendship>=28){p.coins+=60;return '친구 도감 완성 보상: 코인 60개';}p.friendship=Math.min(28,p.friendship+1);return '다시 만난 친구 → 우정 +1';}p.pets.push(id);p.activePet ||= id;return `${PETS[id].name}와 친구가 되었어요!`;}
 export function pendingPart(p){return p?.stages?.CH01?.cleared&&!p.milestones?.firstPart?{key:'firstPart',ids:Object.keys(PARTS)}:null;}
-export function pendingPet(p){if(!p)return null;if(maxClear(p)>=3&&!p.milestones?.firstPet)return {key:'firstPet',ids:['cat','turtle','otter']};if(p.stages?.CH05?.cleared&&!p.milestones?.bossPet){const ids=Object.keys(PETS).filter(id=>!p.pets.includes(id));return {key:'bossPet',ids:ids.length?ids:['cat'],allOwned:!ids.length};}return null;}
+// 친구 고르기(카드는 보급권을 쓰지 않음): 1-3 첫 성공 → 4종 중 1마리 카드 1장, 1-5 첫 성공 → 4종 중 1마리 카드 3장(이미 있는 친구도 고를 수 있음).
+export function pendingPet(p){if(!p)return null;if(maxClear(p)>=3&&!p.milestones?.firstPet)return {key:'firstPet',ids:[...PET_IDS],qty:1};if(p.stages?.CH05?.cleared&&!p.milestones?.bossPet)return {key:'bossPet',ids:[...PET_IDS],qty:3};return null;}
 // 별 = 난이도(쉬움 1 · 보통 2 · 어려움 3). 난이도는 출동 전 settings로 프로필에 저장된 값을 서버가 그대로 읽는다(클라이언트가 보낸 값은 쓰지 않음).
 // 환경 목표(쓰레기 줍기)는 별 대신 코인 +30. bossSeconds·hpFraction은 기록용으로만 받는다.
 export function completeRun(profile,{stage,cleared,seconds,litter=0,hpFraction=0,bossSeconds=Infinity,skillIds=[],fusionIds=[],supportIds=[],equippedPartIds=null,difficulty=difficultyOf(profile),day=null}) {
- const p=clone(profile),index=Number(stage.slice(2)),st=STAGES[index-1],diff=DIFFICULTIES[difficulty]||DIFFICULTIES.easy;
+ const p=migratePets(profile),index=Number(stage.slice(2)),st=STAGES[index-1],diff=DIFFICULTIES[difficulty]||DIFFICULTIES.easy;
  if(!st)throw new Error('없는 단계예요.');
  const first=cleared&&!p.stages[stage]?.cleared,intro=['CH01','CH02'].includes(stage)&&!p.stages[stage]?.cleared;
  const goal=cleared&&litter>=st.target;
@@ -252,11 +310,13 @@ export function completeRun(profile,{stage,cleared,seconds,litter=0,hpFraction=0
   const used=p.stageGifts.counts[stage]||0;if(used>=STAGE_GIFT_CLEARS_PER_DAY)clearGifts=0;else p.stageGifts.counts[stage]=used+1;
   stageGift={left:STAGE_GIFT_CLEARS_PER_DAY-(p.stageGifts.counts[stage]||0),capped:!clearGifts,limit:STAGE_GIFT_CLEARS_PER_DAY};
  }
- let gifts=clearGifts+(first&&index%5===0?1:0),friendship=cleared?1:0;
+ let gifts=clearGifts+(first&&index%5===0?1:0);
  p.runs++;if(cleared)p.wins++;
- // 실패 격려(150초 이상 실패 2번): 우정은 매번, 보급권은 게임 날짜마다 1장까지(실패만 반복해 보급권을 모으지 못하게). day는 서버가 넣는다.
- if(!cleared&&seconds>=150){p.failRemainder++;if(p.failRemainder>=2){p.failRemainder-=2;friendship++;if(!day||p.failGiftDay!==day){gifts++;if(day)p.failGiftDay=day;}}}
- p.coins+=coins;p.gifts+=gifts;p.friendship=Math.min(28,p.friendship+friendship);
+ // 실패 격려(150초 이상 실패 2번): 보급권은 게임 날짜마다 1장까지(실패만 반복해 보급권을 모으지 못하게). day는 서버가 넣는다.
+ if(!cleared&&seconds>=150){p.failRemainder++;if(p.failRemainder>=2){p.failRemainder-=2;if(!day||p.failGiftDay!==day){gifts++;if(day)p.failGiftDay=day;}}}
+ p.coins+=coins;p.gifts+=gifts;
+ // 일일 미션: 성공 횟수 · 환경 목표(보급권은 missionProgress가 바로 더함, reward.gifts와 따로 보여 준다)
+ const missions=cleared?[...missionProgress(p,day,'wins'),...(goal?missionProgress(p,day,'goals'):[])]:[];
  const stars=cleared?diff.stars:0;
  if(cleared){const prev=p.stages[stage]||{};p.stages[stage]={cleared:true,stars:Math.max(prev.stars||0,stars),best:Math.min(prev.best??Infinity,seconds)};}
  p.skillUsage ||= {};p.fusionUsage ||= {};
@@ -273,15 +333,15 @@ export function completeRun(profile,{stage,cleared,seconds,litter=0,hpFraction=0
    partActivity.push({id,active});
   }
  }
- return {profile:p,reward:{coins,gifts,friendship,stars,first,partActivity,stageGift,difficulty:own(DIFFICULTIES,difficulty)?difficulty:'easy',goal,notes:first?[st.unlock]:[]}};
+ return {profile:p,reward:{coins,gifts,missions,stars,first,partActivity,stageGift,difficulty:own(DIFFICULTIES,difficulty)?difficulty:'easy',goal,notes:first?[st.unlock]:[]}};
 }
 // ctx.day = 서버가 넣는 게임 날짜(아침 8시 기준). 코인 교환처럼 하루 한 번인 작업에 쓴다.
 export function action(profile,a,rng=Math.random,ctx={}){
- const p=clone(profile);let message='저장했어요.',draw=null;
+ const p=migratePets(profile);let message='저장했어요.',draw=null;
  const check=(ok,msg)=>{if(!ok)throw new Error(msg);};
  const pickIndex=n=>Math.min(n-1,Math.max(0,Math.floor(rng()*n)));
  if(a.kind==='train'){
-  check(Object.hasOwn(SLOTS,a.stat),'훈련을 골라 주세요.');const cost=trainingCost(p.training[a.stat]);check(cost!==null,'이미 최고 단계예요.');check(p.coins>=cost,'코인을 더 모아 주세요.');p.coins-=cost;p.training[a.stat]++;message=`${SLOTS[a.stat]} ${p.training[a.stat]}단계! 두 주인공에게 함께 적용돼요.`;
+  check(Object.hasOwn(SLOTS,a.stat),'훈련을 골라 주세요.');const cost=trainingCost(p.training[a.stat]);check(cost!==null,'이미 최고 단계예요.');check(p.coins>=cost,'코인을 더 모아 주세요.');p.coins-=cost;p.training[a.stat]++;message=`${SLOTS[a.stat]} ${p.training[a.stat]}단계! 두 주인공에게 함께 적용돼요.`+missionNote(missionProgress(p,ctx.day,'grows'));
  }else if(a.kind==='equip-part'){
   check(own(PARTS,a.id)&&p.parts[a.id]?.copies>0,'아직 없는 파츠예요.');p.equippedParts=(p.equippedParts||[]).filter(x=>PARTS[x]);
   // 칸이 가득 차면 replace로 바꿀 파츠를 받는다(뺀 파츠의 레벨·개수는 그대로 남음)
@@ -292,7 +352,7 @@ export function action(profile,a,rng=Math.random,ctx={}){
  }else if(a.kind==='unequip-part'){
   check(own(PARTS,a.id)&&p.parts[a.id]?.copies>0,'아직 없는 파츠예요.');p.equippedParts=p.equippedParts.filter(id=>id!==a.id);message='파츠를 보관했어요.';
  }else if(a.kind==='upgrade-part'){
-  check(own(PARTS,a.id)&&p.parts[a.id]?.copies>0,'아직 없는 파츠예요.');const cost=partUpgradeCost(p.parts[a.id].level);check(cost!==null,'이미 최고 단계예요.');check(p.coins>=cost,'코인을 더 모아 주세요.');p.coins-=cost;p.parts[a.id].level++;message=`${PARTS[a.id].name} Lv.${p.parts[a.id].level}! 이 스킬 피해 +${Math.round((p.parts[a.id].level-1)*PART_LEVEL_STEP*100)}%`;
+  check(own(PARTS,a.id)&&p.parts[a.id]?.copies>0,'아직 없는 파츠예요.');const cost=partUpgradeCost(p.parts[a.id].level);check(cost!==null,'이미 최고 단계예요.');check(p.coins>=cost,'코인을 더 모아 주세요.');p.coins-=cost;p.parts[a.id].level++;message=`${PARTS[a.id].name} Lv.${p.parts[a.id].level}! 이 스킬 피해 +${Math.round((p.parts[a.id].level-1)*PART_LEVEL_STEP*100)}%`+missionNote(missionProgress(p,ctx.day,'grows'));
  }else if(a.kind==='reset-part'){
   check(own(PARTS,a.id)&&p.parts[a.id]?.copies>0,'아직 없는 파츠예요.');const refund=partResetRefund(p.parts[a.id].level);p.parts[a.id].level=1;p.coins+=refund;message=`레벨을 1로 되돌리고 코인 ${refund}개를 돌려받았어요. 메달과 개수는 그대로예요.`;
  }else if(a.kind==='choose-part'){
@@ -310,14 +370,19 @@ export function action(profile,a,rng=Math.random,ctx={}){
   const n=supplyBuysToday(p,ctx.day),cost=supplyExchangeCost(p,ctx.day),max=SUPPLY_EXCHANGE_COSTS.length;
   check(cost!==null,`오늘은 ${max}번 다 바꿨어요. 내일 아침 8시에 다시 바꿀 수 있어요.`);check(p.coins>=cost,`코인 ${cost}개가 필요해요.`);
   p.coins-=cost;p.gifts++;p.supplyBuy={day:ctx.day,count:n+1};p.supplyBuyDay=ctx.day;message=`코인 ${cost}개로 보급권 1장을 받았어요! (오늘 ${n+1}/${max}번)`;
- }else if(a.kind==='pet'){check(p.pets.includes(a.id),'아직 만나지 못한 친구예요.');p.activePet=a.id;message=`${PETS[a.id].name}와 함께 출동해요!`;}
- else if(a.kind==='choose-pet'){const pending=pendingPet(p);check(pending&&pending.ids.includes(a.id),'지금 고를 수 있는 친구가 아니에요.');p.milestones[pending.key]=true;if(pending.allOwned){p.coins+=60;message='친구를 모두 만났어요! 코인 60개';}else message=addPet(p,a.id);}
- else if(a.kind==='gift'){
-  check(a.type==='pet','파츠 보급에서 원소를 골라 주세요.');check(!!p.stages.CH01?.cleared,'1-1을 성공하면 보급이 열려요.');check(p.gifts>0,'보급권이 더 필요해요.');
-  // 친구 만나기(2차): 아직 못 만난 친구가 먼저 → 누구나 6번이면 모두 만난다. 모두 만나고 우정 28이면 잠근다(보급권은 파츠에).
-  const pool=Object.keys(PETS),unowned=pool.filter(id=>!p.pets.includes(id));check(unowned.length||p.friendship<28,'친구를 모두 만났고 우정도 가득해요! 보급권은 파츠에 써요.');
-  const count=p.giftCounts.pet+1,choice=count%5===0&&unowned.length>0;check(!choice||unowned.includes(a.pet),'아직 없는 친구를 골라 주세요.');
-  message=addPet(p,choice?a.pet:unowned.length?unowned[pickIndex(unowned.length)]:pool[pickIndex(pool.length)]);p.gifts--;p.giftCounts.pet=count;
+ }else if(a.kind==='pet'){check(hasPet(p,a.id),'아직 만나지 못한 친구예요.');p.activePet=a.id;message=`${PETS[a.id].name}와 함께 출동해요!`;}   // 네 친구 이름 모두 받침 없음
+ else if(a.kind==='choose-pet'){
+  const pending=pendingPet(p);check(pending&&pending.ids.includes(a.id),'지금 고를 수 있는 친구가 아니에요.');p.milestones[pending.key]=true;
+  draw={...addPetCards(p,a.id,pending.qty),mode:'choose-pet'};p.activePet=a.id;message=draw.isNew?`${PETS[a.id].name}와 친구가 되었어요!${pending.qty>1?` 친구 카드 ${pending.qty}장`:''}`:petDrawMessage(draw);
+ }else if(a.kind==='gift'){
+  // 옛 화면의 "친구 만나기"(우정) 요청: 아무것도 바꾸지 않고 새로고침 안내
+  const e=new Error('친구 보급이 새로워졌어요. 화면을 새로고침해 주세요.');e.code='DRAW_MODE';e.mode='pet';throw e;
+ }else if(a.kind==='draw-pet'){
+  // 친구 보급: 보급권 1장 → 전설이 아닌 친구 중 무작위 1마리의 카드, 장수는 파츠·장비와 같은 운(1·3·7장). 고르는 것 없음.
+  check(!!p.stages.CH01?.cleared,'1-1을 성공하면 보급이 열려요.');check(p.gifts>0,'보급권이 더 필요해요.');
+  const pool=petDrawPool(p);check(pool.length,'모든 친구가 전설이에요!');p.giftCounts ||= {part:0,pet:0};
+  const id=pool[pickIndex(pool.length)],qty=bundleFor(Math.max(0,Math.min(.999999999,rng())));
+  draw=addPetCards(p,id,qty);p.gifts--;p.giftCounts.pet=(p.giftCounts.pet||0)+1;message=petDrawMessage(draw);
  }else if(a.kind==='choose-hero'){
   // 가입할 때 한 번만: 호야/민지 고정(장비 뽑기는 이 성별 장비만)
   check(!heroLocked(p),'캐릭터는 이미 정해졌어요. 바꾸려면 선생님께 부탁해 주세요.');check(['hoya','minji'].includes(a.hero),'캐릭터를 골라 주세요.');

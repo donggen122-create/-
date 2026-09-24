@@ -34,7 +34,7 @@ def super_profile():
     p = copy.deepcopy(fresh)
     parts = ['PART_' + s for s in SKILLS]
     p.update(difficulty='normal', weaponMode='ranged', coins=999999, gifts=99, training={'attack': 100, 'hp': 100, 'speed': 60},
-             milestones={'firstPart': True, 'firstPet': True, 'bossPet': True}, pets=['otter'], activePet='otter', friendship=28,
+             milestones={'firstPart': True, 'firstPet': True, 'bossPet': True}, pets=['otter'], petCopies={'otter': 8}, activePet='otter',
              stages={f'CH{i:02d}': {'cleared': True, 'stars': 3} for i in range(1, 11)},
              parts={x: {'copies': 80, 'level': 10} for x in parts}, equippedParts=parts[:3])
     return p

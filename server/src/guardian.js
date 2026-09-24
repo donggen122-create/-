@@ -1,8 +1,9 @@
-import { VERSION, SKILLS, COMBOS, SUPPORTS, runParts, action, completeRun, stageUnlocked, durationFor, superTestProfile, TEST_ACCOUNT_RE } from '../../game/src/rework-core.js';
+import { VERSION, SKILLS, COMBOS, SUPPORTS, runParts, action, completeRun, stageUnlocked, durationFor, superTestProfile, TEST_ACCOUNT_RE, needsPetMigration, migratePets } from '../../game/src/rework-core.js';
 import { migrateLegacy } from './legacy-migration.js';
 import { migrateProfileV2, needsPartsRepair, repairObsoleteParts, PARTS_FIX_SNAPSHOT } from './profile-migration-v2.js';
 
 export const DAILY_PASSES = 10;
+export const PETS_FIX_SNAPSHOT = 2002;   // 스냅숏 키(친구 4종 개편 전 원본). 프로필 버전이 아니다.
 export const dayKey = (now=Date.now()) => new Date(now+3600000).toISOString().slice(0,10);
 export const nextReset = (now=Date.now()) => (Math.floor((now+3600000)/86400000)+1)*86400000-3600000;
 // 특별 이벤트(2026-09-23 사용자 요청): 추석 연휴 게임 날짜(아침 8시 기준) 2026-09-24·25·26에는 하루 이용권 20장 = 기본 10 + 이벤트 10.
@@ -53,10 +54,11 @@ export async function getProfile(db,id){
     await db.prepare('INSERT OR IGNORE INTO guardian_profiles(user_id,state) VALUES(?,?)').bind(id,JSON.stringify(state)).run();
     row=await db.prepare('SELECT state,revision FROM guardian_profiles WHERE user_id=?').bind(id).first();}
   for(let retry=0;retry<6;retry++){
-    const profile=JSON.parse(row.state),isLegacy=profile.version!==VERSION;
-    if(!isLegacy&&!needsPartsRepair(profile))return {profile,revision:row.revision};
-    const next=isLegacy?migrateProfileV2(profile):repairObsoleteParts(profile);
-    const target=isLegacy?2:PARTS_FIX_SNAPSHOT;
+    const profile=JSON.parse(row.state),isLegacy=profile.version!==VERSION,partsFix=!isLegacy&&needsPartsRepair(profile);
+    if(!isLegacy&&!partsFix&&!needsPetMigration(profile))return {profile,revision:row.revision};
+    // 친구 4종 개편(2026-09-24 밤): 옛 친구·우정 → 친구 카드. 원본은 스냅숏 PETS_FIX_SNAPSHOT에 남는다.
+    const next=isLegacy?migrateProfileV2(profile):migratePets(repairObsoleteParts(profile));
+    const target=isLegacy?2:partsFix?PARTS_FIX_SNAPSHOT:PETS_FIX_SNAPSHOT;
     // Snapshot + revision-checked write are atomic. Concurrent teacher grants are never overwritten.
     await db.batch([
       db.prepare('INSERT OR IGNORE INTO guardian_profile_snapshots(user_id,target_version,state,revision,created_at) SELECT user_id,?,state,revision,? FROM guardian_profiles WHERE user_id=? AND revision=?').bind(target,Date.now(),id,row.revision),

@@ -25,7 +25,7 @@ def super_profile():
     p = copy.deepcopy(fresh)
     parts = ['PART_F1', 'PART_F2', 'PART_W1', 'PART_W2', 'PART_E1', 'PART_E2', 'PART_V1', 'PART_V2', 'PART_L1', 'PART_L2']
     p.update(difficulty='normal', weaponMode='ranged', coins=999999, gifts=99, training={'attack': 60, 'hp': 60, 'speed': 40},
-             milestones={'firstPart': True, 'firstPet': True, 'bossPet': True}, pets=['cat', 'turtle', 'otter', 'sparrow', 'deer', 'seal'], activePet='otter', friendship=28,
+             milestones={'firstPart': True, 'firstPet': True, 'bossPet': True}, pets=['otter', 'turtle', 'deer', 'cat'], petCopies={'otter': 8, 'turtle': 3, 'deer': 1, 'cat': 25}, activePet='otter',
              stages={f'CH{i:02d}': {'cleared': True, 'stars': 3} for i in range(1, 11)},
              parts={x: {'copies': [1, 3, 7, 25, 80][i % 5], 'level': 1 + i % 10} for i, x in enumerate(parts)}, equippedParts=parts[:3])
     # 장비(docs/34): 등급이 섞인 호야 장비, 원거리 세트 5칸 + 근거리 무기 없이, 합성 가능한 것 포함

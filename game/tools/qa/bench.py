@@ -22,7 +22,7 @@ fresh = json.loads(subprocess.check_output(['node', '--input-type=module', '-e',
 def profile():
     p = json.loads(json.dumps(fresh)); parts = ['PART_F1', 'PART_W1', 'PART_L1']
     p.update(difficulty='normal', weaponMode='ranged', training={'attack': 60, 'hp': 60, 'speed': 40}, milestones={'firstPart': True, 'firstPet': True, 'bossPet': True},
-             pets=['otter'], activePet='otter', friendship=28, stages={f'CH{i:02d}': {'cleared': True, 'stars': 2} for i in range(1, 11)},
+             pets=['otter'], petCopies={'otter': 8}, activePet='otter', stages={f'CH{i:02d}': {'cleared': True, 'stars': 2} for i in range(1, 11)},
              parts={x: {'copies': 25, 'level': 5} for x in parts}, equippedParts=parts)
     if args.gear != 'none':
         slots = ['helm', 'armor', 'shoes', 'gloves', 'necklace', 'weapon']; st = f'hoya_{args.gear}'

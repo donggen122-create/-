@@ -8,7 +8,7 @@ const num=(n,max=1e9)=>Math.max(0,Math.min(max,Math.floor(Number(n)||0)));
 export function migrateLegacy(legacy={}){
   // Historic conversion remains v1; getProfile performs and snapshots the v2 conversion afterward.
   const p={...freshProfile(legacy),version:1,migratedAtVersion:1,gear:{},equipped:{WPN:null,ARM:null,BTS:null},levels:{WPN:1,ARM:1,BTS:1},giftCounts:{gear:0,pet:0},starter:'S01'},ledger={version:1,originalRetained:true,gold:num(legacy.currencies?.GOLD),upgradeRefund:0,overflowCoins:0,gearMapped:0,petsMapped:0,archivedCurrencies:{...legacy.currencies},archivedSystems:['talents','parts','collectibles','chars','chests','pity','missions','achievements']};
-  for(const key of ['training','parts','equippedParts','weaponMode','weaponElement','skillUsage','fusionUsage'])delete p[key];
+  for(const key of ['training','parts','equippedParts','weaponMode','weaponElement','skillUsage','fusionUsage','petCopies','petVersion'])delete p[key];
   p.coins=ledger.gold;
   const inv=Array.isArray(legacy.inv)?legacy.inv:Object.entries(legacy.equipment||{}).map(([id,v])=>({id,...v}));
   const grouped={};
