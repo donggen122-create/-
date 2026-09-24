@@ -91,13 +91,15 @@ test('friends: unmet friends come first, six meetings meet everyone; locked at a
  const before=structuredClone(p);assert.throws(()=>R.action(p,{kind:'gift',type:'pet'}),/보급권은 파츠에/);assert.deepEqual(p,before);
 });
 
-test('coin exchange: 300 coins for one supply ticket, once per game day, only with a server day',()=>{
- const p=supplyProfile();p.coins=700;
+test('coin exchange: three times per game day at 300 → 450 → 600 coins, only with a server day',()=>{
+ const p=supplyProfile();p.coins=2000;const D='2026-09-23',buy=(q,day=D)=>R.action(q,{kind:'buy-supply'},Math.random,{day}).profile;
  assert.throws(()=>R.action(p,{kind:'buy-supply'}),/서버/);
- const a=R.action(p,{kind:'buy-supply'},Math.random,{day:'2026-09-23'}).profile;assert.equal(a.coins,400);assert.equal(a.gifts,p.gifts+1);
- assert.throws(()=>R.action(a,{kind:'buy-supply'},Math.random,{day:'2026-09-23'}),/오늘은 이미/);
- const b=R.action(a,{kind:'buy-supply'},Math.random,{day:'2026-09-24'}).profile;assert.equal(b.coins,100);
- assert.throws(()=>R.action(b,{kind:'buy-supply'},Math.random,{day:'2026-09-25'}),/300/);
+ const a=buy(p);assert.equal(a.coins,1700);assert.equal(a.gifts,p.gifts+1);assert.equal(R.supplyExchangeCost(a,D),450);
+ const b=buy(a);assert.equal(b.coins,1250);const c=buy(b);assert.equal(c.coins,650);assert.equal(c.gifts,p.gifts+3);assert.equal(R.supplyExchangeCost(c,D),null);
+ assert.throws(()=>buy(c),/3번 다/);
+ const d=buy(c,'2026-09-24');assert.equal(d.coins,350);assert.equal(R.supplyBuysToday(d,'2026-09-24'),1);
+ const poor=supplyProfile();poor.coins=449;const e=buy(poor);assert.throws(()=>buy(e),/450/);
+ const old=supplyProfile();old.coins=1000;old.supplyBuyDay=D;assert.equal(R.supplyExchangeCost(old,D),450,'옛 기록(하루 1번 규칙)으로 오늘 이미 1번 바꾼 학생은 다음 값부터');
 });
 
 test('failure encouragement gives at most one supply ticket per game day; friendship still grows',()=>{
@@ -127,11 +129,11 @@ test('API: old screens get 409 DRAW_MODE and keep tickets; replay returns the sa
 });
 
 test('API: coin exchange uses the server game day (08:00 reset)',async()=>{
- const p=supplyProfile();p.coins=1000;const env=await setup(p);
- assert.equal((await api(env,'/guardian/action',{kind:'buy-supply'})).status,200);
- const again=await api(env,'/guardian/action',{kind:'buy-supply'},now+3600000);assert.equal(again.status,400);assert.match(again.error,/오늘은 이미/);
+ const p=supplyProfile();p.coins=2000;const env=await setup(p);
+ for(const t of [0,60000,120000])assert.equal((await api(env,'/guardian/action',{kind:'buy-supply'},now+t)).status,200);   // 300+450+600
+ const again=await api(env,'/guardian/action',{kind:'buy-supply'},now+3600000);assert.equal(again.status,400);assert.match(again.error,/3번 다/);
  const reset=Date.parse('2026-09-23T23:00Z');assert.notEqual(dayKey(reset),dayKey(now));   // 한국 시간 아침 8시가 지나면 새 날
- const next=await api(env,'/guardian/action',{kind:'buy-supply'},reset);assert.equal(next.status,200);assert.equal(next.profile.coins,400);assert.equal(next.profile.gifts,p.gifts+2);
+ const next=await api(env,'/guardian/action',{kind:'buy-supply'},reset);assert.equal(next.status,200);assert.equal(next.profile.coins,2000-1350-300);assert.equal(next.profile.gifts,p.gifts+4);
 });
 
 test('API: failure supply cap follows the settlement day',async()=>{

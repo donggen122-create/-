@@ -13,10 +13,17 @@ export const GOLD_COPIES=7;                // 유니크(옛 금): 파츠마다 �
 export const LEGEND_COPIES=80;
 // 보급 1번 = 10종 중 무작위 파츠(전설 파츠 제외)를 운으로 1개 80% · 3개 18% · 7개 2%. 고르는 것은 없다(사용자: "선택지를 주지 말자, 운이 필요하게").
 export const SUPPLY_BUNDLES=[{qty:1,chance:.8},{qty:3,chance:.18},{qty:7,chance:.02}];
-export const SUPPLY_EXCHANGE_COST=300;   // 코인 300개 → 보급권 1장, 게임 날짜(아침 8시 기준)마다 1번
+export const SUPPLY_EXCHANGE_COST=300;   // 첫 교환 값(옛 이름, 화면·검사 호환)
+// 코인 → 보급권 교환(2026-09-24 사용자 "교환은 하루 3번"): 게임 날짜(아침 8시 기준)마다 3번, 값은 300 → 450 → 600.
+export const SUPPLY_EXCHANGE_COSTS=[300,450,600];
+export function supplyBuysToday(p,day){if(!day)return 0;if(p?.supplyBuy?.day===day)return p.supplyBuy.count||0;return p?.supplyBuyDay===day?1:0;}
+export function supplyExchangeCost(p,day){const n=supplyBuysToday(p,day);return n<SUPPLY_EXCHANGE_COSTS.length?SUPPLY_EXCHANGE_COSTS[n]:null;}
 // 성공 보급권(2026-09-23 사용자): 쉬움·보통 1장, 어려움 2장. 같은 단계는 게임 날짜(아침 8시)마다 2번 성공까지만 보급권 → 여러 단계를 하도록.
 export const CLEAR_GIFTS={easy:1,normal:1,hard:2};
 export const STAGE_GIFT_CLEARS_PER_DAY=2;
+// 성공 코인 난이도 배율(2026-09-24 사용자): 쉬움 0.8 · 보통 1 · 어려움 2(처음 성공·대왕·목표 보너스 포함). 실패 코인은 늘리지 않는다
+// (실패는 이용권을 쓰지 않으니 어려움에서 일부러 실패해 코인을 모으지 못하게: 실패는 min(배율, 1)).
+export const COIN_MULT={easy:.8,normal:1,hard:2};
 export function stageGiftLeft(p,stage,day){const g=p?.stageGifts;return Math.max(0,STAGE_GIFT_CLEARS_PER_DAY-(day&&g?.day===day?(g.counts?.[stage]||0):0));}
 export const PART_LEVEL_STEP=.03;        // 레벨 1단계마다 그 스킬 피해 +3%(훈련 1단계와 같은 숫자)
 // 등급 능력(2026-09-23 저녁 사용자: "전설인데 추가 능력이 더 좋아야"): 그 파츠 스킬의 피해·발동 간격.
@@ -40,11 +47,11 @@ export const DIFFICULTIES = {
   // density: 적 수 배수(STAGES.density에 곱함). hpGrowth·atkGrowth: 1분마다 새로 나오는 적의 체력·공격력 추가 증가율(스킬이 커져도 후반이 심심하지 않게)
   // bossHp: 1-5 대왕 체력 배율(적 체력 enemyHp에 더 곱함, docs/29 — 어려움은 적 체력이 이미 5.5배라 대왕만 줄여 2분 안에 잡을 수 있게)
   // contactCap: 1초에 부딪혀서 잃을 수 있는 최대 체력 비율(둘러싸여도 빠져나올 시간). 모든 난이도: 처음 1분은 적 공격이 55%→100%로 서서히 세진다(main.js takeDamage)
-  easy:   { name: '쉬움',   stars: 1, desc: '적이 약하고 받는 피해가 적어요. 성공하면 별 1개 · 보급권 1장.', enemyHp: .9,  enemySpd: .85, taken: .4,  density: 1,   hpGrowth: 0,   atkGrowth: 0,   contactCap: .25, special: 0, bossHp: .5 },
-  normal: { name: '보통',   stars: 2, desc: '기본 난이도예요. 시간이 갈수록 적이 조금씩 강해져요. 성공하면 별 2개 · 보급권 1장.', enemyHp: 1, enemySpd: 1, taken: 1, density: 1.1, hpGrowth: .12, atkGrowth: .06, contactCap: .3, special: 0, bossHp: .85 },
+  easy:   { name: '쉬움',   stars: 1, desc: '적이 약하고 받는 피해가 적어요. 성공하면 별 1개 · 보급권 1장 · 코인 0.8배.', enemyHp: .9,  enemySpd: .85, taken: .4,  density: 1,   hpGrowth: 0,   atkGrowth: 0,   contactCap: .25, special: 0, bossHp: .5 },
+  normal: { name: '보통',   stars: 2, desc: '기본 난이도예요. 시간이 갈수록 적이 조금씩 강해져요. 성공하면 별 2개 · 보급권 1장 · 코인 1배.', enemyHp: 1, enemySpd: 1, taken: 1, density: 1.1, hpGrowth: .12, atkGrowth: .06, contactCap: .3, special: 0, bossHp: .85 },
   // 어려움(2026-09-23 저녁 사용자: "유니크 이상 파츠 + 기본 능력치 40 이상이어야 간신히 클리어"): 자동 조종 1-3 어려움 10판씩 — 훈련 40·유니크 3개 4/10,
   // 훈련 20·유니크 1/10, 훈련 40·파츠 없음 수준 1/10, 훈련 1 0/10(docs/28). 체력 ×5.5 · 받는 피해 ×4.8 · 1분마다 새 적 체력 +45%.
-  hard:   { name: '어려움', stars: 3, desc: '아주 어려워요! 기본 능력치(훈련) 40단계 이상과 유니크 이상 파츠가 있어야 겨우 버틸 수 있어요. 적이 아주 튼튼하고 세며 시간이 갈수록 더 강해져요. 원소 방패·단단 갑옷·날쌘이·회복이·쪼개지기 같은 특별한 적도 나와요. 성공하면 별 3개 · 보급권 2장.', enemyHp: 5.5, enemySpd: 1.08, taken: 4.8, density: 1.2, hpGrowth: .45, atkGrowth: .1, contactCap: .35, special: .3, bossHp: .4 },
+  hard:   { name: '어려움', stars: 3, desc: '아주 어려워요! 기본 능력치(훈련) 40단계 이상과 유니크 이상 파츠가 있어야 겨우 버틸 수 있어요. 적이 아주 튼튼하고 세며 시간이 갈수록 더 강해져요. 원소 방패·단단 갑옷·날쌘이·회복이·쪼개지기 같은 특별한 적도 나와요. 성공하면 별 3개 · 보급권 2장 · 코인 2배.', enemyHp: 5.5, enemySpd: 1.08, taken: 4.8, density: 1.2, hpGrowth: .45, atkGrowth: .1, contactCap: .35, special: .3, bossHp: .4 },
 };
 export const difficultyOf=p=>Object.hasOwn(DIFFICULTIES,p?.difficulty)?p.difficulty:'easy';
 // 어려움에서만 나오는 특별한 적(main.js가 동작·표시). weight: 뽑힐 비율. 엘리트(큰 적)는 늘 '원소 방패'.
@@ -100,7 +107,8 @@ export const isBossStage=id=>BOSS_STAGES.includes(id);
 export function durationFor(p,id){return ['CH01','CH02'].includes(id)&&!p.stages?.[id]?.cleared?180:isBossStage(id)?240:300;}
 // 훈련(기본 능력치) 만렙 100(2026-09-23 저녁 사용자). 비용 식은 그대로(100 + 25×(단계-1)), 40단계까지 한 능력치에 22,425코인, 100단계까지 131,175코인.
 export const TRAINING_MAX=100;
-export function trainingCost(level){return level>=TRAINING_MAX?null:100+25*(level-1);}
+// 훈련비(2026-09-24 사용자 "훈련비 인하"): 100+25×(단계-1) → 50+12×(단계-1). 세 가지 모두 40까지 67,275 → 32,526코인, 100까지 393,525 → 189,486코인.
+export function trainingCost(level){return level>=TRAINING_MAX?null:50+12*(level-1);}
 export const upgradeCost=trainingCost;
 export function partUpgradeCost(level){return level>=10?null:60+20*(level-1);}
 export function partResetRefund(level){const n=clampInt(level,1,10)-1;return 60*n+10*n*(n-1);}
@@ -162,7 +170,8 @@ export function completeRun(profile,{stage,cleared,seconds,litter=0,hpFraction=0
  if(!st)throw new Error('없는 단계예요.');
  const first=cleared&&!p.stages[stage]?.cleared,intro=['CH01','CH02'].includes(stage)&&!p.stages[stage]?.cleared;
  const goal=cleared&&litter>=st.target;
- const base=120+10*(index-1),coins=cleared?Math.floor(base*(intro?.6:1))+(first?120:0)+(index%5===0?60:0)+(goal?30:0):Math.floor(base*.6*Math.min(seconds/300,1));
+ const base=120+10*(index-1),mult=COIN_MULT[difficulty]??1;
+ const coins=cleared?Math.floor((Math.floor(base*(intro?.6:1))+(first?120:0)+(index%5===0?60:0)+(goal?30:0))*mult):Math.floor(base*.6*Math.min(seconds/300,1)*Math.min(mult,1));
  // 성공 보급권: 난이도별(쉬움·보통 1, 어려움 2) + 대왕 단계(1-5·2-5) 첫 성공 보너스 1. 같은 단계는 하루 2번 성공까지만(day는 서버가 넣음, 코인·우정·별은 그대로).
  let stageGift=null,clearGifts=cleared?(CLEAR_GIFTS[difficulty]||1):0;
  if(cleared&&day){
@@ -225,8 +234,9 @@ export function action(profile,a,rng=Math.random,ctx={}){
   draw={...addPart(p,selected,qty),mode};p.gifts--;p.giftCounts.part=(p.giftCounts.part||0)+1;message=drawMessage(draw);
  }else if(a.kind==='buy-supply'){
   check(!!p.stages.CH01?.cleared,'1-1을 성공하면 보급이 열려요.');check(typeof ctx.day==='string'&&ctx.day,'서버에서만 바꿀 수 있어요.');
-  check(p.supplyBuyDay!==ctx.day,'오늘은 이미 바꿨어요. 내일 아침 8시에 다시 바꿀 수 있어요.');check(p.coins>=SUPPLY_EXCHANGE_COST,`코인 ${SUPPLY_EXCHANGE_COST}개가 필요해요.`);
-  p.coins-=SUPPLY_EXCHANGE_COST;p.gifts++;p.supplyBuyDay=ctx.day;message=`코인 ${SUPPLY_EXCHANGE_COST}개로 보급권 1장을 받았어요!`;
+  const n=supplyBuysToday(p,ctx.day),cost=supplyExchangeCost(p,ctx.day),max=SUPPLY_EXCHANGE_COSTS.length;
+  check(cost!==null,`오늘은 ${max}번 다 바꿨어요. 내일 아침 8시에 다시 바꿀 수 있어요.`);check(p.coins>=cost,`코인 ${cost}개가 필요해요.`);
+  p.coins-=cost;p.gifts++;p.supplyBuy={day:ctx.day,count:n+1};p.supplyBuyDay=ctx.day;message=`코인 ${cost}개로 보급권 1장을 받았어요! (오늘 ${n+1}/${max}번)`;
  }else if(a.kind==='pet'){check(p.pets.includes(a.id),'아직 만나지 못한 친구예요.');p.activePet=a.id;message=`${PETS[a.id].name}와 함께 출동해요!`;}
  else if(a.kind==='choose-pet'){const pending=pendingPet(p);check(pending&&pending.ids.includes(a.id),'지금 고를 수 있는 친구가 아니에요.');p.milestones[pending.key]=true;if(pending.allOwned){p.coins+=60;message='친구를 모두 만났어요! 코인 60개';}else message=addPet(p,a.id);}
  else if(a.kind==='gift'){

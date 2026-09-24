@@ -179,3 +179,5 @@
 .sg-adventure .sg-stage:not(:last-child):after{content:'';position:absolute;top:50%;left:100%;width:calc(var(--gap) + 4px);margin-left:-2px;border-top:8px dashed var(--t-path);pointer-events:none}
 .sg-theme-2 .sg-stage:not(:last-child):after{border-top:10px solid var(--t-path);box-shadow:0 3px 0 #6f687d}
 @media(max-width:760px){.sg-adventure .sg-stage-map{--gap:7px}}
+/* 2장 출동 그림(어두운 공장) 위의 "캐릭터 바꾸기" 글씨가 파란색이라 잘 안 보이던 것: 밝은 노랑 + 그림자 */
+.sg-theme-2 .sg-chapter-art>span:last-child .sg-inline{color:#ffe27a!important;text-shadow:0 1px 3px #000c;text-decoration-color:#ffe27a}

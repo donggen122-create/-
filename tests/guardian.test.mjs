@@ -59,10 +59,10 @@ test('actions use optimistic revision and idempotent request IDs',async()=>{
   const env=await setup();const p=await getProfile(env.DB,'test');p.profile.coins=1000;env.DB.sql.prepare('UPDATE guardian_profiles SET state=?').run(JSON.stringify(p.profile));
   const a={requestId:uid(),kind:'train',stat:'attack'};
   const r=await api(env,'/guardian/action',a);const dup=await api(env,'/guardian/action',a);
-  assert.equal(r.profile.coins,900);assert.equal(dup.profile.coins,900);assert.equal(dup.profile.training.attack,2);
+  assert.equal(r.profile.coins,950);assert.equal(dup.profile.coins,950);assert.equal(dup.profile.training.attack,2);   // 훈련 1→2 = 50코인(2026-09-24 인하)
 });
 test('rewards, two qualifying losses, guaranteed milestones and no pass rewards',()=>{
-  let p=R.freshProfile();let r=R.completeRun(p,{stage:'CH01',cleared:true,seconds:180});assert.equal(r.reward.coins,192);assert.equal(r.reward.gifts,1);p=r.profile;
+  let p=R.freshProfile();let r=R.completeRun(p,{stage:'CH01',cleared:true,seconds:180});assert.equal(r.reward.coins,153);assert.equal(r.reward.gifts,1);p=r.profile;   // (72+120)×쉬움 0.8
   r=R.completeRun(p,{stage:'CH01',cleared:false,seconds:149});assert.equal(r.profile.failRemainder,0);
   r=R.completeRun(p,{stage:'CH01',cleared:false,seconds:150});p=r.profile;assert.equal(p.failRemainder,1);
   p=R.completeRun(p,{stage:'CH01',cleared:true,seconds:300}).profile;assert.equal(p.failRemainder,1);

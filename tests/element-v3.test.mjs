@@ -48,14 +48,14 @@ test('정산: 스킬·진화·지원품 사용 통계가 남는다', () => {
   assert.equal(r.profile.skillUsage.F1, 1); assert.equal(r.profile.fusionUsage.EVO_F1, 1); assert.equal(r.profile.supportUsage.S4, 1); assert.ok(!r.profile.supportUsage.NOPE);
 });
 
-test('난이도: 성공하면 쉬움 ★ · 보통 ★★ · 어려움 ★★★, 환경 목표는 코인 +30, 무기 원소 설정은 없음', () => {
+test('난이도: 성공하면 쉬움 ★ · 보통 ★★ · 어려움 ★★★, 환경 목표는 코인 +30(난이도 배율), 무기 원소 설정은 없음', () => {
   for (const [id, stars] of [['easy', 1], ['normal', 2], ['hard', 3]]) {
     const p = R.action(R.freshProfile(), { kind: 'settings', difficulty: id, weaponMode: 'ranged', hero: 'hoya' }).profile;
     assert.equal(p.difficulty, id); assert.ok(!('weaponElement' in p));
     const r = R.completeRun(p, { stage: 'CH01', cleared: true, seconds: 180, litter: 3, hpFraction: 1 });   // 난이도는 프로필에서 읽는다
     assert.equal(r.reward.stars, stars); assert.equal(r.profile.stages.CH01.stars, stars); assert.equal(r.reward.difficulty, id); assert.equal(r.reward.goal, true);
     const miss = R.completeRun(p, { stage: 'CH01', cleared: true, seconds: 180, litter: 0, hpFraction: 1 });
-    assert.equal(miss.reward.coins + 30, r.reward.coins); assert.equal(miss.reward.stars, stars, '체력·쓰레기는 별에 영향 없음');
+    assert.ok(Math.abs(r.reward.coins - miss.reward.coins - 30 * R.COIN_MULT[id]) <= 1); assert.equal(miss.reward.stars, stars, '체력·쓰레기는 별에 영향 없음');
     assert.equal(R.completeRun(p, { stage: 'CH01', cleared: false, seconds: 100 }).reward.stars, 0);
   }
   assert.equal(Object.keys(R.DIFFICULTIES).join(), 'easy,normal,hard');
