@@ -24,7 +24,10 @@ export function createElementCombat({ U = 32, getPlayer, getEnemies, getBoss = (
   reset();
   const player = () => getPlayer();
   const mods = () => getMods() || {};
-  const alive = () => { const b = getBoss(); return [...(getEnemies() || []), ...(b && !(getEnemies() || []).includes(b) ? [b] : [])].filter(e => e.hp > 0); };
+  // 살아 있는 적 목록: 전에는 부를 때마다(탄 하나마다·틱마다) 전체를 복사해 쓰레기가 많이 생겼다(2026-09-24 최적화) → update 한 번에 한 번 만들고,
+  // 이 모듈의 공격으로 적이 쓰러지면(hit) 다시 만든다. 결과는 같다(쓰러진 적은 늘 빠진다). 받은 배열은 고치지 말 것(filter·sort는 새 배열).
+  let aliveCache = null;
+  const alive = () => { if (!aliveCache) { const list = getEnemies() || [], b = getBoss(); aliveCache = list.filter(e => e.hp > 0); if (b && b.hp > 0 && !list.includes(b)) aliveCache.push(b); } return aliveCache; };
   // 순수하게 가장 가까운 적(유도 로켓·물풍선 튕김·지뢰 추적용 — 노린 적 기록과 무관)
   const closest = (at, range, exclude = null) => alive().filter(e => !(exclude && exclude.has(e)) && dist(e, at) <= range + (e.radiusU || .45) * U).sort((a, b) => dist(a, at) - dist(b, at))[0];
   // 같은 방향 중복 방지(2026-09-23 사용자: "스킬들이 같은 방향으로 겹쳐 날아가지 않게"): 방금(0.7초 안) 다른 스킬이 노린 적은 3칸 더 먼 것처럼 취급해
@@ -86,6 +89,7 @@ export function createElementCombat({ U = 32, getPlayer, getEnemies, getBoss = (
     if (!e || e.hp <= 0 || coef <= 0) return;
     const amount = Math.max(0, player().atk || 30) * coef * level(id) * elementDamageMultiplier(getProfile(), id) * (mods().dmgMul || 1) * sizeDmg(id);
     damage(e, amount, { x: e.x - at.x, y: e.y - at.y }, knock, element(id));   // 5번째 인자 = 원소(어려움의 저항 적 판정)
+    if (e.hp <= 0) aliveCache = null;
     stats.hits[id] = (stats.hits[id] || 0) + 1; stats.damage[id] = (stats.damage[id] || 0) + amount;
   }
   function slow(e, mul = .7, seconds = 1.5) { if (e === getBoss()) return; e.v2SlowT = Math.max(e.v2SlowT || 0, seconds); e.v2SlowMul = Math.min(e.v2SlowMul || 1, mul); }
@@ -263,7 +267,8 @@ export function createElementCombat({ U = 32, getPlayer, getEnemies, getBoss = (
       s.trail.push(old); if (s.trail.length > 6) s.trail.shift();
       let remove = s.life <= 0;
       if (!s.noContact) {
-        const touched = alive().filter(e => !s.hit.has(e) && segmentDistance(e, old, s) <= s.r + (e.radiusU || .45) * U).sort((a, b) => dist(a, old) - dist(b, old));
+        const reach = s.r + 3 * U + Math.abs(s.x - old.x) + Math.abs(s.y - old.y);   // 이 거리 밖은 닿을 수 없음(계산 줄이기)
+        const touched = alive().filter(e => Math.abs(e.x - s.x) < reach && Math.abs(e.y - s.y) < reach && !s.hit.has(e) && segmentDistance(e, old, s) <= s.r + (e.radiusU || .45) * U).sort((a, b) => dist(a, old) - dist(b, old));
         for (const e of touched) {
           s.hit.add(e);
           if (!s.noDirect) hit(s.id, e, s.coef, old, s.knock || 0);
@@ -310,7 +315,7 @@ export function createElementCombat({ U = 32, getPlayer, getEnemies, getBoss = (
     }
   }
   function update(dt) {
-    if (!player()) return; dt = clamp(Number(dt) || 0, 0, .1); clock += dt;
+    if (!player()) return; dt = clamp(Number(dt) || 0, 0, .1); clock += dt; aliveCache = null;   // 틱마다 새 목록(그 사이 생기고 쓰러진 적 반영)
     if (claimed.size > 150) for (const [e, t] of claimed) if (clock - t > .7 || e.hp <= 0) claimed.delete(e);   // 오래된 기록 정리
     const im = mods().intervalMul || 1;
     for (const [id, st] of Object.entries(player().skills || {})) {

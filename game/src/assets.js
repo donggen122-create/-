@@ -182,8 +182,10 @@ export function tintedSprite(img, colorRgba, key) {
     cx.fillRect(0, 0, w, h);
     cx.globalCompositeOperation = "source-over";
   };
-  if (img.complete && img.naturalWidth) draw();
-  else img.addEventListener("load", () => { c.width = img.naturalWidth; c.height = img.naturalHeight; draw(); }, { once: true });
+  // 2026-09-24 최적화: 캔버스를 그대로 그리면 매번 GPU로 다시 올린다 → 다 그린 뒤 ImageBitmap으로 바꿔 둔다(준비 전에는 캔버스로)
+  const toBitmap = () => { if (typeof createImageBitmap === "function") createImageBitmap(c).then((bm) => { tintCache[cacheKey] = bm; }).catch(() => {}); };
+  if (img.complete && img.naturalWidth) { draw(); toBitmap(); }
+  else img.addEventListener("load", () => { c.width = img.naturalWidth; c.height = img.naturalHeight; draw(); toBitmap(); }, { once: true });
   tintCache[cacheKey] = c;
   return c;
 }

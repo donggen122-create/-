@@ -85,8 +85,9 @@ const VIEW_MIN_TILES = 16;
 function worldZoom(W, H) { return Math.max(0.62, Math.min(1, Math.min(W, H) / (VIEW_MIN_TILES * U))); }
 function worldSpace() { ctx.setTransform(viewDpr * viewZoom, 0, 0, viewDpr * viewZoom, 0, 0); }
 function screenSpace() { ctx.setTransform(viewDpr, 0, 0, viewDpr, 0, 0); }
+let qaRatio = null;   // QA 전용: 측정할 때 그림 해상도 고정
 function resize() {
-  const dpr = renderQuality.ratio;
+  const dpr = qaRatio ?? renderQuality.ratio;
   screenW = document.documentElement.clientWidth || window.innerWidth;
   screenH = document.documentElement.clientHeight || window.innerHeight;
   viewZoom = worldZoom(screenW, screenH);
@@ -893,6 +894,7 @@ let shake = { t: 0, mag: 0 };              // 화면 흔들림
 let hitStopT = 0;                          // 큰 타격 시 짧은 정지(타격감)
 let qaFxOff = null;                        // QA 전용(효과 점검 __debugFxAudit): 잠깐 끌 그림층 이름 모음. 실제 플레이는 늘 null
 let qaNoGhost = false;                     // QA 전용: 효과 위 주인공 겹쳐 그리기를 끄고 예전 모습 재기
+let qaPerf = null;                         // QA 전용(성능 측정 __debugPerf): 계산·그리기·HUD 시간 누적. 실제 플레이는 늘 null
 let runId = null;
 
 function addShake(mag, t = 0.18) {
@@ -994,11 +996,15 @@ function updateDecor(dt) {
   }
 }
 // 장애물(solid) 밀어내기: 플레이어·적이 소품 안으로 못 들어간다. 타이어(bumper)는 적을 튕겨 내고 조금 다치게 한다(0.5초에 한 번).
+// 2026-09-24 최적화: 적 수 × 소품 수만큼 돌던 것을, 단단한 소품만 틱마다 한 번 추리고 먼 것은 제곱근 없이 넘긴다(결과 같음)
+let solidDecor = [], solidDecorTick = -1;
 function resolveObstacles(ent, r, enemy) {
-  for (const d of decor) {
-    if (!d.solid || d.opened) continue;
+  if (solidDecorTick !== simTickNo) { solidDecor = decor.filter((d) => d.solid && !d.opened); solidDecorTick = simTickNo; }
+  for (const d of solidDecor) {
+    if (d.opened) continue;
     const dx = ent.x - d.x, dy = ent.y - d.y;
     const min = d.solid + r;
+    if (dx >= min || dx <= -min || dy >= min || dy <= -min || dx * dx + dy * dy >= min * min) continue;
     const dd = Math.hypot(dx, dy);
     if (dd >= min || dd === 0) continue;
     const nx = dx / dd, ny = dy / dd;
@@ -3580,6 +3586,24 @@ function getFloorPattern() {
   return floorPattern;
 }
 
+// 고해상도 그림을 화면 크기로 미리 줄여 둔 사본(2026-09-24 최적화): 환경 테마 적(원본 약 160px)을 매 프레임 40~70px로 줄여 그리던 것을
+// 실제 화면 픽셀 크기(16px 단위)로 한 번 줄여 두고 그린다. 준비되기 전·줄일 필요가 없으면 원본 그대로. 지원하지 않는 브라우저도 원본.
+const scaledSprites = new Map();
+function scaledSprite(src, deviceH) {
+  const natH = src.naturalHeight || src.height, natW = src.naturalWidth || src.width;
+  if (!natH || typeof createImageBitmap !== "function") return src;
+  const bucket = Math.max(16, Math.ceil(deviceH / 16) * 16);
+  if (natH <= bucket * 1.25) return src;
+  let byH = scaledSprites.get(src);
+  if (!byH) { byH = new Map(); scaledSprites.set(src, byH); }
+  const hit = byH.get(bucket);
+  if (hit) return hit === "pending" || hit === "failed" ? src : hit;
+  byH.set(bucket, "pending");
+  createImageBitmap(src, { resizeHeight: bucket, resizeWidth: Math.max(1, Math.round(bucket * natW / natH)), resizeQuality: "high" })
+    .then((bm) => byH.set(bucket, bm)).catch(() => byH.set(bucket, "failed"));
+  return src;
+}
+
 // 스프라이트 하나를 그림자+바운스+틴트+피격섬광까지 포함해 그리는 공통 루틴.
 function drawEntitySprite(spriteImg, screenX, screenY, opts) {
   const {
@@ -3615,6 +3639,7 @@ function drawEntitySprite(spriteImg, screenX, screenY, opts) {
   let img = spriteImg;
   if (flash) img = tintedSprite(spriteImg, "rgba(255,255,255,0.85)", spriteImg.src + "#flash");
   else if (tint) img = tintedSprite(spriteImg, tint, spriteImg.src + tint);
+  if (smooth) img = scaledSprite(img, (opts.height ?? size) * viewDpr * viewZoom);   // 부드럽게 줄이는 고해상도 그림만(픽셀 그림은 그대로)
 
   ctx.translate(screenX, footY - drawH * 0.5 + bob);
   ctx.scale(facing, 1);
@@ -4583,13 +4608,15 @@ function draw() {
   } else {
     ctx.fillStyle = "#1a1712"; ctx.fillRect(0, 0, viewW, viewH);
   }
-  // 은은한 격자(공간감 보조)
+  // 은은한 격자(공간감 보조) — 환경 테마 바닥 그림 위에서는 거의 안 보여 그리지 않는다(2026-09-24 최적화: 선 40여 개)
+  if (!chapter?.theme) {
   ctx.strokeStyle = "rgba(255,255,255,0.03)";
   const gridSize = U * 2;
   const offX = ((cam.x % gridSize) + gridSize) % gridSize;
   const offY = ((cam.y % gridSize) + gridSize) % gridSize;
   for (let x = -offX; x < viewW; x += gridSize) { ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, viewH); ctx.stroke(); }
   for (let y = -offY; y < viewH; y += gridSize) { ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(viewW, y); ctx.stroke(); }
+  }
 
   drawDarkZones();
   if (!!chapter?.theme) themeFx.ground(ctx, worldToScreen);   // 대왕이 남긴 바닥 자국(금·끌린 자국)
@@ -4653,29 +4680,34 @@ function draw() {
 
   if (!qaFxOff?.has("blasts")) { for (const a of arcs) drawArc(a); for (const b of blasts) drawBlast(b); }
   // Cap only visual draw work; simulation and damage are unchanged.
-  if (!qaFxOff?.has("hit")) for (let i = !!chapter?.theme ? Math.max(0, hitFx.length - 96) : 0; i < hitFx.length; i++) drawHitFx(hitFx[i]);
-  if (!qaFxOff?.has("death")) for (let i = !!chapter?.theme ? Math.max(0, deathFx.length - 64) : 0; i < deathFx.length; i++) drawDeathFx(deathFx[i]);
+  // 그리는 개수만 최근 32·32개로(2026-09-24 최적화, 전 96·64) — 한꺼번에 수십 마리가 쓰러질 때 같은 자리에 겹쳐 차이가 거의 없다
+  if (!qaFxOff?.has("hit")) for (let i = !!chapter?.theme ? Math.max(0, hitFx.length - 32) : 0; i < hitFx.length; i++) drawHitFx(hitFx[i]);
+  if (!qaFxOff?.has("death")) for (let i = !!chapter?.theme ? Math.max(0, deathFx.length - 32) : 0; i < deathFx.length; i++) drawDeathFx(deathFx[i]);
   if (!!chapter?.theme && !qaFxOff?.has("themefx")) themeFx.draw(ctx, worldToScreen);
   // 2026-09-24 효과 점검: 폭발·번개처럼 큰 효과가 주인공을 덮어도 늘 보이게, 효과 위에 주인공을 옅게(50%) 한 번 더 그린다.
   // 아무것도 덮지 않았으면 같은 그림 위에 같은 그림이라 달라 보이지 않는다.
   if (!qaFxOff?.has("hero") && !qaNoGhost) { const s = worldToScreen(player.x, player.y); drawHero(s.x, s.y, 0.5); }
 
-  // 숫자 그림만 최근 40개로 제한, 진화·보상 안내는 별도로 보존한다.
-  // 휴대폰처럼 작은 화면은 숫자를 절반(20개)만 — 같은 세계 크기가 화면을 훨씬 많이 덮는다(2026-09-24 효과 점검)
-  const visibleTexts = qaFxOff?.has("text") ? [] : [...floatingTexts.filter(t=>t.big).slice(-8), ...floatingTexts.filter(t=>!t.big).slice(screenW * screenH < 400000 ? -20 : -40)];
-  for (const t of visibleTexts) {
-    if (!onScreen(t, 100)) continue;
-    const s = worldToScreen(t.x, t.y);
-    ctx.save();
-    if (t.dmg && onHeroBody(t.x, t.y)) ctx.globalAlpha = 0.45;   // 주인공 몸 위에 뜬 적 피해 숫자는 옅게(2026-09-24 효과 점검). 안내·진화 글은 그대로
-    ctx.translate(s.x, s.y);
-    const pop = (t.big ? 1.35 : 1) / Math.sqrt(viewZoom);   // 멀리서 볼 때 글자가 너무 작아지지 않게 절반만 따라 작아진다
-    ctx.scale((t.scale || 1) * pop, (t.scale || 1) * pop);
-    ctx.font = `bold ${t.big ? 19 : 15}px sans-serif`; ctx.textAlign = "center";
-    ctx.lineWidth = 3; ctx.strokeStyle = "rgba(0,0,0,0.7)";
-    ctx.strokeText(t.text, 0, 0);
-    ctx.fillStyle = t.color || "#fff2c0";
-    ctx.fillText(t.text, 0, 0);
+  // 피해 숫자·안내 글: 숫자는 최근 40개(작은 화면 20개), 진화·보상 안내는 8개까지 따로.
+  // 2026-09-24 최적화: 목록을 한 번만 훑고, 글꼴·테두리는 묶음마다 한 번만 정하고 글자마다 save/restore 대신 setTransform(전에는 글자마다 글꼴 해석).
+  if (!qaFxOff?.has("text")) {
+    const smallCap = screenW * screenH < 400000 ? 20 : 40, bigs = [], smalls = [];
+    for (let i = floatingTexts.length - 1; i >= 0 && (bigs.length < 8 || smalls.length < smallCap); i--) {
+      const t = floatingTexts[i];
+      if (t.big) { if (bigs.length < 8) bigs.push(t); } else if (smalls.length < smallCap) smalls.push(t);
+    }
+    const k = viewDpr * viewZoom, pop0 = 1 / Math.sqrt(viewZoom);   // 멀리서 볼 때 글자가 너무 작아지지 않게 절반만 따라 작아진다
+    ctx.save(); ctx.textAlign = "center"; ctx.lineWidth = 3; ctx.strokeStyle = "rgba(0,0,0,0.7)";
+    for (const [list, big] of [[bigs, true], [smalls, false]]) {
+      ctx.font = `bold ${big ? 19 : 15}px sans-serif`;
+      for (let i = list.length - 1; i >= 0; i--) {   // 오래된 것부터(새 글자가 위)
+        const t = list[i]; if (!onScreen(t, 100)) continue;
+        const s = worldToScreen(t.x, t.y), sc = (t.scale || 1) * (big ? 1.35 : 1) * pop0;
+        ctx.globalAlpha = t.dmg && onHeroBody(t.x, t.y) ? 0.45 : 1;   // 주인공 몸 위에 뜬 적 피해 숫자는 옅게(2026-09-24 효과 점검)
+        ctx.setTransform(k * sc, 0, 0, k * sc, k * s.x, k * s.y);
+        ctx.strokeText(t.text, 0, 0); ctx.fillStyle = t.color || "#fff2c0"; ctx.fillText(t.text, 0, 0);
+      }
+    }
     ctx.restore();
   }
 
@@ -4695,6 +4727,7 @@ function draw() {
     const vg=g.createRadialGradient(screenW/2,screenH/2,screenH*.35*vision,screenW/2,screenH/2,screenH*.75*vision);
     vg.addColorStop(0,'rgba(0,0,0,0)');vg.addColorStop(1,`rgba(${themed?'40,50,20':'5,4,10'},${edge})`);
     g.fillStyle=vg;g.fillRect(0,0,screenW,screenH);vignetteCache={key:vgKey,image};
+    if(typeof createImageBitmap==='function'){const cache=vignetteCache;createImageBitmap(image).then(bm=>{if(vignetteCache===cache)cache.image=bm;}).catch(()=>{});}   // 2026-09-24 최적화: 캔버스 대신 ImageBitmap
   }
   ctx.save();ctx.imageSmoothingEnabled=true;ctx.drawImage(vignetteCache.image,0,0,screenW,screenH);ctx.restore();
   if (inDark) {
@@ -4727,8 +4760,10 @@ function updateHud() {
 }
 
 // ---------- Simulation tick (렌더 타이밍과 분리 — docs/14 §2 "시뮬 자체 고정 틱, 렌더 분리" 원칙) ----------
+let simTickNo = 0;
 function simTick(dt) {
   if (mode !== "playing") return;
+  simTickNo++;
   runTime += dt;
   stageTime += dt;
   if(runCfg.bossStage&&runTime>=360){endRun(false);return;}
@@ -4781,6 +4816,10 @@ function simTick(dt) {
   }
   for (let i = hitFx.length - 1; i >= 0; i--) { hitFx[i].life -= dt; if (hitFx[i].life <= 0) hitFx.splice(i, 1); }
   for (let i = deathFx.length - 1; i >= 0; i--) { deathFx[i].life -= dt; if (deathFx[i].life <= 0) deathFx.splice(i, 1); }
+  // 2026-09-24 최적화: 후반 난전에서 숫자·효과가 수백 개 쌓이지 않게 오래된 것부터 버린다(보이는 것은 어차피 최근 것만 그린다). 안내 글(big)은 남긴다.
+  if (floatingTexts.length > 90) { let drop = floatingTexts.length - 90; floatingTexts = floatingTexts.filter((t) => (t.big && !t.dmg) || drop-- <= 0); }   // 큰 피해 숫자(치명타)도 버리고 진화·보상 안내만 남긴다
+  if (hitFx.length > 120) hitFx.splice(0, hitFx.length - 120);
+  if (deathFx.length > 120) deathFx.splice(0, deathFx.length - 120);
 }
 
 // ---------- Main loop ----------
@@ -4788,6 +4827,7 @@ const FIXED_DT = 1 / 60;
 const frameClock = createFrameClock(FIXED_DT, 4);
 let lastT = performance.now();
 function loop(now) {
+  const rawMs = now - lastT;   // QA 측정용(자르기 전 실제 프레임 간격)
   let realDt = (now - lastT) / 1000;
   lastT = now;
   if (realDt > 0.25) realDt = 0.25; // 탭 비활성 등으로 인한 큰 점프는 다음 프레임에서 스킵(순간이동 방지)
@@ -4797,13 +4837,18 @@ function loop(now) {
     frameClock.reset();
   } else {
     const steps = frameClock.advance(realDt, mode === "playing" && !document.hidden, debugFast ? 8 : 1);
+    const t0 = qaPerf && performance.now();
     for (let i = 0; i < steps; i++) simTick(FIXED_DT);
+    if (qaPerf) { qaPerf.sim += performance.now() - t0; qaPerf.steps += steps; }
   }
   // 큰 폭발의 짧은 타격 멈춤(히트스톱) 프레임도 그대로 잰다 — 전에는 그때마다 측정이 처음으로 돌아가 후반 난전에서 화질이 늦게 내려갔다.
   if(renderQuality.sample(realDt,mode==='playing'&&!debugFast&&!document.hidden))resize();
+  const t1 = qaPerf && performance.now();
   draw();
+  const t2 = qaPerf && performance.now();
   updateHud();
   sgHud();
+  if (qaPerf) { const t3 = performance.now(); qaPerf.draw += t2 - t1; qaPerf.hud += t3 - t2; qaPerf.frames++; qaPerf.dts.push(rawMs); qaPerf.ratio = renderQuality.ratio; }
   elPauseBtn.classList.toggle("hidden", !(mode === "playing" || mode === "paused"));
   if (mode === "playing" && (hudLayoutTick = (hudLayoutTick + 1) % 45) === 0) layoutHud();   // 글자 폭이 바뀌어도(성장 24/24 등) 0.75초 안에 다시 맞춘다
   requestAnimationFrame(loop);
@@ -4886,6 +4931,26 @@ window.__debugFreeze = function (seconds) { hitStopT = seconds; return hitStopT;
 //  cover = 효과가 바꾼 화면 비율, near = 주인공 둘레(반지름 nearU칸) 중 바뀐 비율, hero = 주인공 그림 중 바뀐 비율(heavy = 거의 덮임),
 //  white = 효과 때문에 하얗게 된 화면 비율(번쩍임). split에 적은 층은 따로(그 층만 켰을 때)도 잰다. step = 몇 픽셀마다 볼지.
 window.__debugNoGhost = function (on) { qaNoGhost = !!on; return qaNoGhost; };
+// QA 전용: 계산·그리기 반복 측정 — simSeconds초 만큼 계산(틱당 ms), 같은 장면을 drawN번 그리기(한 번당 ms). 게임 규칙에는 영향 없음
+window.__debugBench = function (simSeconds = 5, drawN = 60, tank = false, ratio = null) {
+  if (ratio) { qaRatio = ratio; resize(); }
+  if (tank) for (const e of enemies) { e.hp = e.hpMax = 1e9; }   // 난전이 끝나지 않게(측정 전용)
+  const n = Math.round(simSeconds * 60), t0 = performance.now();
+  for (let i = 0; i < n; i++) simTick(FIXED_DT);
+  const t1 = performance.now();
+  for (let i = 0; i < drawN; i++) draw();
+  const t2 = performance.now();
+  return { tickMs: (t1 - t0) / n, drawMs: (t2 - t1) / drawN, ratio: qaRatio ?? renderQuality.ratio, enemies: enemies.length, texts: floatingTexts.length, hitFx: hitFx.length, deathFx: deathFx.length };
+};
+// QA 전용: 성능 측정 시작(on=true)·끝(on=false, 결과 돌려줌) — 한 프레임의 계산(sim)·그리기(draw)·HUD 시간(ms)과 프레임 간격
+window.__debugPerf = function (on) {
+  if (on) { qaPerf = { sim: 0, draw: 0, hud: 0, frames: 0, steps: 0, dts: [], ratio: renderQuality.ratio }; return true; }
+  const r = qaPerf; qaPerf = null; if (!r) return null;
+  const d = [...r.dts].sort((a, b) => a - b), q = (x) => d[Math.min(d.length - 1, Math.floor(d.length * x))] || 0;
+  return { frames: r.frames, steps: r.steps, simMs: r.sim / Math.max(1, r.frames), drawMs: r.draw / Math.max(1, r.frames), hudMs: r.hud / Math.max(1, r.frames),
+    fps: 1000 / (d.reduce((a, b) => a + b, 0) / Math.max(1, d.length)), p50: q(.5), p95: q(.95), long50: d.filter((x) => x > 50).length, ratio: r.ratio,
+    enemies: enemies.length, texts: floatingTexts.length, hitFx: hitFx.length, deathFx: deathFx.length, gems: gems.length };
+};
 window.__debugFxAudit = function (layers = ["skills", "weapon", "blasts", "hit", "death", "themefx", "text"], nearU = 3, split = ["skills"], step = 3) {
   const cv = ctx.canvas, W = cv.width, H = cv.height, k = W / viewW, keepShake = shake.t;
   shake.t = 0;

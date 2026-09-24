@@ -24,7 +24,11 @@ function glow(ctx, x, y, r, color, alpha = .35) {
     image=typeof OffscreenCanvas!=='undefined'?new OffscreenCanvas(128,128):document.createElement('canvas');
     image.width=image.height=128;const c=image.getContext('2d'),g=c.createRadialGradient(64,64,6.4,64,64,64);
     g.addColorStop(0,color);g.addColorStop(1,'rgba(0,0,0,0)');c.fillStyle=g;c.fillRect(0,0,128,128);
-    if(glowCache.size>=24)glowCache.delete(glowCache.keys().next().value);glowCache.set(color,image);
+    if(glowCache.size>=24)glowCache.delete(glowCache.keys().next().value);
+    // 2026-09-24 최적화: 캔버스 그대로 그리면 매번 GPU로 다시 올린다 → ImageBitmap(OffscreenCanvas는 바로 바꾸고, 일반 캔버스는 준비되면 바꾼다)
+    if(typeof image.transferToImageBitmap==='function')image=image.transferToImageBitmap();
+    else if(typeof createImageBitmap==='function'){const key=color;createImageBitmap(image).then(bm=>{if(glowCache.has(key))glowCache.set(key,bm);}).catch(()=>{});}
+    glowCache.set(color,image);
   }
   ctx.save();ctx.globalAlpha*=alpha;ctx.globalCompositeOperation='lighter';ctx.imageSmoothingEnabled=true;ctx.drawImage(image,x-r,y-r,r*2,r*2);ctx.restore();
 }

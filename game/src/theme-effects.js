@@ -16,7 +16,10 @@ export function createThemeEffects(sprites) {
   const textures = new Map();
   const motion = typeof matchMedia === "function" ? matchMedia("(prefers-reduced-motion: reduce)") : null;
   let sequence = 0;
-  const quiet = () => !!motion?.matches;
+  // 움직임 줄이기 설정: 효과마다 matchMedia를 묻지 않고 한 번 읽어 두고 바뀔 때만 고친다(2026-09-24 최적화)
+  let reduced = !!motion?.matches;
+  motion?.addEventListener?.("change", (e) => { reduced = !!e.matches; });
+  const quiet = () => reduced;
   function circle(c, x, y, r) { c.beginPath(); c.arc(x, y, Math.max(0.1, r), 0, FX_TAU); }
   function ring(c, x, y, r, color, width = 2) {
     c.strokeStyle = color; c.lineWidth = width; circle(c, x, y, r); c.stroke();
@@ -32,19 +35,22 @@ export function createThemeEffects(sprites) {
       const tc = texture.getContext("2d");
       tc.imageSmoothingEnabled = true; tc.imageSmoothingQuality = "high";
       tc.drawImage(img, 0, 0, texture.width, texture.height); textures.set(key, texture);
+      // 2026-09-24 최적화: 캔버스를 매번 그리면 GPU로 다시 올려(측정: 같은 수의 스프라이트보다 약 100배 느림) → 한 번 ImageBitmap으로 바꿔 둔다
+      if (typeof createImageBitmap === "function") createImageBitmap(texture).then((bm) => textures.set(key, bm)).catch(() => {});
     }
     c.save(); c.translate(x, y); c.rotate(angle); c.globalAlpha *= fxClamp(alpha);
     c.imageSmoothingEnabled = true;
     const h = size * texture.height / texture.width;
     c.drawImage(texture, -size / 2, -h / 2, size, h); c.restore(); return true;
   }
-  function sparkle(c, x, y, size, color = "#fff7bb") {
-    c.fillStyle = color; c.beginPath();
+  // 반짝이 모양 하나를 경로에 더한다(칠하기는 부른 쪽에서 한 번에 — 반짝이 6개를 한 번에 칠해 그리기 명령을 줄인다, 2026-09-24 최적화)
+  function sparklePath(c, x, y, size) {
     c.moveTo(x, y - size); c.quadraticCurveTo(x + size * .2, y - size * .2, x + size, y);
     c.quadraticCurveTo(x + size * .2, y + size * .2, x, y + size);
     c.quadraticCurveTo(x - size * .2, y + size * .2, x - size, y);
-    c.quadraticCurveTo(x - size * .2, y - size * .2, x, y - size); c.fill();
+    c.quadraticCurveTo(x - size * .2, y - size * .2, x, y - size); c.closePath();
   }
+  function sparkle(c, x, y, size, color = "#fff7bb") { c.fillStyle = color; c.beginPath(); sparklePath(c, x, y, size); c.fill(); }
   function label(c, text, x, y, color = "#624729") {
     c.save(); c.font = "bold 12px sans-serif"; c.textAlign = "center";
     c.lineWidth = 4; c.strokeStyle = "#fffef1"; c.strokeText(text, x, y);
@@ -115,10 +121,12 @@ export function createThemeEffects(sprites) {
     c.save(); c.globalAlpha *= 1 - t;
     ring(c, x, y, 5 + size * .4 * ease, "#8ccf9b", 2);
     stamp(c, "vfx_purify", x, y - 7 * ease, size * (.55 + .55 * ease), 1);
+    c.fillStyle = "#fff7bb"; c.beginPath();
     for (let i = 0; i < (quiet() ? 3 : 6); i++) {
       const a = i * FX_TAU / 6, r = size * (.18 + .3 * ease);
-      sparkle(c, x + Math.cos(a) * r, y + Math.sin(a) * r - 8 * t, 2 + 2 * (1 - t));
+      sparklePath(c, x + Math.cos(a) * r, y + Math.sin(a) * r - 8 * t, 2 + 2 * (1 - t));
     }
+    c.fill();
     c.restore();
   }
   function hit(c, x, y, progress, kind = "water", dir = null) {
@@ -127,7 +135,9 @@ export function createThemeEffects(sprites) {
     c.save(); c.globalAlpha *= 1 - t;
     if (kind === "bump") {
       ring(c, x, y, 5 + 25 * fxEase(t), "#e7ad43", 3);
-      for (let i = 0; i < 5; i++) sparkle(c, x + Math.cos(i * 1.26) * 20 * t, y + Math.sin(i * 1.26) * 20 * t, 4);
+      c.fillStyle = "#fff7bb"; c.beginPath();
+      for (let i = 0; i < 5; i++) sparklePath(c, x + Math.cos(i * 1.26) * 20 * t, y + Math.sin(i * 1.26) * 20 * t, 4);
+      c.fill();
     } else {
       stamp(c, "vfx_splash", x, y, 26 + 28 * fxEase(t), 1, a);
       ring(c, x, y, 4 + 17 * t, "#80d6e2", 1.5);
