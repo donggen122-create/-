@@ -1,6 +1,8 @@
 // Browser/Worker shared rules. No DOM, storage, clocks or network side effects.
 import { ELEMENTS, SKILLS, PARTS, COMBOS, SUPPORTS, EVO_OF, SKILL_PARTNERS, LEVEL_DAMAGE, RUN_RULES } from './element-content.js';
 export { ELEMENTS, SKILLS, PARTS, COMBOS, SUPPORTS, EVO_OF, SKILL_PARTNERS, RUN_RULES, LEVEL_DAMAGE };
+import { GEAR, GEAR_SETS, GEAR_SLOTS, GEAR_SLOT_NAMES, GEAR_GRADE_MULT, GEAR_SET_BONUS, GEAR_SET_SIZES, GEAR_SET_TEXT, GEAR_SPECIALS, gearIdsFor } from './equipment.js';
+export { GEAR, GEAR_SETS, GEAR_SLOTS, GEAR_SLOT_NAMES, GEAR_GRADE_MULT, GEAR_SET_BONUS, GEAR_SET_SIZES, GEAR_SET_TEXT, GEAR_SPECIALS, gearIdsFor };
 export const VERSION = 2;
 export const PASS_NOTICE = '매일 아침 8시에 기본 이용권이 10장으로 새로 채워져요. 성공하면 1장, 실패하면 0장! 기본 이용권으로 하루에 10번 성공할 수 있어요. 선생님이 추가로 지급한 이용권은 다음 아침 8시까지 사용할 수 있어요. 이용권은 미션이나 보급에서 나오지 않아요.';
 export const TOOLS=SKILLS, SETS=ELEMENTS;
@@ -96,7 +98,7 @@ const clampInt=(n,min,max)=>Math.max(min,Math.min(max,Math.floor(Number(n)||min)
 export function freshProfile(legacy={}) {
  const stages={};
  for(const s of STAGES){const old=legacy.progress?.chapters?.[s.id];if(old?.cleared){const count=Array.isArray(old.stars)?old.stars.filter(Boolean).length:Number(old.stars)||1;stages[s.id]={cleared:true,stars:Math.min(3,Math.max(1,count)),best:old.bestClearS||300};}}
- return {version:VERSION,coins:0,gifts:0,training:{attack:1,hp:1,speed:1},parts:{},equippedParts:[],pets:[],activePet:null,friendship:0,stages,runs:0,wins:0,failRemainder:0,giftCounts:{part:0,pet:0},milestones:{},difficulty:'easy',weaponMode:'melee',hero:legacy.hero==='minji'?'minji':'hoya',skillUsage:{},fusionUsage:{},migratedAtVersion:VERSION};
+ return {version:VERSION,coins:0,gifts:0,training:{attack:1,hp:1,speed:1},parts:{},equippedParts:[],pets:[],activePet:null,friendship:0,stages,runs:0,wins:0,failRemainder:0,giftCounts:{part:0,pet:0},milestones:{},difficulty:'easy',weaponMode:'melee',hero:legacy.hero==='minji'?'minji':'hoya',heroLocked:false,gear:{},equippedGear:{},skillUsage:{},fusionUsage:{},migratedAtVersion:VERSION};
 }
 export function maxClear(p){return Math.max(0,...STAGES.filter(s=>p.stages?.[s.id]?.cleared).map(s=>Number(s.id.slice(2))));}
 export function stageUnlocked(p,id){const i=STAGES.findIndex(s=>s.id===id);return i===0||(i>0&&!!p.stages?.[STAGES[i-1].id]?.cleared);}
@@ -138,7 +140,41 @@ export function levelMultiplier(lv){return LEVEL_DAMAGE[clampInt(lv,1,5)-1];}
 export function supportValue(id,lv){const s=SUPPORTS[id];return s?s.values[clampInt(lv,1,3)-1]:0;}
 // 훈련 효과(공격·체력 단계마다 +3%, 이동 속도 31단계까지 0.5%씩 그 뒤 0.1%씩 → 100단계 +21.9%)
 export function trainingGain(stat,level){const n=Math.max(1,Math.floor(Number(level)||1));return stat==='speed'?Math.min(.15,(n-1)*.005)+Math.max(0,n-31)*.001:(n-1)*.03;}
-export function bonuses(p){return {atkPct:trainingGain('attack',p.training.attack),hpPct:trainingGain('hp',p.training.hp)+(rainbowSet(p)?.05:0),speedPct:trainingGain('speed',p.training.speed),bossDmgPct:0,areaPct:0};}
+export function bonuses(p){
+ const b={atkPct:trainingGain('attack',p.training.attack),hpPct:trainingGain('hp',p.training.hp)+(rainbowSet(p)?.05:0),speedPct:trainingGain('speed',p.training.speed),bossDmgPct:0,areaPct:0};
+ const g=gearBonuses(p);for(const [k,v] of Object.entries(g.stats))b[k]=(b[k]||0)+v;
+ b.gearSpecials=g.specials;b.gearSets=g.sets;return b;
+}
+// ---- 장비(2026-09-24, docs/34) ----
+// 가입할 때 호야/민지 하나를 고르고 고정(heroLocked). 전에 만든 계정은 한 판이라도 했으면 지금 캐릭터로 고정, 안 했으면 처음에 고른다.
+export const heroLocked=p=>p?.heroLocked??((p?.runs||0)>0);
+export const gearOf=(p,id)=>p?.gear?.[id]||null;
+export function gearGrade(p,id){const g=gearOf(p,id);return g&&g.copies>0?clampInt(g.grade??0,0,GRADE_COPIES.length-1):-1;}
+// 합성: 같은 장비를 모아 다음 등급 개수(3·7·25·80)에 닿으면 누를 수 있다. 모은 개수는 그대로 쌓인다(파츠와 같은 기준).
+export function gearMergeReady(p,id){const g=gearOf(p,id),gr=gearGrade(p,id);return gr>=0&&gr<GRADE_COPIES.length-1&&g.copies>=GRADE_COPIES[gr+1];}
+export function gearDrawPool(p){return gearIdsFor(p.hero).filter(id=>(gearOf(p,id)?.copies||0)<LEGEND_COPIES);}
+// 장착 장비의 능력 합: 기본 능력 × 등급 배율 + 세트 효과(같은 세트 2·4·6개) + 특수 효과 단계(유니크 1 · 에픽 2 · 전설 3)
+export function gearBonuses(p){
+ const stats={},sets={},specials={};
+ const add=(o,m=1)=>{for(const [k,v] of Object.entries(o||{}))stats[k]=(stats[k]||0)+v*m;};
+ for(const slot of GEAR_SLOTS){
+  const id=p?.equippedGear?.[slot],it=GEAR[id];if(!it||it.hero!==p.hero)continue;const gr=gearGrade(p,id);if(gr<0)continue;
+  add(it.base,GEAR_GRADE_MULT[gr]);sets[it.set]=(sets[it.set]||0)+1;
+  if(gr>=2)specials[it.special.key]=gr-1;
+ }
+ for(const [set,n] of Object.entries(sets))for(const size of GEAR_SET_SIZES)if(n>=size)add(GEAR_SET_BONUS[GEAR_SETS[set].type][size]);
+ return {stats,sets,specials};
+}
+export function addGear(p,id,qty=1){
+ if(!own(GEAR,id))throw new Error('없는 장비예요.');p.gear ||= {};
+ const before=p.gear[id]?.copies||0,after=Math.min(LEGEND_COPIES,before+Math.max(1,Math.floor(qty)));
+ p.gear[id]={copies:after,grade:p.gear[id]?.grade??0};
+ return {id,qty,before,after,isNew:before===0,grade:p.gear[id].grade,mergeReady:gearMergeReady(p,id)};
+}
+// 받침 있으면 을/이, 없으면 를/가
+export const josa=(w,a,b)=>{const c=String(w).charCodeAt(String(w).length-1);return w+(c>=0xAC00&&c<=0xD7A3&&(c-0xAC00)%28>0?a:b);};
+function equipGearItem(p,id){const it=GEAR[id];p.equippedGear ||= {};p.equippedGear[it.slot]=id;if(it.slot==='weapon')p.weaponMode=it.type;}
+export function gearDrawMessage(d){const it=GEAR[d.id];return `${it.name}${d.qty>1?` ×${d.qty}`:''} ${d.isNew?'획득!':`· ${d.before}→${d.after}개`}${d.mergeReady?' · 합성할 수 있어요!':''}`;}
 // 시험용 슈퍼 계정(2026-09-24 사용자 "테스트 목적의 슈퍼 계정"): 모든 단계 성공(별 3) · 훈련 · 파츠 10종 · 친구 6마리 · 코인·보급권 넉넉히.
 // 서버 관리 API(/api/admin/test-profile)가 'qa'로 시작하는 계정에만 쓴다. copies 80 = 전설, 25 = 에픽. 주인공·무기·난이도는 그대로 둔다.
 export const TEST_ACCOUNT_RE=/^qa[a-z0-9_]{0,10}$/;
@@ -148,7 +184,10 @@ export function superTestProfile(base,{training=100,copies=80,level=10}={}){
  for(const s of STAGES)p.stages[s.id]={...(p.stages[s.id]||{}),cleared:true,stars:3};
  p.parts=Object.fromEntries(Object.keys(PARTS).map(id=>[id,{copies:clampInt(copies,1,LEGEND_COPIES),level:clampInt(level,1,10)}]));
  p.equippedParts=Object.keys(PARTS).slice(0,3);p.pets=Object.keys(PETS);p.activePet=p.activePet&&PETS[p.activePet]?p.activePet:'otter';p.friendship=28;
- p.milestones={...(p.milestones||{}),firstPart:true,firstPet:true,bossPet:true};p.testAccount=true;
+ p.milestones={...(p.milestones||{}),firstPart:true,firstPet:true,bossPet:true,firstGear:true};p.testAccount=true;
+ // 장비(2026-09-24): 내 캐릭터 장비 12종을 같은 개수·그 개수의 등급으로, 원거리 세트 6개 장착
+ p.heroLocked=true;p.gear=Object.fromEntries(gearIdsFor(p.hero).map(id=>[id,{copies:clampInt(copies,1,LEGEND_COPIES),grade:grade(clampInt(copies,1,LEGEND_COPIES))}]));
+ p.equippedGear=Object.fromEntries(GEAR_SLOTS.map(s=>[s,`${p.hero}_ranged_${s}`]));p.weaponMode='ranged';
  return p;
 }
 // 개수 상한 없음(2차): 금 뒤에 남는 개수도 그대로 쌓는다. 금 파츠는 고르는 목록·원소 보급에서 빠지므로 "코인 60개" 낭비가 없다.
@@ -245,10 +284,36 @@ export function action(profile,a,rng=Math.random,ctx={}){
   const pool=Object.keys(PETS),unowned=pool.filter(id=>!p.pets.includes(id));check(unowned.length||p.friendship<28,'친구를 모두 만났고 우정도 가득해요! 보급권은 파츠에 써요.');
   const count=p.giftCounts.pet+1,choice=count%5===0&&unowned.length>0;check(!choice||unowned.includes(a.pet),'아직 없는 친구를 골라 주세요.');
   message=addPet(p,choice?a.pet:unowned.length?unowned[pickIndex(unowned.length)]:pool[pickIndex(pool.length)]);p.gifts--;p.giftCounts.pet=count;
+ }else if(a.kind==='choose-hero'){
+  // 가입할 때 한 번만: 호야/민지 고정(장비 뽑기는 이 성별 장비만)
+  check(!heroLocked(p),'캐릭터는 이미 정해졌어요. 바꾸려면 선생님께 부탁해 주세요.');check(['hoya','minji'].includes(a.hero),'캐릭터를 골라 주세요.');
+  p.hero=a.hero;p.heroLocked=true;message=`${a.hero==='minji'?'민지':'호야'}와 함께해요!`;   // 민지·호야 모두 받침 없음
+ }else if(a.kind==='choose-first-gear'){
+  // 첫 장비: 내 성별 무기 1개(노말) 무료 — 원거리/근거리 고르기
+  p.milestones ||= {};check(heroLocked(p),'먼저 캐릭터를 골라 주세요.');check(!p.milestones.firstGear,'첫 장비를 이미 받았어요.');
+  const it=GEAR[a.id];check(it&&it.hero===p.hero&&it.slot==='weapon','고를 수 있는 무기가 아니에요.');
+  draw={...addGear(p,a.id,1),mode:'first'};equipGearItem(p,a.id);p.milestones.firstGear=true;message=`${josa(it.name,'을','를')} 받아 끼웠어요!`;
+ }else if(a.kind==='draw-gear'){
+  check(!!p.stages.CH01?.cleared,'1-1을 성공하면 보급이 열려요.');check(heroLocked(p),'먼저 캐릭터를 골라 주세요.');check(p.gifts>0,'보급권이 더 필요해요.');
+  const pool=gearDrawPool(p);check(pool.length,'모든 장비가 전설이에요!');p.giftCounts ||= {part:0,pet:0};
+  const id=pool[pickIndex(pool.length)],qty=bundleFor(Math.max(0,Math.min(.999999999,rng())));
+  draw={...addGear(p,id,qty),mode:'gear'};p.gifts--;p.giftCounts.gear=(p.giftCounts.gear||0)+1;message=gearDrawMessage(draw);
+ }else if(a.kind==='merge-gear'){
+  check(own(GEAR,a.id)&&gearGrade(p,a.id)>=0,'아직 없는 장비예요.');check(gearMergeReady(p,a.id),`같은 장비를 ${GRADE_COPIES[gearGrade(p,a.id)+1]??''}개 모으면 합성할 수 있어요.`);
+  p.gear[a.id].grade++;message=`${GEAR[a.id].name} ${GRADE_NAMES[p.gear[a.id].grade]} 등급으로 합성!`;draw={id:a.id,mode:'merge',grade:p.gear[a.id].grade};
+ }else if(a.kind==='equip-gear'){
+  const it=GEAR[a.id];check(it&&gearGrade(p,a.id)>=0,'아직 없는 장비예요.');check(it.hero===p.hero,'내 캐릭터 장비가 아니에요.');
+  equipGearItem(p,a.id);message=`${it.name} 장착!${it.slot==='weapon'?` ${it.type==='ranged'?'원거리':'근거리'}로 싸워요.`:''}`;
+ }else if(a.kind==='unequip-gear'){
+  check(GEAR_SLOTS.includes(a.slot)&&p.equippedGear?.[a.slot],'빈 칸이에요.');delete p.equippedGear[a.slot];message=`${GEAR_SLOT_NAMES[a.slot]} 칸을 비웠어요.`;
  }else if(a.kind==='settings'){
   // 무기 원소 설정은 없앴다(2026-09-23 사용자: "무기는 근거리·원거리만"). 옛 프로필의 weaponElement 키는 지운다.
   const settings={difficulty:a.difficulty??p.difficulty,hero:a.hero??p.hero,weaponMode:a.weaponMode??p.weaponMode};
-  check(own(DIFFICULTIES,settings.difficulty),'난이도를 골라 주세요.');check(['hoya','minji'].includes(settings.hero),'주인공을 골라 주세요.');check(['melee','ranged'].includes(settings.weaponMode),'공격 방식을 골라 주세요.');Object.assign(p,settings);delete p.weaponElement;
+  check(own(DIFFICULTIES,settings.difficulty),'난이도를 골라 주세요.');check(['hoya','minji'].includes(settings.hero),'주인공을 골라 주세요.');check(['melee','ranged'].includes(settings.weaponMode),'공격 방식을 골라 주세요.');
+  // 장비(2026-09-24): 캐릭터는 가입 때 고정, 무기 장비를 끼면 그 무기가 근거리/원거리를 정한다
+  check(!(heroLocked(p)&&settings.hero!==p.hero),'캐릭터는 가입할 때 정해져요. 바꾸려면 선생님께 부탁해 주세요.');
+  const weapon=GEAR[p.equippedGear?.weapon];check(!(weapon&&settings.weaponMode!==weapon.type),`${josa(weapon?.name||'무기','은','는')} ${weapon?.type==='ranged'?'원거리':'근거리'} 무기예요. 무기 장비를 바꾸면 공격 방식이 바뀌어요.`);
+  Object.assign(p,settings);delete p.weaponElement;
  }else throw new Error('할 수 없는 작업이에요.');
  return {profile:p,message,...(draw?{draw}:{})};
 }

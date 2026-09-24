@@ -28,6 +28,11 @@ def super_profile():
              milestones={'firstPart': True, 'firstPet': True, 'bossPet': True}, pets=['cat', 'turtle', 'otter', 'sparrow', 'deer', 'seal'], activePet='otter', friendship=28,
              stages={f'CH{i:02d}': {'cleared': True, 'stars': 3} for i in range(1, 11)},
              parts={x: {'copies': [1, 3, 7, 25, 80][i % 5], 'level': 1 + i % 10} for i, x in enumerate(parts)}, equippedParts=parts[:3])
+    # 장비(docs/34): 등급이 섞인 호야 장비, 원거리 세트 5칸 + 근거리 무기 없이, 합성 가능한 것 포함
+    slots = ['helm', 'armor', 'shoes', 'gloves', 'necklace', 'weapon']
+    p.update(hero='hoya', heroLocked=True, milestones={**p['milestones'], 'firstGear': True},
+             gear={**{f'hoya_ranged_{s}': {'copies': [1, 3, 7, 25, 80, 9][i], 'grade': [0, 1, 1, 3, 4, 2][i]} for i, s in enumerate(slots)}, 'hoya_melee_armor': {'copies': 2, 'grade': 0}},
+             equippedGear={s: f'hoya_ranged_{s}' for s in slots if s != 'gloves'})
     return p
 
 AUDIT_JS = r"""(kind)=>{
@@ -83,16 +88,20 @@ def audit_size(b, W, H, report):
         rec[kind] = page.evaluate(AUDIT_JS, kind)
         if shot and shot in args.shots.split(','): page.screenshot(path=str(OUT / f'{W}x{H}-{shot}.png'))
     uid = f'qarsp{W}{random.randint(10, 99)}'[:12]
+    page.request.post(args.url + '/_qa/reset-attempts')   # 격리 서버 가입 제한 비우기(여러 크기를 연달아 가입)
     page.goto(args.url, wait_until='networkidle'); check('title')
     page.locator('#login-id').fill(uid); page.locator('#login-pw').fill('qa_local_1234'); page.locator('#btn-register').click()
     page.locator('#btn-title-start').wait_for(state='visible')
     assert page.request.post(args.url + '/_qa/profile', data={'id': uid, 'profile': super_profile()}).ok
     page.wait_for_function("!document.querySelector('#btn-title-start').disabled")
     page.evaluate("document.getElementById('btn-title-start').click()"); page.locator('#guardian-lobby .sg-nav').wait_for(); quiet(page)
-    for tab in ['adventure', 'training', 'parts', 'friends', 'book']:
+    for tab in ['adventure', 'training', 'parts', 'gear', 'friends', 'book']:
         page.locator(f'.sg-nav [data-tab="{tab}"]').click(); page.wait_for_timeout(250); quiet(page); check('lobby-' + tab, tab)
     page.locator('.sg-nav [data-tab="parts"]').click(); page.wait_for_timeout(200)
     page.locator('[data-do="supply-help"]').first.click(); page.wait_for_timeout(300); check('dialog-supply-help', 'dialog'); quiet(page)
+    page.locator('.sg-nav [data-tab="gear"]').click(); page.wait_for_timeout(200)
+    page.locator('[data-do="gear-help"]').first.click(); page.wait_for_timeout(300); check('dialog-gear-help', 'dialog'); quiet(page)
+    page.locator('.sg-gear-doll [data-gear-detail]').first.click(); page.wait_for_timeout(300); check('dialog-gear-detail', 'dialog'); quiet(page)
     page.locator('.sg-nav [data-tab="adventure"]').click(); page.wait_for_timeout(200); quiet(page)
     page.locator('[data-stage="CH10"]').click(); page.wait_for_timeout(200); page.locator('#sg-start').click(); page.locator('#levelup:not(.hidden)').wait_for()
     page.wait_for_timeout(300); check('levelup', 'levelup')

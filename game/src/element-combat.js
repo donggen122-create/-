@@ -35,14 +35,16 @@ export function createElementCombat({ U = 32, getPlayer, getEnemies, getBoss = (
   const claim = e => { if (e) claimed.set(e, clock); return e; };
   const penalty = e => { const t = claimed.get(e); return t !== undefined && clock - t < .7 ? 3 * U : 0; };
   const rank = at => (a, b) => dist(a, at) + penalty(a) - dist(b, at) - penalty(b);
-  const nearest = (at = player(), range = 13 * U, exclude = null) => alive().filter(e => !(exclude && exclude.has(e)) && dist(e, at) <= range + (e.radiusU || .45) * U).sort(rank(at))[0];
-  function groupTarget(at = player(), range = 12 * U) {
+  // 스킬이 적을 찾는 거리: 원거리 장비 6세트 효과(searchRangePct)만큼 넓어진다(docs/34)
+  const sr = () => mods().searchMul || 1;
+  const nearest = (at = player(), range = 13 * U * sr(), exclude = null) => alive().filter(e => !(exclude && exclude.has(e)) && dist(e, at) <= range + (e.radiusU || .45) * U).sort(rank(at))[0];
+  function groupTarget(at = player(), range = 12 * U * sr()) {
     const c = alive().filter(e => dist(e, at) <= range).sort(rank(at)); let best = c[0], score = -Infinity;
     for (const x of c.slice(0, 24)) { const n = c.reduce((k, e) => k + (dist(e, x) <= 2 * U ? 1 : 0), 0) - (penalty(x) ? 2 : 0); if (n > score) { best = x; score = n; } }
     return best;
   }
   // n발을 쏠 각도: 가까운 순으로 서로 다른 적(각도 차 0.3 이상)을 고르고, 적이 모자라면 base 좌우로 step씩 벌린다
-  function pickAngles(n, at, base, step, range = 14 * U) {
+  function pickAngles(n, at, base, step, range = 14 * U * sr()) {
     const angles = [], min = Math.min(step, .3), ok = a => angles.every(b => Math.abs(turn(a - b)) >= min);
     for (const e of alive().filter(e => dist(e, at) <= range).sort(rank(at))) { if (angles.length >= n) break; const a = angleTo(at, e); if (ok(a)) { angles.push(a); claim(e); } }
     for (let k = 0; angles.length < n && k < 16; k++) { const a = base + Math.ceil(k / 2) * step * (k % 2 ? -1 : 1); if (ok(a)) angles.push(a); }
@@ -55,7 +57,7 @@ export function createElementCombat({ U = 32, getPlayer, getEnemies, getBoss = (
     const p = player(), land = t => pull && dist(t, p) < 1.5 * U ? { x: p.x, y: p.y } : { x: t.x + (p.x - t.x) * pull, y: t.y + (p.y - t.y) * pull };
     const g = groupTarget() || fallback; if (!g) return [];
     const spots = [land(claim(g))], ga = angleTo(p, g);
-    for (const t of alive().filter(x => x !== g && dist(x, p) <= 12 * U).sort(rank(p))) { if (spots.length >= n) break; const s = land(t); if (spots.every(q => dist(q, s) >= gap)) { spots.push(s); claim(t); } }
+    for (const t of alive().filter(x => x !== g && dist(x, p) <= 12 * U * sr()).sort(rank(p))) { if (spots.length >= n) break; const s = land(t); if (spots.every(q => dist(q, s) >= gap)) { spots.push(s); claim(t); } }
     for (let k = 1; spots.length < n; k++) { const off = Math.ceil(k / 2) * gap * .75 * (k % 2 ? 1 : -1); spots.push({ x: spots[0].x + Math.cos(ga + Math.PI / 2) * off, y: spots[0].y + Math.sin(ga + Math.PI / 2) * off }); }
     return spots;
   }
@@ -114,7 +116,7 @@ export function createElementCombat({ U = 32, getPlayer, getEnemies, getBoss = (
     const d = DEF[id]; if (!d) return false;
     const p = player(), kind = d.kind;
     if (['orbit', 'typhoon', 'bee', 'swarm'].includes(kind)) return true;   // 상시 동작(아래 update에서)
-    const e = nearest(p, 14 * U), a = e ? angleTo(p, e) : (p.aimAngle || 0);
+    const e = nearest(p, 14 * U * sr()), a = e ? angleTo(p, e) : (p.aimAngle || 0);
     if (kind === 'mine' || kind === 'molefield') {
       // 적이 오는 길목에 심는다(가장 가까운 적 방향 ±35°, 1.6~3.2칸). 적이 가까이(1.2칸) 오면 터진다 — 밟아야만 터지던 것을 고침(적중률)
       const max = kind === 'molefield' ? 12 : count(id, 4, 2); if (mines.filter(m => m.id === id).length >= max) return false;

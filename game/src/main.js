@@ -148,14 +148,84 @@ const sgDamage=(target,raw,dir={x:0,y:0},knock=0,source=null)=>{
   const mul=target.sgTrait==='resist'&&source===target.sgResist?.25:target.sgTrait==='armor'&&source&&source!=='weapon'?.5:1;
   target.sgHurtAt=runTime;
   dealDamageToTarget(target,raw*mul,target===boss,dir,knock,mul<1);
+  if(source==='weapon'&&target.hp<=0&&sgGear.sp.absorb)sgGearAbsorb();
 };
 // 지원품(판 안 카드) 효과: 통합 스탯 키로 합산(stat()에서 더함). 스킬 엔진·기본 무기에는 mods로 전달
 function sgSupportStat(key){let v=0;const sup=player?.sgRun?.supports;if(sup)for(const id in sup){const d=R.SUPPORTS[id];if(d&&d.stat===key)v+=R.supportValue(id,sup[id].lv);}if(sgRunProfile)v+=R.petBuff(sgRunProfile,key);return v;}   // 지원품 + 동물 친구 버프
-function sgMods(){return {dmgMul:1+sgSupportStat("dmgPct"),areaMul:1+sgSupportStat("areaPct"),intervalMul:Math.max(.5,1-sgSupportStat("intervalPct"))};}
+// ---- 장비 특수 효과(2026-09-24, docs/34): 유니크 1 · 에픽 2 · 전설 3 단계(runBonus.gearSpecials). 값은 R.GEAR_SPECIALS의 v[유니크, 에픽] ----
+const sgGear={sp:{},lastHurt:-99,lastFocus:-99,sturdyReady:0,sturdyUntil:-1,stealNext:0,stealUntil:-1,catchNext:0,calmNext:0,calmReady:false,shieldNext:0};
+const sgGearV=(type,slot)=>{const d=R.GEAR_SPECIALS[type][slot],t=sgGear.sp[d.key]||0;return t?d.v[t>=2?1:0]:0;};
+function sgGearCount(key){if(runStats){runStats.gear ||= {};runStats.gear[key]=(runStats.gear[key]||0)+1;}}
+function sgGearStart(){
+  sgModsCache=null;const sp=(runBonus&&runBonus.gearSpecials)||{};Object.assign(sgGear,{sp,lastHurt:0,lastFocus:-99,sturdyReady:0,sturdyUntil:-1,stealNext:sp.steal?sgGearV('ranged','shoes'):0,stealUntil:-1,catchNext:0,
+    calmNext:sp.calm?sgGearV('melee','helm'):0,calmReady:false,shieldNext:runBonus.shieldEvery||0});
+  if(sp.endure===3)runBonus.revive=(runBonus.revive||0)+1;            // 전설 버티기: 판마다 1번 일어남(기존 부활)
+  if(sp.cheer)runBonus.bossDmgPct=(runBonus.bossDmgPct||0)+sgGearV('ranged','necklace');   // 응원: 대왕에게 주는 피해
+}
+function sgGearTick(dt){
+  const sp=sgGear.sp;if(!player)return;
+  if(sp.steal&&runTime>=sgGear.stealNext){sgGear.stealUntil=runTime+1;sgGear.stealNext=runTime+sgGearV('ranged','shoes');sgGearCount('steal');}
+  if(sp.calm&&!sgGear.calmReady&&runTime>=sgGear.calmNext)sgGear.calmReady=true;
+  if(sp.catch&&runTime>=sgGear.catchNext){   // 캐치: 가까이 날아오는 적 탄 1개(대왕 탄 제외)를 잡는다
+    let best=null,bd=4*U;for(const h of sgHostileShots){if(h.boss||h.life<=0)continue;const d=dist(h.x,h.y,player.x,player.y);if(d<bd){bd=d;best=h;}}
+    if(best){best.life=0;sgGear.catchNext=runTime+sgGearV('ranged','gloves');sgGearCount('catch');hitFx.push({x:best.x,y:best.y,life:.25,maxLife:.25,color:"#9ad8ff",vfxKind:"pickup"});
+      if(sp.catch===3){let t=null,td=9*U;for(const e of enemies){if(e.hp<=0)continue;const d=dist(e.x,e.y,player.x,player.y);if(d<td){td=d;t=e;}}if(t)sgDamage(t,player.atk*1.2,{x:t.x-player.x,y:t.y-player.y},.2,'weapon');}}
+  }
+  if(runBonus.shieldEvery&&runTime>=sgGear.shieldNext){   // 근거리 6세트: 보호막
+    sgGear.shieldNext=runTime+runBonus.shieldEvery;player.shield=Math.max(player.shield||0,player.hpMax*(runBonus.shieldPct||0));sgGearCount('shield');
+  }
+}
+function sgGearBlock(){   // 침착: 준비되면 다음 피해 1번을 막는다(전설: 주변 적 밀쳐내기)
+  if(!sgGear.sp.calm||!sgGear.calmReady)return false;
+  sgGear.calmReady=false;sgGear.calmNext=runTime+sgGearV('melee','helm');sgGearCount('calm');
+  floatingTexts.push({x:player.x,y:player.y-30,text:"막기!",life:.7,vy:-30,scale:0,color:"#9ad8ff"});
+  if(sgGear.sp.calm===3)for(const e of enemiesInRadius(player.x,player.y,3*U)){if(e===boss)continue;const dx=e.x-player.x,dy=e.y-player.y,l=Math.hypot(dx,dy)||1;e.kbVx=dx/l*360;e.kbVy=dy/l*360;}
+  return true;
+}
+function sgGearTakenMul(){
+  let m=1;const low=player.hp<player.hpMax*.3;
+  if(sgGear.sturdyUntil>runTime)m*=.5;                                   // 든든: 3초 동안 -50%
+  if(sgGear.sp.endure&&low)m*=1-sgGearV('melee','armor');               // 버티기: 체력 30% 아래 -30/40%
+  return m;
+}
+function sgGearAfterHurt(){
+  if(!sgGear.sp.sturdy||player.hp<=0||player.hp>=player.hpMax*.3||runTime<sgGear.sturdyReady)return;
+  sgGear.sturdyUntil=runTime+3;sgGear.sturdyReady=runTime+sgGearV('ranged','armor');sgGearCount('sturdy');
+  if(sgGear.sp.sturdy===3)player.hp=Math.min(player.hpMax,player.hp+player.hpMax*.1);
+  floatingTexts.push({x:player.x,y:player.y-30,text:"든든!",life:.8,vy:-30,scale:0,color:"#ffd76a"});
+}
+function sgGearContactMul(enemy){   // 굳건: 부딪혀 받는 피해 줄이기(전설: 그 적을 1초 느리게)
+  if(!sgGear.sp.firm)return 1;
+  if(enemy&&sgGear.sp.firm===3&&enemy!==boss){enemy.v2SlowT=Math.max(enemy.v2SlowT||0,1);enemy.v2SlowMul=Math.min(enemy.v2SlowMul||1,.5);}
+  return 1-sgGearV('melee','shoes');
+}
+function sgGearReflect(enemy,dmg){   // 반사: 부딪힌 적에게 받은 피해의 일부(전설 80% + 0.5초 멈춤)
+  if(!sgGear.sp.reflect||!enemy||enemy.hp<=0)return;
+  const r=sgGear.sp.reflect===3?.8:sgGearV('melee','necklace');sgDamage(enemy,dmg*r,{x:enemy.x-player.x,y:enemy.y-player.y},0,'weapon');sgGearCount('reflect');
+  if(sgGear.sp.reflect===3&&enemy!==boss){enemy.v2SlowT=Math.max(enemy.v2SlowT||0,.5);enemy.v2SlowMul=.05;}
+}
+function sgGearFocus(){   // 집중: 몇 초 동안 안 맞으면 다음 공격 치명타 확정(전설: 그 치명타 +50%) → 0 없음 · 1 확정 · 2 확정+강화
+  const sp=sgGear.sp;if(!sp.focus||!player)return 0;const v=sgGearV('ranged','helm');
+  if(runTime-sgGear.lastHurt<v||runTime-sgGear.lastFocus<v)return 0;
+  sgGear.lastFocus=runTime;sgGearCount('focus');return sp.focus===3?2:1;
+}
+function sgGearAbsorb(){   // 흡수: 기본 무기로 쓰러뜨리면 체력 회복(전설 10% 확률 2배)
+  const v=sgGearV('melee','gloves')*(sgGear.sp.absorb===3&&Math.random()<.1?2:1);player.hp=Math.min(player.hpMax,player.hp+player.hpMax*v);sgGearCount('absorb');
+}
+// 전투 배수(지원품·동물 친구 + 장비). 장비(2026-09-24, docs/34): runBonus(R.bonuses)에 장비 능력·세트 효과·특수 효과 단계가 들어 있다.
+let sgModsCache=null,sgModsTick=-1;
+function sgMods(){
+  if(sgModsCache&&sgModsTick===simTickNo)return sgModsCache;
+  const b=runBonus||{},sp=b.gearSpecials||{};sgModsTick=simTickNo;
+  return sgModsCache={dmgMul:1+sgSupportStat("dmgPct")+(b.dmgPct||0),areaMul:1+sgSupportStat("areaPct"),intervalMul:Math.max(.5,1-sgSupportStat("intervalPct")-(b.intervalPct||0)),
+    weaponDmgMul:1+(b.weaponDmgPct||0),weaponRangeMul:1+(b.weaponRangePct||0),weaponArcMul:1+(b.weaponArcPct||0),searchMul:1+(b.searchRangePct||0),pierce:b.pierce||0,swingBlock:!!b.swingBlock,
+    fastballEvery:sp.fastball?[5,4,3][sp.fastball-1]:0,fastballBoom:sp.fastball===3,spinEvery:sp.spin?[6,5,4][sp.spin-1]:0,spinReachMul:sp.spin===3?1.3:1};
+}
 const sgSkillImg=(d,cls='')=>d&&d.sprite?`<img class="sg-icon ${cls}" src="./assets/sprites/skills/${d.sprite}.png" alt="" />`:'';
 const sgElements=createElementCombat({U,getPlayer:()=>player,getEnemies:()=>enemies,getBoss:()=>boss,getProfile:()=>sgRunProfile,damage:sgDamage,projectiles:()=>sgHostileShots,getMods:sgMods,
   onBlast:(at,r,big)=>{addShake(Math.min(big?9:6,2+r/U*1.6),big?.22:.14);if(big)addHitStop(.04);}});   // 펑펑 터지는 느낌: 폭발마다 화면 흔들림, 큰 폭발은 잠깐 멈춤
-const sgWeapon=createWeaponCombat({U,getPlayer:()=>player,getEnemies:()=>enemies,getBoss:()=>boss,getProfile:()=>sgRunProfile,damage:sgDamage,images:ELEMENT_WEAPONS,sound:()=>playSfx('attack',.12),getMods:sgMods});
+const sgWeapon=createWeaponCombat({U,getPlayer:()=>player,getEnemies:()=>enemies,getBoss:()=>boss,getProfile:()=>sgRunProfile,damage:sgDamage,images:ELEMENT_WEAPONS,sound:()=>playSfx('attack',.12),getMods:sgMods,
+  getHostileShots:()=>sgHostileShots,onSpecial:(key)=>sgGearCount(key)});
 const SG_LOCAL=['localhost','127.0.0.1','[::1]'].includes(location.hostname);
 const sgPetImages=Object.fromEntries(Object.keys(R.PETS).map(id=>{const img=new Image();img.src=`./assets/seoho_v1/pets/${id}_idle.png`;return [id,img];}));
 
@@ -1245,6 +1315,7 @@ function newRun(chapterId, modeId = "M01") {
   bossDef = BOSSES[runCfg.bossId || chapter.boss];
   spawnedElites = new Set();
   runBonus = computeRunBonus();
+  sgGearStart();
   // 이벤트 조합 버프(다음 판 1회)는 여기서 소비
   const usedBuffs = save.nextRunBuffs.map((b) => b.name);
   save.nextRunBuffs = [];
@@ -1711,7 +1782,7 @@ function updatePlayer(dt) {
     const len = Math.hypot(dx, dy);
     dx /= len; dy /= len;
     // 이동 속도: 패시브·특성·수집품 합산 상한 +60% (docs/06 §1), 고유 능력 버프 +30%
-    const spdMul = (1 + Math.min(0.6, stat("speedPct")) + (player.buffKind === "speed" && player.buffT > 0 ? 0.3 : 0)) * stinkSlow;
+    const spdMul = (1 + Math.min(0.6, stat("speedPct")) + (player.buffKind === "speed" && player.buffT > 0 ? 0.3 : 0) + (sgGear.stealUntil > runTime ? 0.4 : 0)) * stinkSlow;
     player.x += dx * player.speedU * spdMul * U * dt * speedScale;
     player.y += dy * player.speedU * spdMul * U * dt * speedScale;
     if (dx > 0.01) player.facing = 1; else if (dx < -0.01) player.facing = -1;
@@ -1742,7 +1813,7 @@ function updatePlayer(dt) {
   // 보호막: 최대 체력 × shield%(상한 40%), 6초 미피격 후 초당 10% 재생 (docs/12 §6)
   const shieldMax = player.hpMax * Math.min(0.4, stat("shieldPct"));
   player.shieldIdle += dt;
-  if (shieldMax > 0 && player.shieldIdle >= 6) player.shield = Math.min(shieldMax, player.shield + shieldMax * 0.1 * dt);
+  if (shieldMax > 0 && player.shieldIdle >= 6 && player.shield < shieldMax) player.shield = Math.min(shieldMax, player.shield + shieldMax * 0.1 * dt);   // 장비 보호막이 더 크면 줄이지 않는다
 }
 
 function healPlayer(amount) {
@@ -2113,17 +2184,18 @@ function updateOrbit(dt) {
   }
 }
 
-function updateSkills(dt) { sgWeapon.update(dt); sgElements.update(dt); sgThreatTick(dt); sgT2Tick(dt); }
+function updateSkills(dt) { sgWeapon.update(dt); sgElements.update(dt); sgThreatTick(dt); sgT2Tick(dt); sgGearTick(dt); }
 const ATTACK_ANIM_S = 0.3, JUMP_ANIM_S = 0.7;
 
 // dir: 넉백 방향(정규화 전 벡터), knock: 넉백 세기(u)
 function dealDamageToTarget(target, dmg, isBoss, dir, knock, resisted = false) {   // resisted: 방패·갑옷에 막힌 피해(회색 숫자)
   const dr = (isBoss ? BOSS_DR : target.elite ? RANGE_ELITE_DR : 0) + (target.extraDr || 0);
-  const isCrit = Math.random() < critChance();
+  const focus = sgGearFocus();   // 장비 집중: 확정 치명타(전설은 피해 +50%)
+  const isCrit = focus > 0 || Math.random() < critChance();
   // 보스·엘리트 추가 피해(특성·수집품)
   const typeMul = 1 + (isBoss ? stat("bossDmgPct") : 0) + (target.elite ? stat("eliteDmgPct") : 0)
     + (stat("darkDmgPct") && isInDark(player.x, player.y) ? stat("darkDmgPct") : 0);
-  const rolled = dmg * typeMul * (isCrit ? critMultiplier() : 1);
+  const rolled = dmg * typeMul * (isCrit ? critMultiplier() : 1) * (focus > 1 ? 1.5 : 1);
   const final = Math.max(1, Math.floor(rolled * (1 - dr)));
   // 보스 점수 모드: 보스는 무적(체력이 줄지 않고 피해량만 기록 — docs/10 §1.2)
   if (isBoss && runCfg.bossScore) runStats.bossDamage += final;
@@ -2547,7 +2619,7 @@ function updateEnemies(dt) {
     e.contactT -= dt;
     if (e.contactT <= 0 && dist(e.x, e.y, player.x, player.y) <= e.radiusU * U + 14) {
       e.contactT = 0.5;
-      applyContactDamage(e.atk);
+      applyContactDamage(e.atk, e);
     }
   }
 
@@ -2564,25 +2636,28 @@ function takeDamage(raw) {
   // 개편판: 처음 1분은 적 공격이 55%→100%로 서서히 세진다(스킬이 아직 없을 때 둘러싸여 바로 쓰러지지 않게, 2026-09-23)
   const grace = runCfg.rework ? Math.min(1, 0.55 + 0.45 * runTime / 60) : 1;
   const takenMul = runMods.diffTaken ? runMods.stageAtk * sgDiffMul(runMods.diffTaken) : (runMods.takenMul || 1);
-  let d = raw * grace * (1 - damageReduction()) * takenMul * (inBeacon ? 1 + stat("beaconTakenPct") : 1);
+  if (sgGearBlock()) return 0;   // 장비 침착: 다음 피해 1번 막기
+  let d = raw * grace * (1 - damageReduction()) * takenMul * (inBeacon ? 1 + stat("beaconTakenPct") : 1) * sgGearTakenMul(raw);
   const absorbed = Math.min(d, player.shield);                     // absorbed = min(D, shield)
   player.shield -= absorbed;
   d = Math.max(0, d - absorbed);
   player.shieldIdle = 0;
   player.hp -= d;
   if(d>0)player.sgHurt=true;
-  if (d > 0) player.hitCount = (player.hitCount || 0) + 1;
+  if (d > 0) { player.hitCount = (player.hitCount || 0) + 1; sgGear.lastHurt = runTime; sgGearAfterHurt(); }
   if (boss && d > 0) starTrack.bossNoHit = false;       // 최종 보스전 무피해 실패
   return d;
 }
 
-function applyContactDamage(rawAtk) {
+function applyContactDamage(rawAtk, enemy = null) {
   if (SG_LOCAL && window.__debugGod) return;
   if (player.invulnT > 0) return;
-  const cap = player.hpMax * (R.DIFFICULTIES[R.difficultyOf(sgRunProfile)]?.contactCap ?? .40);   // 쉬움 25% · 보통 30% · 어려움 35% / 초
+  if (sgGear.stealUntil > runTime && sgGear.sp.steal === 3) return;   // 전설 도루: 달리는 1초 동안 부딪히지 않음
+  const cap = player.hpMax * (R.DIFFICULTIES[R.difficultyOf(sgRunProfile)]?.contactCap ?? .40) * Math.max(.2, 1 + (runBonus.contactCapPct || 0));   // 쉬움 25% · 보통 30% · 어려움 35% / 초(근거리 4세트 -20%)
   const room = cap - contactDamageThisSecond;
   if (room <= 0) return;
-  const dmg = Math.min(rawAtk * (1 + stat("contactTakenPct")), room);
+  const dmg = Math.min(rawAtk * (1 + stat("contactTakenPct")) * sgGearContactMul(enemy), room);
+  if (enemy) sgGearReflect(enemy, dmg);
   contactDamageThisSecond += dmg;
   runStats.hurtContact = (runStats.hurtContact || 0) + takeDamage(dmg);   // 받은 피해 출처 기록(난이도 조정용)
   player.hitFlashT = 0.2;
@@ -2969,7 +3044,7 @@ function normalizeAngle(a) { while (a > Math.PI) a -= Math.PI * 2; while (a < -M
 function applyBossHit(dmg) {
   if (SG_LOCAL && window.__debugGod) return;
   if (player.invulnT > 0) return;
-  const taken = takeDamage(dmg);
+  const taken = takeDamage(dmg * (sgGear.sp.cheer === 3 ? 0.8 : 1));   // 장비 응원(전설): 대왕 공격 피해 -20%
   runStats.hurtHit = (runStats.hurtHit || 0) + taken;
   player.invulnT = 0.3;
   player.hitFlashT = 0.25;
@@ -3681,6 +3756,10 @@ function drawHero(screenX, screenY, ghost = 0) {
   // size=44를 그대로 넘겨 발 기준선(footY = screenY + 44×0.32)을 기존 기사와 같게 유지한다
   const bob = player.downed ? 0 : player.moving ? Math.abs(Math.sin(player.animT)) * 1.5 : Math.sin(player.animT) * 0.8;
   const blinking = player.invulnT > 0 && !player.downed && Math.floor(runTime * 20) % 2 === 0;
+  if (!ghost && player.shield > 1) {   // 보호막(장비 6세트·동물 친구 등): 몸 둘레 얇은 하늘색 고리(주인공을 가리지 않게 선만)
+    ctx.save(); ctx.globalAlpha = 0.45 + 0.15 * Math.sin(runTime * 4); ctx.strokeStyle = "#8fd8ff"; ctx.lineWidth = 2;
+    ctx.beginPath(); ctx.arc(screenX, screenY + 14 - h * 0.45, h * 0.56, 0, Math.PI * 2); ctx.stroke(); ctx.restore();
+  }
   ctx.save();ctx.translate(screenX,screenY+14);ctx.rotate(sgWeapon.bodyLean());ctx.translate(-screenX,-screenY-14);
   drawEntitySprite(img, screenX, screenY, {
     size: 44, width: w, height: h, facing: player.facing, bob, smooth: true,
@@ -5042,7 +5121,7 @@ window.__guardian=()=>sgState;
 window.__sgEventPopup=()=>{sgMaybeEventPopup();return !!document.querySelector('dialog.sg-dialog[open] .sg-event');};
 window.__bgm=()=>({...music.state(),mode,sound:elSound?{hidden:elSound.hidden,text:elSound.textContent}:null,hudMute:elMute.textContent,stored:(()=>{try{return localStorage.getItem('lumen_muted');}catch(e){return null;}})()});
 window.__sgCard=(c)=>sgApplyCard(c);
-window.__sgSnapshot=()=>({runTime,mode,skills:player?.skills,run:player?.sgRun,cards:currentCards,choices:player?.sgChoices,litter:runStats.litter,weapon:sgWeapon.snapshot(),elements:sgElements.snapshot(),difficulty:sgRunProfile?.difficulty,hurt:{contact:Math.round(runStats.hurtContact||0),hit:Math.round(runStats.hurtHit||0),blast:Math.round(runStats.hurtBlast||0)},enemyTypes:enemies.reduce((o,e)=>{o[e.typeId]=(o[e.typeId]||0)+1;return o;},{}),enemies:enemies.length,special:enemies.reduce((o,e)=>{if(e.sgTrait)o[e.sgTrait]=(o[e.sgTrait]||0)+1;return o;},{})});
+window.__sgSnapshot=()=>({runTime,mode,skills:player?.skills,run:player?.sgRun,cards:currentCards,choices:player?.sgChoices,litter:runStats.litter,weapon:sgWeapon.snapshot(),gear:{specials:sgGear.sp,count:runStats.gear||{},shield:Math.round(player?.shield||0),revives:player?.revives,bonus:{weaponDmgPct:runBonus.weaponDmgPct,weaponRangePct:runBonus.weaponRangePct,hpPct:runBonus.hpPct,takenPct:runBonus.takenPct}},elements:sgElements.snapshot(),difficulty:sgRunProfile?.difficulty,hurt:{contact:Math.round(runStats.hurtContact||0),hit:Math.round(runStats.hurtHit||0),blast:Math.round(runStats.hurtBlast||0)},enemyTypes:enemies.reduce((o,e)=>{o[e.typeId]=(o[e.typeId]||0)+1;return o;},{}),enemies:enemies.length,special:enemies.reduce((o,e)=>{if(e.sgTrait)o[e.sgTrait]=(o[e.sgTrait]||0)+1;return o;},{})});
 window.__sgCombatLoad=(ids,profile={},supports={})=>{player.skills=Object.fromEntries(ids.map(id=>[id,{lv:R.RUN_RULES.maxSkillLevel,cd:0}]));player.pendingLevels=0;player.sgChoices=runCfg.cardCap;player.sgRun={consumed:[],fusionCount:0,supports:Object.fromEntries(Object.entries(supports).map(([k,v])=>[k,{lv:v}])),partnerOffers:{}};if(mode==='levelup'){mode='playing';elLevelup.classList.add('hidden');}Object.assign(sgRunProfile,profile);sgElements.reset();sgWeapon.reset();return window.__sgSnapshot();};
 // 자동 조종의 보스전: 예고 범위·날아오는 쓰레기를 피하면서 대왕과 5칸쯤 거리를 두고, 대왕 쓰레기가 있으면 줍는다(QA 전용)
 function bossDanger(x,y){
@@ -5242,6 +5321,7 @@ const sgShownGuidance=new Set();
 function sgMaybeGuidance(){
   if(!cloud.loggedIn||mode!=='menu'||sgSettling||sgUI?.busy||sgUI?.dialog.open||!elTitle.classList.contains('hidden')||elMenu.classList.contains('hidden'))return;
   const p=sgState.profile;if(!p)return;
+  if(!R.heroLocked(p)){sgUI.heroDialog();return;}   // 장비(docs/34): 가입한 뒤 캐릭터(호야·민지)를 고를 때까지 먼저 묻는다(닫을 수 없음)
   const once=kind=>{
     const key=sgStorageKey(kind);if(sgShownGuidance.has(key))return false;
     try{if(localStorage.getItem(key)==='1')return false;localStorage.setItem(key,'1');}catch(e){}
@@ -5252,6 +5332,7 @@ function sgMaybeGuidance(){
     sgUI.notify('사라졌던 파츠를 돌려드렸어요',items.map(x=>`${R.PARTS[x.id]?.name||'파츠'}로 ${x.copies}개 복구${x.gifts?` · 넘치는 ${x.gifts}개는 보급권 ${x.gifts}장`:''}${x.refund?` · 강화 코인 ${x.refund}개 반환`:''}`).join(' / '));return;
   }
   if(R.pendingPart(p)&&R.selectableParts(p).length&&once('first-part-guide')){sgUI.firstPartDialog();return;}
+  if(!p.milestones?.firstGear&&once('first-gear-guide')){sgUI.firstGearDialog();return;}   // 장비가 생겼어요 · 첫 무기 무료(한 번 안내, 장비 탭에도 남음)
   // 보급 규칙 안내(한 번, 2026-09-23 저녁 무작위·5등급 판): 1-1을 깬 학생만. 전 판 안내(supply-v2)는 대신한다.
   if(p.stages?.CH01?.cleared&&once('supply-v3-notice'))sgUI.notify('파츠 보급이 바뀌었어요','이제 보급은 고르는 것 없이 10종 중 무작위! 운이 좋으면 한 번에 3개(18%)나 7개(2%)가 나와요. 같은 파츠를 모으면 노말(1개) → 레어(3개) → 유니크(7개) → 에픽(25개) → 전설(80개)로 올라가요. 등급이 오를수록 그 스킬이 훨씬 강해지고, 전설은 피해 +80%에 30% 확률로 한 번 더 발동해요. 전설은 아주 오래 모아야 해요. 성공 보급권은 쉬움·보통 1장, 어려움 2장이고 같은 단계는 하루 2번 성공까지 받아요. 코인 300개로 보급권 1장(하루 1번)도 바꿀 수 있어요.');
 }

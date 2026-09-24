@@ -55,3 +55,32 @@ test('projectiles resolve overlapping targets in physical contact order, regardl
  const f=fixture({mode:'ranged',enemies:[target(1.25,0,'far'),target(1.24,0,'near')]});f.step(0);f.run(.4);
  assert.equal(f.hits[0].id,'near');nearly(f.hits[0].damage,25.5);assert.equal(f.hits.length,1);
 });
+
+// 장비(2026-09-24, docs/34): 강속구·관통·회전 베기·휘두르기로 적 탄 없애기·사거리 배수
+function gearFixture({mode='ranged',enemies,mods={},hostile=[]}){
+ const player={x:0,y:0,atk:30,hp:260,hpMax:260,shield:0,attackT:0,facing:1,aimAngle:0},hits=[],specials=[];
+ const engine=createWeaponCombat({U,getPlayer:()=>player,getEnemies:()=>enemies,getBoss:()=>null,getProfile:()=>({hero:'hoya',weaponMode:mode}),
+  damage:(e,d)=>hits.push({id:e.id,d}),getMods:()=>mods,getHostileShots:()=>hostile,onSpecial:k=>specials.push(k)});
+ return {engine,hits,specials,run:s=>{for(let t=0;t<s;t+=.01)engine.update(.01);}};
+}
+test('gear fastball: every Nth ball deals double and pierces, legend adds a small blast',()=>{
+ const f=gearFixture({enemies:[target(2,0,'a'),target(3,0,'b')],mods:{fastballEvery:3}});f.run(2.4);
+ assert.equal(f.specials.filter(k=>k==='fastball').length,1,'3번째 공만 강속구');
+ const fast=f.hits.filter(h=>Math.abs(h.d-25.5*2)<1e-8);assert.deepEqual(fast.map(h=>h.id),['a','b'],'강속구는 2배 피해로 뒤 적까지 뚫고 간다');
+ const g=gearFixture({enemies:[target(2,0,'a'),target(2,1,'side')],mods:{fastballEvery:1,fastballBoom:true}});g.run(.5);
+ assert.ok(g.hits.some(h=>h.id==='side'&&Math.abs(h.d-25.5)<1e-8),'전설: 맞은 자리 옆 적에게 절반 피해');
+});
+test('gear 6-set pierce: normal balls pass one extra enemy; range multiplier widens reach',()=>{
+ const f=gearFixture({enemies:[target(2,0,'a'),target(3,0,'b'),target(4,0,'c')],mods:{pierce:1}});f.run(.6);
+ assert.deepEqual(f.hits.map(h=>h.id),['a','b']);
+ const far=WEAPON_RULES.ranged.reach+1;
+ assert.equal((()=>{const g=gearFixture({enemies:[target(far)]});g.run(1);return g.engine.snapshot().casts;})(),0);
+ assert.ok((()=>{const g=gearFixture({enemies:[target(far)],mods:{weaponRangeMul:1.2}});g.run(1);return g.engine.snapshot().casts;})()>0,'사거리 +20%면 닿는다');
+});
+test('gear spin: every Nth swing hits all around; swingBlock removes non-boss hostile shots only',()=>{
+ const f=gearFixture({mode:'melee',enemies:[target(1.5,0,'front'),target(-1.5,0,'back')],mods:{spinEvery:2}});f.run(1.8);
+ assert.equal(f.hits.filter(h=>h.id==='back').length,1,'뒤쪽 적은 회전 베기(2번째)에서만 맞는다');assert.deepEqual(f.specials,['spin']);
+ const hostile=[{x:1*U,y:0,life:2},{x:1*U,y:.2*U,life:2,boss:true}];
+ const g=gearFixture({mode:'melee',enemies:[target(1.5)],mods:{swingBlock:true},hostile});g.run(.2);
+ assert.equal(hostile[0].life,0);assert.equal(hostile[1].life,2,'대왕 탄은 막지 않는다');
+});

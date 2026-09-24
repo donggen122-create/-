@@ -24,6 +24,8 @@ http.createServer(async(req,res)=>{
  try{
   if(!['127.0.0.1','::1','::ffff:127.0.0.1'].includes(req.socket.remoteAddress)){res.writeHead(403);res.end();return;}
   const chunks=[];for await(const c of req)chunks.push(c);const body=Buffer.concat(chunks);
+  // 자동 조종 모의는 판마다 새 계정을 만든다 → 가입·로그인 시도 제한(한 시간)을 비운다(격리 서버 전용)
+  if(req.url==='/_qa/reset-attempts'&&req.method==='POST'){DB.sql.prepare('DELETE FROM attempts').run();res.setHeader('content-type','application/json');res.end('{"ok":true}');return;}
   if(req.url==='/_qa/profile'&&req.method==='POST'){
    const {id,profile}=JSON.parse(body);if(!/^(qa|확인대원)/.test(id))throw new Error('QA IDs only');
    DB.sql.prepare('INSERT INTO guardian_profiles(user_id,state) VALUES(?,?) ON CONFLICT(user_id) DO UPDATE SET state=excluded.state,revision=revision+1').run(id,JSON.stringify(profile));

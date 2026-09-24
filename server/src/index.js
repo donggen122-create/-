@@ -229,7 +229,7 @@ async function admin(request, env, sub, method) {
 
   await ensureGuardian(env);
   // Codex 개편: 이용권 현황·지급 기록(passes), 이용권·코인 지급(grant-passes, requestId로 중복 방지), 표 만들기(migrate-v1)
-  if (["passes", "grant-passes", "migrate-v1", "migrate-v2", "test-profile"].includes(sub)) {
+  if (["passes", "grant-passes", "migrate-v1", "migrate-v2", "test-profile", "set-hero"].includes(sub)) {
     await ensureGuardian(env);
     let req = request;
     if (role === "teacher" && sub === "grant-passes" && method === "POST") {   // 선생님 계정 지급은 기록 메모 앞에 [선생님]을 붙인다

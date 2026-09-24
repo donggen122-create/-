@@ -24,6 +24,24 @@ const gradeAbility=g=>{const dmg=Math.round(R.GRADE_DAMAGE[g]*100),fast=Math.rou
 const partOptions=(p,preferUsed=false)=>entries(R.PARTS).sort(([ai,a],[bi,b])=>Number((p.parts?.[ai]?.copies||0)>=R.LEGEND_COPIES)-Number((p.parts?.[bi]?.copies||0)>=R.LEGEND_COPIES)||(preferUsed?(p.skillUsage?.[partSkill(b)]||0)-(p.skillUsage?.[partSkill(a)]||0):0)).map(([id,d])=>`<option value="${id}" ${(p.parts?.[id]?.copies||0)>=R.LEGEND_COPIES?'disabled':''}>${(p.parts?.[id]?.copies||0)>=R.LEGEND_COPIES?'전설 · ':''}${preferUsed&&p.skillUsage?.[partSkill(d)]?'사용한 스킬 · ':''}${esc(d.name)}</option>`).join('');
 // 기본 무기는 근거리·원거리만(무기 원소 설정은 2026-09-23에 없앰). 난이도는 쉬움 ★ · 보통 ★★ · 어려움 ★★★.
 const weaponHelp=(mode,hero)=>`<b>${mode==='ranged'?'원거리':'근거리'} 기본 무기</b><span>${mode==='ranged'?(hero==='minji'?'피구공을 던져 떨어진 적을 공격해요.':'배트로 야구공을 쳐서 떨어진 적을 공격해요.'):'가까운 적을 넓게 휘둘러 공격해요.'} 원소 스킬은 판 안에서 카드로 골라요.</span>`;
+// ---- 장비(2026-09-24, docs/34) ----
+// 아이콘: 사용자 Gemini 그림이 오기 전까지 칸 모양 임시 그림(세트 색 바탕). 그림이 오면 GEAR_ART에 id를 넣으면 assets/sprites/gear/gear_<id>.png를 쓴다.
+const GEAR_ART=new Set([]);
+const GEAR_PATHS={helm:'<path d="M4 15a8 8 0 0 1 16 0z"/><rect x="2" y="15" width="20" height="3" rx="1.5"/>',armor:'<path d="M8 3 3 6l2 5 3-1v11h8V10l3 1 2-5-5-3a4 4 0 0 1-8 0z"/>',
+ shoes:'<path d="M3 16V8h5l2 4 8 1.5a3 3 0 0 1 3 2.5z"/><rect x="3" y="17" width="18" height="3" rx="1.5"/>',gloves:'<path d="M7 21v-7l-3-3 1.5-1.5L8 12V5.5a1.5 1.5 0 0 1 3 0V11V4.5a1.5 1.5 0 0 1 3 0V11V6a1.5 1.5 0 0 1 3 0v8a6 6 0 0 1-2 4.5V21z"/>',
+ necklace:'<path d="M5 3c0 6 3 9 7 9s7-3 7-9" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="12" cy="16" r="4"/>',ranged:'<circle cx="12" cy="12" r="8"/><path d="M8 5.5c2.6 3.4 2.6 9.6 0 13M16 5.5c-2.6 3.4-2.6 9.6 0 13" fill="none" stroke="#0005" stroke-width="1.4"/>',
+ melee:'<path d="M20 2v3l-9 9 2 2-1.5 1.5-2-2-3 3L5 17l3-3-2-2L7.5 10.5l2 2 9-9z"/>'};
+const gearSvg=key=>`<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">${GEAR_PATHS[key]}</svg>`;
+export const gearIcon=(id,cls='')=>{const it=R.GEAR[id];if(!it)return '';if(GEAR_ART.has(id))return `<img class="sg-icon sg-gear-art ${cls}" src="./assets/sprites/gear/${esc(it.icon)}.png" alt="" />`;return `<span class="sg-gear-icon ${cls}" style="--set:${it.color}">${gearSvg(it.slot==='weapon'?it.type:it.slot)}</span>`;};
+const slotIcon=s=>`<span class="sg-gear-icon sg-gear-empty">${gearSvg(s==='weapon'?'melee':s)}</span>`;
+const GEAR_STAT={critPct:'치명타 확률',hpPct:'최대 체력',speedPct:'이동 속도',intervalPct:'공격 간격',dmgPct:'모든 피해',weaponDmgPct:'기본 무기 피해',weaponRangePct:'기본 무기 사거리',weaponArcPct:'휘두르기 범위',takenPct:'받는 피해',regenPct:'초당 체력 회복',critDmgPct:'치명타 피해',searchRangePct:'스킬이 적 찾는 거리',contactCapPct:'부딪혀 잃는 체력 상한'};
+const pctText=v=>{const x=Math.round(v*1000)/10;return `${x>0?'+':''}${x}%`;};
+const gearStat=(k,v)=>GEAR_STAT[k]?`${GEAR_STAT[k]} ${pctText(k==='intervalPct'?-v:v)}`:'';
+const gearBase=(it,g)=>entries(it.base).map(([k,v])=>gearStat(k,v*R.GEAR_GRADE_MULT[Math.max(0,g)])).join(' · ');
+// 특수 효과 한 줄: 유니크(등급 2) 기본 → 에픽 강화 → 전설 추가
+const gearSpecialLines=(it,g)=>['유니크','에픽','전설'].map((n,i)=>({name:n,text:it.special.text[i],on:g>=i+2}));
+const typeName=t=>t==='ranged'?'원거리':'근거리';
+const heroName=h=>h==='minji'?'민지':'호야';
 const starText=n=>'★'.repeat(Math.max(0,Math.min(3,n)));
 const difficultyHelp=id=>{const d=R.DIFFICULTIES[id]||R.DIFFICULTIES.easy;return `<b>${esc(d.name)} ${starText(d.stars)}</b><span>${esc(d.desc)}</span>`;};
 
@@ -39,7 +57,8 @@ export class GuardianUI {
     this.c=callbacks;this.tab='adventure';this.stage='CH01';this.chapter='1';this.element='fire';this.partFilter='all';this.bookFilter='all';this.bookTab='skills';this.busy=false;
     menu.classList.add('sg-mode');this.root=document.createElement('div');this.root.id='guardian-lobby';menu.append(this.root);
     this.dialog=document.createElement('dialog');this.dialog.className='sg-dialog';document.body.append(this.dialog);
-    this.dialog.addEventListener('click',e=>{if(e.target===this.dialog)this.dialog.close();});
+    this.dialog.addEventListener('click',e=>{if(e.target===this.dialog&&!this.dialog.dataset.lock)this.dialog.close();});
+    this.dialog.addEventListener('cancel',e=>{if(this.dialog.dataset.lock)e.preventDefault();});
     this.root.addEventListener('click',e=>this.click(e));
     this.root.addEventListener('change',e=>{
       if(e.target.id==='sg-weapon-mode'){const help=this.root.querySelector('#sg-weapon-help');if(help)help.innerHTML=weaponHelp(e.target.value,this.state().profile.hero);}
@@ -47,7 +66,7 @@ export class GuardianUI {
     });
   }
   state(){return this.c.getState();}
-  openDialog(markup){this.dialog.innerHTML=markup;this.dialog.querySelectorAll('[data-close]').forEach(b=>b.onclick=()=>this.dialog.close());if(!this.dialog.open)this.dialog.showModal();}
+  openDialog(markup,lock=false){if(lock)this.dialog.dataset.lock='1';else delete this.dialog.dataset.lock;this.dialog.innerHTML=markup;this.dialog.querySelectorAll('[data-close]').forEach(b=>b.onclick=()=>this.dialog.close());if(!this.dialog.open)this.dialog.showModal();}
   notify(title,text){this.openDialog(`<h2>${esc(title)}</h2><p>${esc(text||'서버에 저장했어요.')}</p><button class="sg-primary" data-close>확인</button>`);}
   render(){
     const {profile:p,passes,user,error,active}=this.state();
@@ -56,18 +75,21 @@ export class GuardianUI {
     const pendingPet=R.pendingPet(p),pendingPart=R.pendingPart(p);
     this.root.innerHTML=`<header class="sg-header"><div class="sg-brand">${icon('element_wind')}<span>서호팡팡<small>수호대</small></span></div><div class="sg-wallet"><button data-do="passes" aria-label="이용권 안내">${icon('pass')}<b>${passes?.remaining??'…'}</b><span>${passes?.event?'추석 2배':'이용권'}</span></button><div>${icon('coin')}<b>${p.coins.toLocaleString()}</b><span>코인</span></div><button data-tab="parts" aria-label="파츠 보급과 보급권">${icon('gift')}<b>${p.gifts}</b><span>보급권</span></button></div><button class="sg-account" data-do="account" aria-label="계정과 캐릭터 선택">${esc(user)} 님</button></header>
     <main class="sg-main" aria-live="polite">${active?'<div class="sg-notice">마무리하지 않은 도전이 있어요. <button data-do="abandon">이용권 차감 없이 정리하기</button></div>':''}${this.nextTask(p)}${this[this.tab](p,passes)}</main>
-    <nav class="sg-nav" aria-label="수호대 메뉴">${[['adventure','map','모험'],['training','mode_melee','훈련'],['parts','part_PART_F1','파츠'],['friends','heart','친구'],['book','book','도감']].map(([id,im,label])=>`<button data-tab="${id}" class="${this.tab===id?'on':''}" aria-current="${this.tab===id?'page':'false'}">${icon(im)}<span>${label}${id==='parts'&&p.gifts>0?` <b class="sg-count-badge" aria-label="보급권 ${p.gifts}장">${p.gifts}</b>`:''}</span></button>`).join('')}</nav>`;
+    <nav class="sg-nav" aria-label="수호대 메뉴">${[['adventure','map','모험'],['training','mode_melee','훈련'],['parts','part_PART_F1','파츠'],['gear','shield','장비'],['friends','heart','친구'],['book','book','도감']].map(([id,im,label])=>`<button data-tab="${id}" class="${this.tab===id?'on':''}" aria-current="${this.tab===id?'page':'false'}">${icon(im)}<span>${label}${id==='parts'&&p.gifts>0?` <b class="sg-count-badge" aria-label="보급권 ${p.gifts}장">${p.gifts}</b>`:''}${id==='gear'&&this.gearAlert(p)?' <b class="sg-count-badge" aria-label="장비 할 일">!</b>':''}</span></button>`).join('')}</nav>`;
     if(this.busy)this.root.querySelectorAll('button,select').forEach(b=>b.disabled=true);
   }
   nextTask(p){
     const available=R.selectableParts(p).length;
     let task=null;
-    if(R.pendingPart(p)&&available)task={tab:'parts',text:'첫 성공 보상 · 원하는 파츠 1개 받기',first:true};
+    if(!R.heroLocked(p))task={tab:'gear',text:'함께할 캐릭터 고르기(호야 · 민지)',hero:true};
+    else if(R.pendingPart(p)&&available)task={tab:'parts',text:'첫 성공 보상 · 원하는 파츠 1개 받기',first:true};
+    else if(!p.milestones?.firstGear)task={tab:'gear',text:'첫 장비 · 무기 1개 무료로 받기'};
     else if(R.pendingPet(p))task={tab:'friends',text:'함께 출동할 첫 친구 고르기'};
     else if(p.stages.CH01?.cleared&&p.gifts>0&&available)task={tab:'parts',text:`보급권 ${p.gifts}장이 있어요 · 파츠 보급 받으러 가기`};
     else if(R.runParts(p).length<3&&Object.keys(p.parts).some(id=>R.PARTS[id]&&!p.equippedParts.includes(id)))task={tab:'parts',text:'빈 파츠 칸에 가진 파츠 끼우기'};
-    if(!task||(!task.first&&this.tab===task.tab))return '';
-    return `<button class="sg-milestone sg-next-task" ${task.first?'data-do="first-part-dialog"':`data-tab="${task.tab}"`}>${icon('gift')}<span><small>다음 할 일</small><strong>${esc(task.text)} →</strong></span></button>`;
+    else if(R.gearIdsFor(p.hero).some(id=>R.gearMergeReady(p,id)))task={tab:'gear',text:'장비를 합성해 등급을 올릴 수 있어요'};
+    if(!task||(!task.first&&!task.hero&&this.tab===task.tab))return '';
+    return `<button class="sg-milestone sg-next-task" ${task.hero?'data-do="hero-dialog"':task.first?'data-do="first-part-dialog"':`data-tab="${task.tab}"`}>${icon('gift')}<span><small>다음 할 일</small><strong>${esc(task.text)} →</strong></span></button>`;
   }
   firstPartDialog(){
     const p=this.state().profile;if(!R.pendingPart(p))return;
@@ -98,10 +120,10 @@ export class GuardianUI {
   }
   chapterView(p,passes,chapter,stages){
     const st=R.STAGES.find(s=>s.id===this.stage),duration=R.durationFor(p,st.id),done=stages.filter(s=>p.stages[s.id]?.cleared).length,pictures=chapter.pictures,label=`${chapter.n}-${stages.indexOf(st)+1}`;
-    const mode=p.weaponMode||'melee',difficulty=R.difficultyOf(p),weaponName=mode==='melee'?(p.hero==='minji'?'연필':'검'):(p.hero==='minji'?'피구공':'야구 배트');
+    const weaponGear=R.GEAR[p.equippedGear?.weapon],mode=weaponGear?weaponGear.type:(p.weaponMode||'melee'),difficulty=R.difficultyOf(p),weaponName=mode==='melee'?(p.hero==='minji'?'연필':'검'):(p.hero==='minji'?'피구공':'야구 배트');
     return `<div class="sg-heading"><div><span class="sg-eyebrow">${chapter.eyebrow} · ${esc(chapter.name)}</span><h1>${esc(chapter.title)}</h1><p>${esc(chapter.sub)}</p></div><span class="sg-progress">${done} / 5 정화</span></div>
     <div class="sg-stage-map">${stages.map((s,i)=>{const open=R.stageUnlocked(p,s.id);return `<button class="sg-stage ${s.id===this.stage?'selected':''} ${p.stages[s.id]?.cleared?'cleared':''}" data-stage="${s.id}" ${open?'':'disabled'} aria-label="${chapter.n}-${i+1} ${esc(s.name)}${open?'':' 잠김'}"><span class="sg-stage-number">${chapter.n}-${i+1}</span><img src="./assets/sprites/${chapter.art}/${pictures[i]}.png" alt=""/><strong>${esc(s.name)}</strong><span class="sg-stars">${open?stars(p.stages[s.id]?.stars||0):'앞 단계 성공 후'}</span>${open&&passes?.day&&R.stageGiftLeft(p,s.id,passes.day)<R.STAGE_GIFT_CLEARS_PER_DAY?`<small class="sg-stage-gift ${R.stageGiftLeft(p,s.id,passes.day)?'':'done'}">${R.stageGiftLeft(p,s.id,passes.day)?`오늘 보급권 ${R.stageGiftLeft(p,s.id,passes.day)}번 남음`:'오늘 보급권 끝'}</small>`:''}</button>`;}).join('')}</div>
-    <div class="sg-departure"><div class="sg-hero-scene ${chapter.n==='2'?`sg-chapter-art ${p.stages.CH10?.cleared?'clean':''}`:''}"><img class="sg-hero" src="./assets/sprites/heroes/${p.hero==='minji'?'minji':'hoya'}_idle_1.png" alt="${p.hero==='hoya'?'호야':'민지'}"/>${p.activePet?petImage(p.activePet):'<span class="sg-future-pet">1-3 성공 후<br/>친구 선택</span>'}<span>${esc(weaponName)} · ${mode==='ranged'?'원거리':'근거리'} <button data-do="account" class="sg-inline">캐릭터 바꾸기</button></span></div><div class="sg-brief"><span class="sg-eyebrow">선택한 모험 · ${label}</span><h2>${esc(st.name)}</h2><p>${esc(st.story)}</p><div class="sg-goal">${icon('element_wind')} ${esc(st.goal)} <small>환경 목표 · 성공하면 코인 +30</small></div><div class="sg-options"><label>난이도<select id="sg-difficulty">${entries(R.DIFFICULTIES).map(([id,d])=>`<option value="${id}" ${difficulty===id?'selected':''}>${esc(d.name)} ${starText(d.stars)}</option>`).join('')}</select></label><label>기본 무기<select id="sg-weapon-mode"><option value="melee" ${mode==='melee'?'selected':''}>근거리 · ${p.hero==='minji'?'연필':'검'}</option><option value="ranged" ${mode==='ranged'?'selected':''}>원거리 · ${p.hero==='minji'?'피구공':'야구 배트'}</option></select></label></div><div id="sg-difficulty-help" class="sg-weapon-help" aria-live="polite">${difficultyHelp(difficulty)}</div><div id="sg-weapon-help" class="sg-weapon-help" aria-live="polite">${weaponHelp(mode,p.hero)}</div><small>성공하면 난이도만큼 별을 받아요: 쉬움 ★ · 보통 ★★ · 어려움 ★★★. 성공 보급권은 쉬움·보통 1장, <b>어려움 2장</b>. 같은 단계는 하루 2번 성공까지 받아요(아침 8시에 다시).</small>${passes?.day?`<div class="sg-goal sg-stage-gift-note">${icon('gift')} 오늘 이 단계 보급권: ${R.stageGiftLeft(p,st.id,passes.day)?`<b>${R.stageGiftLeft(p,st.id,passes.day)}번 더 받을 수 있어요</b>`:'<b>다 받았어요</b> · 다른 단계에 도전하면 또 받아요'}</div>`:''}<div class="sg-run-summary">${icon('mode_melee')} 기본 무기 1개 <span>+</span> ${skillIcon('F1')} 원소 스킬 4칸 <span>+</span> ${supportIcon('S4')} 지원품 4칸</div><button id="sg-start" class="sg-primary sg-start" data-do="start" ${passes?.remaining>0&&!this.state().active?'':'disabled'}>${passes?.remaining===0?'내일 아침 8시에 만나요':'출동하기'} ${icon('arrow')}</button><small class="sg-pass-hint">${duration===180?'첫 성공까지 3분':R.isBossStage(st.id)?'4분 뒤 대장 등장 · 최대 6분':'5분 도전'} · 성공할 때 이용권 1장</small></div></div>
+    <div class="sg-departure"><div class="sg-hero-scene ${chapter.n==='2'?`sg-chapter-art ${p.stages.CH10?.cleared?'clean':''}`:''}"><img class="sg-hero" src="./assets/sprites/heroes/${p.hero==='minji'?'minji':'hoya'}_idle_1.png" alt="${p.hero==='hoya'?'호야':'민지'}"/>${p.activePet?petImage(p.activePet):'<span class="sg-future-pet">1-3 성공 후<br/>친구 선택</span>'}<span>${esc(weaponName)} · ${mode==='ranged'?'원거리':'근거리'} ${R.heroLocked(p)?'<button data-tab="gear" class="sg-inline">장비 보기</button>':'<button data-do="hero-dialog" class="sg-inline">캐릭터 고르기</button>'}</span></div><div class="sg-brief"><span class="sg-eyebrow">선택한 모험 · ${label}</span><h2>${esc(st.name)}</h2><p>${esc(st.story)}</p><div class="sg-goal">${icon('element_wind')} ${esc(st.goal)} <small>환경 목표 · 성공하면 코인 +30</small></div><div class="sg-options"><label>난이도<select id="sg-difficulty">${entries(R.DIFFICULTIES).map(([id,d])=>`<option value="${id}" ${difficulty===id?'selected':''}>${esc(d.name)} ${starText(d.stars)}</option>`).join('')}</select></label><label>기본 무기<select id="sg-weapon-mode" ${weaponGear?'disabled title="무기 장비가 공격 방식을 정해요"':''}><option value="melee" ${mode==='melee'?'selected':''}>근거리 · ${p.hero==='minji'?'연필':'검'}</option><option value="ranged" ${mode==='ranged'?'selected':''}>원거리 · ${p.hero==='minji'?'피구공':'야구 배트'}</option></select></label></div><div id="sg-difficulty-help" class="sg-weapon-help" aria-live="polite">${difficultyHelp(difficulty)}</div><div id="sg-weapon-help" class="sg-weapon-help" aria-live="polite">${weaponHelp(mode,p.hero)}${weaponGear?`<span class="sg-gear-mode-note">무기 장비 <b>${esc(weaponGear.name)}</b>${subjJosa(weaponGear.name)} 공격 방식을 정해요. 장비 탭에서 무기를 바꾸면 바뀌어요.</span>`:''}</div><small>성공하면 난이도만큼 별을 받아요: 쉬움 ★ · 보통 ★★ · 어려움 ★★★. 성공 보급권은 쉬움·보통 1장, <b>어려움 2장</b>. 같은 단계는 하루 2번 성공까지 받아요(아침 8시에 다시).</small>${passes?.day?`<div class="sg-goal sg-stage-gift-note">${icon('gift')} 오늘 이 단계 보급권: ${R.stageGiftLeft(p,st.id,passes.day)?`<b>${R.stageGiftLeft(p,st.id,passes.day)}번 더 받을 수 있어요</b>`:'<b>다 받았어요</b> · 다른 단계에 도전하면 또 받아요'}</div>`:''}<div class="sg-run-summary">${icon('mode_melee')} 기본 무기 1개 <span>+</span> ${skillIcon('F1')} 원소 스킬 4칸 <span>+</span> ${supportIcon('S4')} 지원품 4칸</div><button id="sg-start" class="sg-primary sg-start" data-do="start" ${passes?.remaining>0&&!this.state().active?'':'disabled'}>${passes?.remaining===0?'내일 아침 8시에 만나요':'출동하기'} ${icon('arrow')}</button><small class="sg-pass-hint">${duration===180?'첫 성공까지 3분':R.isBossStage(st.id)?'4분 뒤 대장 등장 · 최대 6분':'5분 도전'} · 성공할 때 이용권 1장</small></div></div>
     <div class="sg-feature-strip"><div><b>원소 스킬 10 · 지원품 8</b><span>모든 스테이지에서 획득</span></div><div><b>스킬 3단계 + 짝 지원품</b><span>금색 카드로 진화 10종</span></div><div><b>실패해도 다시 도전</b><span>이용권은 성공할 때만 차감</span></div></div>`;
   }
   training(p){
@@ -130,6 +152,7 @@ export class GuardianUI {
   }
   // 결과 카드: 모든 결과에 같은 1.2초 뒤집기, 결과 전 힌트 없음, 축하는 등급이 오르거나 3·7개일 때만. 건너뛰기는 기억한다.
   showDrawResult(d){
+    if(R.GEAR[d?.id]){this.showGearResult(d);return;}
     const part=R.PARTS[d?.id];if(!part)return;
     let skip=false;try{skip=localStorage.getItem('seoho_supply_skip_flip')==='1';}catch(e){}
     const up=d.gradeAfter>Math.max(0,d.gradeBefore),skill=R.SKILLS[part.skill],next=toNext(d.after);
@@ -147,6 +170,67 @@ export class GuardianUI {
     this.openDialog(`<h2>${esc(d.name)} 끼우기</h2><p>칸이 가득 찼어요. 뺄 파츠를 골라 주세요. 뺀 파츠의 레벨과 개수는 그대로 남아요.</p><div class="sg-swap-list">${(p.equippedParts||[]).filter(x=>R.PARTS[x]).map(x=>`<button data-swap="${x}">${partIcon(x)}<b>${esc(R.PARTS[x].name)}</b><small>Lv.${p.parts[x]?.level||1} · ${gradeName(p.parts[x]?.copies||1)}</small></button>`).join('')}</div><button data-close>돌아가기</button>`);
     this.dialog.querySelectorAll('[data-swap]').forEach(b=>b.onclick=async()=>{if(this.busy)return;this.dialog.close();await this.perform({kind:'equip-part',id,replace:b.dataset.swap});});
   }
+  // ---- 장비 탭(2026-09-24, docs/34): 가운데 캐릭터 둘레 6칸 · 세트 2/4/6 막대 · 장비 보급(파츠와 같은 보급권) · 보관함(합성·끼우기) ----
+  gearAlert(p){return !R.heroLocked(p)||!p.milestones?.firstGear||R.gearIdsFor(p.hero).some(id=>R.gearMergeReady(p,id));}
+  heroPick(){return `<div class="sg-hero-choice sg-hero-pick">${[['hoya','호야','야구복 세트 · 교복 세트'],['minji','민지','피구복 세트 · 교복 세트']].map(([id,name,detail])=>`<button data-pick-hero="${id}"><img src="./assets/sprites/heroes/${id}_idle_1.png" alt=""/><b>${name}</b><small>${detail}</small></button>`).join('')}</div>`;}
+  gear(p,passes){
+    const hero=p.hero==='minji'?'minji':'hoya';
+    if(!R.heroLocked(p))return `<div class="sg-heading"><div><span class="sg-eyebrow">EQUIPMENT</span><h1>먼저 함께할 캐릭터를 골라요</h1><p>한 번 고르면 바꿀 수 없어요. 장비는 고른 캐릭터 것만 나와요. 호야와 민지는 능력이 똑같아요.</p></div></div><div class="sg-panel">${this.heroPick()}</div>`;
+    const eq=p.equippedGear||{},gb=R.gearBonuses(p),sets=[`${hero}_ranged`,`${hero}_melee`],first=!p.milestones?.firstGear,open=!!p.stages.CH01?.cleared,pool=R.gearDrawPool(p).length,worn=R.GEAR_SLOTS.filter(s=>R.GEAR[eq[s]]).length;
+    const slot=s=>{const id=eq[s],it=R.GEAR[id],g=it?R.gearGrade(p,id):-1;return it?`<button class="sg-gear-slot on" data-gear-detail="${id}" style="--set:${it.color};grid-area:${s}">${gearIcon(id)}<span><small>${R.GEAR_SLOT_NAMES[s]}</small><b>${esc(it.name)}</b></span><span class="sg-medal sg-medal-${g}">${R.GRADE_NAMES[g]}</span></button>`:`<div class="sg-gear-slot" style="grid-area:${s}">${slotIcon(s)}<span><small>${R.GEAR_SLOT_NAMES[s]}</small><b>빈칸</b></span></div>`;};
+    const weapon=R.GEAR[eq.weapon],mode=weapon?weapon.type:(p.weaponMode||'melee');
+    const doll=`<div class="sg-gear-doll">${R.GEAR_SLOTS.map(slot).join('')}<div class="sg-gear-hero" style="grid-area:hero"><img src="./assets/sprites/heroes/${hero}_idle_1.png" alt="${heroName(hero)}"/><small>${heroName(hero)} · ${typeName(mode)}</small></div></div>`;
+    const setBar=set=>{const d=R.GEAR_SETS[set],n=gb.sets[set]||0,t=R.GEAR_SET_TEXT[d.type];return `<div class="sg-gear-set ${n>=2?'on':''}" style="--set:${d.color}"><div class="sg-gear-set-head"><b>${esc(d.name)} <small>${typeName(d.type)}</small></b><span class="sg-gear-pips" aria-label="${n}개 착용">${Array.from({length:6},(_,i)=>`<i class="${i<n?'on':''}"></i>`).join('')}</span><small>${n}/6</small></div><ul>${R.GEAR_SET_SIZES.map(k=>`<li class="${n>=k?'on':''}"><b>${k}세트</b> ${esc(t[k])}</li>`).join('')}</ul></div>`;};
+    const base=R.GEAR_SLOTS.map(s=>eq[s]).filter(id=>R.GEAR[id]&&R.GEAR[id].hero===hero).flatMap(id=>entries(R.GEAR[id].base).map(([k,v])=>[k,v*R.GEAR_GRADE_MULT[R.gearGrade(p,id)]]));
+    const sum={};for(const [k,v] of base)sum[k]=(sum[k]||0)+v;
+    const total=entries(sum).map(([k,v])=>gearStat(k,v)).filter(Boolean).join(' · ');
+    const firstPanel=first?`<section class="sg-panel sg-first-part sg-gear-first"><span class="sg-eyebrow">첫 장비 · 무료</span><h2>무기 1개를 골라 받아요</h2><p>무기가 공격 방식을 정해요. 나중에 다른 무기를 끼우면 바뀌어요.</p><div class="sg-gear-first-grid">${sets.map(set=>{const id=`${set}_weapon`,it=R.GEAR[id];return `<button data-first-gear="${id}" style="--set:${it.color}">${gearIcon(id)}<b>${esc(it.name)}</b><small>${typeName(it.type)} · ${it.type==='ranged'?'멀리서 공을 던져요':'가까이서 휘둘러요'} · ${esc(it.setName)}</small><span>${esc(gearBase(it,0))}</span></button>`;}).join('')}</div></section>`:'';
+    const odds=R.SUPPLY_BUNDLES.map(b=>`${b.qty}개 ${Math.round(b.chance*100)}%`).join(' · ');
+    const supply=`<section class="sg-panel sg-draw-panel sg-gear-supply"><div><span class="sg-eyebrow">장비 보급 · 보급권 1장</span><h2>${pool?`${heroName(hero)} 장비 12종 중 무작위!`:'모든 장비가 전설이에요!'}</h2><p>${open?`파츠 보급과 같은 보급권을 써요. 운이 좋으면 여러 개! <b>${odds}</b>. 같은 장비를 모아 <b>합성</b>하면 등급이 올라요.`:'1-1 첫 성공 후 열려요. 모은 보급권은 보관돼요.'}</p>${gradeLadder()}<button class="sg-inline" data-do="gear-help">자세히</button></div><div><button class="sg-primary sg-supply-go" data-do="draw-gear" ${open&&p.gifts>0&&pool?'':'disabled'}>${icon('gift')} 장비 보급 받기 · 보급권 1장</button><p class="sg-footnote">보급권 ${p.gifts}장 있어요. 파츠 보급과 함께 써요.</p></div></section>`;
+    const card=id=>{const it=R.GEAR[id],item=p.gear?.[id],g=R.gearGrade(p,id),on=eq[it.slot]===id,ready=R.gearMergeReady(p,id),next=g>=0&&g<R.GRADE_COPIES.length-1?R.GRADE_COPIES[g+1]:null;
+      const sp=g>=2?gearSpecialLines(it,g).filter(x=>x.on).map(x=>x.text).join(' · '):`유니크부터 · ${it.special.text[0]}`;
+      return `<article class="sg-panel sg-gear-card ${on?'sg-equipped':''} ${g<0?'sg-unowned':''} ${ready?'sg-merge-ready':''}" style="--set:${it.color}"><div class="sg-panel-title">${gearIcon(id)}<div><span class="sg-eyebrow">${R.GEAR_SLOT_NAMES[it.slot]} · ${g<0?'미보유':R.GRADE_NAMES[g]}${on?' · 착용 중':''}</span><h3>${esc(it.name)}</h3></div>${g>=0?`<span class="sg-medal sg-medal-${g}">${R.GRADE_NAMES[g]}</span>`:''}</div><p>${esc(gearBase(it,Math.max(0,g)))}</p><p class="sg-gear-special ${g>=2?'on':''}"><b>${esc(it.special.name)}</b> ${esc(sp)}</p>${g>=0?`<div class="sg-gear-progress"><div class="sg-meter"><i style="width:${next?Math.min(100,item.copies/next*100):100}%"></i></div><small>${item.copies}개${next?` / ${next}개면 ${R.GRADE_NAMES[g+1]} 합성`:' · 최고 등급'}</small></div>`:''}<div class="sg-gear-actions">${ready?`<button class="sg-primary sg-merge" data-action="merge-gear" data-id="${id}">합성 → ${R.GRADE_NAMES[g+1]}</button>`:''}${g<0?'<small>보급으로 받을 수 있어요</small>':on?`<button data-action="unequip-gear" data-slot="${it.slot}">빼기</button>`:`<button data-action="equip-gear" data-id="${id}">끼우기</button>`}<button class="sg-inline" data-gear-detail="${id}">자세히</button></div></article>`;};
+    const inv=sets.map(set=>{const d=R.GEAR_SETS[set];return `<div class="sg-section-heading"><h2>${esc(d.name)} <small>${typeName(d.type)} · ${d.type==='ranged'?'사거리·공격':'체력·방어'}</small></h2><small>${R.GEAR_SLOTS.filter(sl=>R.gearGrade(p,`${set}_${sl}`)>=0).length} / 6종 보유</small></div><div class="sg-grid sg-gear-grid">${R.GEAR_SLOTS.map(sl=>card(`${set}_${sl}`)).join('')}</div>`;}).join('');
+    return `<div class="sg-heading"><div><span class="sg-eyebrow">EQUIPMENT</span><h1>${heroName(hero)}의 장비</h1><p>투구·갑옷·신발·장갑·목걸이·무기 6칸. 같은 세트를 2·4·6개 끼우면 세트 효과가 생겨요.</p></div><span class="sg-progress">착용 ${worn} / 6</span></div>
+    ${firstPanel}<div class="sg-gear-top">${doll}<div class="sg-gear-sets">${sets.map(setBar).join('')}<p class="sg-footnote">${total?`지금 장비 능력: ${esc(total)}`:'장비를 끼우면 여기에 능력이 모여요.'}</p></div></div>${supply}${inv}`;
+  }
+  gearDetail(id){
+    const p=this.state().profile,it=R.GEAR[id];if(!it||!p)return;const g=R.gearGrade(p,id),item=p.gear?.[id],set=R.GEAR_SETS[it.set],eq=p.equippedGear?.[it.slot]===id;
+    const grades=R.GRADE_NAMES.map((n,i)=>`<p class="sg-grade-row ${i===g?'on':''}"><span class="sg-medal sg-medal-${i}">${n}</span> ${esc(gearBase(it,i))}${i===g?' <b>← 지금</b>':''}</p>`).join('');
+    const sp=gearSpecialLines(it,g).map(x=>`<p class="${x.on?'on':''}"><b>${x.name}</b> ${esc(x.text)}${x.on?' ✓':''}</p>`).join('');
+    const own=p.hero===it.hero,next=g>=0&&g<R.GRADE_COPIES.length-1?R.GRADE_COPIES[g+1]:null;
+    this.openDialog(`<div class="sg-dialog-icon">${gearIcon(id,'big')}</div><h2>${esc(it.name)}</h2><p>${esc(set.name)} · ${typeName(it.type)} · ${R.GEAR_SLOT_NAMES[it.slot]}${g>=0?` · ${item.copies}개 가짐${next?` (${next}개면 ${R.GRADE_NAMES[g+1]} 합성)`:''}`:' · 아직 없음'}</p>${it.slot==='weapon'?`<p>이 무기를 끼우면 <b>${typeName(it.type)}</b>으로 싸워요.</p>`:''}<div class="sg-rules sg-gear-rules"><h3>등급별 능력</h3>${grades}<h3>특수 효과 · ${esc(it.special.name)}</h3><div class="sg-gear-sp">${sp}</div><h3>${esc(set.name)} 효과(같은 세트 개수)</h3>${R.GEAR_SET_SIZES.map(k=>`<p><b>${k}세트</b> ${esc(R.GEAR_SET_TEXT[it.type][k])}</p>`).join('')}</div><div class="sg-gear-dialog-actions">${g>=0&&own?(R.gearMergeReady(p,id)?`<button class="sg-primary" data-gear-act="merge-gear">합성 → ${R.GRADE_NAMES[g+1]}</button>`:'')+(eq?`<button data-gear-act="unequip-gear">빼기</button>`:`<button class="sg-primary" data-gear-act="equip-gear">끼우기</button>`):''}<button data-close>닫기</button></div>`);
+    this.dialog.querySelectorAll('[data-gear-act]').forEach(b=>b.onclick=async()=>{if(this.busy)return;this.dialog.close();const k=b.dataset.gearAct;await this.perform(k==='unequip-gear'?{kind:k,slot:it.slot}:{kind:k,id});});
+  }
+  gearHelp(){
+    this.openDialog(`<h2>장비 규칙</h2><div class="sg-rules"><p><b>칸</b> 투구 · 갑옷 · 신발 · 장갑 · 목걸이 · 무기, 칸마다 1개씩 끼워요. 다른 세트를 섞어 끼워도 기본 능력은 다 받아요.</p><p><b>세트</b> 원거리 세트(호야 야구복 · 민지 피구복)는 사거리·공격, 근거리 세트(교복)는 체력·방어. 같은 세트를 2 · 4 · 6개 끼우면 세트 효과가 생겨요.</p><p><b>무기</b> 무기 칸 장비가 공격 방식(원거리·근거리)을 정해요.</p><p><b>보급</b> 보급권 1장으로 내 캐릭터 장비 12종 중 무작위(전설이 된 장비는 빼고). ${R.SUPPLY_BUNDLES.map(b=>`${b.qty}개 ${Math.round(b.chance*100)}%`).join(' · ')}. 파츠 보급과 같은 보급권이에요.</p><p><b>합성</b> 같은 장비를 ${R.GRADE_NAMES.map((n,i)=>`${n} ${R.GRADE_COPIES[i]}개`).join(' → ')}만큼 모으면 [합성] 버튼으로 등급을 올려요. 등급이 오르면 능력이 노말 ×1 · 레어 ×1.5 · 유니크 ×2 · 에픽 ×2.8 · 전설 ×4.</p><p><b>특수 효과</b> 유니크에서 열리고, 에픽에서 강해지고, 전설에서 하나 더 생겨요.</p><p><b>공평</b> 호야와 민지의 같은 역할 장비는 이름과 그림만 다르고 능력은 똑같아요.</p></div><button class="sg-primary" data-close>확인</button>`);
+  }
+  showGearResult(d){
+    const it=R.GEAR[d?.id];if(!it)return;
+    if(d.mode==='merge'){const lines=gearSpecialLines(it,d.grade),newly=d.grade>=2?lines[d.grade-2]:null;
+      this.openDialog(`<div class="sg-flip sg-flip-skip"><div class="sg-flip-inner"><div class="sg-flip-back"></div><div class="sg-flip-front sg-celebrate sg-grade-${d.grade}"><p class="sg-flip-luck big">합성 성공!</p>${gearIcon(d.id,'big')}<h2>${esc(it.name)}</h2><p><span class="sg-medal sg-medal-${d.grade}">${R.GRADE_NAMES[d.grade]}</span> 등급이 되었어요</p><p>${esc(gearBase(it,d.grade))}</p>${newly?`<p class="sg-flip-gold">${newly.name} 특수 효과 · ${esc(newly.text)}</p>`:''}</div></div></div><div class="sg-flip-actions"><button class="sg-primary" data-close>확인</button></div>`);return;}
+    let skip=false;try{skip=localStorage.getItem('seoho_supply_skip_flip')==='1';}catch(e){}
+    const luck=d.qty>=7?'<p class="sg-flip-luck big">대박! 7개</p>':d.qty>=3?'<p class="sg-flip-luck">행운! 3개</p>':'',g=d.grade??0,next=R.GRADE_COPIES[g+1];
+    const front=`<div class="sg-flip-front ${d.qty>=3||d.mergeReady?'sg-celebrate':''} sg-grade-${g}">${luck}${gearIcon(d.id,'big')}<h2>${esc(it.name)} ×${d.qty}</h2><p>${esc(it.setName)} · ${R.GEAR_SLOT_NAMES[it.slot]}</p>${d.isNew?`<p class="sg-flip-new">새 장비! ${esc(gearBase(it,g))}</p>`:`<p class="sg-flip-count">${d.before}개 → <b>${d.after}개</b></p>`}${d.mergeReady?`<p class="sg-flip-gold">합성할 수 있어요! 장비 탭에서 [합성]을 눌러요</p>`:next?`<p>${next}개면 ${R.GRADE_NAMES[g+1]} 합성</p>`:''}${d.mode==='first'?'<p class="sg-flip-slot">무기 칸에 끼웠어요</p>':''}</div>`;
+    this.openDialog(`<div class="sg-flip ${skip||d.mode==='first'?'sg-flip-skip':''}"><div class="sg-flip-inner"><div class="sg-flip-back">${icon('gift')}<b>장비 보급</b></div>${front}</div></div><div class="sg-flip-actions"><button class="sg-primary" data-close>확인</button></div>`);
+  }
+  // 캐릭터 고르기: 가입한 뒤 처음 한 번(닫을 수 없음). 고르면 바꿀 수 없다(선생님이 관리 페이지에서 장비가 없을 때 한 번 바꿔 줄 수 있음).
+  heroDialog(){
+    const p=this.state().profile;if(!p||R.heroLocked(p))return;
+    this.openDialog(`<h2>함께할 캐릭터를 골라요</h2><p>한 번 고르면 바꿀 수 없어요. 장비는 고른 캐릭터 것만 나와요. <b>호야와 민지는 능력이 똑같아요.</b></p>${this.heroPick()}<p class="sg-footnote" id="sg-hero-confirm-note">캐릭터를 누르면 한 번 더 물어봐요.</p>`,true);
+    this.dialog.querySelectorAll('[data-pick-hero]').forEach(b=>b.onclick=()=>this.heroConfirm(b.dataset.pickHero));
+  }
+  heroConfirm(hero){
+    this.openDialog(`<div class="sg-dialog-icon"><img class="sg-hero-confirm" src="./assets/sprites/heroes/${hero}_idle_1.png" alt=""/></div><h2>${heroName(hero)}와 함께할까요?</h2><p>고른 뒤에는 바꿀 수 없어요.</p><button class="sg-primary" id="sg-hero-yes">네, ${heroName(hero)}와 함께해요</button><button id="sg-hero-back">다시 고르기</button>`,true);
+    this.dialog.querySelector('#sg-hero-back').onclick=()=>this.heroDialog();
+    this.dialog.querySelector('#sg-hero-yes').onclick=async()=>{if(this.busy)return;this.unlockDialog();this.dialog.close();await this.perform({kind:'choose-hero',hero});};
+  }
+  firstGearDialog(){
+    const p=this.state().profile;if(!p||!R.heroLocked(p)||p.milestones?.firstGear)return;const hero=p.hero==='minji'?'minji':'hoya';
+    this.openDialog(`<div class="sg-first-heading"><h2>장비가 생겼어요!</h2><button data-close>나중에</button></div><p>투구·갑옷·신발·장갑·목걸이·무기를 모아 끼워요. 첫 장비로 <b>무기 1개를 무료</b>로 골라요. 무기가 공격 방식을 정해요.</p><div class="sg-gear-first-grid">${[`${hero}_ranged_weapon`,`${hero}_melee_weapon`].map(id=>{const it=R.GEAR[id];return `<button data-first-gear-dialog="${id}" style="--set:${it.color}">${gearIcon(id)}<b>${esc(it.name)}</b><small>${typeName(it.type)} · ${it.type==='ranged'?'멀리서 공을 던져요':'가까이서 휘둘러요'}</small><span>${esc(gearBase(it,0))}</span></button>`;}).join('')}</div>`);
+    this.dialog.querySelectorAll('[data-first-gear-dialog]').forEach(b=>b.onclick=async()=>{if(this.busy)return;this.dialog.close();await this.perform({kind:'choose-first-gear',id:b.dataset.firstGearDialog});});
+  }
+  unlockDialog(){delete this.dialog.dataset.lock;}
   friends(p){
     const pending=R.pendingPet(p),lv=R.friendshipLevel(p),open=!!p.stages.CH01?.cleared,n=p.giftCounts.pet||0,unowned=Object.keys(R.PETS).filter(id=>!p.pets.includes(id)),choice=(n+1)%5===0&&unowned.length>0,locked=!unowned.length&&p.friendship>=28;
     return `<div class="sg-heading"><div><span class="sg-eyebrow">COMPANIONS</span><h1>함께 출동할 친구</h1><p>한 마리와 함께 출동해요. 함께 있는 동안 효과가 계속 붙어요. 모든 친구가 우정 단계를 공유해요.</p></div><span class="sg-progress">우정 ${lv}단계 · ${p.friendship}/28</span></div>${pending?`<div class="sg-notice">${pending.key==='firstPet'?'1-3 성공 보상! 처음 함께할 친구를 선택하세요.':'새 친구 한 마리를 선택할 수 있어요.'}</div>`:''}<div class="sg-grid sg-pets">${entries(R.PETS).map(([id,d])=>{const owned=p.pets.includes(id),choose=pending?.ids.includes(id);return `<article class="sg-panel ${p.activePet===id?'sg-equipped':''}" style="--pet-color:${d.color}">${petImage(id)}<span class="sg-eyebrow">${esc(d.role)}</span><h2>${esc(d.name)}</h2><p>${esc(d.desc)}</p><button ${owned||choose?'':'disabled'} data-action="${choose?'choose-pet':'pet'}" data-id="${id}">${choose?'이 친구 선택':p.activePet===id?'함께 출동 중':owned?'함께 출동하기':'아직 만나지 않았어요'}</button></article>`;}).join('')}</div><section class="sg-panel sg-draw-panel"><div><span class="sg-eyebrow">친구 만나기 · 보급권 1장 · 파츠와 따로 세요</span><h2>${locked?'친구를 모두 만났어요!':choice?'이번에는 새 친구를 직접 선택!':unowned.length?`아직 못 만난 친구 ${unowned.length}마리가 먼저 와요`:'다시 만나면 우정 +1'}</h2><p>${!open?'1-1 첫 성공 후 열려요.':locked?'우정도 가득해요! 보급권은 파츠에 써요.':unowned.length?'못 만난 친구 중 한 마리가 찾아와요. 누구나 6번이면 모두 만나요.':'모두 만났어요. 다시 만나면 우정 +1이에요.'}</p><small>5번째마다 만나고 싶은 친구를 직접 골라요. 이용권은 나오지 않아요.</small></div><div>${choice?`<label>새 친구<select id="sg-gift-pet">${unowned.map(id=>`<option value="${id}">${esc(R.PETS[id].name)}</option>`).join('')}</select></label>`:''}<button class="sg-primary" data-do="pet-gift" ${open&&p.gifts>0&&!locked?'':'disabled'}>${locked?'모두 만났어요':'친구 만나기 · 보급권 1장'}</button></div></section><div class="sg-panel sg-help"><h3>함께한 만큼 커지는 우정</h3><p>성공할 때 우정 +1. 150초 이상 도전하고 실패한 판도 두 번 모이면 우정 +1이에요. 우정 3단계부터 친구 효과가 20% 좋아져요. 친구는 스킬 진화 재료가 아니에요.</p></div>`;
@@ -171,12 +255,20 @@ export class GuardianUI {
     for(const [data,field] of [['tab','tab'],['chapter','chapter'],['stage','stage'],['partFilter','partFilter'],['bookFilter','bookFilter'],['bookTab','bookTab']])if(b.dataset[data]){this[field]=b.dataset[data];this.render();return;}
     const {profile:p,passes}=this.state();
     if(b.dataset.detail){this.details(b.dataset.detail);return;}
+    if(b.dataset.gearDetail){this.gearDetail(b.dataset.gearDetail);return;}
+    if(b.dataset.pickHero){this.heroConfirm(b.dataset.pickHero);return;}
+    if(b.dataset.firstGear){await this.perform({kind:'choose-first-gear',id:b.dataset.firstGear});return;}
+    if(b.dataset.do==='hero-dialog'){this.heroDialog();return;}
+    if(b.dataset.do==='draw-gear'){await this.perform({kind:'draw-gear'});return;}
+    if(b.dataset.do==='gear-help'){this.gearHelp();return;}
     if(b.dataset.reset){const id=b.dataset.reset,item=p.parts[id],refund=R.partResetRefund?R.partResetRefund(item.level):60*(item.level-1)+10*(item.level-1)*(item.level-2);this.openDialog(`<h2>레벨 되돌리기</h2><p>${esc(R.PARTS[id].name)}${objJosa(R.PARTS[id].name)} Lv.1로 되돌리고, 레벨 올리기에 쓴 <strong>${refund} 코인</strong>을 모두 돌려받아요. 모은 개수와 메달은 그대로예요.</p><button class="sg-primary" id="sg-confirm-reset">${refund} 코인 돌려받기</button><button data-close>돌아가기</button>`);this.dialog.querySelector('#sg-confirm-reset').onclick=async()=>{this.dialog.close();await this.perform({kind:'reset-part',id});};return;}
     if(b.dataset.do==='passes'){const ev=passes?.event;this.notify(ev?`${ev.title} · 오늘 이용권 ${ev.dailyTotal}장`:'이용권은 매일 아침 8시에 10장',`${ev?ev.message+'\n':''}${R.PASS_NOTICE} 지금 기본 ${passes?.baseRemaining??0}장, 추가 ${passes?.bonusRemaining??0}장(${ev?`추석 이벤트 ${ev.bonus}장·`:''}선생님 지급)이 남았어요. 추가 이용권도 다음 아침 8시에 사라져요.`);return;}
     if(b.dataset.do==='account'){
-      this.openDialog(`<h2>캐릭터 선택</h2><p>호야와 민지는 같은 능력으로 싸워요. 무기 연출만 달라요.</p><div class="sg-hero-choice">${[['hoya','호야','검 · 야구 배트'],['minji','민지','연필 · 피구공']].map(([id,name,detail])=>`<button data-hero="${id}" class="${p.hero===id?'on':''}"><img src="./assets/sprites/heroes/${id}_idle_1.png" alt=""/><b>${name}</b><small>${detail}</small></button>`).join('')}</div><button id="sg-logout">로그아웃</button><button data-close>닫기</button>`);this.dialog.querySelector('#sg-logout').onclick=()=>{this.dialog.close();this.c.logout();};this.dialog.querySelectorAll('[data-hero]').forEach(x=>x.onclick=async()=>{this.dialog.close();await this.perform({kind:'settings',hero:x.dataset.hero,difficulty:R.difficultyOf(p),weaponMode:p.weaponMode});});return;
+      if(!R.heroLocked(p)){this.openDialog(`<h2>계정</h2><p>${esc(this.state().user||'')} 님</p><button class="sg-primary" data-do-hero>캐릭터 고르기</button><button id="sg-logout">로그아웃</button><button data-close>닫기</button>`);this.dialog.querySelector('[data-do-hero]').onclick=()=>this.heroDialog();this.dialog.querySelector('#sg-logout').onclick=()=>{this.dialog.close();this.c.logout();};return;}
+      this.openDialog(`<h2>계정</h2><div class="sg-hero-choice sg-hero-now"><div><img src="./assets/sprites/heroes/${p.hero==='minji'?'minji':'hoya'}_idle_1.png" alt=""/><b>${heroName(p.hero)}</b><small>가입할 때 고른 캐릭터</small></div></div><p class="sg-footnote">캐릭터는 바꿀 수 없어요. 잘못 골랐다면 선생님께 말씀해 주세요.</p><button id="sg-logout">로그아웃</button><button data-close>닫기</button>`);this.dialog.querySelector('#sg-logout').onclick=()=>{this.dialog.close();this.c.logout();};return;
     }
     if(b.dataset.do==='start'){
+      if(!R.heroLocked(p)){this.heroDialog();return;}
       const difficulty=this.root.querySelector('#sg-difficulty').value,weaponMode=this.root.querySelector('#sg-weapon-mode').value;this.busy=true;b.disabled=true;
       try{if(difficulty!==p.difficulty||weaponMode!==p.weaponMode)await this.c.action({kind:'settings',difficulty,weaponMode,hero:p.hero});await this.c.start(this.stage);}catch(err){this.notify('확인해 주세요',err.message);}finally{this.busy=false;this.render();}return;
     }
@@ -187,7 +279,7 @@ export class GuardianUI {
     if(b.dataset.do==='supply-help'){this.supplyHelp();return;}
     if(b.dataset.action==='swap-part'){this.swapDialog(b.dataset.id);return;}
     if(b.dataset.do==='pet-gift'){await this.perform({kind:'gift',type:'pet',pet:this.root.querySelector('#sg-gift-pet')?.value});return;}
-    if(b.dataset.action){await this.perform({kind:b.dataset.action,id:b.dataset.id,stat:b.dataset.stat});return;}
+    if(b.dataset.action){await this.perform({kind:b.dataset.action,id:b.dataset.id,stat:b.dataset.stat,slot:b.dataset.slot});return;}
     if(b.dataset.do==='refresh'||b.dataset.do==='abandon'){this.busy=true;try{await this.c[b.dataset.do==='refresh'?'refresh':'abandon']();}catch(err){this.notify('확인해 주세요',err.message);}finally{this.busy=false;this.render();}}
   }
   async perform(a){
