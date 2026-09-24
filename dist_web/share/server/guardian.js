@@ -1,4 +1,4 @@
-import { VERSION, SKILLS, COMBOS, SUPPORTS, runParts, action, completeRun, stageUnlocked, durationFor } from '../../game/src/rework-core.js';
+import { VERSION, SKILLS, COMBOS, SUPPORTS, runParts, action, completeRun, stageUnlocked, durationFor, superTestProfile, TEST_ACCOUNT_RE } from '../../game/src/rework-core.js';
 import { migrateLegacy } from './legacy-migration.js';
 import { migrateProfileV2, needsPartsRepair, repairObsoleteParts, PARTS_FIX_SNAPSHOT } from './profile-migration-v2.js';
 
@@ -171,6 +171,17 @@ export async function guardianAdmin(request,env,sub,method,now=Date.now()){
     const audit=(await db.prepare("SELECT request_id,user_id,day,passes,gold,note,created_at FROM play_admin_grants WHERE request_id NOT LIKE 'event-%' ORDER BY created_at DESC LIMIT 100").all()).results;
     const ev=activePassEvent(now);
     return reply({users,audit,now,event:ev?{id:ev.id,title:ev.title,bonus:ev.bonus,days:ev.days}:null});
+  }
+  // 시험용 슈퍼 계정: 관리자(선생님 계정은 index.js가 403)만, 'qa'로 시작하는 계정만. 학생 계정은 절대 바꾸지 않는다.
+  if(sub==='test-profile'&&method==='POST'){
+    let b;try{b=await request.json();}catch{return reply({error:'입력 형식을 확인해 주세요.'},400);}
+    const id=String(b.id||'').toLowerCase();
+    if(!TEST_ACCOUNT_RE.test(id))return reply({error:"시험 계정(아이디가 'qa'로 시작)만 바꿀 수 있어요."},400);
+    if(!await db.prepare('SELECT id FROM users WHERE id=?').bind(id).first())return reply({error:'없는 아이디예요.'},404);
+    const {profile}=await getProfile(db,id);
+    const next=superTestProfile(profile,{training:Number(b.training)||100,copies:Number(b.copies)||80,level:Number(b.level)||10});
+    await db.prepare('UPDATE guardian_profiles SET state=?,revision=revision+1 WHERE user_id=?').bind(JSON.stringify(next),id).run();
+    return reply({ok:true,id,training:next.training,parts:Object.keys(next.parts).length,stages:Object.keys(next.stages).filter(k=>next.stages[k].cleared).length});
   }
   if(sub==='grant-passes'&&method==='POST'){
     let b;try{b=await request.json();}catch{return reply({error:'입력 형식을 확인해 주세요.'},400);}
