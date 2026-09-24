@@ -13,6 +13,9 @@
 ## 2026-09-24 저녁. 장비 시스템 구현(배포 전) — `docs/34_장비_시스템_기획.md` 13절
 - 장비 데이터 `game/src/equipment.js`, 규칙 `rework-core.js`(choose-hero·choose-first-gear·draw-gear·merge-gear·equip-gear·unequip-gear), 전투 `main.js` sgGear*, 화면 `rework-ui.js` gear 탭. 캐릭터는 모든 학생이 로그인 때 한 번 신중히 고르고 고정(`heroLocked`는 직접 고른 학생만 true), 고르면 원거리·근거리 무기 1개씩 무료. 바꾸기는 관리 API `set-hero`. 장비 아이콘은 임시 그림 — 사용자 그림이 오면 `GEAR_ART`에 넣는다. 격리 서버 가입 제한은 `/_qa/reset-attempts`로 비운다(시험 아이디는 12글자 이하).
 
+## 2026-09-24 20:2x KST. 전투 화면 흔들림 줄이기 실서버 배포 완료 909d8779
+- 사용자가 흔들림을 싫어함: 스킬 폭발·무기 맞힘·치명타(대왕 제외)·세균몬 터짐에는 흔들림/멈춤을 넣지 않는다. 주인공이 맞을 때·대왕 기술만 짧게(상한 5px).
+
 ## 2026-09-24 19:5x KST. 관리 페이지 보급권 지급·전체 지급은 최고 관리자만 — 실서버 배포 완료 9903327b
 - `grant-passes`에 `gifts`(보급권, 표 `play_admin_gift_grants`+트리거). 선생님 로그인은 학생 한 명씩만(전체·아이디 없음은 403), 화면의 "모두에게 선물 주기"는 `isOwner()`만 보임.
 
