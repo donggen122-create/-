@@ -21,6 +21,23 @@ export const BOSS_PATTERNS = [
   { name: '봉지 유령 소환', kind: 'summonOnly', ranges: ['far', 'mid'], telegraphS: .9, dmg: 0, summon: { id: 'T1_BAGGY', n: 4 }, phase: 2, hint: '유령부터 치워요!' },
   { name: '쓰레기 뿌리기', kind: 'litter', ranges: ['any'], telegraphS: 1.2, dmg: .8, count: 5, hint: '떨어진 쓰레기를 주우면 대왕이 약해져요!' },
 ];
+// 2-5 굴뚝 가스 대왕(2026-09-24): 파이프·부품이 모인 가스 몬스터. 같은 틀(거리 묶음·follow·3번째마다 밸브)에 기술만 다르다.
+//  - 근거리: 불꽃 브레스(부채꼴 불길) · 증기 폭발(원, 화나면 한 번 더 크게) · 매연 구름(부채꼴 + 오래 남는 매연)
+//  - 중거리: 파이프 휘두르기(빨간 길 — 대왕은 제자리, 화나면 반대로 한 번 더) · 매연 구름 · 매연 폭탄
+//  - 원거리: 매연 폭탄(떨어질 자리 표시) · 굴뚝 매연탄(부채꼴로 날아옴) · 먼지몬 부르기(화난 뒤)
+//  - 밸브 터뜨리기: 3번째 기술마다 새는 밸브를 흩뿌림 → 잠그면(5개) 대왕이 약해진다(1장의 쓰레기 뿌리기와 같은 규칙)
+export const BOSS_PATTERNS_T2 = [
+  { name: '불꽃 브레스', kind: 'cone', ranges: ['close'], telegraphS: 1.0, dmg: 1.7, fx: 'flame', hint: '대왕 뒤나 옆으로 돌아가요!' },
+  { name: '증기 폭발', kind: 'slam', ranges: ['close'], telegraphS: 1.0, dmg: 1.7, radiusU: 3.2, knockback: 2.2, hint: '원 밖으로 빠져나가요!',
+    follow: { name: '한 번 더 증기', kind: 'slam', telegraphS: .75, dmg: 1.2, radiusU: 4.6, knockback: 1.5, hint: '한 번 더! 더 멀리!' } },
+  { name: '매연 구름', kind: 'cone', ranges: ['close', 'mid'], telegraphS: 1.1, dmg: 1.1, stinkField: true, hint: '매연이 남는 곳 밖으로 피해요!' },
+  { name: '파이프 휘두르기', kind: 'dashLine', stay: true, ranges: ['mid'], telegraphS: 1.0, dmg: 1.6, lengthU: 8, hint: '빨간 길에서 옆으로 비켜요!',
+    follow: { name: '반대로 휘두르기', kind: 'dashLine', stay: true, telegraphS: .8, dmg: 1.6, lengthU: 8, hint: '또 온다! 옆으로!' } },
+  { name: '매연 폭탄', kind: 'scatter', ranges: ['mid', 'far'], telegraphS: 1.3, dmg: 1.2, count: 7, spreadU: 4, hint: '표시가 없는 곳으로 피해요!' },
+  { name: '굴뚝 매연탄', kind: 'volley', ranges: ['far'], telegraphS: .9, dmg: .6, waves: 3, shots: 5, angryWaves: 4, angryShots: 7, spread: .9, speedU: 5.2, hint: '날아오는 매연탄을 옆으로 피해요!' },
+  { name: '먼지몬 부르기', kind: 'summonOnly', ranges: ['far', 'mid'], telegraphS: .9, dmg: 0, summon: { id: 'T2_DUST', n: 5 }, phase: 2, hint: '먼지몬부터 치워요!' },
+  { name: '밸브 터뜨리기', kind: 'litter', ranges: ['any'], telegraphS: 1.2, dmg: .8, count: 5, hint: '새는 밸브를 잠그면 대왕이 약해져요!' },
+];
 // 대왕이 몸으로 부딪히면(0.6초마다) 공격력의 이만큼. 난이도의 1초 접촉 피해 상한(contactCap)을 함께 따른다.
 export const BOSS_CONTACT = .5;
 

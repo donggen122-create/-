@@ -19,6 +19,12 @@ import { music } from "./music.js";
 import { createFrameClock, createRenderQuality, setText, setWidth } from "./runtime-performance.js";
 import { createThemeEffects } from "./theme-effects.js";
 const themeFx = createThemeEffects(SPRITES);
+// 장마다 다른 목표 그림·정화 장치·문구(1장 쓰레기 마을 / 2장 대기오염 공장 지대, 2026-09-24)
+const THEME_SKIN = {
+  1: { litter: "t1_prop_litter", litterH: 30, beacon: "t1_prop_bins", beaconH: 96, shot: "t1_fx_trashball", goal: "쓰레기 줍기", pick: "쓰레기 줍기 🌱+3", bossPick: "정화! 대왕이 약해졌어요", bossDrop: "쓰레기를 주워서 정화하자!" },
+  2: { litter: "t2_prop_valve", litterH: 40, beacon: "t2_prop_tree", beaconH: 104, shot: "t2_fx_bomb", goal: "밸브 잠그기", pick: "밸브 잠금! 🌱+3", bossPick: "밸브 잠금! 대왕이 약해졌어요", bossDrop: "새는 밸브를 잠가서 막자!" },
+};
+const skin = () => THEME_SKIN[chapter?.theme] || THEME_SKIN[1];
 import { RAW_CHARACTERS } from "./content.data.js";
 import * as ECO from "./economy.js";
 import * as ECOUI from "./ecoui.js";
@@ -863,8 +869,12 @@ function buildDecor() {
   const rng = mulberry32(Math.floor(Math.random()*0xFFFFFFFF));
   // 환경 테마 1 소품. h = 화면 높이(px), solid = 장애물 반경(px, 플레이어·적이 지나갈 수 없음), bumper = 부딪힌 적을 튕겨 냄,
   // bin = 곁에 서면 정리(새싹·금화), litter = 밟아서 줍기(새싹), chest = 재활용 봉투(금화)
-  const t1 = chapter?.theme === 1;
-  const kinds = t1 ? [
+  const t1 = !!chapter?.theme;
+  const kinds = chapter?.theme === 2 ? [       // 2장: 드럼통·굴뚝·파이프·받침대(장애물) · 교통 콘(적을 튕겨 냄) · 새는 밸브(목표) · 재활용 봉투
+    { sprite: "t2_prop_drums", h: 44, solid: 16 }, { sprite: "t2_prop_cones", h: 36, solid: 14, bumper: true }, { sprite: "item_recycle", h: 28, chest: true },
+    { sprite: "t2_prop_chimney", h: 54, solid: 18 }, { sprite: "t2_prop_pipe", h: 26, solid: 14 }, { sprite: "t2_prop_valve", h: 40, litter: true },
+    { sprite: "t2_prop_pedestal", h: 34, solid: 12 }, { sprite: "item_recycle", h: 28, chest: true }, { sprite: "t2_prop_valve", h: 40, litter: true },
+  ] : t1 ? [
     { sprite: "t1_prop_bin_fallen", h: 46, solid: 16, bin: true }, { sprite: "t1_prop_bags", h: 42, solid: 18 }, { sprite: "item_recycle", h: 28, chest: true },
     { sprite: "t1_prop_tire", h: 28, solid: 15, bumper: true }, { sprite: "t1_prop_bench", h: 40, solid: 22 }, { sprite: "t1_prop_litter", h: 30, litter: true },
     { sprite: "item_recycle", h: 28, chest: true }, { sprite: "t1_prop_litter", h: 30, litter: true },
@@ -916,14 +926,14 @@ function updateDecor(dt) {
         if (d.bossLitter && boss && boss.hp > 0 && ++player.sgBossLitter%5===0) {
           boss.hp -= boss.hpMax * 0.03; boss.stunT = Math.max(boss.stunT || 0, 1.0); boss.flashT = 0.2;
           healPlayer(player.hpMax * 0.05);
-          if (chapter?.theme === 1) {
+          if (!!chapter?.theme) {
             themeFx.emit("link", d.x, d.y, { toX: boss.x, toY: boss.y });
             themeFx.emit("clean", player.x, player.y, { radius: 35 });
           }
-          floatingTexts.push({ x: player.x, y: player.y - 30, text: "정화! 대왕이 약해졌어요", life: 1.1, vy: -28, color: "#7ee08a", scale: 0, big: true });
+          floatingTexts.push({ x: player.x, y: player.y - 30, text: skin().bossPick, life: 1.1, vy: -28, color: "#7ee08a", scale: 0, big: true });
           addShake(3, 0.15);
         } else {
-          floatingTexts.push({ x: d.x, y: d.y - 16, text: "쓰레기 줍기 🌱+3", life: 0.9, vy: -35, color: "#8ee07a", scale: 0 });
+          floatingTexts.push({ x: d.x, y: d.y - 16, text: skin().pick, life: 0.9, vy: -35, color: "#8ee07a", scale: 0 });
         }
       }
       continue;
@@ -1186,7 +1196,7 @@ function newRun(chapterId, modeId = "M01") {
   runCfg = buildRunConfig(modeId, chapterId || selectedChapterId);
   runMods = runCfg.mods || {};
   chapter = chapterById(runCfg.chapterId);
-  document.getElementById("app").classList.toggle("theme-one", chapter.theme === 1);
+  document.getElementById("app").classList.toggle("theme-one", !!chapter.theme); themeFx.setTheme(chapter.theme || 1);
   bossDef = BOSSES[runCfg.bossId || chapter.boss];
   spawnedElites = new Set();
   runBonus = computeRunBonus();
@@ -1223,7 +1233,7 @@ function newRun(chapterId, modeId = "M01") {
   floatingTexts = [];
   hitFx = [];
   deathFx = [];
-  themeFx.reset();sgElements.reset();sgWeapon.reset();sgHostileShots=[];
+  themeFx.reset();sgElements.reset();sgWeapon.reset();sgHostileShots=[];sgAcid=[];
   beams = [];
   strikes = [];
   blasts = [];
@@ -1432,8 +1442,12 @@ let spawnedElites = new Set();
 // 난이도 배수 중 1보다 큰 것(어려움의 체력·속도·받는 피해)은 처음 90초에 걸쳐 1에서 목표값까지 오른다 — 스킬이 아직 없을 때 바로 쓰러지지 않게.
 // 1보다 작은 배수(쉬움)는 처음부터 그대로. 개편판이 아니면(diff* 없음) 예전 값(enemyHpMul 등)을 쓴다.
 function sgDiffMul(v) { return v > 1 ? 1 + (v - 1) * Math.min(1, runTime / 90) : v; }
-function spawnEnemyAt(typeId, x, y) {
+function spawnEnemyAt(typeId, x, y, exact = false) {
   const def = ENEMIES[typeId];
+  if (def.behavior === "mine" && player && !exact) {     // 세균몬: 화면 안 바닥에 지뢰처럼 생긴다(내 발밑은 피해서 3.5~6.5칸)
+    const a = Math.random() * Math.PI * 2, r = (3.5 + Math.random() * 3) * U;
+    x = player.x + Math.cos(a) * r; y = player.y + Math.sin(a) * r;
+  }
   const minutes = runTime / 60;
   // 난이도별 시간 성장(보통·어려움): 1분마다 새 적의 체력·공격력이 더 오른다
   const hpMul = runMods.diffHp ? runMods.stageHp * sgDiffMul(runMods.diffHp) : (runMods.enemyHpMul || 1);
@@ -1610,7 +1624,7 @@ function spawnBoss() {
   const angle = Math.random() * Math.PI * 2;
   // 보스 점수형(3분 피해 누적)은 이동에 시간을 버리지 않도록 6u 앞에 등장
   const r = runCfg.bossScore ? 6 * U : Math.max(viewW, viewH) / 2 + 3 * U;
-  const hp = Math.round(bossHp(bossDef, curMult()) * (runMods.enemyHpMul || 1) * (runMods.bossHpMul || 1));   // bossHpMul: 난이도별 대왕 체력(rework-core DIFFICULTIES.bossHp)
+  const hp = Math.round(bossHp(bossDef, curMult()) * (runMods.enemyHpMul || 1) * (bossDef.diffHp?.[runMods.difficulty] ?? runMods.bossHpMul ?? 1));   // diffHp: 대왕별 난이도 체력(2-5)   // bossHpMul: 난이도별 대왕 체력(rework-core DIFFICULTIES.bossHp)
   boss = {
     x: player.x + Math.cos(angle) * r, y: player.y + Math.sin(angle) * r,
     hp, hpMax: hp, atkBase: bossAtk(bossDef, curMult()),
@@ -1618,7 +1632,7 @@ function spawnBoss() {
     phase: 1, restT: 1.5, activePattern: null, telegraphT: 0, flashT: 0, stunT: 0,
     contactT: 0, lastPattern: null, sinceLitter: 0, volley: null, dash: null, pendingFollow: null, airZ: 0, squashT: 0,
   };
-  if (chapter?.theme === 1) themeFx.emit("arrival", boss.x, boss.y, { life: 1.4 });
+  if (!!chapter?.theme) themeFx.emit("arrival", boss.x, boss.y, { life: 1.4 });
   starTrack.bossNoHit = true;
   log(`보스 등장: ${bossDef.name} (${bossDef.id})`);
   addShake(8, 0.6);
@@ -1713,7 +1727,7 @@ function triggerAbility() {
   const radius = (parseFloat(fx.match(/반경\s*(\d+(?:\.\d+)?)u/)?.[1]) || 4) * U;
   // 공통: 주변 폭발(계수·반경은 캐릭터 설명문에서 읽음)
   explodeAt(player.x, player.y, radius, player.atk * coef * (1 + stat("abilityDmgPct")), 1.0, "#ffe9a8");
-  if (chapter?.theme === 1) themeFx.emit("ability", player.x, player.y, { radius: Math.min(radius, 150), life: .85 });
+  if (!!chapter?.theme) themeFx.emit("ability", player.x, player.y, { radius: Math.min(radius, 150), life: .85 });
   // 캐릭터별 추가 효과(설명문 키워드)
   if (/간격/.test(fx)) { player.buffKind = "haste"; player.buffT = 5; }
   else if (/이동 속도/.test(fx)) { player.buffKind = "speed"; player.buffT = 5; }
@@ -2054,7 +2068,7 @@ function updateOrbit(dt) {
   }
 }
 
-function updateSkills(dt) { sgWeapon.update(dt); sgElements.update(dt); sgThreatTick(dt); }
+function updateSkills(dt) { sgWeapon.update(dt); sgElements.update(dt); sgThreatTick(dt); sgT2Tick(dt); }
 const ATTACK_ANIM_S = 0.3, JUMP_ANIM_S = 0.7;
 
 // dir: 넉백 방향(정규화 전 벡터), knock: 넉백 세기(u)
@@ -2319,7 +2333,7 @@ function updateTraps(dt) {
 }
 
 function updateFxTimers(dt) {
-  if (chapter?.theme === 1) themeFx.update(dt);
+  if (!!chapter?.theme) themeFx.update(dt);
   for (let i = swings.length - 1; i >= 0; i--) { swings[i].life -= dt; if (swings[i].life <= 0) swings.splice(i, 1); }
   for (let i = blasts.length - 1; i >= 0; i--) { blasts[i].life -= dt; if (blasts[i].life <= 0) blasts.splice(i, 1); }
   for (let i = arcs.length - 1; i >= 0; i--) { arcs[i].life -= dt; if (arcs[i].life <= 0) arcs.splice(i, 1); }
@@ -2399,11 +2413,11 @@ function moveEnemy(e, dt, contactRange) {
       e.blinkT -= dt;
       if (e.blinkT <= 0) {
         e.blinkT = 4;
-        if (chapter?.theme === 1) themeFx.emit("blink", e.x, e.y, { radius: 24 });
+        if (!!chapter?.theme) themeFx.emit("blink", e.x, e.y, { radius: 24 });
         const ang = Math.atan2(player.y - e.y, player.x - e.x) + Math.PI;
         e.x = player.x + Math.cos(ang) * 2 * U;
         e.y = player.y + Math.sin(ang) * 2 * U;
-        if (chapter?.theme === 1) themeFx.emit("blink", e.x, e.y, { radius: 24 });
+        if (!!chapter?.theme) themeFx.emit("blink", e.x, e.y, { radius: 24 });
         else hitFx.push({ x: e.x, y: e.y, life: 0.3, maxLife: 0.3, color: "#a8e8f0" });
         return true;
       }
@@ -2428,10 +2442,18 @@ function moveEnemy(e, dt, contactRange) {
           const a = Math.random() * Math.PI * 2;
           spawnEnemyAt(def.summon.id, e.x + Math.cos(a) * 40, e.y + Math.sin(a) * 40);
         }
-        if (chapter?.theme === 1) themeFx.emit("summon", e.x, e.y, { radius: 36 });
+        if (!!chapter?.theme) themeFx.emit("summon", e.x, e.y, { radius: 36 });
         else hitFx.push({ x: e.x, y: e.y, life: 0.35, maxLife: 0.35, color: "#8ff0e0" });
       }
       return stepToward(player.x, player.y, e.spdU, contactRange);
+    }
+    case "mine": return false;                 // 세균몬: 움직이지 않는다
+    case "breather":                           // 가스몬: 불 뿜는 동안은 멈춘다, 아니면 다가온다(2칸까지)
+      if (e.brState) { faceTo(e.brAim); return false; }
+      return stepToward(player.x, player.y, e.spdU, 1.8 * U);
+    case "raincloud": {                        // 산성비 구름몬: 나에게서 6칸쯤 떨어진 자리를 맴돈다
+      const a = Math.atan2(e.y - player.y, e.x - player.x) + dt * 0.25;
+      return stepToward(player.x + Math.cos(a) * 6 * U, player.y + Math.sin(a) * 6 * U, e.spdU, 0.3 * U);
     }
     case "surround": {
       // 플레이어 옆쪽 지점을 목표로 삼아 둘러싼다(docs/06 §8 포위)
@@ -2547,7 +2569,7 @@ function onEnemyDeath(e) {
   const inDark = isInDark(e.x, e.y);
   const gv = gemValue(def.xp, runTime / 60) * (runMods.gemMul || 1) * (runCfg.gemMul || 1) * (inDark ? 1.5 : 1);
   if((player.sgChoices||0)<runCfg.cardCap)gems.push({ x: e.x, y: e.y, value: gv, vx: 0, vy: 0, spawnT: 0, bob: Math.random() * 10 });
-  const deathLife = chapter?.theme === 1 ? .65 : .35;
+  const deathLife = !!chapter?.theme ? .65 : .35;
   deathFx.push({ x: e.x, y: e.y, life: deathLife, maxLife: deathLife, size: e.elite ? 104 : 62, color: e.elite ? "#ff8a5a" : "#c9a8ff" });
 
   if (e.sgTrait === "split") sgSplit(e);   // 어려움: 쪼개지기 → 작은 적 2마리
@@ -2587,7 +2609,7 @@ function updateBoss(dt) {
   if (phaseHit && boss.phase === 1) {
     boss.phase = 2;
     boss.spdU = bossDef.spdU * 1.3;
-    if (chapter?.theme === 1) themeFx.emit("phase", boss.x, boss.y);
+    if (!!chapter?.theme) themeFx.emit("phase", boss.x, boss.y);
     log(`${bossDef.name} 2페이즈!`);
     addShake(7, 0.5);
   }
@@ -2709,12 +2731,12 @@ function bossDashTick(dt) {
     }
   }
   d.puffT -= dt;
-  if (d.puffT <= 0 && chapter?.theme === 1) {
+  if (d.puffT <= 0 && !!chapter?.theme) {
     d.puffT = 0.07;
     themeFx.emit("dust", boss.x - Math.cos(d.ang) * U, boss.y - Math.sin(d.ang) * U + 20, { radius: 26, life: 0.5, dir: d.ang });
   }
   if (d.go >= d.len - 1e-6) {
-    if (chapter?.theme === 1) themeFx.mark("skid", d.sx, d.sy + 20, { toX: boss.x, toY: boss.y + 20, width: 0.9 * U });
+    if (!!chapter?.theme) themeFx.mark("skid", d.sx, d.sy + 20, { toX: boss.x, toY: boss.y + 20, width: 0.9 * U });
     addShake(6, 0.22); boss.squashT = 0.22; boss.dash = null;
     if (boss.pendingFollow) { const f = boss.pendingFollow; boss.pendingFollow = null; startBossPattern(f); }
     else boss.restT = boss.phase >= 2 ? BOSS_REST.angry : BOSS_REST.calm;
@@ -2747,7 +2769,7 @@ function bossVolleyTick(dt) {
     sgHostileShots.push({ x: boss.x, y: boss.y, angle: a, hostile: true, boss: true, life: 2.6, damage: v.dmg, speed: v.speed, r: 0.5 * U, spin: Math.random() * 6 });
   }
   playSfx("attackFire", 0.25);
-  if (chapter?.theme === 1) themeFx.emit("dust", boss.x + Math.cos(v.aim) * 1.2 * U, boss.y + Math.sin(v.aim) * 1.2 * U, { radius: 22, life: 0.4, dir: v.aim + Math.PI });
+  if (!!chapter?.theme) themeFx.emit("dust", boss.x + Math.cos(v.aim) * 1.2 * U, boss.y + Math.sin(v.aim) * 1.2 * U, { radius: 22, life: 0.4, dir: v.aim + Math.PI });
   v.wave++; v.t = 0.45;
   if (v.wave >= v.waves) boss.volley = null;
 }
@@ -2760,7 +2782,7 @@ function resolveBossPattern(pat) {
     for (let i = 0; i < pat.summon.n; i++) {
       const a = (Math.PI * 2 * i) / pat.summon.n;
       spawnEnemyAt(pat.summon.id, boss.x + Math.cos(a) * 60, boss.y + Math.sin(a) * 60);
-      if (chapter?.theme === 1) themeFx.emit("summon", boss.x + Math.cos(a) * 60, boss.y + Math.sin(a) * 60, { radius: 28 });
+      if (!!chapter?.theme) themeFx.emit("summon", boss.x + Math.cos(a) * 60, boss.y + Math.sin(a) * 60, { radius: 28 });
     }
     addShake(4, 0.2);
   };
@@ -2780,6 +2802,7 @@ function resolveBossPattern(pat) {
       const toPlayer = Math.atan2(player.y - boss.y, player.x - boss.x);
       const diff = Math.abs(normalizeAngle(toPlayer - pat.aimAngle));
       if (diff < Math.PI / 2 && dist(player.x, player.y, boss.x, boss.y) <= 4 * U) applyBossHit(dmg);
+      if (pat.fx === "flame") blasts.push({ x: boss.x, y: boss.y, radius: 4 * U, life: 0.5, maxLife: 0.5, color: "#ff9a3a", vfxKind: "flame", ang: pat.aimAngle });
       if (pat.stinkField) {                     // 악취 방귀 구름: 5초 동안 남는 냄새 안개(느려짐 + 지속 피해, updatePlayer)
         fields.push({ x: boss.x + Math.cos(pat.aimAngle) * 2.2 * U, y: boss.y + Math.sin(pat.aimAngle) * 2.2 * U,
           radius: 2.4 * U, life: 5, maxLife: 5, tickT: 0.5, tickS: 0.5, hostile: true, color: "#9aa030", dmgCoef: 0, dmgMul: 0 });
@@ -2798,9 +2821,9 @@ function resolveBossPattern(pat) {
       for (const s of (pat.spots || [])) {
         blasts.push({ x: s.x, y: s.y, radius: 0.9 * U, life: 0.3, maxLife: 0.3, color: "#c0a080", vfxKind: "debris" });
         if (dist(player.x, player.y, s.x, s.y) < 0.9 * U) applyBossHit(dmg);
-        decor.push({ x: s.x, y: s.y, sprite: "t1_prop_litter", h: 30, litter: true, bossLitter: true, expire: runTime + 8, flicker: Math.random() * 10, opened: false });
+        decor.push({ x: s.x, y: s.y, sprite: skin().litter, h: skin().litterH, litter: true, bossLitter: true, expire: runTime + 8, flicker: Math.random() * 10, opened: false });
       }
-      floatingTexts.push({ x: boss.x, y: boss.y - 60, text: "쓰레기를 주워서 정화하자!", life: 1.4, vy: -20, color: "#8ee07a", scale: 0, big: true });
+      floatingTexts.push({ x: boss.x, y: boss.y - 60, text: skin().bossDrop, life: 1.4, vy: -20, color: "#8ee07a", scale: 0, big: true });
       addShake(4, 0.2);
       break;
     }
@@ -2829,7 +2852,7 @@ function resolveBossPattern(pat) {
     case "dashLine": {
       // 돌진 — 예고 직선에서 수직으로 비켜야 회피. 보스가 실제로 이동한다.
       const ang = pat.aimAngle, len = (pat.lengthU || 7) * U;
-      if (bossDef.rangePatterns) {             // 개편판 대왕: 판정은 달리는 동안(bossDashTick)
+      if (bossDef.rangePatterns && !pat.stay) {   // 개편판 대왕: 판정은 달리는 동안(bossDashTick). stay(파이프 휘두르기)는 제자리에서 바로 판정
         boss.dash = { ang, sx: boss.x, sy: boss.y, go: 0, len: len - U, dmg, hit: false, puffT: 0 };
         addShake(4, 0.2);
         break;
@@ -2838,6 +2861,12 @@ function resolveBossPattern(pat) {
       const along = dx * Math.cos(ang) + dy * Math.sin(ang);
       const perp = Math.abs(-dx * Math.sin(ang) + dy * Math.cos(ang));
       if (along > -U && along < len && perp < 1.2 * U) applyBossHit(dmg);
+      if (pat.stay) {                          // 파이프 휘두르기: 길을 따라 흙먼지·끌린 자국(대왕은 제자리)
+        for (let k = 1; k <= 4; k++) themeFx.emit("dust", boss.x + Math.cos(ang) * len * k / 4, boss.y + Math.sin(ang) * len * k / 4 + 10, { radius: 30, life: 0.45, dir: ang });
+        themeFx.mark("skid", boss.x, boss.y + 20, { toX: boss.x + Math.cos(ang) * len, toY: boss.y + Math.sin(ang) * len + 20, width: 1.1 * U, life: 0.8 });
+        addShake(6, 0.25);
+        break;
+      }
       boss.x += Math.cos(ang) * (pat.lengthU ? len - U : 5 * U);
       boss.y += Math.sin(ang) * (pat.lengthU ? len - U : 5 * U);
       addShake(6, 0.25);
@@ -2853,7 +2882,7 @@ function resolveBossPattern(pat) {
       }
       blasts.push({ x: boss.x, y: boss.y, radius: r, life: 0.45, maxLife: 0.45, color: "#ffb35a", vfxKind: "shock" });
       boss.squashT = 0.22;
-      if (chapter?.theme === 1) themeFx.mark("crack", boss.x, boss.y + 20, { radius: r * 0.8 });
+      if (!!chapter?.theme) themeFx.mark("crack", boss.x, boss.y + 20, { radius: r * 0.8 });
       addShake(6, 0.25);
       break;
     }
@@ -2861,7 +2890,7 @@ function resolveBossPattern(pat) {
       // 점프(원거리) — 예고한 그림자 자리로 대왕이 내려앉는다. 그림자 밖이면 회피.
       const r = (pat.radiusU || 2.5) * U;
       boss.x = pat.telegraphOriginX; boss.y = pat.telegraphOriginY; boss.airZ = 0; boss.squashT = 0.22;
-      if (chapter?.theme === 1) { themeFx.mark("crack", boss.x, boss.y + 20, { radius: r * 0.9 }); themeFx.emit("dust", boss.x, boss.y + 10, { radius: r * 0.6, life: 0.6 }); }
+      if (!!chapter?.theme) { themeFx.mark("crack", boss.x, boss.y + 20, { radius: r * 0.9 }); themeFx.emit("dust", boss.x, boss.y + 10, { radius: r * 0.6, life: 0.6 }); }
       if (dist(player.x, player.y, boss.x, boss.y) <= r) {
         applyBossHit(dmg);
         const a = Math.atan2(player.y - boss.y, player.x - boss.x) || 0;
@@ -3617,7 +3646,7 @@ function drawDecorItem(d) {
     }
     if (d.bossLitter && d.expire) {            // 보스가 뿌린 쓰레기: 남은 시간만큼 깜빡임
       const left = d.expire - runTime;
-      if (chapter?.theme === 1) {
+      if (!!chapter?.theme) {
         ctx.save(); ctx.strokeStyle = left < 3 ? "#d08b36" : "#559c6a"; ctx.lineWidth = 3;
         ctx.beginPath(); ctx.arc(s.x, s.y + 4, 25, -Math.PI / 2, -Math.PI / 2 + Math.PI * 2 * Math.max(0, left / 8)); ctx.stroke(); ctx.restore();
       } else if (left < 3 && Math.floor(runTime * 6) % 2 === 0) return;
@@ -3723,7 +3752,7 @@ function drawGem(g) {
 }
 
 function drawProjectile(p) {
-  if (chapter?.theme === 1 && !["S01", "S02", "S09"].includes(p.skillId) && themeFx.projectile(ctx, p, worldToScreen)) return;
+  if (!!chapter?.theme && !["S01", "S02", "S09"].includes(p.skillId) && themeFx.projectile(ctx, p, worldToScreen)) return;
   // 궤적
   for (let i = 0; i < p.trail.length; i++) {
     const t = p.trail[i];
@@ -3783,8 +3812,8 @@ function drawDarkZones() {
     const c = darkCenter(ix, iy);
     if (!c) continue;
     const s = worldToScreen(c.x, c.y);
-    if (chapter?.theme === 1) { themeFx.smog(ctx, s.x, s.y, DARK_R, runTime + ix + iy, 1, true); continue; }
-    const t1 = chapter?.theme === 1;             // 악취 구역: 누런 초록 안개 / 옛 챕터: 어둠 지대
+    if (!!chapter?.theme) { themeFx.smog(ctx, s.x, s.y, DARK_R, runTime + ix + iy, 1, true); continue; }
+    const t1 = !!chapter?.theme;             // 악취 구역: 누런 초록 안개 / 옛 챕터: 어둠 지대
     const g = ctx.createRadialGradient(s.x, s.y, DARK_R * 0.3, s.x, s.y, DARK_R);
     g.addColorStop(0, t1 ? "rgba(110,120,30,0.50)" : "rgba(8,4,18,0.72)"); g.addColorStop(0.8, t1 ? "rgba(120,130,40,0.35)" : "rgba(10,6,22,0.55)"); g.addColorStop(1, t1 ? "rgba(120,130,40,0)" : "rgba(10,6,22,0)");
     ctx.fillStyle = g; ctx.beginPath(); ctx.arc(s.x, s.y, DARK_R, 0, 7); ctx.fill();
@@ -3812,7 +3841,7 @@ function drawBeacon() {
   if (!beacon) return;
   const s = worldToScreen(beacon.x, beacon.y);
   const flick = 0.85 + 0.15 * Math.sin(runTime * 7);
-  const t1 = chapter?.theme === 1;                       // 정화 장치(분리수거함): 초록 안전 구역 / 옛 챕터: 봉화(횃불)
+  const t1 = !!chapter?.theme;                       // 정화 장치(분리수거함): 초록 안전 구역 / 옛 챕터: 봉화(횃불)
   const g = ctx.createRadialGradient(s.x, s.y, 4, s.x, s.y, beacon.r * 1.4 * flick);
   g.addColorStop(0, t1 ? "rgba(140,230,120,0.40)" : "rgba(255,200,110,0.45)"); g.addColorStop(1, t1 ? "rgba(120,220,100,0)" : "rgba(255,170,80,0)");
   ctx.fillStyle = g; ctx.beginPath(); ctx.arc(s.x, s.y, beacon.r * 1.4, 0, 7); ctx.fill();
@@ -3820,9 +3849,9 @@ function drawBeacon() {
   ctx.beginPath(); ctx.arc(s.x, s.y, beacon.r, 0, 7); ctx.stroke();
   if (t1) {
     themeFx.beacon(ctx, s.x, s.y, beacon.r, runTime, dist(player.x, player.y, beacon.x, beacon.y) < beacon.r);
-    const bins = SPRITES.t1_prop_bins;
-    if (bins.complete && bins.naturalWidth) {
-      const h = 96, w = h * bins.naturalWidth / bins.naturalHeight;
+    const bins = SPRITES[skin().beacon];
+    if (bins?.complete && bins.naturalWidth) {
+      const h = skin().beaconH, w = h * bins.naturalWidth / bins.naturalHeight;
       ctx.save(); ctx.imageSmoothingEnabled = true;
       ctx.drawImage(bins, s.x - w / 2, s.y - h * 0.7 - 3 * flick, w, h);
       ctx.restore(); ctx.imageSmoothingEnabled = false;
@@ -3834,7 +3863,7 @@ function drawBeacon() {
 }
 
 function drawField(f) {
-  if (chapter?.theme === 1 && f.hostile) {
+  if (!!chapter?.theme && f.hostile) {
     const s = worldToScreen(f.x, f.y); themeFx.smog(ctx, s.x, s.y, f.radius, runTime, f.life / f.maxLife); return;
   }
   const s = worldToScreen(f.x, f.y);
@@ -3964,7 +3993,7 @@ function drawStrike(st) {
 }
 
 function drawBlast(b) {
-  if (chapter?.theme === 1) { const s = worldToScreen(b.x, b.y); themeFx.blast(ctx, b, s.x, s.y); return; }
+  if (!!chapter?.theme) { const s = worldToScreen(b.x, b.y); themeFx.blast(ctx, b, s.x, s.y); return; }
   const s = worldToScreen(b.x, b.y);
   const t = 1 - b.life / b.maxLife; // 0→1 확산
   const r = b.radius * (0.35 + 0.75 * t);
@@ -4009,7 +4038,7 @@ function drawArc(a) {
 }
 
 function drawHitFx(fx) {
-  if (chapter?.theme === 1) {
+  if (!!chapter?.theme) {
     const s = worldToScreen(fx.x, fx.y);
     themeFx.hit(ctx, s.x, s.y, 1 - fx.life / fx.maxLife, fx.vfxKind, fx.dir); return;
   }
@@ -4105,7 +4134,7 @@ function drawMuzzleFlash() {
   ctx.restore();
 }
 function drawDeathFx(fx) {
-  if (chapter?.theme === 1) {
+  if (!!chapter?.theme) {
     const s = worldToScreen(fx.x, fx.y);
     themeFx.purify(ctx, s.x, s.y, 1 - fx.life / fx.maxLife, fx.size || 64); return;
   }
@@ -4178,7 +4207,7 @@ function drawBoss() {
 
   // 보스 이름/체력 패널
   const w = Math.min(280, viewW - 40);
-  const barY = chapter.theme === 1 ? 88 : 44;
+  const barY = chapter.theme ? 88 : 44;
   ctx.fillStyle = "rgba(0,0,0,0.55)"; ctx.fillRect(viewW / 2 - w / 2, barY, w, 12);
   const hpGrad = ctx.createLinearGradient(viewW / 2 - w / 2, 0, viewW / 2 + w / 2, 0);
   hpGrad.addColorStop(0, phase2 ? "#ff6a4a" : "#e0a83a"); hpGrad.addColorStop(1, phase2 ? "#c02020" : "#a06a10");
@@ -4362,7 +4391,7 @@ function drawBossBlob(scale, body, dark, pal, sway, phase2) {
 }
 
 function drawTelegraph(pat, bossScreen) {
-  if (chapter?.theme === 1) return; // Theme 1 warnings are drawn below actors in draw().
+  if (!!chapter?.theme) return; // Theme 1 warnings are drawn below actors in draw().
   const t = 1 - Math.max(0, boss.telegraphT) / pat.telegraphS; // 0→1로 진행
   const pulse = 0.5 + 0.5 * Math.sin(runTime * 14);
 
@@ -4477,7 +4506,7 @@ function draw() {
   // The floor is opaque: do not paint the same full-screen background twice.
 
   // 화면 흔들림(타격감): 카메라를 미세하게 흔든다. 판정에는 영향 없음.
-  const shakeAmt = chapter?.theme === 1
+  const shakeAmt = !!chapter?.theme
     ? (themeFx.reducedMotion ? 0 : shake.t > 0 ? Math.min(8, shake.mag * (shake.t / 0.18)) : 0)
     : shake.t > 0 ? shake.mag * (shake.t / 0.18) : 0;
   cam.x = player.x + (shakeAmt ? (Math.random() - 0.5) * shakeAmt * 2 : 0);
@@ -4510,8 +4539,8 @@ function draw() {
   for (let y = -offY; y < viewH; y += gridSize) { ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(viewW, y); ctx.stroke(); }
 
   drawDarkZones();
-  if (chapter?.theme === 1) themeFx.ground(ctx, worldToScreen);   // 대왕이 남긴 바닥 자국(금·끌린 자국)
-  if (chapter?.theme === 1 && boss?.activePattern) themeFx.telegraph(ctx, boss.activePattern, boss, boss.telegraphT, runTime, U, worldToScreen);
+  if (!!chapter?.theme) themeFx.ground(ctx, worldToScreen);   // 대왕이 남긴 바닥 자국(금·끌린 자국)
+  if (!!chapter?.theme && boss?.activePattern) themeFx.telegraph(ctx, boss.activePattern, boss, boss.telegraphT, runTime, U, worldToScreen);
   drawBeacon();
   for (const d of decor) if (onScreen(d, Math.max(180, d.h || 0))) drawDecorItem(d);
   for (const f of fields) drawField(f);      // 장판은 바닥에
@@ -4525,7 +4554,7 @@ function draw() {
     const s = worldToScreen(e.x, e.y);
     const def = ENEMIES[e.typeId];
     const bob = Math.sin(e.animT) * def.bobAmp;
-    const img = SPRITES[def.sprite];
+    const img = SPRITES[sgEnemyFrame(e, def)];
     const k = e.sgScale || 1;                    // 쪼개진 작은 적은 72% 크기
     if (def.hiRes) {                             // 환경 테마 적: 고해상도 그림을 높이 기준으로 부드럽게 축소(색조 없음)
       const h = def.drawH * k, w = h * ((img.naturalWidth / img.naturalHeight) || 1);
@@ -4572,9 +4601,9 @@ function draw() {
   for (const a of arcs) drawArc(a);
   for (const b of blasts) drawBlast(b);
   // Cap only visual draw work; simulation and damage are unchanged.
-  for (let i = chapter?.theme === 1 ? Math.max(0, hitFx.length - 96) : 0; i < hitFx.length; i++) drawHitFx(hitFx[i]);
-  for (let i = chapter?.theme === 1 ? Math.max(0, deathFx.length - 64) : 0; i < deathFx.length; i++) drawDeathFx(deathFx[i]);
-  if (chapter?.theme === 1) themeFx.draw(ctx, worldToScreen);
+  for (let i = !!chapter?.theme ? Math.max(0, hitFx.length - 96) : 0; i < hitFx.length; i++) drawHitFx(hitFx[i]);
+  for (let i = !!chapter?.theme ? Math.max(0, deathFx.length - 64) : 0; i < deathFx.length; i++) drawDeathFx(deathFx[i]);
+  if (!!chapter?.theme) themeFx.draw(ctx, worldToScreen);
 
   // 숫자 그림만 최근 40개로 제한, 진화·보상 안내는 별도로 보존한다.
   const visibleTexts = [...floatingTexts.filter(t=>t.big).slice(-8), ...floatingTexts.filter(t=>!t.big).slice(-40)];
@@ -4593,7 +4622,7 @@ function draw() {
     ctx.restore();
   }
 
-  if (chapter?.theme === 1 && boss?.activePattern) themeFx.telegraph(ctx, boss.activePattern, boss, boss.telegraphT, runTime, U, worldToScreen);
+  if (!!chapter?.theme && boss?.activePattern) themeFx.telegraph(ctx, boss.activePattern, boss, boss.telegraphT, runTime, U, worldToScreen);
   drawTouchJoystick();
 
   // 비네트(황혼 분위기) — 어둠 지대 안이거나 시야 제한 규칙이면 시야가 좁아진다
@@ -4783,6 +4812,7 @@ window.__debugBossPattern = function (name) {   // 다음 기술을 이름으로
   boss.forcePattern = pat; boss.activePattern = null; boss.restT = 0; return true;
 };
 window.__debugPlayerPos = function () { return { x: player.x, y: player.y }; };
+window.__sgAcidCount = function () { return sgAcid.length; };   // QA: 산성비 표시 수
 window.__debugBossAt = function (dxU, dyU) { if (!boss) return false; boss.x = player.x + dxU * U; boss.y = player.y + dyU * U; return true; };   // QA: 대왕을 내 옆 (dx, dy)칸에
 window.__debugUnlockAll = function () {
   for (const c of CHAPTERS) {
@@ -4798,7 +4828,7 @@ window.__debugSpawn = function (typeId, n, radiusPx = 200) {
   for (let i = 0; i < n; i++) {
     const a = (i / n) * Math.PI * 2 + Math.random() * 0.3;
     const r = radiusPx * (0.5 + Math.random() * 0.5);
-    spawnEnemyAt(typeId, player.x + Math.cos(a) * r, player.y + Math.sin(a) * r);
+    spawnEnemyAt(typeId, player.x + Math.cos(a) * r, player.y + Math.sin(a) * r, true);
   }
   return enemies.length;
 };
@@ -4917,7 +4947,9 @@ window.__debugPilot=(seconds)=>{
       else if(target){const a=Math.atan2(target.y-player.y,target.x-player.x);dx=Math.cos(a);dy=Math.sin(a);}
       else{dx=Math.cos(runTime/4);dy=Math.sin(runTime/4);}
       const avoid=window.__pilotAvoid??2;   // 0 = 피하지 않는 서툰 플레이어(난이도 비교용)
-      for(const e of enemies){const d=dist(e.x,e.y,player.x,player.y);if(d<90){const a=Math.atan2(player.y-e.y,player.x-e.x),w=avoid*(1-d/90);dx+=Math.cos(a)*w;dy+=Math.sin(a)*w;}}
+      for(const e of enemies){const d=dist(e.x,e.y,player.x,player.y);if(d<90){const a=Math.atan2(player.y-e.y,player.x-e.x),w=avoid*(1-d/90);dx+=Math.cos(a)*w;dy+=Math.sin(a)*w;}
+        if(avoid&&(e.armT||e.brState)&&d<3.4*U){const a=Math.atan2(player.y-e.y,player.x-e.x);dx+=Math.cos(a)*2.5;dy+=Math.sin(a)*2.5;}}
+      if(avoid)for(const q of sgAcid){const d=dist(q.x,q.y,player.x,player.y);if(d<q.r+.8*U){const a=Math.atan2(player.y-q.y,player.x-q.x);dx+=Math.cos(a)*2;dy+=Math.sin(a)*2;}}
       keys.clear();if(dx>.2)keys.add('d');else if(dx<-.2)keys.add('a');if(dy>.2)keys.add('s');else if(dy<-.2)keys.add('w');
     }
     simTick(FIXED_DT);
@@ -5118,7 +5150,7 @@ async function sgStart(stage){
 function sgRunConfig(stage){
   // 난이도 3단계(R.DIFFICULTIES): 쉬움 ★ · 보통 ★★ · 어려움 ★★★(특별한 적 special 비율)
   const p=sgRunProfile||sgState.profile,s=R.STAGES.find(s=>s.id===stage),duration=sgServerDuration||R.durationFor(p,stage),D=R.DIFFICULTIES[R.difficultyOf(p)];
-  return {mode:'M01',chapterId:stage,rework:true,time:{id:'guardian',dur:duration,rewardMul:1},survival:true,bossStage:stage==='CH05',timeLimitS:duration,noBoss:true,timeScale:duration/900,beaconAtS:Math.min(150,duration-45),gemMul:.8,densityMul:s.density,multMul:1,mods:{lateDensity:D.density||1,stageHp:s.enemyHp,stageAtk:s.enemyAtk,diffHp:D.enemyHp,diffSpd:D.enemySpd,diffTaken:D.taken,enemyHpMul:s.enemyHp*D.enemyHp,enemySpdMul:D.enemySpd,takenMul:D.taken*s.enemyAtk,special:D.special,hpGrowth:D.hpGrowth,atkGrowth:D.atkGrowth,bossHpMul:D.bossHp||1},cardCap:duration===180?R.RUN_RULES.introChoices:R.RUN_RULES.normalChoices};
+  return {mode:'M01',chapterId:stage,rework:true,time:{id:'guardian',dur:duration,rewardMul:1},survival:true,bossStage:R.isBossStage(stage),timeLimitS:duration,noBoss:true,timeScale:duration/900,beaconAtS:Math.min(150,duration-45),gemMul:.8,densityMul:s.density,multMul:1,mods:{lateDensity:D.density||1,stageHp:s.enemyHp,stageAtk:s.enemyAtk,diffHp:D.enemyHp,diffSpd:D.enemySpd,diffTaken:D.taken,enemyHpMul:s.enemyHp*D.enemyHp,enemySpdMul:D.enemySpd,takenMul:D.taken*s.enemyAtk,special:D.special,hpGrowth:D.hpGrowth,atkGrowth:D.atkGrowth,bossHpMul:D.bossHp||1,difficulty:R.difficultyOf(p)},cardCap:duration===180?R.RUN_RULES.introChoices:R.RUN_RULES.normalChoices};
 }
 function sgChooseCards(reroll=false){
   mode='levelup';keys.clear();touchJoy.active=false;
@@ -5179,12 +5211,77 @@ function sgThreatTick(dt){
   }
   sgHostileShots=sgHostileShots.filter(s=>s.life>0);
 }
+// 2장 적 행동(themes.js T2_ENEMIES, 2026-09-24): 가스몬 불 뿜기 · 세균몬 지뢰 · 산성비 구름몬 산성비. 모두 예고(빨개짐·부풂·빗방울 표시) 뒤에 판정.
+let sgAcid=[];
+function sgEnemyHit(dmg){                      // 적 기술(불·터짐·산성비) 피해: 보스 기술처럼 맞은 뒤 0.3초 무적
+  if(SG_LOCAL&&window.__debugGod)return;if(player.invulnT>0)return;
+  const taken=takeDamage(dmg);runStats.hurtBlast=(runStats.hurtBlast||0)+taken;player.invulnT=.3;player.hitFlashT=.25;
+  floatingTexts.push({x:player.x,y:player.y-20,text:`-${Math.round(taken)}`,life:.7,vy:-30,color:'#ff6060',scale:0});
+  playSfx('hitLight2',.45);if(player.hp<=0)onPlayerDeath();
+}
+function sgT2Tick(dt){
+  if(chapter?.theme!==2)return;
+  for(const e of enemies){
+    if(e.hp<=0)continue;
+    const d=dist(e.x,e.y,player.x,player.y);
+    if(e.behavior==='breather'){               // 가까이(2.6칸) 오면 멈춰서 입이 빨개지고(0.75초) → 앞으로 불(0.9초, 3.2칸 부채꼴) → 2.8초 쉼
+      e.brCd=(e.brCd??1.5)-dt;
+      if(!e.brState){if(e.brCd<=0&&d<2.6*U){e.brState='windup';e.brT=.75;e.brAim=Math.atan2(player.y-e.y,player.x-e.x);}}
+      else if(e.brState==='windup'){e.brT-=dt;if(e.brT<=0){e.brState='fire';e.brT=.9;e.brTick=0;}}
+      else{e.brT-=dt;e.brTick-=dt;
+        if(e.brTick<=0){e.brTick=.3;if(d<=3.2*U&&Math.abs(normalizeAngle(Math.atan2(player.y-e.y,player.x-e.x)-e.brAim))<.6)sgEnemyHit(e.atk*.7);}
+        if(e.brT<=0){e.brState=null;e.brCd=2.8;}}
+    }else if(e.behavior==='mine'){             // 가까이(1.3칸) 가면 부풀어(0.8초) → 펑(1.9칸). 몸에 닿는 피해는 없다. 멀리서 공격하면 안전
+      e.contactT=9;
+      if(!e.armT&&d<1.3*U)e.armT=.8;
+      if(e.armT){e.armT-=dt;if(e.armT<=0){
+        if(d<=1.9*U)sgEnemyHit(e.atk*1.2);
+        blasts.push({x:e.x,y:e.y,radius:1.9*U,life:.45,maxLife:.45,color:'#8fe06a',vfxKind:'splat'});addShake(4,.15);e.hp=0;}}
+    }else if(e.behavior==='raincloud'){        // 5.5초마다 내 발밑 1곳 + 주변 2곳에 빗방울 표시 → 1.2초 뒤 산성비
+      e.rainCd=(e.rainCd??(2+Math.random()*2))-dt;
+      if(e.rainCd<=0&&d<10*U&&sgAcid.length<18){
+        e.rainCd=5.5;
+        for(let k=0;k<3;k++){const a=Math.random()*Math.PI*2,r=k?(.8+Math.random()*1.6)*U:0;sgAcid.push({x:player.x+Math.cos(a)*r,y:player.y+Math.sin(a)*r,t:1.2,max:1.2,r:1.1*U,dmg:e.atk*.8});}
+      }
+    }
+  }
+  for(const a of sgAcid){a.t-=dt;if(a.t<=0&&!a.done){a.done=true;if(dist(a.x,a.y,player.x,player.y)<=a.r)sgEnemyHit(a.dmg);blasts.push({x:a.x,y:a.y,radius:a.r,life:.35,maxLife:.35,color:'#9be06a',vfxKind:'splat'});}}
+  sgAcid=sgAcid.filter(a=>!a.done);
+}
+function sgEnemyFrame(e,def){                  // 상태별 그림: 가스몬 평소·예고(입 벌림)·불 / 세균몬 평소 3장 번갈아·터지기 직전
+  const f=def.frames;if(!f)return def.sprite;
+  if(e.behavior==='breather')return e.brState==='fire'?f.fire:e.brState==='windup'?f.windup:def.sprite;
+  if(e.behavior==='mine')return e.armT?f.armed:f.idle[Math.floor(runTime*2.5+(e.animT||0))%f.idle.length];
+  return def.sprite;
+}
+function sgDrawT2Threats(){
+  if(chapter?.theme!==2)return;
+  ctx.save();
+  for(const e of enemies){
+    if(!onScreen(e,200))continue;const q=worldToScreen(e.x,e.y);
+    if(e.brState){                             // 불 뿜을 방향(부채꼴) — 예고 때는 옅게, 불 뿜을 때는 불길 그림
+      const r=3.2*U,p=e.brState==='windup'?1-e.brT/.75:1;
+      ctx.fillStyle=`rgba(255,120,40,${e.brState==='windup'?.12+.18*p:.16})`;ctx.strokeStyle='#e0602a';ctx.lineWidth=2;
+      ctx.beginPath();ctx.moveTo(q.x,q.y);ctx.arc(q.x,q.y,r,e.brAim-.6,e.brAim+.6);ctx.closePath();ctx.fill();ctx.stroke();
+      if(e.brState==='fire')themeFx.stamp(ctx,'t2_fx_flame',q.x+Math.cos(e.brAim)*r*.55,q.y+Math.sin(e.brAim)*r*.55,r*1.15,.95,e.brAim);
+    }
+    if(e.armT){const k=.5+.5*Math.sin(runTime*18);ctx.strokeStyle=`rgba(230,60,50,${.5+.4*k})`;ctx.lineWidth=3;ctx.fillStyle='rgba(230,60,50,.12)';ctx.beginPath();ctx.arc(q.x,q.y,1.9*U,0,7);ctx.fill();ctx.stroke();}
+  }
+  for(const a of sgAcid){                      // 빗방울 표시: 원 + 채워지는 시간 + 떨어지는 방울
+    const q=worldToScreen(a.x,a.y),p=1-a.t/a.max;
+    ctx.fillStyle='rgba(150,220,90,.16)';ctx.strokeStyle='#5f9e2e';ctx.lineWidth=2.5;ctx.beginPath();ctx.arc(q.x,q.y,a.r,0,7);ctx.fill();ctx.stroke();
+    ctx.lineWidth=4;ctx.beginPath();ctx.arc(q.x,q.y,Math.max(1,a.r-5),-Math.PI/2,-Math.PI/2+Math.PI*2*p);ctx.stroke();
+    ctx.fillStyle='#7fd04a';for(let k=0;k<3;k++){const dx=(k-1)*a.r*.4,dy=-120*(1-p)-k*14;ctx.beginPath();ctx.ellipse(q.x+dx,q.y+dy,4,7,0,0,7);ctx.fill();}
+  }
+  ctx.restore();
+}
 function sgDrawThreats(){
+  sgDrawT2Threats();
   ctx.save();ctx.lineWidth=2;ctx.strokeStyle='#8b2720';ctx.fillStyle='#f6b363';
   for(const e of enemies)if(e.sgThrowWarn>0){const q=worldToScreen(e.x,e.y);ctx.beginPath();ctx.arc(q.x,q.y,18,0,7);ctx.stroke();ctx.beginPath();ctx.moveTo(q.x,q.y);ctx.lineTo(q.x+Math.cos(e.sgThrowAngle)*32,q.y+Math.sin(e.sgThrowAngle)*32);ctx.stroke();}
   for(const s of sgHostileShots){const q=worldToScreen(s.x,s.y);
     // 대왕이 던진 쓰레기: 판정 크기의 빨간 테두리 + 쓰레기 그림(돌며 날아감)
-    if(s.boss){if(!themeFx.stamp(ctx,'t1_fx_trashball',q.x,q.y,s.r*2.3,1,s.spin+runTime*7)){ctx.fillStyle='rgba(246,179,99,.55)';ctx.beginPath();ctx.arc(q.x,q.y,s.r,0,7);ctx.fill();ctx.fillStyle='#f6b363';}ctx.beginPath();ctx.arc(q.x,q.y,s.r*1.1,0,7);ctx.stroke();continue;}
+    if(s.boss){if(!themeFx.stamp(ctx,skin().shot,q.x,q.y,s.r*2.3,1,s.spin+runTime*7)){ctx.fillStyle='rgba(246,179,99,.55)';ctx.beginPath();ctx.arc(q.x,q.y,s.r,0,7);ctx.fill();ctx.fillStyle='#f6b363';}ctx.beginPath();ctx.arc(q.x,q.y,s.r*1.1,0,7);ctx.stroke();continue;}
     ctx.beginPath();ctx.arc(q.x,q.y,6,0,7);ctx.fill();ctx.stroke();}
   ctx.restore();
 }
@@ -5200,7 +5297,7 @@ function sgGrowthTick(dt){
   // Keep a reachable clean-up target on screen; recollecting never grants coins or passes.
   if(runTime>10&&runTime>=(player.sgLitterAt||0)&&!decor.some(d=>d.litter&&!d.opened&&dist(d.x,d.y,player.x,player.y)<7*U)){
     player.sgLitterAt=runTime+12;const a=Math.random()*Math.PI*2;
-    decor.push({x:player.x+Math.cos(a)*3.8*U,y:player.y+Math.sin(a)*3.8*U,sprite:'t1_prop_litter',h:30,litter:true,flicker:0,opened:false});
+    decor.push({x:player.x+Math.cos(a)*3.8*U,y:player.y+Math.sin(a)*3.8*U,sprite:skin().litter,h:skin().litterH,litter:true,flicker:0,opened:false});
   }
 }
 let sgHudSignature='';
@@ -5210,7 +5307,7 @@ function sgHud(){
   if(!active){setText(objective,'');if(tools.childNodes.length)tools.replaceChildren();sgHudSignature='';return;}
   const st=R.STAGES[chapter.index],n=runStats.litter||0;
   const hard=runMods.special>0;
-  setText(objective,runTime<10?'PC: 방향키 · WASD / 모바일: 화면을 끌어 이동해요':hard&&runTime<22?'어려움 ★★★ · 방패를 든 적에게는 방패 색깔 원소가 잘 안 통해요. 다른 원소나 기본 무기로 공격해요!':`쓰레기 줍기 ${Math.min(n,st.target)}/${st.target}${n>=st.target?' ✔ 코인 +30':''} · ${runCfg.bossPhase?'대장을 깨끗하게 해 주세요!':st.tip}`);
+  setText(objective,runTime<10?'PC: 방향키 · WASD / 모바일: 화면을 끌어 이동해요':hard&&runTime<22?'어려움 ★★★ · 방패를 든 적에게는 방패 색깔 원소가 잘 안 통해요. 다른 원소나 기본 무기로 공격해요!':`${skin().goal} ${Math.min(n,st.target)}/${st.target}${n>=st.target?' ✔ 코인 +30':''} · ${runCfg.bossPhase?'대장을 깨끗하게 해 주세요!':st.tip}`);
   // Main HUD owns the timer so it is not overwritten twice in one frame.
   setText(elLvl,`성장 ${Math.min(runCfg.cardCap,player.sgChoices||0)}/${runCfg.cardCap}${player.shield>1?' · 방패':''}`);
   // Main HUD also owns the XP bar.

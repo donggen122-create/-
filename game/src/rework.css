@@ -165,3 +165,8 @@
 .sg-chapter-chip i{font-style:normal}.sg-chapter-chip .sg-short{display:none}
 @media(max-width:760px){.sg-chapter-chip .sg-long{display:none}.sg-chapter-chip .sg-short{display:inline}.sg-chapter-chip>small{font-size:9.5px!important}}
 @media(max-width:760px){#guardian-lobby .sg-chapter-arrow{width:32px;min-height:34px;font-size:22px!important}.sg-chapter-bar{gap:4px}.sg-chapter-chips{gap:5px}#guardian-lobby .sg-chapter-chip{column-gap:6px;padding:6px 7px!important}.sg-chapter-chip>b{font-size:13px;padding:3px 6px}.sg-chapter-chip>span{font-size:12px}}
+/* 2장 출동 그림: 사용자 마을 카드(오염된 공장 마을 → 2-5를 정화하면 맑은 마을) */
+.sg-theme-2 .sg-chapter-art{background:linear-gradient(180deg,#2e2a3a10 0%,#2e2a3a66 100%),url('../assets/sprites/t2/card_polluted.jpg') center/cover!important}
+.sg-theme-2 .sg-chapter-art.clean{background:linear-gradient(180deg,#ffffff00,#ffffff33),url('../assets/sprites/t2/card_clean.jpg') center/cover!important}
+.sg-theme-2 .sg-chapter-art>span:last-child{color:#fff!important;text-shadow:0 1px 3px #000c}
+.sg-theme-2 .sg-stage>img{filter:drop-shadow(0 2px 0 #0002)}

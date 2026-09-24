@@ -1,4 +1,5 @@
 // 환경 테마 6장 × 5단계 = 30단계의 표시 이름·보스 이름·환경 이야기(지식 카드).
+// 2026-09-24: 대기오염(옛 3장 「뿌연 하늘」)을 2장 「대기오염 공장 지대」로 당기고 「더러워진 개울」을 3장으로 미뤘다(사용자 요청).
 // 게임 데이터(chapters.csv → CHAPTERS)는 그대로 두고, 로비·결과 화면에서 "1-1 학교 운동장"처럼 보여 주는 용도로만 쓴다.
 // CH01~CH05 = 1장, CH06~CH10 = 2장 … (챕터 index / 5). 표에 없는 장(31단계 이후)은 "N장" + 원래 챕터 이름으로 표시한다.
 export const STAGES_PER_THEME = 5;
@@ -16,6 +17,17 @@ export const THEMES = [
     ],
   },
   {
+    name: "대기오염 공장 지대", boss: "굴뚝 가스 대왕",
+    stages: ["매캐한 공단 입구", "굴뚝 골목", "가스 탱크 공장", "매연 도로", "굴뚝 대왕의 공장"],
+    tips: [
+      "공장 연기는 필터로 걸러서 내보내야 해요.",
+      "미세먼지 나쁜 날엔 마스크! 실내는 환기와 공기청정기로.",
+      "쓰레기를 태우면 해로운 가스가 나와요. 자동차 공회전도 금지!",
+      "대기오염 물질이 빗물에 녹으면 산성비가 되어 숲과 건물을 상하게 해요.",
+      "나무는 잎으로 먼지를 붙잡는 살아 있는 공기청정기예요.",
+    ],
+  },
+  {
     name: "더러워진 개울", boss: "구정물 슬라임 왕",
     stages: ["빨래터 상류", "하수구 입구", "녹조 연못", "기름띠 개울", "개울 바닥"],
     tips: [
@@ -24,17 +36,6 @@ export const THEMES = [
       "물에 음식물과 비료가 너무 많으면 녹조가 번져 물고기가 숨을 못 쉬어요.",
       "기름은 물 위에 얇게 퍼져 물속 생물의 숨을 막아요.",
       "물이 맑아지면 수달이 돌아와요!",
-    ],
-  },
-  {
-    name: "뿌연 하늘", boss: "스모그 드래곤",
-    stages: ["큰길 도로변", "공장 굴뚝 지대", "미세먼지 경보의 날", "쓰레기 태우는 밭", "하늘 꼭대기"],
-    tips: [
-      "가까운 곳은 걷거나 자전거로 가요!",
-      "공장 연기는 필터로 걸러서 내보내야 해요.",
-      "미세먼지 나쁜 날엔 마스크! 실내는 환기와 공기청정기로.",
-      "쓰레기를 태우면 해로운 가스가 나와요. 자동차 공회전도 금지!",
-      "나무는 잎으로 먼지를 붙잡는 살아 있는 공기청정기예요.",
     ],
   },
   {
@@ -108,6 +109,33 @@ export const T1_STAGES = [
   { mix: ["T1_SNACKBAG", "T1_BUTTBUG", "T1_BOTTLE"], elites: [{ id: "T1_FOODWASTE", atS: 180 }, { id: "T1_FOODWASTE", atS: 660 }], dark: 0, floor: "t1_floor_dirt", hint: "단단한 페트병 병정과 음식물 쓰레기 덩어리! · 바닥 쓰레기를 주우면 새싹이 나와요" },
   { mix: ["T1_SNACKBAG", "T1_BOTTLE", "T1_BAGGY"], elites: [{ id: "T1_FOODWASTE", atS: 450 }], dark: 0.15, floor: "t1_floor_concrete", hint: "비닐봉지 유령이 순간이동해요 · 악취 구역 조심!" },
   { mix: ["T1_SNACKBAG", "T1_BUTTBUG", "T1_BOTTLE", "T1_BAGGY"], elites: [{ id: "T1_FOODWASTE", atS: 300 }], dark: 0.3, floor: "t1_floor_trash", boss: "T1_BOSS", hint: "쓰레기 산 대왕! 대왕이 뿌린 쓰레기를 주우면 대왕이 약해져요" },
+];
+
+// ====================== 테마 2 「대기오염 공장 지대」 전투 데이터(2026-09-24, 이미지 에셋/테마2_대기오염_프롬프트.md) ======================
+// 그림은 assets.js의 t2_* 스프라이트(game/tools/cut_theme2.py). 새 행동(main.js sgT2Tick): breather(가까이 오면 멈춰 불 뿜기, 원거리 없음) ·
+// mine(바닥에 지뢰처럼 생김, 안 움직임, 가까이 가면 부풀었다가 펑) · raincloud(거리를 두고 떠다니며 내 주변에 산성비). frames = 상태별 그림.
+export const T2_ENEMIES = {
+  T2_DUST:    { name: "먼지몬", type: "normal", behavior: "surround", hpMult: 0.5, atkMult: 0.7, spdU: 4.4, radiusU: 0.28, mass: 0.5, xp: 1, sprite: "t2_en_dust", drawH: 34 },
+  T2_GAS:     { name: "가스몬", type: "normal", behavior: "breather", hpMult: 1.7, atkMult: 1.1, spdU: 2.2, radiusU: 0.45, mass: 1.5, xp: 3, sprite: "t2_en_gas", drawH: 50,
+                frames: { windup: "t2_en_gas_windup", fire: "t2_en_gas_fire" } },
+  T2_GERM:    { name: "세균몬", type: "normal", behavior: "mine", hpMult: 1.0, atkMult: 1.8, spdU: 0, radiusU: 0.42, mass: 9, xp: 2, sprite: "t2_en_germ", drawH: 40,
+                frames: { idle: ["t2_en_germ", "t2_en_germ2", "t2_en_germ3"], armed: "t2_en_germ_armed" } },
+  T2_RAIN:    { name: "산성비 구름몬", type: "normal", behavior: "raincloud", hpMult: 1.4, atkMult: 1.0, spdU: 2.0, radiusU: 0.45, mass: 1, xp: 4, sprite: "t2_en_raincloud", drawH: 52 },
+  T2_BIGDUST: { name: "왕먼지몬", type: "elite", behavior: "summon", hpMult: 12, atkMult: 1.5, spdU: 1.4, radiusU: 0.8, mass: 4, xp: 20, sprite: "t2_en_bigdust", drawH: 92,
+                summon: { id: "T2_DUST", n: 3, everyS: 6 }, onDeathSpawn: { id: "T2_DUST", n: 6 } },
+};
+// 대왕 기술표는 boss-patterns.js BOSS_PATTERNS_T2(rework-content.js가 넣는다). 체력·공격은 rework-content.js.
+export const T2_BOSS = {
+  id: "T2_BOSS", name: "굴뚝 가스 대왕", hpMult: 400, atkMult: 2.0, radiusU: 1.5, spdU: 1.3, restS: 2.0, drawScale: 1.25, phase2At: 0.5,
+  img: { calm: "t2_boss_calm", angry: "t2_boss_angry" }, drawH: 160, patterns: [],
+};
+// CH06~CH10. 목표는 "가스가 새는 밸브 잠그기"(litter 자리에 밸브), 매연 구역(dark)은 모든 단계에 조금씩.
+export const T2_STAGES = [
+  { mix: ["T2_DUST"], elites: [], dark: 0.08, floor: "t2_floor_factory", hint: "먼지몬 떼가 몰려와요 · 새는 밸브 옆에 서면 잠겨요" },
+  { mix: ["T2_DUST", "T2_GAS"], elites: [], dark: 0.1, floor: "t2_floor_steel", hint: "가스몬이 입이 빨개지면 곧 불을 뿜어요! 옆이나 뒤로 피해요" },
+  { mix: ["T2_DUST", "T2_GAS", "T2_GERM"], elites: [{ id: "T2_BIGDUST", atS: 180 }, { id: "T2_BIGDUST", atS: 660 }], dark: 0.12, floor: "t2_floor_factory", hint: "바닥의 세균몬은 가까이 가면 부풀었다가 펑! 멀리서 공격해요" },
+  { mix: ["T2_DUST", "T2_GAS", "T2_RAIN", "T2_GERM"], elites: [{ id: "T2_BIGDUST", atS: 450 }], dark: 0.15, floor: "t2_floor_steel", hint: "산성비 구름몬이 떨어뜨리는 빗방울 표시를 피해요" },
+  { mix: ["T2_DUST", "T2_GAS", "T2_RAIN", "T2_GERM"], elites: [{ id: "T2_BIGDUST", atS: 300 }], dark: 0.2, floor: "t2_floor_soot", boss: "T2_BOSS", hint: "굴뚝 가스 대왕! 대왕이 터뜨린 밸브를 잠그면 대왕이 약해져요" },
 ];
 
 const DEFAULT_TIP = "우리가 매일 하는 작은 선택이 지구를 바꿔요.";

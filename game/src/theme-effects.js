@@ -6,6 +6,12 @@ const fxEase = (n) => 1 - Math.pow(1 - fxClamp(n), 3);
 
 export function createThemeEffects(sprites) {
   const events = [];
+  // 장마다 바뀌는 그림(1장 쓰레기 마을 / 2장 대기오염 공장 지대): 흩어지는 조각·떨어지는 물건·목표·부하·구름·대왕 이름
+  const SKINS = {
+    1: { bit: "t1_prop_litter", drop: "t1_prop_litter", litter: "t1_prop_litter", minion: "t1_en_baggy", smog: "vfx_smog", boss: "쓰레기 산 대왕" },
+    2: { bit: "t2_fx_smog", drop: "t2_fx_bomb", litter: "t2_prop_valve", minion: "t2_en_dust", smog: "t2_fx_smog", boss: "굴뚝 가스 대왕" },
+  };
+  let skin = SKINS[1];
   const marks = [];   // 바닥 자국(대왕 내려찍기·착지 금, 박치기 끌린 자국): 캐릭터 아래에 그린다
   const textures = new Map();
   const motion = typeof matchMedia === "function" ? matchMedia("(prefers-reduced-motion: reduce)") : null;
@@ -136,7 +142,7 @@ export function createThemeEffects(sprites) {
     for (let i = 0; i < 5; i++) {
       const a = i * FX_TAU / 5 + (quiet() ? 0 : time * .12);
       const d = r * .27, wobble = quiet() ? 0 : Math.sin(time * 1.4 + i) * r * .035;
-      stamp(c, "vfx_smog", x + Math.cos(a) * (d + wobble), y + Math.sin(a) * d, r * 1.55, .27, a * .1);
+      stamp(c, skin.smog, x + Math.cos(a) * (d + wobble), y + Math.sin(a) * d, r * 1.55, .27, a * .1);
     }
     c.restore();
     ring(c, x, y, r, danger ? "#b17a32" : "#87984e", 2);
@@ -188,18 +194,20 @@ export function createThemeEffects(sprites) {
         const q = toScreen(spot.x, spot.y); warning(c, q.x, q.y, r, t);
         // Flights land exactly when resolveBossPattern applies damage. Shadows stay at target.
         const fall = quiet() ? 20 : 110 * (1 - t);
-        stamp(c, "t1_prop_litter", q.x, q.y - fall, 26 + 10 * t, .7, quiet() ? 0 : t * 2);
+        stamp(c, pat.kind === "litter" ? skin.litter : skin.drop, q.x, q.y - fall, 26 + 10 * t, .7, quiet() ? 0 : t * 2);
       }
     } else if (pat.kind === "cone") {
       const r = 4 * U;
       c.beginPath(); c.moveTo(s.x, s.y); c.arc(s.x, s.y, r, pat.aimAngle - Math.PI / 2, pat.aimAngle + Math.PI / 2); c.closePath();
       c.fillStyle = "rgba(203,113,40,.16)"; c.fill(); c.strokeStyle = "#fff6d2"; c.lineWidth = 5; c.stroke();
       c.strokeStyle = "#c77832"; c.lineWidth = 2; c.stroke();
-      // The lasting stink pool is offset from the cone. Its future boundary is shown separately.
-      const x = s.x + Math.cos(pat.aimAngle) * 2.2 * U, y = s.y + Math.sin(pat.aimAngle) * 2.2 * U;
-      c.setLineDash([5, 5]); ring(c, x, y, 2.4 * U, "#927535", 2); c.setLineDash([]);
-      label(c, "!", x, y + 4, "#945525");
-      stamp(c, "vfx_smog", s.x, s.y - 25, 38 + 15 * t, .4);
+      // The lasting stink pool is offset from the cone. Its future boundary is shown separately(오래 남는 구름이 있는 기술만).
+      if (pat.stinkField) {
+        const x = s.x + Math.cos(pat.aimAngle) * 2.2 * U, y = s.y + Math.sin(pat.aimAngle) * 2.2 * U;
+        c.setLineDash([5, 5]); ring(c, x, y, 2.4 * U, "#927535", 2); c.setLineDash([]);
+        label(c, "!", x, y + 4, "#945525");
+      }
+      stamp(c, pat.fx === "flame" ? "t2_fx_flame" : skin.smog, s.x + (pat.fx === "flame" ? Math.cos(pat.aimAngle) * 30 : 0), s.y - 25, 38 + 15 * t, pat.fx === "flame" ? .35 + .4 * t : .4, pat.fx === "flame" ? pat.aimAngle : 0);
     } else if (pat.kind === "vacuum") {
       warning(c, s.x, s.y, 2.5 * U, t);
       for (let i = 0; i < 8; i++) {
@@ -213,12 +221,12 @@ export function createThemeEffects(sprites) {
       warning(c, s.x, s.y, 4 * U, t);
       for (let i = 0; i < 8; i++) {
         const a = i * FX_TAU / 8;
-        stamp(c, "t1_prop_litter", s.x + Math.cos(a) * 4 * U, s.y + Math.sin(a) * 4 * U, 20, .8);
+        stamp(c, skin.bit, s.x + Math.cos(a) * 4 * U, s.y + Math.sin(a) * 4 * U, 20, .8);
       }
     } else if (pat.kind === "slam") {
       // 내려찍기: 대왕 둘레 원(판정 크기 그대로) + 들어 올린 쓰레기 더미
       warning(c, s.x, s.y, (pat.radiusU || 3) * U, t);
-      stamp(c, "t1_prop_litter", s.x, s.y - (quiet() ? 90 : 80 + 40 * t), 44, .85, quiet() ? 0 : t * 4);
+      stamp(c, skin.bit, s.x, s.y - (quiet() ? 90 : 80 + 40 * t), 44, .85, quiet() ? 0 : t * 4);
     } else if (pat.kind === "leap") {
       // 점프: 내려앉을 자리에 점점 짙어지는 그림자 + 대왕에서 이어지는 점선
       const q = toScreen(pat.telegraphOriginX, pat.telegraphOriginY), r = (pat.radiusU || 2.5) * U;
@@ -249,12 +257,12 @@ export function createThemeEffects(sprites) {
         c.beginPath(); c.moveTo(s.x, s.y); c.lineTo(s.x + Math.cos(a) * l, s.y + Math.sin(a) * l); c.stroke();
       }
       c.setLineDash([]);
-      stamp(c, "t1_prop_litter", s.x + Math.cos(a0) * 50, s.y + Math.sin(a0) * 50 - 20, 30, .9, t * 6);
+      stamp(c, skin.drop, s.x + Math.cos(a0) * 50, s.y + Math.sin(a0) * 50 - 20, 30, .9, t * 6);
     } else if (pat.kind === "summonOnly") {
       for (let i = 0; i < (pat.summon?.n || 4); i++) {
         const a = i * FX_TAU / (pat.summon?.n || 4), x = s.x + Math.cos(a) * 60, y = s.y + Math.sin(a) * 60;
         c.setLineDash([4, 4]); ring(c, x, y, 21, "#8d729f", 2); c.setLineDash([]);
-        stamp(c, "t1_en_baggy", x, y - 15, 34, .25 + .5 * t);
+        stamp(c, skin.minion, x, y - 15, 34, .25 + .5 * t);
       }
     }
     c.restore();
@@ -262,13 +270,23 @@ export function createThemeEffects(sprites) {
   function blast(c, b, x, y) {
     const t = fxClamp(1 - b.life / b.maxLife), r = b.radius;
     if (!b.vfxKind) { purify(c, x, y, t, Math.min(180, r * 1.4)); return; }
+    if (b.vfxKind === "flame") {               // 불꽃 브레스: 불길 그림이 부채꼴 방향으로 뻗었다 사라진다
+      c.save(); c.globalAlpha = 1 - t * t;
+      const ok = stamp(c, "t2_fx_flame", x + Math.cos(b.ang || 0) * r * .55, y + Math.sin(b.ang || 0) * r * .55, r * (1.1 + .3 * fxEase(t)), 1, b.ang || 0);
+      c.restore(); if (ok) return;
+    }
+    if (b.vfxKind === "splat") {               // 세균 터짐·산성비: 연두색 방울이 튀며 옅어진다
+      c.save(); c.globalAlpha = 1 - t;
+      const ok = stamp(c, "t2_fx_splat", x, y, r * 2 * (.6 + .5 * fxEase(t)), 1, b.x % 3);
+      c.restore(); if (ok) return;
+    }
     if (b.vfxKind === "shock") {
       // 대왕 내려찍기·착지: 충격파 고리 그림이 판정 원 크기까지 퍼지며 옅어진다(그림이 없으면 아래 기본 효과)
       c.save(); c.globalAlpha = 1 - t * t;
       const ok = stamp(c, "t1_fx_shockring", x, y, r * 2 * (.55 + .5 * fxEase(t)), 1);
       if (ok && !quiet()) for (let i = 0; i < 6; i++) {
         const a = i * FX_TAU / 6 + .4, d = r * (.3 + .75 * fxEase(t));
-        stamp(c, "t1_prop_litter", x + Math.cos(a) * d, y + Math.sin(a) * d - 22 * Math.sin(t * Math.PI), 16, .9, a + t * 5);
+        stamp(c, skin.bit, x + Math.cos(a) * d, y + Math.sin(a) * d - 22 * Math.sin(t * Math.PI), 16, .9, a + t * 5);
       }
       c.restore();
       if (ok) return;
@@ -279,7 +297,7 @@ export function createThemeEffects(sprites) {
     const n = quiet() ? 3 : b.vfxKind === "avalanche" ? 10 : 5;
     for (let i = 0; i < n; i++) {
       const a = i * FX_TAU / n, d = r * (.2 + .65 * fxEase(t));
-      stamp(c, "t1_prop_litter", x + Math.cos(a) * d, y + Math.sin(a) * d - 15 * Math.sin(t * Math.PI), 17 + r * .07, .9, a + t);
+      stamp(c, skin.bit, x + Math.cos(a) * d, y + Math.sin(a) * d - 15 * Math.sin(t * Math.PI), 17 + r * .07, .9, a + t);
     }
     c.restore();
   }
@@ -302,16 +320,17 @@ export function createThemeEffects(sprites) {
         stamp(c, "vfx_smog", s.x, s.y - 10 * t, r * 2, .55);
         if (!quiet()) for (let i = 0; i < 3; i++) {
           const a = (e.dir ?? -Math.PI / 2) + (i - 1) * .8 + Math.PI, d = r * (.4 + .6 * t);
-          stamp(c, "t1_prop_litter", s.x + Math.cos(a) * d, s.y + Math.sin(a) * d - 18 * Math.sin(t * Math.PI), 14, .9, a + t * 4);
+          stamp(c, skin.bit, s.x + Math.cos(a) * d, s.y + Math.sin(a) * d - 18 * Math.sin(t * Math.PI), 14, .9, a + t * 4);
         }
       } else if (e.kind === "phase" || e.kind === "arrival") {
         stamp(c, "vfx_smog", s.x, s.y - 30, 180 + 45 * t, .5);
         ring(c, s.x, s.y, 40 + 70 * fxEase(t), "#d5a45d", 3);
-        label(c, e.kind === "phase" ? "오염 폭주!" : "쓰레기 산 대왕 등장!", s.x, s.y - 120 - 8 * t);
+        label(c, e.kind === "phase" ? "오염 폭주!" : `${skin.boss} 등장!`, s.x, s.y - 120 - 8 * t);
       }
       c.restore();
     }
   }
-  return { emit, update, draw, hit, purify, smog, beacon, projectile, telegraph, blast, stamp, mark, ground,
+  function setTheme(n) { skin = SKINS[n] || SKINS[1]; }
+  return { emit, update, draw, hit, purify, smog, beacon, projectile, telegraph, blast, stamp, mark, ground, setTheme,
     reset() { events.length = 0; marks.length = 0; sequence = 0; }, get count() { return events.length; }, get reducedMotion() { return quiet(); } };
 }

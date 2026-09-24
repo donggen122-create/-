@@ -62,6 +62,12 @@ export const STAGES = [
   { id:'CH03', name:'바람 부는 공원', goal:'떨어진 쓰레기 5개 줍기', target:5, enemyHp:.87, enemyAtk:1, density:1.95, tip:'위험한 빨간 표시가 보이면 옆으로 피해요.', story:'공원에서 동물 친구가 기다리고 있어!', unlock:'처음 성공하면 첫 동물 친구 선택' },
   { id:'CH04', name:'다시 피는 꽃길', goal:'떨어진 쓰레기 6개 줍기', target:6, enemyHp:.94, enemyAtk:1.07, density:2.05, tip:'어려우면 쉬움으로 다시 도전해요.', story:'꽃이 다시 자라도록 깨끗한 길을 만들자!', unlock:'처음 성공하면 톡톡 씨앗 열림' },
   { id:'CH05', name:'쓰레기 대장 구출', goal:'떨어진 쓰레기 5개 줍기', target:5, enemyHp:1.0, enemyAtk:1.12, density:2.1, tip:'쓰레기를 5개 모으면 대장도 약해져요!', story:'대장은 쓰레기 때문에 괴로워하고 있어. 함께 깨끗하게 해 주자!', unlock:'새싹 도구 + 새 친구 선택 + 선물 상자 열림' },
+  // 2장 「대기오염 공장 지대」(2026-09-24 사용자, themes.js T2_*): 목표는 가스가 새는 밸브 잠그기(1장의 쓰레기 줍기 자리). 1-5를 성공하면 열린다.
+  { id:'CH06', name:'매캐한 공단 입구', goal:'가스가 새는 밸브 3개 잠그기', target:3, enemyHp:1.15, enemyAtk:1.2, density:2.0, tip:'', story:'공장 굴뚝에서 시커먼 매연이 뿜어져! 새는 밸브부터 잠가 보자.', unlock:'' },
+  { id:'CH07', name:'굴뚝 골목', goal:'가스가 새는 밸브 4개 잠그기', target:4, enemyHp:1.25, enemyAtk:1.26, density:2.1, tip:'', story:'입이 빨개진 가스몬은 곧 불을 뿜어! 옆으로 피하자.', unlock:'' },
+  { id:'CH08', name:'가스 탱크 공장', goal:'가스가 새는 밸브 5개 잠그기', target:5, enemyHp:1.35, enemyAtk:1.32, density:2.15, tip:'', story:'바닥에 세균몬이 숨어 있어. 가까이 가기 전에 멀리서 공격!', unlock:'' },
+  { id:'CH09', name:'매연 도로', goal:'가스가 새는 밸브 6개 잠그기', target:6, enemyHp:1.45, enemyAtk:1.38, density:2.2, tip:'', story:'산성비 구름몬이 빗방울을 떨어뜨려. 표시를 보고 피하자!', unlock:'' },
+  { id:'CH10', name:'굴뚝 대왕의 공장', goal:'가스가 새는 밸브 5개 잠그기', target:5, enemyHp:1.5, enemyAtk:1.42, density:2.2, tip:'', story:'파이프로 된 굴뚝 가스 대왕이 나타났어! 밸브를 잠가 대왕을 약하게 만들자.', unlock:'' },
 ];
 
 const stageCopy=[
@@ -70,6 +76,11 @@ const stageCopy=[
  ['스킬 3단계 + 짝 지원품이면 금색 진화 카드가 나와요.','처음 성공하면 첫 동물 친구 선택'],
  ['가까운 적·멀리 있는 적에 맞춰 스킬을 조합해요.','첫 성공 코인 120개 추가'],
  ['쓰레기를 5개 모으면 대장도 약해져요!','새 친구 선택 + 보급권 1장 추가'],
+ ['매연 구역 안에서는 느려지고 조금씩 닳아요. 공기 정화 나무 곁은 안전해요.','첫 성공 코인 120개 추가'],
+ ['가스몬은 원거리 공격이 없어요. 거리를 두고 싸워요.','첫 성공 코인 120개 추가'],
+ ['세균몬은 움직이지 않아요. 멀리서 공격하면 안전하게 없앨 수 있어요.','첫 성공 코인 120개 추가'],
+ ['빗방울 표시가 3곳 생기면 곧 산성비가 떨어져요.','첫 성공 코인 120개 추가'],
+ ['밸브를 5개 잠그면 대왕도 약해져요!','보급권 1장 추가 + 코인 60개 더'],
 ];
 STAGES.forEach((s,i)=>{s.tip=stageCopy[i][0];s.unlock=stageCopy[i][1];});
 const clone=x=>structuredClone(x);
@@ -83,7 +94,10 @@ export function freshProfile(legacy={}) {
 export function maxClear(p){return Math.max(0,...STAGES.filter(s=>p.stages?.[s.id]?.cleared).map(s=>Number(s.id.slice(2))));}
 export function stageUnlocked(p,id){const i=STAGES.findIndex(s=>s.id===id);return i===0||(i>0&&!!p.stages?.[STAGES[i-1].id]?.cleared);}
 export function availableTools(){return Object.keys(SKILLS);}
-export function durationFor(p,id){return ['CH01','CH02'].includes(id)&&!p.stages?.[id]?.cleared?180:id==='CH05'?240:300;}
+// 대왕 단계(각 장의 5번째: 1-5·2-5)는 4분 뒤 대왕 등장
+export const BOSS_STAGES=['CH05','CH10'];
+export const isBossStage=id=>BOSS_STAGES.includes(id);
+export function durationFor(p,id){return ['CH01','CH02'].includes(id)&&!p.stages?.[id]?.cleared?180:isBossStage(id)?240:300;}
 // 훈련(기본 능력치) 만렙 100(2026-09-23 저녁 사용자). 비용 식은 그대로(100 + 25×(단계-1)), 40단계까지 한 능력치에 22,425코인, 100단계까지 131,175코인.
 export const TRAINING_MAX=100;
 export function trainingCost(level){return level>=TRAINING_MAX?null:100+25*(level-1);}
@@ -136,15 +150,15 @@ export function completeRun(profile,{stage,cleared,seconds,litter=0,hpFraction=0
  if(!st)throw new Error('없는 단계예요.');
  const first=cleared&&!p.stages[stage]?.cleared,intro=['CH01','CH02'].includes(stage)&&!p.stages[stage]?.cleared;
  const goal=cleared&&litter>=st.target;
- const base=120+10*(index-1),coins=cleared?Math.floor(base*(intro?.6:1))+(first?120:0)+(index===5?60:0)+(goal?30:0):Math.floor(base*.6*Math.min(seconds/300,1));
- // 성공 보급권: 난이도별(쉬움·보통 1, 어려움 2) + 1-5 첫 성공 보너스 1. 같은 단계는 하루 2번 성공까지만(day는 서버가 넣음, 코인·우정·별은 그대로).
+ const base=120+10*(index-1),coins=cleared?Math.floor(base*(intro?.6:1))+(first?120:0)+(index%5===0?60:0)+(goal?30:0):Math.floor(base*.6*Math.min(seconds/300,1));
+ // 성공 보급권: 난이도별(쉬움·보통 1, 어려움 2) + 대왕 단계(1-5·2-5) 첫 성공 보너스 1. 같은 단계는 하루 2번 성공까지만(day는 서버가 넣음, 코인·우정·별은 그대로).
  let stageGift=null,clearGifts=cleared?(CLEAR_GIFTS[difficulty]||1):0;
  if(cleared&&day){
   if(p.stageGifts?.day!==day)p.stageGifts={day,counts:{}};
   const used=p.stageGifts.counts[stage]||0;if(used>=STAGE_GIFT_CLEARS_PER_DAY)clearGifts=0;else p.stageGifts.counts[stage]=used+1;
   stageGift={left:STAGE_GIFT_CLEARS_PER_DAY-(p.stageGifts.counts[stage]||0),capped:!clearGifts,limit:STAGE_GIFT_CLEARS_PER_DAY};
  }
- let gifts=clearGifts+(first&&index===5?1:0),friendship=cleared?1:0;
+ let gifts=clearGifts+(first&&index%5===0?1:0),friendship=cleared?1:0;
  p.runs++;if(cleared)p.wins++;
  // 실패 격려(150초 이상 실패 2번): 우정은 매번, 보급권은 게임 날짜마다 1장까지(실패만 반복해 보급권을 모으지 못하게). day는 서버가 넣는다.
  if(!cleared&&seconds>=150){p.failRemainder++;if(p.failRemainder>=2){p.failRemainder-=2;friendship++;if(!day||p.failGiftDay!==day){gifts++;if(day)p.failGiftDay=day;}}}

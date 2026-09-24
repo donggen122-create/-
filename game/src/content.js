@@ -2,7 +2,7 @@
 // 원본 수치는 content.data.js(자동 생성)에 그대로 있고, 여기서는 "어떻게 동작시킬지"만 정한다.
 import { RAW_ENEMIES, RAW_BOSSES, RAW_SKILLS, RAW_PASSIVES, RAW_EVOLUTIONS, RAW_CHAPTERS, RAW_CHARACTERS, RAW_EQUIPMENT } from "./content.data.js";
 
-import { T1_ENEMIES, T1_BOSS, T1_STAGES } from "./themes.js";
+import { T1_ENEMIES, T1_BOSS, T1_STAGES, T2_ENEMIES, T2_BOSS, T2_STAGES } from "./themes.js";
 export const U = 32; // 1u = 32px
 
 export const XP_CURVE = (n) => 20 + 6 * n + 0.25 * n * n;                 // docs/06 §4.1
@@ -252,21 +252,29 @@ export const chapterById = (id) => CHAPTERS.find((c) => c.id === id) || CHAPTERS
 
 // ====================== 환경 테마 1 「쓰레기 마을」 덮어쓰기 (themes.js) ======================
 // chapters.csv·enemies.csv·bosses.json은 그대로 두고, CH01~CH05의 적·엘리트·보스·바닥·악취 구역 비율만 테마 표로 바꾼다.
-for (const id in T1_ENEMIES) {
-  const r = T1_ENEMIES[id];
+for (const [id, r] of Object.entries({ ...T1_ENEMIES, ...T2_ENEMIES })) {
   ENEMIES[id] = {
     id, name: r.name, behavior: r.behavior, elite: r.type === "elite",
     hpMult: r.hpMult, atkMult: r.atkMult, spdU: r.spdU, radiusU: r.radiusU, mass: r.mass, xp: r.xp, ability: "",
     sprite: r.sprite, tint: null, hiRes: true, drawH: r.drawH,          // 고해상도 그림: 색조 없이 부드럽게 축소
     drawScale: (r.type === "elite" ? 2.4 : 1.5) * (0.8 + r.radiusU), bobAmp: r.type === "elite" ? 2.4 : 1.8, extraDr: 0,
-    summon: r.summon || null, onDeathSpawn: r.onDeathSpawn || null,
+    summon: r.summon || null, onDeathSpawn: r.onDeathSpawn || null, frames: r.frames || null,
   };
 }
 BOSSES[T1_BOSS.id] = { ...T1_BOSS, shape: "tree", palette: paletteFor([130, 150, 60]), palette2: paletteFor([200, 90, 60]) };
+BOSSES[T2_BOSS.id] = { ...T2_BOSS, shape: "golem", palette: paletteFor([120, 110, 130]), palette2: paletteFor([200, 90, 60]) };
 T1_STAGES.forEach((s, i) => {
   const ch = CHAPTERS[i];
   if (!ch) return;
   ch.theme = 1; ch.mix = s.mix; ch.elites = s.elites; ch.dark = s.dark; ch.floor = s.floor; ch.hint = s.hint;
+  ch.groundTint = null; ch.desc = s.hint;
+  if (s.boss) ch.boss = s.boss;
+});
+// 테마 2 「대기오염 공장 지대」: CH06~CH10
+T2_STAGES.forEach((s, i) => {
+  const ch = CHAPTERS[5 + i];
+  if (!ch) return;
+  ch.theme = 2; ch.mix = s.mix; ch.elites = s.elites; ch.dark = s.dark; ch.floor = s.floor; ch.hint = s.hint;
   ch.groundTint = null; ch.desc = s.hint;
   if (s.boss) ch.boss = s.boss;
 });
