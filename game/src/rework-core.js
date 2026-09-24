@@ -1,8 +1,8 @@
 // Browser/Worker shared rules. No DOM, storage, clocks or network side effects.
 import { ELEMENTS, SKILLS, PARTS, COMBOS, SUPPORTS, EVO_OF, SKILL_PARTNERS, LEVEL_DAMAGE, RUN_RULES } from './element-content.js';
 export { ELEMENTS, SKILLS, PARTS, COMBOS, SUPPORTS, EVO_OF, SKILL_PARTNERS, RUN_RULES, LEVEL_DAMAGE };
-import { GEAR, GEAR_SETS, GEAR_SLOTS, GEAR_SLOT_NAMES, GEAR_GRADE_MULT, GEAR_SET_BONUS, GEAR_SET_SIZES, GEAR_SET_TEXT, GEAR_SPECIALS, gearIdsFor } from './equipment.js';
-export { GEAR, GEAR_SETS, GEAR_SLOTS, GEAR_SLOT_NAMES, GEAR_GRADE_MULT, GEAR_SET_BONUS, GEAR_SET_SIZES, GEAR_SET_TEXT, GEAR_SPECIALS, gearIdsFor };
+import { GEAR, GEAR_SETS, GEAR_SLOTS, GEAR_SLOT_NAMES, GEAR_GRADE_RATE, GEAR_MAX, gearValue, GEAR_SET_BONUS, GEAR_SET_SIZES, GEAR_SET_TEXT, GEAR_SPECIALS, gearIdsFor } from './equipment.js';
+export { GEAR, GEAR_SETS, GEAR_SLOTS, GEAR_SLOT_NAMES, GEAR_GRADE_RATE, GEAR_MAX, gearValue, GEAR_SET_BONUS, GEAR_SET_SIZES, GEAR_SET_TEXT, GEAR_SPECIALS, gearIdsFor };
 export const VERSION = 2;
 export const PASS_NOTICE = '매일 아침 8시에 기본 이용권이 10장으로 새로 채워져요. 성공하면 1장, 실패하면 0장! 기본 이용권으로 하루에 10번 성공할 수 있어요. 선생님이 추가로 지급한 이용권은 다음 아침 8시까지 사용할 수 있어요. 이용권은 미션이나 보급에서 나오지 않아요.';
 export const TOOLS=SKILLS, SETS=ELEMENTS;
@@ -90,6 +90,8 @@ export function addPetCards(p,id,qty=1){
  p.petCopies[id]=after;p.pets=PET_IDS.filter(x=>petCopies(p,x)>0);if(!hasPet(p,p.activePet))p.activePet=id;
  return {id,qty,before,after,gradeBefore:before?grade(before):-1,gradeAfter:grade(after),isNew:!before,mode:'pet'};
 }
+// 5번 연속 보급 한 줄 요약: "5번 보급! 불꽃병 ×3 · 물대포 · …"
+export function multiDrawMessage(m){const name=d=>m.kind==='pet'?PETS[d.id]?.name:m.kind==='gear'?GEAR[d.id]?.name:PARTS[d.id]?.name;return `${m.items.length}번 보급! ${m.items.map(d=>`${name(d)}${d.qty>1?` ×${d.qty}`:''}`).join(' · ')}`;}
 export function petDrawMessage(d){const pet=PETS[d.id];if(d.isNew)return `${pet.name} 친구 카드${d.qty>1?` ×${d.qty}`:''}! 새 친구를 만났어요.`;return `${pet.name} 카드 ×${d.qty} · ${d.before}→${d.after}장${d.gradeAfter>d.gradeBefore?` · ${GRADE_NAMES[d.gradeAfter]} 달성!`:''}`;}
 // 일일 미션(2026-09-24 밤 사용자 "보급권 수급을 위한 미션 시스템. 일일미션 깨면 하루에 10개씩 추가로"): 게임 날짜(아침 8시)마다 5개 × 보급권 2장 = 10장.
 // 다 하는 순간 보급권이 바로 들어온다(받기 버튼 없음 → 못 받고 넘어가는 날이 없음). 진행은 서버가 정산(completeRun)·작업(action)에서 센다(ctx.day).
@@ -208,6 +210,7 @@ export function trainingGain(stat,level){const n=Math.max(1,Math.floor(Number(le
 export function bonuses(p){
  const b={atkPct:trainingGain('attack',p.training.attack),hpPct:trainingGain('hp',p.training.hp)+(rainbowSet(p)?.05:0),speedPct:trainingGain('speed',p.training.speed),bossDmgPct:0,areaPct:0};
  const g=gearBonuses(p);for(const [k,v] of Object.entries(g.stats))b[k]=(b[k]||0)+v;
+ if(b.atkSpeedPct){b.intervalPct=(b.intervalPct||0)+petIntervalCut(b.atkSpeedPct);delete b.atkSpeedPct;}   // 장비 공격 속도 → 공격 간격(main.js sgMods)
  b.gearSpecials=g.specials;b.gearSets=g.sets;return b;
 }
 // ---- 장비(2026-09-24, docs/34) ----
@@ -222,10 +225,10 @@ export function gearDrawPool(p){return gearIdsFor(p.hero).filter(id=>(gearOf(p,i
 // 장착 장비의 능력 합: 기본 능력 × 등급 배율 + 세트 효과(같은 세트 2·4·6개) + 특수 효과 단계(유니크 1 · 에픽 2 · 전설 3)
 export function gearBonuses(p){
  const stats={},sets={},specials={};
- const add=(o,m=1)=>{for(const [k,v] of Object.entries(o||{}))stats[k]=(stats[k]||0)+v*m;};
+ const add=(o,g=null)=>{for(const [k,v] of Object.entries(o||{}))stats[k]=(stats[k]||0)+(g===null?v:gearValue(v,g));};
  for(const slot of GEAR_SLOTS){
   const id=p?.equippedGear?.[slot],it=GEAR[id];if(!it||it.hero!==p.hero)continue;const gr=gearGrade(p,id);if(gr<0)continue;
-  add(it.base,GEAR_GRADE_MULT[gr]);sets[it.set]=(sets[it.set]||0)+1;
+  add(it.max,gr);sets[it.set]=(sets[it.set]||0)+1;
   if(gr>=2)specials[it.special.key]=gr-1;
  }
  for(const [set,n] of Object.entries(sets))for(const size of GEAR_SET_SIZES)if(n>=size)add(GEAR_SET_BONUS[GEAR_SETS[set].type][size]);
@@ -350,6 +353,13 @@ export function action(profile,a,rng=Math.random,ctx={}){
  const p=migratePets(profile);let message='저장했어요.',draw=null;
  const check=(ok,msg)=>{if(!ok)throw new Error(msg);};
  const pickIndex=n=>Math.min(n-1,Math.max(0,Math.floor(rng()*n)));
+ // 5번 연속 보급(2026-09-24 밤 사용자 "한번에 5번 연속뽑기"): a.times=5면 보급권 5장으로 5번을 요청 하나에 한꺼번에(한 번에 저장 → 두 번 눌러도 중복 없음).
+ // 결과 전 모습·확률은 한 번 보급과 똑같다. 가다가 모두 전설이 되면 거기서 멈추고 남은 보급권은 그대로.
+ const drawTimes=(kind,one)=>{
+  const n=a.times===5?5:1;check(p.gifts>=n,n>1?`5번 보급에는 보급권 ${n}장이 필요해요.`:'보급권이 더 필요해요.');
+  const items=[];for(let i=0;i<n;i++){const d=one();if(!d)break;items.push(d);p.gifts--;}
+  return n===1?items[0]:{mode:'multi',kind,items};
+ };
  if(a.kind==='train'){
   check(Object.hasOwn(SLOTS,a.stat),'훈련을 골라 주세요.');const cost=trainingCost(p.training[a.stat]);check(cost!==null,'이미 최고 단계예요.');check(p.coins>=cost,'코인을 더 모아 주세요.');p.coins-=cost;p.training[a.stat]++;message=`${SLOTS[a.stat]} ${p.training[a.stat]}단계! 두 주인공에게 함께 적용돼요.`+missionNote(missionProgress(p,ctx.day,'grows'));
  }else if(a.kind==='equip-part'){
@@ -373,8 +383,9 @@ export function action(profile,a,rng=Math.random,ctx={}){
   // 옛 화면(원소 고르기·5번째 선택)이 보낸 요청은 아무것도 바꾸지 않고 새로고침을 안내한다(보급권 그대로).
   if(a.mode!==mode){const e=new Error('보급 규칙이 새로워졌어요. 화면을 새로고침해 주세요.');e.code='DRAW_MODE';e.mode=mode;throw e;}
   // 고르는 것 없음: 전설이 아닌 10종 중 무작위 1종, 개수는 운(1·3·7개). 화면이 보낸 id·element는 무시한다.
-  const pool=selectableParts(p),selected=pool[pickIndex(pool.length)],qty=bundleFor(Math.max(0,Math.min(.999999999,rng())));
-  draw={...addPart(p,selected,qty),mode};p.gifts--;p.giftCounts.part=(p.giftCounts.part||0)+1;message=drawMessage(draw);
+  draw=drawTimes('part',()=>{const pool=selectableParts(p);if(!pool.length)return null;const selected=pool[pickIndex(pool.length)],qty=bundleFor(Math.max(0,Math.min(.999999999,rng())));
+   p.giftCounts.part=(p.giftCounts.part||0)+1;return {...addPart(p,selected,qty),mode};});
+  message=draw.mode==='multi'?multiDrawMessage(draw):drawMessage(draw);
  }else if(a.kind==='buy-supply'){
   check(!!p.stages.CH01?.cleared,'1-1을 성공하면 보급이 열려요.');check(typeof ctx.day==='string'&&ctx.day,'서버에서만 바꿀 수 있어요.');
   const n=supplyBuysToday(p,ctx.day),cost=supplyExchangeCost(p,ctx.day),max=SUPPLY_EXCHANGE_COSTS.length;
@@ -390,9 +401,10 @@ export function action(profile,a,rng=Math.random,ctx={}){
  }else if(a.kind==='draw-pet'){
   // 친구 보급: 보급권 1장 → 전설이 아닌 친구 중 무작위 1마리의 카드, 장수는 파츠·장비와 같은 운(1·3·7장). 고르는 것 없음.
   check(!!p.stages.CH01?.cleared,'1-1을 성공하면 보급이 열려요.');check(p.gifts>0,'보급권이 더 필요해요.');
-  const pool=petDrawPool(p);check(pool.length,'모든 친구가 전설이에요!');p.giftCounts ||= {part:0,pet:0};
-  const id=pool[pickIndex(pool.length)],qty=bundleFor(Math.max(0,Math.min(.999999999,rng())));
-  draw=addPetCards(p,id,qty);p.gifts--;p.giftCounts.pet=(p.giftCounts.pet||0)+1;message=petDrawMessage(draw);
+  check(petDrawPool(p).length,'모든 친구가 전설이에요!');p.giftCounts ||= {part:0,pet:0};
+  draw=drawTimes('pet',()=>{const pool=petDrawPool(p);if(!pool.length)return null;const id=pool[pickIndex(pool.length)],qty=bundleFor(Math.max(0,Math.min(.999999999,rng())));
+   p.giftCounts.pet=(p.giftCounts.pet||0)+1;return addPetCards(p,id,qty);});
+  message=draw.mode==='multi'?multiDrawMessage(draw):petDrawMessage(draw);
  }else if(a.kind==='choose-hero'){
   // 가입할 때 한 번만: 호야/민지 고정(장비 뽑기는 이 성별 장비만)
   check(!heroLocked(p),'캐릭터는 이미 정해졌어요. 바꾸려면 선생님께 부탁해 주세요.');check(['hoya','minji'].includes(a.hero),'캐릭터를 골라 주세요.');
@@ -406,9 +418,10 @@ export function action(profile,a,rng=Math.random,ctx={}){
   draw=grantFirstWeapons(p,a.id);message=`무기 2개를 받았어요! ${josa(GEAR[draw.id].name,'을','를')} 끼웠어요.`;
  }else if(a.kind==='draw-gear'){
   check(!!p.stages.CH01?.cleared,'1-1을 성공하면 보급이 열려요.');check(heroLocked(p),'먼저 캐릭터를 골라 주세요.');check(p.gifts>0,'보급권이 더 필요해요.');
-  const pool=gearDrawPool(p);check(pool.length,'모든 장비가 전설이에요!');p.giftCounts ||= {part:0,pet:0};
-  const id=pool[pickIndex(pool.length)],qty=bundleFor(Math.max(0,Math.min(.999999999,rng())));
-  draw={...addGear(p,id,qty),mode:'gear'};p.gifts--;p.giftCounts.gear=(p.giftCounts.gear||0)+1;message=gearDrawMessage(draw);
+  check(gearDrawPool(p).length,'모든 장비가 전설이에요!');p.giftCounts ||= {part:0,pet:0};
+  draw=drawTimes('gear',()=>{const pool=gearDrawPool(p);if(!pool.length)return null;const id=pool[pickIndex(pool.length)],qty=bundleFor(Math.max(0,Math.min(.999999999,rng())));
+   p.giftCounts.gear=(p.giftCounts.gear||0)+1;return {...addGear(p,id,qty),mode:'gear'};});
+  message=draw.mode==='multi'?multiDrawMessage(draw):gearDrawMessage(draw);
  }else if(a.kind==='merge-gear'){
   check(own(GEAR,a.id)&&gearGrade(p,a.id)>=0,'아직 없는 장비예요.');check(gearMergeReady(p,a.id),`같은 장비를 ${GRADE_COPIES[gearGrade(p,a.id)+1]??''}개 모으면 합성할 수 있어요.`);
   p.gear[a.id].grade++;message=`${GEAR[a.id].name} ${GRADE_NAMES[p.gear[a.id].grade]} 등급으로 합성!`;draw={id:a.id,mode:'merge',grade:p.gear[a.id].grade};

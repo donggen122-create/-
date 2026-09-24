@@ -3,8 +3,10 @@
 export const GEAR_SLOTS = ['helm', 'armor', 'shoes', 'gloves', 'necklace', 'weapon'];
 export const GEAR_SLOT_NAMES = { helm: '투구', armor: '갑옷', shoes: '신발', gloves: '장갑', necklace: '목걸이', weapon: '무기' };
 export const GEAR_SET_SIZES = [2, 4, 6];
-// 등급(파츠와 같음): 노말 1 · 레어 3 · 유니크 7 · 에픽 25 · 전설 80개. 능력은 등급 배율을 곱한다.
-export const GEAR_GRADE_MULT = [1, 1.5, 2, 2.8, 4];
+// 등급(파츠와 같음): 노말 1 · 레어 3 · 유니크 7 · 에픽 25 · 전설 80개.
+// 성장 테이블(2026-09-24 밤 사용자 "장비 효율이 너무 낮다 → 제시한 최대치의 2배로"): GEAR_MAX = 전설(최대) 능력, 등급마다 그 20 · 40 · 60 · 80 · 100%(친구와 같은 방식).
+export const GEAR_GRADE_RATE = [.2, .4, .6, .8, 1];
+export const gearValue = (v, g) => Math.round(v * GEAR_GRADE_RATE[Math.max(0, Math.min(4, g | 0))] * 10000) / 10000;
 export const GEAR_SETS = {
   hoya_ranged: { hero: 'hoya', type: 'ranged', name: '야구복 세트', color: '#2f7fd6' },
   minji_ranged: { hero: 'minji', type: 'ranged', name: '피구복 세트', color: '#e0569b' },
@@ -17,11 +19,13 @@ const NAMES = {
   hoya_melee: { helm: '학생 모자', armor: '교복 재킷', shoes: '실내화', gloves: '목장갑', necklace: '명찰 목걸이', weapon: '목검' },
   minji_melee: { helm: '리본 머리핀', armor: '교복 조끼', shoes: '교복 구두', gloves: '손목 밴드', necklace: '하트 명찰 목걸이', weapon: '왕 연필' },
 };
-// 칸별 기본 능력(노말). 키는 main.js 통합 스탯 키(critPct·hpPct·speedPct·regenPct·takenPct·dmgPct·intervalPct)와 장비 전용 키.
-//  weaponDmgPct = 기본 무기 피해, weaponRangePct = 원거리 기본 무기 사거리, weaponArcPct = 근거리 휘두르기 범위
-export const GEAR_BASE = {
-  ranged: { helm: { critPct: .02 }, armor: { hpPct: .05 }, shoes: { speedPct: .02 }, gloves: { intervalPct: .02 }, necklace: { dmgPct: .03 }, weapon: { weaponDmgPct: .10, weaponRangePct: .04 } },
-  melee: { helm: { takenPct: -.02 }, armor: { hpPct: .06 }, shoes: { speedPct: .02 }, gloves: { weaponDmgPct: .06 }, necklace: { regenPct: .002 }, weapon: { weaponDmgPct: .10, weaponArcPct: .05 } },
+// 칸별 전설(최대) 능력. 키는 main.js 통합 스탯 키(critPct·hpPct·speedPct·regenPct·takenPct·dmgPct)와 장비 전용 키.
+//  atkSpeedPct = 공격 속도(초당 공격, rework-core bonuses가 공격 간격으로 바꿈), weaponDmgPct = 기본 무기 피해, weaponRangePct = 원거리 기본 무기 사거리, weaponArcPct = 근거리 휘두르기 범위
+// 옛 전설(×4 배율) → 새 전설: 원거리 치명타 8→30%, 체력 20→60%, 이동 속도 8→30%, 공격 간격 8% → 공격 속도 +50%, 모든 피해 12→50%, 무기 40→200%·사거리 16→60%
+//   근거리 받는 피해 -8→-30%, 체력 24→80%, 이동 속도 8→30%, 무기 피해(장갑) 24→100%, 회복 0.8→3%/초, 무기 40→200%·휘두르기 20→60%
+export const GEAR_MAX = {
+  ranged: { helm: { critPct: .30 }, armor: { hpPct: .60 }, shoes: { speedPct: .30 }, gloves: { atkSpeedPct: .50 }, necklace: { dmgPct: .50 }, weapon: { weaponDmgPct: 2.0, weaponRangePct: .60 } },
+  melee: { helm: { takenPct: -.30 }, armor: { hpPct: .80 }, shoes: { speedPct: .30 }, gloves: { weaponDmgPct: 1.0 }, necklace: { regenPct: .03 }, weapon: { weaponDmgPct: 2.0, weaponArcPct: .60 } },
 };
 // 세트 효과(같은 세트 개수, 등급과 상관없이). 2026-09-24 모의 뒤 조정: 근거리 4·6세트·굳건을 조금 낮추고 원거리 2세트에 이동 속도, 원거리 갑옷 체력 4→5%. pierce = 기본 무기 공이 뚫고 가는 적 수, searchRangePct = 스킬이 적을 찾는 거리,
 // contactCapPct = 부딪혀서 1초에 잃는 체력 상한, shieldEvery/shieldPct = 보호막 주기(초)·크기, swingBlock = 근거리 휘두르기가 적 탄을 없앰
@@ -55,6 +59,6 @@ export const GEAR_SPECIALS = {
 export const GEAR = Object.fromEntries(Object.entries(GEAR_SETS).flatMap(([set, s]) => GEAR_SLOTS.map((slot) => {
   const id = `${set}_${slot}`;
   return [id, { id, set, slot, hero: s.hero, type: s.type, name: NAMES[set][slot], setName: s.name, color: s.color, icon: `gear_${id}`,
-    base: GEAR_BASE[s.type][slot], special: GEAR_SPECIALS[s.type][slot] }];
+    max: GEAR_MAX[s.type][slot], special: GEAR_SPECIALS[s.type][slot] }];
 })));
 export const gearIdsFor = (hero) => Object.keys(GEAR).filter((id) => GEAR[id].hero === hero);

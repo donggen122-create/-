@@ -154,3 +154,21 @@ test('API: the third clear of the same stage in a day pays no ticket; the settle
  t=Date.parse('2026-09-23T23:05Z');assert.equal((await win()).reward.gifts,2,'아침 8시 뒤 새 날');
  assert.equal((await getProfile(env.DB,'qa')).profile.gifts,6+(2+2)+2,'일일 미션 보급권 포함');
 });
+
+test('5번 연속 보급: 보급권 5장으로 파츠·장비·친구를 한 번에 5번(요청 하나), 모자라면 아무것도 안 바뀜, 모두 전설이 되면 거기서 멈춤', () => {
+ let p = supplyProfile(); p.gifts = 7; p.heroLocked = true; p.hero = 'hoya';
+ const five = R.action(p, { kind: 'draw-part', mode: 'random', times: 5 }, rngSeed(3));
+ assert.equal(five.draw.mode, 'multi'); assert.equal(five.draw.kind, 'part'); assert.equal(five.draw.items.length, 5);
+ assert.equal(five.profile.gifts, 2); assert.equal(five.profile.giftCounts.part, 5); assert.match(five.message, /^5번 보급! /);
+ const got = five.draw.items.reduce((n, d) => n + d.qty, 0), before = Object.values(p.parts).reduce((n, x) => n + x.copies, 0), after = Object.values(five.profile.parts).reduce((n, x) => n + x.copies, 0);
+ assert.equal(after - before, got, '받은 개수만큼 늘어남');
+ const g = R.action(p, { kind: 'draw-gear', times: 5 }, rngSeed(4)); assert.equal(g.draw.kind, 'gear'); assert.equal(g.draw.items.length, 5); assert.equal(g.profile.gifts, 2);
+ const q = R.action(p, { kind: 'draw-pet', times: 5 }, rngSeed(5)); assert.equal(q.draw.kind, 'pet'); assert.equal(q.draw.items.length, 5); assert.equal(q.profile.giftCounts.pet, 5);
+ const poor = supplyProfile(); poor.gifts = 4; const before2 = structuredClone(poor);
+ assert.throws(() => R.action(poor, { kind: 'draw-part', mode: 'random', times: 5 }), /5번 보급에는 보급권 5장/); assert.deepEqual(poor, before2);
+ assert.equal(R.action(poor, { kind: 'draw-part', mode: 'random' }, rngSeed(1)).draw.mode, 'random', '한 번 보급은 그대로');
+ // 친구가 거의 다 전설: 한 마리만 남고 79장 → 첫 보급에서 전설이 되면 멈추고 남은 보급권은 그대로
+ const nearly = supplyProfile(); nearly.gifts = 10; nearly.petCopies = { otter: 80, turtle: 80, deer: 80, cat: 79 }; nearly.pets = ['turtle', 'cat', 'otter', 'deer']; nearly.activePet = 'otter';
+ const stop = R.action(nearly, { kind: 'draw-pet', times: 5 }, rngSeed(2));
+ assert.equal(stop.draw.items.length, 1); assert.equal(stop.profile.gifts, 9); assert.equal(stop.profile.petCopies.cat, 80);
+});

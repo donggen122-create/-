@@ -17,7 +17,7 @@ test('data: 24 items, 12 per hero, every slot once per set; boys and girls get i
   for (const set of Object.keys(R.GEAR_SETS)) assert.deepEqual(R.GEAR_SLOTS.map((s) => R.GEAR[`${set}_${s}`]?.slot), R.GEAR_SLOTS);
   for (const type of ['ranged', 'melee']) for (const slot of R.GEAR_SLOTS) {
     const a = R.GEAR[`hoya_${type}_${slot}`], b = R.GEAR[`minji_${type}_${slot}`];
-    assert.deepEqual(a.base, b.base); assert.deepEqual(a.special, b.special); assert.notEqual(a.name, b.name === a.name ? '' : b.name);
+    assert.deepEqual(a.max, b.max); assert.deepEqual(a.special, b.special); assert.notEqual(a.name, b.name === a.name ? '' : b.name);
   }
   assert.equal(R.GEAR.hoya_ranged_weapon.name, '강속구 야구 배트'); assert.equal(R.GEAR.minji_ranged_weapon.name, '번개 피구공');
   assert.equal(R.GEAR.hoya_melee_weapon.name, '목검'); assert.equal(R.GEAR.minji_melee_weapon.name, '왕 연필');
@@ -80,15 +80,19 @@ test('bonuses: base stats x grade, set bonuses at 2/4/6, specials from unique (1
   let p = hero('minji');
   for (const slot of R.GEAR_SLOTS) { const id = `minji_ranged_${slot}`; p.gear[id] = { copies: 80, grade: 4 }; p = act(p, { kind: 'equip-gear', id }).profile; }
   const g = R.gearBonuses(p);
-  assert.ok(Math.abs(g.stats.critPct - .08) < 1e-9); assert.ok(Math.abs(g.stats.hpPct - .20) < 1e-9, '갑옷 5% × 전설 4'); assert.ok(Math.abs(g.stats.speedPct - (.08 + .05)) < 1e-9, '신발 8% + 2세트 5%'); assert.ok(Math.abs(g.stats.weaponDmgPct - .40) < 1e-9);
-  assert.ok(Math.abs(g.stats.weaponRangePct - (.16 + .15)) < 1e-9, '무기 16% + 2세트 15%'); assert.ok(Math.abs(g.stats.dmgPct - (.12 + .10)) < 1e-9, '목걸이 12% + 4세트 10%');
+  // 성장 테이블(최대치 × 20/40/60/80/100%): 전설 = GEAR_MAX 그대로
+  const near = (a, b, msg) => assert.ok(Math.abs(a - b) < 1e-9, `${msg}: ${a} vs ${b}`);
+  near(g.stats.critPct, .30, '투구 치명타 전설 30%'); near(g.stats.hpPct, .60, '갑옷 체력 전설 60%'); near(g.stats.speedPct, .30 + .05, '신발 30% + 2세트 5%');
+  near(g.stats.weaponDmgPct, 2.0, '무기 피해 전설 +200%'); near(g.stats.atkSpeedPct, .50, '장갑 공격 속도 전설 +50%');
+  near(g.stats.weaponRangePct, .60 + .15, '무기 사거리 60% + 2세트 15%'); near(g.stats.dmgPct, .50 + .10, '목걸이 50% + 4세트 10%');
   assert.equal(g.stats.pierce, 1); assert.equal(g.sets.minji_ranged, 6);
   assert.deepEqual(Object.keys(g.specials).sort(), ['catch', 'cheer', 'fastball', 'focus', 'steal', 'sturdy']); assert.ok(Object.values(g.specials).every((t) => t === 3));
-  const b = R.bonuses(p); assert.ok(b.hpPct >= .16); assert.deepEqual(b.gearSpecials, g.specials);
+  const b = R.bonuses(p); assert.ok(b.hpPct >= .6); assert.deepEqual(b.gearSpecials, g.specials);
+  near(b.intervalPct, 1 / 3, '공격 속도 +50% = 공격 간격 ×2/3'); assert.ok(!('atkSpeedPct' in b));
   // 등급 낮으면 특수 효과 없음, 세트 2개면 2세트만
   let q = hero('hoya'); q.gear.hoya_melee_armor = { copies: 1, grade: 0 }; q.gear.hoya_melee_helm = { copies: 7, grade: 2 };
   q = act(act(q, { kind: 'equip-gear', id: 'hoya_melee_armor' }).profile, { kind: 'equip-gear', id: 'hoya_melee_helm' }).profile;
-  const h = R.gearBonuses(q); assert.ok(Math.abs(h.stats.hpPct - (.06 + .15)) < 1e-9); assert.ok(!('takenPct' in h.stats) || Math.abs(h.stats.takenPct + .04) < 1e-9);
+  const h = R.gearBonuses(q); near(h.stats.hpPct, .80 * .2 + .15, '근거리 갑옷 노말(최대 80%의 20%) + 2세트'); near(h.stats.takenPct, -.30 * .6, '투구 유니크(최대 -30%의 60%)');
   assert.deepEqual(h.specials, { calm: 1 });
   assert.throws(() => act(q, { kind: 'equip-gear', id: 'minji_melee_helm' }), /아직 없는|내 캐릭터/);
   q.gear.minji_melee_helm = { copies: 1, grade: 0 }; assert.throws(() => act(q, { kind: 'equip-gear', id: 'minji_melee_helm' }), /내 캐릭터 장비가 아니/);
