@@ -151,7 +151,7 @@ const sgDamage=(target,raw,dir={x:0,y:0},knock=0,source=null)=>{
   if(source==='weapon'&&target.hp<=0&&sgGear.sp.absorb)sgGearAbsorb();
 };
 // 지원품(판 안 카드) 효과: 통합 스탯 키로 합산(stat()에서 더함). 스킬 엔진·기본 무기에는 mods로 전달
-function sgSupportStat(key){let v=0;const sup=player?.sgRun?.supports;if(sup)for(const id in sup){const d=R.SUPPORTS[id];if(d&&d.stat===key)v+=R.supportValue(id,sup[id].lv);}if(sgRunProfile)v+=R.petBuff(sgRunProfile,key);if(key==='intervalPct'&&sgPet.hasteUntil>runTime)v+=.25;return v;}   // 지원품 + 동물 친구 버프(+ 야옹이 바람 질주)
+function sgSupportStat(key){let v=0;const sup=player?.sgRun?.supports;if(sup)for(const id in sup){const d=R.SUPPORTS[id];if(d&&d.stat===key)v+=R.supportValue(id,sup[id].lv);}if(sgRunProfile){v+=R.petBuff(sgRunProfile,key);if(key==='intervalPct')v+=R.petIntervalCut(R.petBuff(sgRunProfile,'atkSpeedPct')+(sgPet.hasteUntil>runTime?.25:0));}return v;}   // 지원품 + 동물 친구 버프(야옹이 공격 속도·바람 질주는 공격 간격으로 바꿔 더함)
 // ---- 장비 특수 효과(2026-09-24, docs/34): 유니크 1 · 에픽 2 · 전설 3 단계(runBonus.gearSpecials). 값은 R.GEAR_SPECIALS의 v[유니크, 에픽] ----
 const sgGear={sp:{},lastHurt:-99,lastFocus:-99,sturdyReady:0,sturdyUntil:-1,stealNext:0,stealUntil:-1,catchNext:0,calmNext:0,calmReady:false,shieldNext:0};
 const sgGearV=(type,slot)=>{const d=R.GEAR_SPECIALS[type][slot],t=sgGear.sp[d.key]||0;return t?d.v[t>=2?1:0]:0;};

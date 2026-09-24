@@ -351,7 +351,7 @@ export class GuardianUI {
     ${pending?`<div class="sg-notice sg-pet-pending">${pending.key==='firstPet'?'1-3 성공 보상! 함께할 친구를 1마리 골라요(카드 1장).':'1-5 성공 보상! 친구를 1마리 골라 카드 3장을 받아요. 가진 친구도 고를 수 있어요.'}</div>`:''}${migNote}
     <div class="sg-pet-grid">${R.PET_IDS.map(card).join('')}</div>
     <div class="sg-gear-bar"><div class="sg-gear-bar-supply">${icon('gift')}<span><b>친구 보급 · 보급권 ${p.gifts}장</b><small>${open?(pool?`4종 중 무작위 · ${odds}`:'모든 친구가 전설이에요!'):'1-1 첫 성공 후 열려요'}</small></span><button class="sg-primary" data-do="draw-pet" ${open&&p.gifts>0&&pool?'':'disabled'}>보급 받기</button></div></div>
-    <p class="sg-footnote">같은 친구 카드 ${R.GRADE_NAMES.map((n,i)=>`${n} ${R.GRADE_COPIES[i]}장`).join(' → ')}. 버프는 ${R.GRADE_NAMES.map((n,i)=>`${n} ×${R.PET_GRADE_MULT[i]}`).join(' · ')}. <button class="sg-inline" data-do="pet-help">친구 규칙</button></p>`;
+    <p class="sg-footnote">같은 친구 카드 ${R.GRADE_NAMES.map((n,i)=>`${n} ${R.GRADE_COPIES[i]}장`).join(' → ')}. 버프는 전설(최대)의 ${R.GRADE_NAMES.map((n,i)=>`${n} ${Math.round(R.PET_GRADE_RATE[i]*100)}%`).join(' · ')}. <button class="sg-inline" data-do="pet-help">친구 규칙</button></p>`;
   }
   petDetail(id){
     const p=this.state().profile,d=R.PETS[id];if(!d||!p)return;const c=R.petCopies(p,id),g=R.petGrade(p,id),on=p.activePet===id;
@@ -361,7 +361,7 @@ export class GuardianUI {
     this.dialog.querySelector('[data-pet-go]')?.addEventListener('click',async()=>{if(this.busy)return;this.dialog.close();await this.perform({kind:'pet',id});});
   }
   petHelp(){
-    this.openDialog(`<h2>친구 규칙</h2><div class="sg-rules"><p><b>친구 4마리 = 네 방향</b> ① 꼬북이 생존(받는 피해·최대 체력·회복) ② 야옹이 이동·공격 속도 ③ 수달이 공격력·스킬 범위 ④ 아기사슴 새싹 경험치·코인 획득. 앞의 셋은 싸움을 강하게, 아기사슴은 더 빨리 크고 코인을 더 모아요. 한 마리와 함께 출동하면 그 친구 버프가 판 내내 붙어요(코인은 성공·실패 보상에 더해져요).</p><p><b>보급</b> 보급권 1장으로 4종 중 무작위 친구 카드(전설이 된 친구는 빼고). ${R.SUPPLY_BUNDLES.map(b=>`${b.qty}장 ${Math.round(b.chance*100)}%`).join(' · ')}. 파츠·장비 보급과 같은 보급권이에요.</p><p><b>등급</b> 같은 친구 카드를 모으면 저절로 올라가요. ${R.GRADE_NAMES.map((n,i)=>`${n} ${R.GRADE_COPIES[i]}장`).join(' → ')}. 버프는 ${R.GRADE_NAMES.map((n,i)=>`${n} ×${R.PET_GRADE_MULT[i]}`).join(' · ')}.</p><p><b>특수 능력</b> 유니크에서 열리고, 에픽에서 강해지고, 전설에서 하나 더 생겨요.</p><p><b>친구 선물</b> 1-3 첫 성공 때 친구 1마리 카드 1장, 1-5 첫 성공 때 친구 1마리 카드 3장을 골라요(보급권을 쓰지 않아요).</p><p><b>바뀐 점</b> 참새는 야옹이, 물범이는 수달이와 하나가 되었고, 아기사슴은 새싹 경험치·코인, 야옹이는 속도 친구가 되었어요. 우정은 없어지고, 우정 4마다 함께 출동하던 친구 카드 1장으로 바뀌었어요.</p></div><button class="sg-primary" data-close>확인</button>`);
+    this.openDialog(`<h2>친구 규칙</h2><div class="sg-rules"><p><b>친구 4마리 = 네 방향</b> ① 꼬북이 생존(받는 피해·최대 체력·회복) ② 야옹이 이동·공격 속도 ③ 수달이 공격력·스킬 범위 ④ 아기사슴 새싹 경험치·코인 획득. 앞의 셋은 싸움을 강하게, 아기사슴은 더 빨리 크고 코인을 더 모아요. 한 마리와 함께 출동하면 그 친구 버프가 판 내내 붙어요(코인은 성공·실패 보상에 더해져요).</p><p><b>보급</b> 보급권 1장으로 4종 중 무작위 친구 카드(전설이 된 친구는 빼고). ${R.SUPPLY_BUNDLES.map(b=>`${b.qty}장 ${Math.round(b.chance*100)}%`).join(' · ')}. 파츠·장비 보급과 같은 보급권이에요.</p><p><b>등급</b> 같은 친구 카드를 모으면 저절로 올라가요. ${R.GRADE_NAMES.map((n,i)=>`${n} ${R.GRADE_COPIES[i]}장`).join(' → ')}. 버프는 전설(최대)의 ${R.GRADE_NAMES.map((n,i)=>`${n} ${Math.round(R.PET_GRADE_RATE[i]*100)}%`).join(' · ')}.</p><p><b>특수 능력</b> 유니크에서 열리고, 에픽에서 강해지고, 전설에서 하나 더 생겨요.</p><p><b>친구 선물</b> 1-3 첫 성공 때 친구 1마리 카드 1장, 1-5 첫 성공 때 친구 1마리 카드 3장을 골라요(보급권을 쓰지 않아요).</p><p><b>바뀐 점</b> 참새는 야옹이, 물범이는 수달이와 하나가 되었고, 아기사슴은 새싹 경험치·코인, 야옹이는 속도 친구가 되었어요. 우정은 없어지고, 우정 4마다 함께 출동하던 친구 카드 1장으로 바뀌었어요.</p></div><button class="sg-primary" data-close>확인</button>`);
   }
   showPetResult(d){
     const pet=R.PETS[d?.id];if(!pet)return;const up=d.gradeAfter>Math.max(0,d.gradeBefore),next=toNext(d.after),sp=pet.special,choice=d.mode==='choose-pet';

@@ -14,7 +14,7 @@ const D='2026-09-24';
 
 test('four friends = four directions (1 survival · 2 speed · 3 attack · 4 growth/coins); old sparrow → cat, seal → otter; friendship becomes cards',()=>{
  assert.deepEqual(R.PET_IDS,['turtle','cat','otter','deer']);assert.deepEqual(R.PET_IDS.map(id=>R.PETS[id].no),[1,2,3,4]);
- assert.deepEqual(Object.keys(R.PETS.turtle.buffs),['takenPct','hpPct','regenPct']);assert.deepEqual(Object.keys(R.PETS.cat.buffs),['speedPct','intervalPct']);
+ assert.deepEqual(Object.keys(R.PETS.turtle.buffs),['takenPct','hpPct','regenPct']);assert.deepEqual(Object.keys(R.PETS.cat.buffs),['speedPct','atkSpeedPct']);
  assert.deepEqual(Object.keys(R.PETS.otter.buffs),['dmgPct','areaPct']);assert.deepEqual(Object.keys(R.PETS.deer.buffs),['xpPct','magnetPct','coinPct']);
  const old={...base(),pets:['cat','sparrow','seal','deer','otter'],activePet:'seal',friendship:28};delete old.petCopies;delete old.petVersion;
  const p=R.migratePets(old);
@@ -66,22 +66,26 @@ test('friend choices: 1-3 gives one card of any friend, 1-5 gives three cards (o
 test('buffs grow with the grade; specials open at unique (1) → epic (2) → legend (3)',()=>{
  const p=base();p.petCopies={otter:1};p.pets=['otter'];p.activePet='otter';
  const at=n=>{p.petCopies.otter=n;return {dmg:R.petBuff(p,'dmgPct'),sp:R.petSpecial(p)};};
- assert.equal(at(1).dmg,.12);assert.equal(at(1).sp,null);assert.equal(at(3).sp,null);
+ assert.equal(at(1).dmg,.1);assert.equal(at(1).sp,null);assert.equal(at(3).sp,null);
  assert.deepEqual(at(7).sp,{id:'otter',key:'splash',tier:1});assert.equal(at(25).sp.tier,2);assert.equal(at(80).sp.tier,3);
- assert.ok(Math.abs(at(80).dmg-.12*2.2)<1e-9);assert.equal(R.petBuff(p,'takenPct'),0,'다른 친구 버프는 없음');
+ assert.equal(at(80).dmg,.5);assert.equal(at(3).dmg,.2);assert.equal(at(25).dmg,.4);assert.equal(R.petBuff(p,'takenPct'),0,'다른 친구 버프는 없음');
  p.activePet='cat';assert.equal(R.petBuff(p,'dmgPct'),0,'없는 친구가 함께 출동 중이면 0');
- assert.equal(R.petBuffText('turtle',0),'받는 피해 -10% · 최대 체력 +10% · 초당 체력 회복 +0.4%');assert.equal(R.petBuffText('cat',4),'이동 속도 +17.6% · 공격 속도 +17.6%');
- assert.equal(R.petBuffText('deer',2),'새싹 경험치 +22.5% · 새싹 줍기 범위 +75% · 코인 획득 +15%');
+ // 성장 테이블: 전설(최대)의 20·40·60·80·100%(사용자 최대치)
+ assert.deepEqual(R.PET_GRADE_RATE,[.2,.4,.6,.8,1]);
+ assert.equal(R.petBuffText('turtle',4),'받는 피해 -30% · 최대 체력 +30% · 초당 체력 회복 +2%');assert.equal(R.petBuffText('turtle',0),'받는 피해 -6% · 최대 체력 +6% · 초당 체력 회복 +0.4%');
+ assert.equal(R.petBuffText('cat',4),'이동 속도 +30% · 공격 속도 +50%');assert.equal(R.petBuffText('otter',4),'모든 스킬 피해 +50% · 스킬 범위 +30%');
+ assert.equal(R.petBuffText('deer',4),'새싹 경험치 +50% · 새싹 줍기 범위 +150% · 코인 획득 +50%');assert.equal(R.petBuffText('deer',2),'새싹 경험치 +30% · 새싹 줍기 범위 +90% · 코인 획득 +30%');
+ assert.ok(Math.abs(R.petIntervalCut(.5)-1/3)<1e-9,'공격 속도 +50% = 공격 간격 ×2/3');assert.equal(R.petIntervalCut(0),0);
  assert.deepEqual(R.PET_IDS.map(id=>R.PETS[id].special.key),['shell','dash','splash','magnet']);
 });
 
 test('4 growth friend (deer): coin gain +% on every settlement, using the friend taken into the run',()=>{
  const p=base();p.petCopies={deer:7,otter:1};p.pets=['otter','deer'];p.activePet='deer';
  const plain=R.completeRun({...p,activePet:'otter'},{stage:'CH01',cleared:true,seconds:300}).reward,withDeer=R.completeRun(p,{stage:'CH01',cleared:true,seconds:300}).reward;
- assert.equal(plain.petCoinPct,0);assert.equal(withDeer.petCoinPct,.15,'유니크 ×1.5 = +15%');assert.equal(withDeer.coins,Math.floor(plain.coins*1.15));
+ assert.equal(plain.petCoinPct,0);assert.equal(withDeer.petCoinPct,.3,'유니크 = 최대 50%의 60% = +30%');assert.equal(withDeer.coins,Math.floor(plain.coins*1.3));
  assert.equal(R.completeRun(p,{stage:'CH01',cleared:true,seconds:300,pet:'otter'}).reward.petCoinPct,0,'출동할 때 수달이였으면 코인 보너스 없음');
  assert.equal(R.completeRun(p,{stage:'CH01',cleared:true,seconds:300,pet:null}).reward.petCoinPct,0,'친구 없이 출동');
- const fail=R.completeRun(p,{stage:'CH01',cleared:false,seconds:300}).reward;assert.ok(fail.coins>0&&fail.petCoinPct===.15,'실패 코인에도');
+ const fail=R.completeRun(p,{stage:'CH01',cleared:false,seconds:300}).reward;assert.ok(fail.coins>0&&fail.petCoinPct===.3,'실패 코인에도');
 });
 
 test('daily missions: five × 2 tickets = 10 a day, paid the moment they are done; reset at the next game day',()=>{
