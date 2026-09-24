@@ -183,6 +183,32 @@ function grantFirstWeapons(p,equip){
 }
 function equipGearItem(p,id){const it=GEAR[id];p.equippedGear ||= {};p.equippedGear[it.slot]=id;if(it.slot==='weapon')p.weaponMode=it.type;}
 export function gearDrawMessage(d){const it=GEAR[d.id];return `${it.name}${d.qty>1?` ×${d.qty}`:''} ${d.isNew?'획득!':`· ${d.before}→${d.after}개`}${d.mergeReady?' · 합성할 수 있어요!':''}`;}
+// 어려움 준비 권장치(2026-09-24 밤 사용자 "어려움 1번 실패하면 장비·능력치 업그레이드가 부족하다면서 권장치를 구체적으로"):
+// 1장은 docs/28(훈련 40 + 유니크 파츠면 겨우 성공), 2장은 docs/34 모의(훈련 40 + 유니크 파츠에 유니크 장비 6세트가 있어야 2-3 성공이 보임)를 따른다.
+// 항목: 훈련(공격·체력·이동 속도) · 유니크 이상 파츠 장착 수 · 장비 착용 칸 · 같은 세트 개수 · 유니크 이상 장비 수. 화면(실패 뒤 안내·출동 화면 한 줄)과 검사가 같이 쓴다.
+export const HARD_READY={
+ 1:{attack:40,hp:40,speed:20,uniqueParts:3,gearWorn:6,gearSet:4,gearUnique:0},
+ 2:{attack:40,hp:40,speed:20,uniqueParts:3,gearWorn:6,gearSet:6,gearUnique:6},
+};
+export function stageChapter(stageId){const n=Number(String(stageId||'').replace(/\D/g,''))||1;return Math.floor((n-1)/5)+1;}
+export function hardReadiness(p,stageId){
+ const ch=Math.min(2,Math.max(1,stageChapter(stageId))),need=HARD_READY[ch],t=p?.training||{},eq=p?.equippedGear||{};
+ const parts=runParts(p).filter(id=>grade(p.parts?.[id]?.copies||0)>=2).length;
+ const worn=GEAR_SLOTS.map(s=>eq[s]).filter(id=>GEAR[id]&&GEAR[id].hero===p.hero&&gearGrade(p,id)>=0);
+ const sets={};for(const id of worn)sets[GEAR[id].set]=(sets[GEAR[id].set]||0)+1;
+ const bestSet=Math.max(0,...Object.values(sets)),uniqueGear=worn.filter(id=>gearGrade(p,id)>=2).length;
+ const items=[
+  {key:'attack',label:'훈련 · 공격력',now:t.attack||1,need:need.attack,unit:'단계',tab:'training'},
+  {key:'hp',label:'훈련 · 체력',now:t.hp||1,need:need.hp,unit:'단계',tab:'training'},
+  {key:'speed',label:'훈련 · 이동 속도',now:t.speed||1,need:need.speed,unit:'단계',tab:'training'},
+  {key:'parts',label:'유니크 이상 파츠 장착(같은 파츠 7개)',now:parts,need:need.uniqueParts,unit:'개',tab:'parts'},
+  {key:'gearWorn',label:'장비 착용 칸',now:worn.length,need:need.gearWorn,unit:'칸',tab:'gear'},
+  {key:'gearSet',label:'같은 세트 장비',now:bestSet,need:need.gearSet,unit:'개',tab:'gear'},
+ ];
+ if(need.gearUnique)items.push({key:'gearUnique',label:'유니크 이상 장비(같은 장비 7개 모아 합성)',now:uniqueGear,need:need.gearUnique,unit:'개',tab:'gear'});
+ for(const it of items)it.ok=it.now>=it.need;
+ return {chapter:ch,items,ready:items.every(it=>it.ok),missing:items.filter(it=>!it.ok).length};
+}
 // 시험용 슈퍼 계정(2026-09-24 사용자 "테스트 목적의 슈퍼 계정"): 모든 단계 성공(별 3) · 훈련 · 파츠 10종 · 친구 6마리 · 코인·보급권 넉넉히.
 // 서버 관리 API(/api/admin/test-profile)가 'qa'로 시작하는 계정에만 쓴다. copies 80 = 전설, 25 = 에픽. 주인공·무기·난이도는 그대로 둔다.
 export const TEST_ACCOUNT_RE=/^qa[a-z0-9_]{0,10}$/;

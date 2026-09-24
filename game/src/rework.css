@@ -421,3 +421,23 @@
 .sg-gear-hero>.sg-inline{min-height:0!important;padding:0!important;font-size:12px!important;margin-top:2px}
 @media(max-width:480px){.sg-gear-heading{margin-bottom:8px}.sg-gear-heading>.sg-gear-bagbtn small{display:none}.sg-gear-hero>.sg-inline{font-size:11px!important}}
 
+/* 2026-09-24 사용자 제보(폰): 세트 창 "6세트" 설명이 칩 옆이 아니라 아래 줄로 떨어짐 — 칩은 왼쪽 칸, 설명은 오른쪽 칸에서 줄바꿈(파츠·장비 규칙 창 등급 줄도 같이) */
+.sg-dialog .sg-grade-row{display:grid!important;grid-template-columns:auto minmax(0,1fr);align-items:start;column-gap:10px}
+.sg-dialog .sg-grade-row>.sg-medal,.sg-dialog .sg-grade-row>.sg-tier{justify-self:start;margin-top:1px}
+/* 어려움 준비 권장치(실패 뒤 안내 · 출동 화면 한 줄) */
+.sg-ready-icon{font-size:28px;line-height:1}
+.sg-ready{width:100%;border-collapse:collapse;margin:8px 0;font-size:13px}
+.sg-ready th{font-size:11px;color:var(--sg-sub);font-weight:800;text-align:left;padding:4px 6px;border-bottom:1.5px solid var(--sg-line)}
+.sg-ready td{padding:6px;border-bottom:1px solid #e3ece6;vertical-align:middle}
+.sg-ready td:first-child{text-align:left}
+.sg-ready td:nth-child(n+2){white-space:nowrap;text-align:center}
+.sg-ready tr.short td:last-child{color:#c2561b;font-weight:900}
+.sg-ready tr.short td:nth-child(2) b{color:#c2561b}
+.sg-ready tr.ok td:last-child{color:#268169;font-weight:900}
+.sg-ready-acts{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}
+.sg-ready-acts>button{flex:1;min-width:120px}
+.sg-dialog .sg-ready-off{display:block;margin:10px auto 0;min-height:0!important;padding:4px!important;font-size:12px!important}
+.sg-hard-line{margin:6px 0 0!important;padding:8px 10px;border-radius:12px;background:#fff4e0;border:1.5px solid #f0b85a;color:#7a4300!important;font-size:13px!important}
+.sg-hard-line.ok{background:#e8f6ec;border-color:#86c79a;color:#185849!important}
+.sg-hard-line .sg-inline{min-height:0!important;padding:0 4px!important;font-size:13px!important}
+@media(max-width:480px){.sg-ready{font-size:12px}.sg-ready td{padding:5px 4px}}

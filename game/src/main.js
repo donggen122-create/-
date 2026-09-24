@@ -1435,6 +1435,7 @@ function newRun(chapterId, modeId = "M01") {
 }
 let runStats = {};
 let starTrack = {};
+let sgHardLoss = null;   // 방금 실패한 어려움 단계(결과 화면 → 로비에서 권장치 안내)
 let pendingCollectibles = 0;     // 판 중 획득한 수집품(결과 화면에서 확정)
 
 document.getElementById("btn-start").addEventListener("click", () => sgStart(selectedChapterId).catch(e=>log(e.message)));
@@ -1449,6 +1450,8 @@ document.getElementById("btn-continue").addEventListener("click", () => {
   mode = "menu";
   sgRunProfile=null;
   bgmOn(true);   // 전투 뒤 로비로 돌아오면 테마곡을 처음부터
+  const hard=sgHardLoss;sgHardLoss=null;
+  if(hard&&!R.pendingPet(sgState.profile)&&sgUI.hardAdvice(hard))return;   // 어려움 실패: 부족한 권장치 안내(창을 닫으면 다른 안내가 이어서)
   sgMaybeGuidance();
 });
 
@@ -5567,6 +5570,7 @@ async function sgSettle(pending){
   elResultTable.innerHTML='<tr><td>잠깐만 기다려 주세요. 결과와 이용권을 확인하고 있어요.</td></tr>';
   try{
     const r=await sgPost('/play/finish',pending);sgKeepPending('result',null);sgApplyServer({...r,active:null});
+    sgHardLoss=!r.cleared&&r.reward?.difficulty==='hard'?(r.stage||null):null;   // 어려움 실패 → 로비로 돌아가면 준비 권장치 안내
     const w=r.reward,dn=R.DIFFICULTIES[w.difficulty]?.name;elResultTitle.textContent=r.cleared?'우리 마을이 반짝반짝!':'멋진 도전이었어요!';
     elResultTable.innerHTML=`<tr><td colspan="2" style="text-align:center;font-size:28px;color:#ffd16e">${'★'.repeat(w.stars)}${'☆'.repeat(3-w.stars)}${dn?`<div style="font-size:13px;color:#cfe3ee">${dn} 난이도${r.cleared?` 성공 → 별 ${w.stars}개`:''}</div>`:''}</td></tr><tr><td>코인</td><td>+${w.coins}${w.goal?' (환경 목표 +30 포함)':''}</td></tr><tr><td>보급권</td><td>+${w.gifts}${w.stageGift?.capped?' · 오늘 이 단계는 2번 다 받았어요. 다른 단계에 도전해 봐요!':w.stageGift?(w.stageGift.left?` · 오늘 이 단계 ${w.stageGift.left}번 더`:' · 오늘 이 단계 보급권은 여기까지! 다른 단계는 또 받아요'):''}</td></tr><tr><td>우정</td><td>+${w.friendship}</td></tr><tr><td>이용권</td><td>${r.charged?'1장 사용':'그대로!'} · ${r.passes.remaining}장 남음</td></tr><tr><td colspan="2"><div class="sg-settlement">${r.cleared?(w.notes.join('<br/>')||'코인으로 훈련하고 파츠 레벨을 올려 보세요.'):'실패해도 이용권은 줄지 않아요. 조금 쉬었다가 다시 도전해요.'}<br/>${R.STAGES.find(s=>s.id===r.stage).tip}</div></td></tr>`;
     for(const activity of w.partActivity||[]){
