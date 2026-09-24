@@ -94,17 +94,18 @@
       <div class="note">게임 화면이 열려 있는 학생은 30초마다 신호를 보내요. 화면을 닫거나 다른 탭으로 가면 바로 빠집니다. 파일로 받은 게임(단일 파일판)은 신호를 보내지 않아요.</div>
     </div>
 
-    <div class="panel">
-      <b>모두에게 선물 주기</b>
+    <div class="panel" id="grant-all-panel" hidden>
+      <b>모두에게 선물 주기</b> <span class="muted" style="font-size:12px">(최고 관리자만 보여요)</span>
       <div class="row">
         <label>💰 코인</label><input id="g-gold" type="number" min="0" value="0" />
         <input id="g-dust" type="hidden" value="0" />
         <label>🎟 이용권</label><input id="g-energy" type="number" min="0" max="100" value="0" />
+        <label>🎁 보급권</label><input id="g-gifts" type="number" min="0" max="100" value="0" />
         <input id="g-note" placeholder="메모(예: 1반 수업 보상)" style="width:200px" />
         <button class="primary" id="btn-grant-all">전체 지급</button>
       </div>
       <div class="note" id="event-note" style="color:#2c5aa0;font-weight:700"></div>
-      <div class="note">기본 이용권은 매일 <b>한국 시간 오전 8시, 10장</b>으로 초기화됩니다. 성공할 때만 1장 사용하며 실패는 무료입니다. 관리자 추가분은 즉시 반영되고 <b>다음 오전 8시에 만료</b>됩니다. 학생 화면은 로비에서 15초 안에 갱신됩니다. 코인은 만료되지 않습니다. 미션·선물로 이용권을 지급할 수 없습니다.</div>
+      <div class="note">기본 이용권은 매일 <b>한국 시간 오전 8시, 10장</b>으로 초기화됩니다. 성공할 때만 1장 사용하며 실패는 무료입니다. 관리자 추가분은 즉시 반영되고 <b>다음 오전 8시에 만료</b>됩니다. 학생 화면은 로비에서 15초 안에 갱신됩니다. 코인과 보급권(파츠·장비·친구 보급에 쓰는 것)은 만료되지 않습니다. 미션·선물로 이용권을 지급할 수 없습니다.</div>
     </div>
 
     <div class="row">
@@ -120,13 +121,13 @@
       <span class="muted" id="count"></span>
     </div>
     <div class="tablewrap"><table id="tbl"><thead><tr>
-      <th>아이디</th><th>가입</th><th>마지막 접속</th><th>마지막 저장</th><th>판</th><th>성공</th><th>최고 단계</th><th>계정 Lv</th><th>코인</th><th>이전 별가루</th><th>이용권</th><th>이전 선물</th><th>주인공</th><th>관리</th>
+      <th>아이디</th><th>가입</th><th>마지막 접속</th><th>마지막 저장</th><th>판</th><th>성공</th><th>최고 단계</th><th>계정 Lv</th><th>코인</th><th>보급권</th><th>이전 별가루</th><th>이용권</th><th>이전 선물</th><th>주인공</th><th>관리</th>
     </tr></thead><tbody></tbody></table></div>
     <div class="note" id="legend"></div>
-    <details class="panel"><summary>최근 관리자 지급 기록 (최대 100건)</summary><div class="tablewrap"><table><thead><tr><th>시각</th><th>아이디</th><th>추가 이용권</th><th>코인</th><th>메모</th></tr></thead><tbody id="grant-audit"></tbody></table></div><div class="note">선생님 계정으로 지급한 기록은 메모 앞에 [선생님]이 붙어요.</div></details>
+    <details class="panel"><summary>최근 관리자 지급 기록 (최대 100건)</summary><div class="tablewrap"><table><thead><tr><th>시각</th><th>아이디</th><th>추가 이용권</th><th>보급권</th><th>코인</th><th>메모</th></tr></thead><tbody id="grant-audit"></tbody></table></div><div class="note">선생님 계정으로 지급한 기록은 메모 앞에 [선생님]이 붙어요.</div></details>
     <details class="panel" id="teacher-panel" hidden><summary>선생님 계정 (관리자만 보임)</summary>
       <div class="note" id="teacher-state"></div>
-      <div class="note">선생님들은 이 주소(/admin/)에서 <b>선생님 계정</b>으로 로그인해요. 선생님 화면에는 학생 계정 <b>삭제</b>·진행 <b>초기화</b>·그림 보내기가 없고, 서버도 선생님 로그인으로 온 그 요청을 거절해요. 비번 바꾸기·잠금·선물·전체 지급·통계는 똑같이 쓸 수 있어요. 선생님 계정의 아이디·비밀번호는 Cloudflare 비밀값(TEACHER_ID·TEACHER_PW)이고, 바꾸면 이미 로그인한 선생님은 다시 로그인해야 해요.</div>
+      <div class="note">선생님들은 이 주소(/admin/)에서 <b>선생님 계정</b>으로 로그인해요. 선생님 화면에는 학생 계정 <b>삭제</b>·진행 <b>초기화</b>·그림 보내기가 없고, 서버도 선생님 로그인으로 온 그 요청을 거절해요. 비번 바꾸기·잠금·학생별 선물(코인·이용권·보급권)·통계는 똑같이 쓸 수 있어요. <b>모두에게 한 번에 주기</b>는 최고 관리자만 보이고, 서버도 선생님 로그인으로 온 전체 지급을 거절해요. 선생님 계정의 아이디·비밀번호는 Cloudflare 비밀값(TEACHER_ID·TEACHER_PW)이고, 바꾸면 이미 로그인한 선생님은 다시 로그인해야 해요.</div>
       <div class="row"><button id="btn-preview-teacher">👀 선생님 화면 미리보기</button><span class="muted" style="font-size:12px">미리보기를 끝내려면 나가기 → 관리자 계정으로 다시 로그인</span></div>
     </details>
   </section>
@@ -137,6 +138,7 @@
   <div class="row"><label style="width:60px">💰 코인</label><input id="d-gold" type="number" min="0" value="0" /></div>
   <input id="d-dust" type="hidden" value="0" />
   <div class="row"><label style="width:60px">🎟 이용권</label><input id="d-energy" type="number" min="0" max="100" value="0" /></div>
+  <div class="row"><label style="width:60px">🎁 보급권</label><input id="d-gifts" type="number" min="0" max="100" value="0" /><span class="muted" style="font-size:12px">파츠·장비·친구 보급에 써요(만료 없음)</span></div>
   <div class="row"><input id="d-note" placeholder="메모" style="width:100%" /></div>
   <div class="row" style="justify-content:flex-end"><button id="d-cancel">취소</button><button class="primary" id="d-ok">지급</button></div>
 </dialog>
@@ -158,6 +160,7 @@ function applyRole() {
   badge.hidden = !ROLE; badge.className = `role ${ROLE}`; badge.textContent = isOwner() ? "관리자" : "선생님 계정";
   $("#lnk-upload").hidden = !isOwner();
   $("#teacher-panel").hidden = !isOwner();
+  $("#grant-all-panel").hidden = !isOwner();   // 모두에게 한 번에 주기는 최고 관리자만(2026-09-24 밤 사용자)
   $("#legend").textContent = LEGEND[isOwner() ? "owner" : "teacher"];
 }
 async function loadTeacherState() {
@@ -235,7 +238,7 @@ function render() {
   const locked = USERS.filter((u) => u.locked).length;
   const cards = [["지금 접속 중", ONLINE.size, "on", "card-online"], ["계정", USERS.length], ["플레이한 학생", played], ["오늘 접속", todayN], ["총 판 수", runs], ["총 성공", clears], ["잠긴 계정", locked]];
   $("#cards").innerHTML = cards.map(([k, v, cls, id]) => `<div class="card ${cls || ""}"><div class="k">${k}</div><div class="v" ${id ? `id="${id}"` : ""}>${v.toLocaleString()}</div></div>`).join("");
-  $("#grant-audit").innerHTML = AUDIT.map((a) => `<tr><td>${fmt(a.created_at)}</td><td>${esc(USERS.find((u) => u.id === a.user_id)?.display_id || a.user_id)}</td><td>${num(a.passes)}</td><td>${num(a.gold)}</td><td>${esc(a.note)}</td></tr>`).join("") || '<tr><td colspan="5">아직 지급 기록이 없어요.</td></tr>';
+  $("#grant-audit").innerHTML = AUDIT.map((a) => `<tr><td>${fmt(a.created_at)}</td><td>${esc(USERS.find((u) => u.id === a.user_id)?.display_id || a.user_id)}</td><td>${num(a.passes)}</td><td>${num(a.gifts)}</td><td>${num(a.gold)}</td><td>${esc(a.note)}</td></tr>`).join("") || '<tr><td colspan="6">아직 지급 기록이 없어요.</td></tr>';
 
   const q = $("#search").value.trim().toLowerCase();
   const sort = $("#sort").value;
@@ -249,7 +252,7 @@ function render() {
       <td class="id"><span class="dot" ${ONLINE.has(u.id) ? "" : "hidden"}></span>${esc(u.display_id)}</td>
       <td>${fmt(u.created_at)}</td><td>${fmt(lastSeen(u))}</td><td>${fmt(u.saved_at)}</td>
       <td>${num(u.runs)}</td><td>${num(u.clears)}</td><td><b>${stageLabel(u.best_stage)}</b></td><td>${num(u.acc_level) || "-"}</td>
-      <td>${num(u.gold).toLocaleString()}</td><td>${num(u.dust)}</td><td>${num(u.passes?.baseRemaining)} + ${num(u.passes?.bonusRemaining)} 추가</td>
+      <td>${num(u.gold).toLocaleString()}</td><td>${u.gifts == null ? '-' : num(u.gifts)}</td><td>${num(u.dust)}</td><td>${num(u.passes?.baseRemaining)} + ${num(u.passes?.bonusRemaining)} 추가</td>
       <td>${num(u.pending_grants) ? `<b style="color:var(--blue)">${u.pending_grants}</b>` : ""}</td>
       <td>${u.hero === "hoya" ? "호야" : u.hero === "minji" ? "민지" : "-"}</td>
       <td class="acts">
@@ -290,10 +293,11 @@ $("#search").addEventListener("input", render);
 $("#sort").addEventListener("change", render);
 
 $("#btn-grant-all").addEventListener("click", async () => {
-  const gold = +$("#g-gold").value || 0, energy = +$("#g-energy").value || 0;
-  if (!gold && !energy) return toast("지급할 양을 입력해 주세요");
-  if (!confirm(`모든 학생(${USERS.length}명)에게 코인 ${gold} · 추가 이용권 ${energy}장을 지급할까요?`)) return;
-  try { const r = await grantSafe({ all: true, gold, passes: energy, note: $("#g-note").value }); toast(`${r.count}명에게 지급했어요`); await load(); } catch (e) { toast(e.message); }
+  if (!isOwner()) return toast("모두에게 한 번에 주기는 최고 관리자만 할 수 있어요");
+  const gold = +$("#g-gold").value || 0, energy = +$("#g-energy").value || 0, gifts = +$("#g-gifts").value || 0;
+  if (!gold && !energy && !gifts) return toast("지급할 양을 입력해 주세요");
+  if (!confirm(`모든 학생(${USERS.length}명)에게 코인 ${gold} · 추가 이용권 ${energy}장 · 보급권 ${gifts}장을 지급할까요?`)) return;
+  try { const r = await grantSafe({ all: true, gold, passes: energy, gifts, note: $("#g-note").value }); toast(`${r.count}명에게 지급했어요`); await load(); } catch (e) { toast(e.message); }
 });
 
 // 지급은 요청 번호(requestId)를 붙여 보내므로 응답이 끊겨 다시 눌러도 두 번 지급되지 않는다(Codex 개편)
@@ -329,7 +333,7 @@ $("#tbl").addEventListener("click", async (e) => {
       if (!confirm(`${name}의 캐릭터를 ${label}(으)로 바꿀까요? 첫 무료 무기는 새 캐릭터 무기로 바꿔 줘요. 장비를 더 모은 학생은 바꿀 수 없어요.`)) return;
       await api("set-hero", { id, hero: next }); toast(`${name} → ${label}`); await load();
     } else if (btn.dataset.act === "grant") {
-      grantTarget = u; $("#dlg-grant-who").textContent = name; $("#dlg-grant").showModal();
+      grantTarget = u; $("#dlg-grant-who").textContent = name; for (const k of ["#d-gold", "#d-energy", "#d-gifts"]) $(k).value = 0; $("#dlg-grant").showModal();
     } else if ((btn.dataset.act === "reset" || btn.dataset.act === "del") && !isOwner()) {
       return toast("학생 계정 삭제와 진행 초기화는 관리자만 할 수 있어요");
     } else if (btn.dataset.act === "reset") {
@@ -345,9 +349,9 @@ $("#tbl").addEventListener("click", async (e) => {
 $("#d-cancel").addEventListener("click", () => $("#dlg-grant").close());
 $("#d-ok").addEventListener("click", async () => {
   if (!grantTarget) return;
-  const gold = +$("#d-gold").value || 0, energy = +$("#d-energy").value || 0;
-  if (!gold && !energy) return toast("지급할 양을 입력해 주세요");
-  try { await grantSafe({ id: grantTarget.id, gold, passes: energy, note: $("#d-note").value }); $("#dlg-grant").close(); toast(`${grantTarget.display_id}에게 지급했어요`); await load(); }
+  const gold = +$("#d-gold").value || 0, energy = +$("#d-energy").value || 0, gifts = +$("#d-gifts").value || 0;
+  if (!gold && !energy && !gifts) return toast("지급할 양을 입력해 주세요");
+  try { await grantSafe({ id: grantTarget.id, gold, passes: energy, gifts, note: $("#d-note").value }); $("#dlg-grant").close(); toast(`${grantTarget.display_id}에게 지급했어요`); await load(); }
   catch (e) { toast(e.message); }
 });
 

@@ -234,6 +234,8 @@ async function admin(request, env, sub, method) {
     let req = request;
     if (role === "teacher" && sub === "grant-passes" && method === "POST") {   // 선생님 계정 지급은 기록 메모 앞에 [선생님]을 붙인다
       const g = await body(request);
+      // 전체(모든 학생) 지급은 최고 관리자만(2026-09-24 밤 사용자). 선생님은 학생 한 명씩만.
+      if (g.all === true || !String(g.id || "").trim()) return json({ error: "모든 학생에게 한 번에 주기는 최고 관리자만 할 수 있어요. 학생 한 명씩 선물해 주세요." }, 403);
       g.note = `[선생님] ${String(g.note || "").trim() || "추가 지급"}`.slice(0, 120);
       req = new Request(request.url, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(g) });
     }
@@ -269,7 +271,7 @@ async function admin(request, env, sub, method) {
     for (const row of rows) {
       if (row.guardian_state) {
         const profile = JSON.parse(row.guardian_state);
-        row.gold = profile.coins; row.runs = profile.runs; row.clears = profile.wins;
+        row.gold = profile.coins; row.gifts = profile.gifts ?? 0; row.runs = profile.runs; row.clears = profile.wins;
         row.hero = profile.hero; row.profile_version = profile.version; row.training = profile.training || null;
         row.parts_owned = Object.keys(profile.parts || {}).length;
         row.stages_cleared = Object.keys(profile.stages || {}).filter((k) => profile.stages[k].cleared).length;

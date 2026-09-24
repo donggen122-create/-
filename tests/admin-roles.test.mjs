@@ -104,3 +104,32 @@ test('시험용 슈퍼 계정: 관리자만, qa로 시작하는 계정만 모든
   assert.ok(p.stages.CH10.cleared && p.parts.PART_L2.copies === 80 && p.pets.length === 4 && p.petCopies.otter === 80 && p.coins === 999999 && p.testAccount);
   assert.equal(env.DB.sql.prepare("SELECT COUNT(*) c FROM guardian_profiles WHERE user_id='student1' AND state LIKE '%testAccount%'").get().c, 0);
 });
+
+test('보급권 지급: 선생님은 학생 한 명씩(보급권·코인·이용권), 모두에게 한 번에는 최고 관리자만 — 같은 요청은 두 번 지급되지 않는다', async () => {
+  const env = await makeEnv();
+  for (const id of ['학생가', '학생나']) assert.equal((await call(env, '/register', { body: { id, pw: '1234' } })).status, 200);
+  const o = (await call(env, '/admin/login', { body: OWNER })).token, t = (await call(env, '/admin/login', { body: TEACHER })).token;
+  const gifts = (id) => JSON.parse(env.DB.sql.prepare('SELECT state FROM guardian_profiles WHERE user_id=?').get(id)?.state || '{}').gifts || 0;
+  // 선생님: 모두에게 한 번에(all, 또는 아이디 없음)는 거절, 아무것도 바뀌지 않음
+  for (const body of [{ all: true, gifts: 3 }, { gifts: 3 }]) {
+    const r = await call(env, '/admin/grant-passes', { token: t, body: { requestId: uid(), note: '전체', ...body } });
+    assert.equal(r.status, 403, JSON.stringify(body)); assert.match(r.error, /최고 관리자만/);
+  }
+  assert.equal(env.DB.sql.prepare('SELECT COUNT(*) c FROM play_admin_gift_grants').get().c, 0);
+  // 선생님: 학생 한 명에게 보급권 3장(같은 요청 번호로 두 번 보내도 한 번만)
+  const req = { requestId: uid(), id: '학생가', gifts: 3, note: '발표 보상' };
+  assert.equal((await call(env, '/admin/grant-passes', { token: t, body: req })).status, 200);
+  assert.equal((await call(env, '/admin/grant-passes', { token: t, body: req })).status, 200);
+  assert.equal(gifts('학생가'), 3); assert.equal(gifts('학생나'), 0);
+  const audit = (await call(env, '/admin/passes', { token: t })).audit;
+  assert.equal(audit[0].gifts, 3); assert.equal(audit[0].passes, 0); assert.equal(audit[0].note, '[선생님] 발표 보상');
+  assert.equal((await call(env, '/admin/grant-passes', { token: t, body: { requestId: uid(), id: '학생가', gifts: 101 } })).status, 400, '보급권은 100장까지');
+  // 최고 관리자: 모두에게 보급권 2장 + 코인 50을 한 요청으로
+  const all = await call(env, '/admin/grant-passes', { token: o, body: { requestId: uid(), all: true, gifts: 2, gold: 50, note: '전체 보상' } });
+  assert.equal(all.status, 200); assert.equal(all.count, 2); assert.equal(all.gifts, 2);
+  assert.equal(gifts('학생가'), 5); assert.equal(gifts('학생나'), 2);
+  const a2 = (await call(env, '/admin/passes', { token: o })).audit.filter((a) => a.note === '전체 보상');
+  assert.equal(a2.length, 2); assert.ok(a2.every((a) => a.gifts === 2 && a.gold === 50));
+  const stats = await call(env, '/admin/stats', { token: t });
+  assert.equal(stats.users.find((u) => u.id === '학생가').gifts, 5, '학생 목록에 지금 보급권');
+});
