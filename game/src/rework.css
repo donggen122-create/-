@@ -261,12 +261,10 @@
 .sg-sup-stage:before{content:'';position:absolute;left:50%;top:calc(50% + 62px);width:130px;height:22px;margin-left:-65px;border-radius:50%;background:#1b3a4a22}
 .sg-sup:not([data-state=drop]) .sg-sup-stage:before{opacity:0;transition:opacity .3s}
 /* 상자(파츠: 선물 상자 · 장비: 푸른 상자) */
-#guardian-lobby .sg-sup-box,.sg-dialog .sg-sup-box{position:absolute;z-index:2;left:50%;top:50%;width:136px;height:130px;margin:-72px 0 0 -68px;scale:1.15;padding:0!important;min-height:0!important;border:0!important;background:none!important;box-shadow:none!important;cursor:pointer;transform-origin:50% 100%}
-.sg-sup-body{position:absolute;left:10px;right:10px;bottom:0;height:84px;border:3px solid var(--ink);border-radius:12px;background:linear-gradient(90deg,transparent 42%,var(--rib) 42%,var(--rib) 58%,transparent 58%),var(--b1);box-shadow:inset 0 -9px 0 #0000001a}
-.sg-sup-lid{position:absolute;z-index:1;left:0;right:0;top:20px;height:34px;border:3px solid var(--ink);border-radius:10px;background:linear-gradient(90deg,transparent 41%,var(--rib) 41%,var(--rib) 59%,transparent 59%),var(--b2);box-shadow:inset 0 -5px 0 #0000001a}
-.sg-sup-lid:before,.sg-sup-lid:after{content:'';position:absolute;top:-24px;width:32px;height:26px;border:3px solid var(--ink);background:var(--rib);border-radius:55% 55% 35% 35%}
-.sg-sup-lid:before{left:calc(50% - 32px);transform:rotate(-28deg);transform-origin:100% 100%}
-.sg-sup-lid:after{left:50%;transform:rotate(28deg);transform-origin:0 100%}
+#guardian-lobby .sg-sup-box,.sg-dialog .sg-sup-box{position:absolute;z-index:2;left:50%;top:50%;width:150px;height:150px;margin:-84px 0 0 -75px;scale:1.1;padding:0!important;min-height:0!important;border:0!important;background:none!important;box-shadow:none!important;cursor:pointer;transform-origin:50% 100%}
+.sg-sup-box>img{position:absolute;left:50%;bottom:0;width:100%;height:auto;transform:translateX(-50%);pointer-events:none;-webkit-user-drag:none}
+.sg-sup-box>.sg-sup-open,.sg-sup-box>.sg-sup-lidimg{opacity:0}
+.sg-sup-box>.sg-sup-lidimg{bottom:auto;top:-6px;width:104%}
 .sg-sup-tap{position:absolute;left:0;right:0;bottom:26px;text-align:center;font-weight:800!important;color:var(--sg-sub);font-size:13px!important}
 /* 빛(결과 전에는 누구나 같은 흰 빛) */
 .sg-sup-rays{position:absolute;left:50%;top:50%;width:420px;height:420px;margin:-210px 0 0 -210px;border-radius:50%;opacity:0;pointer-events:none;
@@ -290,8 +288,10 @@
 .sg-sup[data-state=drop] .sg-sup-box{animation:sg-sup-drop .55s cubic-bezier(.3,1.35,.5,1) both,sg-sup-wiggle .42s ease-in-out .62s 2}
 .sg-sup[data-state=drop] .sg-sup-tap{animation:sg-sup-blink 1s ease-in-out .5s infinite both}
 /* open: 뚜껑 펑 · 흰 빛(모든 결과 같음) */
-.sg-sup[data-state=open] .sg-sup-lid{animation:sg-sup-lid .42s ease-out forwards}
-.sg-sup[data-state=open] .sg-sup-body{animation:sg-sup-sink .42s ease-in forwards}
+.sg-sup[data-state=open] .sg-sup-closed{opacity:0}
+.sg-sup[data-state=open] .sg-sup-open{opacity:1;animation:sg-sup-sink .3s ease-in .1s forwards}
+.sg-sup[data-state=open] .sg-sup-lidimg{opacity:1;animation:sg-sup-lid .42s ease-out forwards}
+.sg-sup-gear[data-state=open] .sg-sup-open{animation:sg-sup-chest .38s cubic-bezier(.3,1.5,.5,1) forwards}
 .sg-sup[data-state=open] .sg-sup-flash{animation:sg-sup-flash .45s ease-out forwards}
 .sg-sup[data-state=open] .sg-sup-rays{animation:sg-sup-rays-in .4s ease-out forwards,sg-sup-spin 6s linear infinite}
 .sg-sup:not([data-state=drop]) .sg-sup-tap{display:none}
@@ -313,8 +313,9 @@
 @keyframes sg-sup-drop{0%{transform:translateY(-260px) scale(.9);opacity:0}60%{transform:translateY(0) scaleY(.82) scaleX(1.12);opacity:1}80%{transform:translateY(-14px) scale(1)}100%{transform:none}}
 @keyframes sg-sup-wiggle{0%,100%{transform:rotate(0)}25%{transform:rotate(-7deg)}75%{transform:rotate(7deg)}}
 @keyframes sg-sup-blink{0%,100%{opacity:.45}50%{opacity:1}}
-@keyframes sg-sup-lid{to{transform:translateY(-150px) rotate(-38deg);opacity:0}}
-@keyframes sg-sup-sink{to{transform:translateY(30px) scale(.85);opacity:0}}
+@keyframes sg-sup-lid{to{transform:translate(-50%,-150px) rotate(-38deg);opacity:0}}
+@keyframes sg-sup-chest{0%{transform:translateX(-50%) scale(.92)}45%{transform:translateX(-50%) scale(1.12)}100%{transform:translateX(-50%) scale(1.05) translateY(10px);opacity:0}}
+@keyframes sg-sup-sink{to{transform:translateX(-50%) translateY(30px) scale(.85);opacity:0}}
 @keyframes sg-sup-flash{0%{opacity:.95;transform:scale(.4)}100%{opacity:0;transform:scale(7)}}
 @keyframes sg-sup-rays-in{from{opacity:0}to{opacity:.85}}
 @keyframes sg-sup-spin{to{transform:rotate(360deg)}}
@@ -337,3 +338,10 @@
  .sg-sup-card h2{font-size:18px!important}
  .sg-sup-card p{font-size:13px}
 }
+/* 장비 아이콘 그림(2026-09-24 사용자 Gemini): 흰 칸 + 세트 색 테두리, 그림은 칸의 86% */
+.sg-gear-icon.has-art{background:#fff;border:2px solid var(--set);box-shadow:inset 0 -3px 0 #0000000f;overflow:hidden}
+.sg-gear-icon.has-art>img{width:86%;height:86%;object-fit:contain}
+
+.sg-unowned .sg-gear-icon.has-art>img{filter:grayscale(1);opacity:.5}
+/* 창이 열리면 첫 단추(상자)에 초점이 가서 청록 테두리가 보이던 것 — 상자는 테두리 없이(누르면 열림은 그대로) */
+#guardian-lobby .sg-sup-box:focus-visible,.sg-dialog .sg-sup-box:focus-visible{outline:none}

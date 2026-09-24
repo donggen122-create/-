@@ -25,14 +25,14 @@ const partOptions=(p,preferUsed=false)=>entries(R.PARTS).sort(([ai,a],[bi,b])=>N
 // 기본 무기는 근거리·원거리만(무기 원소 설정은 2026-09-23에 없앰). 난이도는 쉬움 ★ · 보통 ★★ · 어려움 ★★★.
 const weaponHelp=(mode,hero)=>`<b>${mode==='ranged'?'원거리':'근거리'} 기본 무기</b><span>${mode==='ranged'?(hero==='minji'?'피구공을 던져 떨어진 적을 공격해요.':'배트로 야구공을 쳐서 떨어진 적을 공격해요.'):'가까운 적을 넓게 휘둘러 공격해요.'} 원소 스킬은 판 안에서 카드로 골라요.</span>`;
 // ---- 장비(2026-09-24, docs/34) ----
-// 아이콘: 사용자 Gemini 그림이 오기 전까지 칸 모양 임시 그림(세트 색 바탕). 그림이 오면 GEAR_ART에 id를 넣으면 assets/sprites/gear/gear_<id>.png를 쓴다.
-const GEAR_ART=new Set([]);
+// 아이콘: 사용자 Gemini 그림(2026-09-24, game/tools/cut_gear.py → assets/sprites/gear/gear_<id>.png) 24개. GEAR_ART에 없는 id는 칸 모양 임시 그림(세트 색 바탕).
+const GEAR_ART=new Set(Object.keys(R.GEAR));
 const GEAR_PATHS={helm:'<path d="M4 15a8 8 0 0 1 16 0z"/><rect x="2" y="15" width="20" height="3" rx="1.5"/>',armor:'<path d="M8 3 3 6l2 5 3-1v11h8V10l3 1 2-5-5-3a4 4 0 0 1-8 0z"/>',
  shoes:'<path d="M3 16V8h5l2 4 8 1.5a3 3 0 0 1 3 2.5z"/><rect x="3" y="17" width="18" height="3" rx="1.5"/>',gloves:'<path d="M7 21v-7l-3-3 1.5-1.5L8 12V5.5a1.5 1.5 0 0 1 3 0V11V4.5a1.5 1.5 0 0 1 3 0V11V6a1.5 1.5 0 0 1 3 0v8a6 6 0 0 1-2 4.5V21z"/>',
  necklace:'<path d="M5 3c0 6 3 9 7 9s7-3 7-9" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="12" cy="16" r="4"/>',ranged:'<circle cx="12" cy="12" r="8"/><path d="M8 5.5c2.6 3.4 2.6 9.6 0 13M16 5.5c-2.6 3.4-2.6 9.6 0 13" fill="none" stroke="#0005" stroke-width="1.4"/>',
  melee:'<path d="M20 2v3l-9 9 2 2-1.5 1.5-2-2-3 3L5 17l3-3-2-2L7.5 10.5l2 2 9-9z"/>'};
 const gearSvg=key=>`<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">${GEAR_PATHS[key]}</svg>`;
-export const gearIcon=(id,cls='')=>{const it=R.GEAR[id];if(!it)return '';if(GEAR_ART.has(id))return `<img class="sg-icon sg-gear-art ${cls}" src="./assets/sprites/gear/${esc(it.icon)}.png" alt="" />`;return `<span class="sg-gear-icon ${cls}" style="--set:${it.color}">${gearSvg(it.slot==='weapon'?it.type:it.slot)}</span>`;};
+export const gearIcon=(id,cls='')=>{const it=R.GEAR[id];if(!it)return '';if(GEAR_ART.has(id))return `<span class="sg-gear-icon has-art ${cls}" style="--set:${it.color}"><img src="./assets/sprites/gear/${esc(it.icon)}.png" alt="" loading="lazy" /></span>`;return `<span class="sg-gear-icon ${cls}" style="--set:${it.color}">${gearSvg(it.slot==='weapon'?it.type:it.slot)}</span>`;};
 const slotIcon=s=>`<span class="sg-gear-icon sg-gear-empty">${gearSvg(s==='weapon'?'melee':s)}</span>`;
 const GEAR_STAT={critPct:'치명타 확률',hpPct:'최대 체력',speedPct:'이동 속도',intervalPct:'공격 간격',dmgPct:'모든 피해',weaponDmgPct:'기본 무기 피해',weaponRangePct:'기본 무기 사거리',weaponArcPct:'휘두르기 범위',takenPct:'받는 피해',regenPct:'초당 체력 회복',critDmgPct:'치명타 피해',searchRangePct:'스킬이 적 찾는 거리',contactCapPct:'부딪혀 잃는 체력 상한'};
 const pctText=v=>{const x=Math.round(v*1000)/10;return `${x>0?'+':''}${x}%`;};
@@ -44,6 +44,9 @@ const typeName=t=>t==='ranged'?'원거리':'근거리';
 const heroName=h=>h==='minji'?'민지':'호야';
 // 보급 결과 등급 색(노말 회색 · 레어 파랑 · 유니크 보라 · 에픽 주황 · 전설 금색) — 결과가 보인 뒤에만 쓴다
 const SUPPLY_COLORS=['#9aa8b1','#4f95d6','#9a6bd6','#ec8a3a','#e0b53c'];
+// 보급 상자 그림(사용자 Gemini 2026-09-24, cut_gear.py): 파츠 = 선물 상자(닫힘·뚜껑·열림), 장비 = 보물 상자(닫힘·열림). 첫 보급 때 비어 보이지 않게 미리 불러 둔다.
+const SUPPLY_BOX=(box,kind)=>`./assets/sprites/ui/supply_${box==='gear'?'gear':'part'}_${kind}.png`;
+if(typeof Image!=='undefined')for(const b of ['part','gear'])for(const k of ['closed','open','lid'])if(!(b==='gear'&&k==='lid'))new Image().src=SUPPLY_BOX(b,k);
 const starText=n=>'★'.repeat(Math.max(0,Math.min(3,n)));
 const difficultyHelp=id=>{const d=R.DIFFICULTIES[id]||R.DIFFICULTIES.easy;return `<b>${esc(d.name)} ${starText(d.stars)}</b><span>${esc(d.desc)}</span>`;};
 
@@ -166,7 +169,7 @@ export class GuardianUI {
       return `<i style="--x:${Math.round(Math.cos(a)*d)}px;--y:${Math.round(Math.sin(a)*d*.8-50)}px;--r:${Math.round(Math.random()*720-360)}deg;--c:${pal[i%pal.length]};--d:${Math.round(Math.random()*140)}ms;--s:${(.6+Math.random()*.7).toFixed(2)}"></i>`;}).join('');
     this.openDialog(`<div class="sg-sup sg-sup-${box} sg-sup-lv${lv}${g>=4?' sg-sup-legend':''}" data-state="${fast?'party':'drop'}" style="--gc:${SUPPLY_COLORS[g]}"><div class="sg-sup-stage">
       <div class="sg-sup-rays"></div><div class="sg-sup-glow"></div>
-      ${noBox?'':`<button class="sg-sup-box" aria-label="${esc(label)} 상자 열기"><span class="sg-sup-lid"></span><span class="sg-sup-body"></span></button><small class="sg-sup-tap">${esc(label)} 상자 · 누르면 바로 열려요</small>`}
+      ${noBox?'':`<button class="sg-sup-box" aria-label="${esc(label)} 상자 열기"><img class="sg-sup-closed" src="${SUPPLY_BOX(box,'closed')}" alt=""/><img class="sg-sup-open" src="${SUPPLY_BOX(box,'open')}" alt=""/>${box==='part'?`<img class="sg-sup-lidimg" src="${SUPPLY_BOX(box,'lid')}" alt=""/>`:''}</button><small class="sg-sup-tap">${esc(label)} 상자 · 누르면 바로 열려요</small>`}
       <div class="sg-sup-flash"></div><div class="sg-sup-card sg-grade-${g}">${front}</div>${banner?`<div class="sg-sup-banner">${esc(banner)}</div>`:''}<div class="sg-sup-confetti">${conf}</div>
     </div><div class="sg-flip-actions">${noBox?'':skip?'<button class="sg-inline" data-do="flip-on">상자 연출 다시 켜기</button>':'<button data-do="flip-skip">건너뛰기</button>'}<button class="sg-primary" data-close>확인</button></div></div>`);
     const root=this.dialog.querySelector('.sg-sup'),timers=[],sfx=k=>{try{this.c.sfx?.(k);}catch(e){}};
