@@ -170,3 +170,12 @@
 .sg-theme-2 .sg-chapter-art.clean{background:linear-gradient(180deg,#ffffff00,#ffffff33),url('../assets/sprites/t2/card_clean.jpg') center/cover!important}
 .sg-theme-2 .sg-chapter-art>span:last-child{color:#fff!important;text-shadow:0 1px 3px #000c}
 .sg-theme-2 .sg-stage>img{filter:drop-shadow(0 2px 0 #0002)}
+/* 2026-09-24 사용자 제보(폰, 잠긴 2장): 잠긴 단계 카드가 반투명(버튼 disabled .58)이라 뒤의 길(선)이 카드 그림 위로 비쳤다.
+   카드는 불투명하게 두고 안의 내용만 옅게, 길은 카드 사이 짧은 조각으로(폰에서 옆으로 밀어도 끊기지 않게). */
+#guardian-lobby .sg-adventure .sg-stage:disabled{opacity:1}
+#guardian-lobby .sg-adventure .sg-stage:disabled>*{opacity:.55}
+.sg-adventure .sg-stage-map{--gap:14px;gap:var(--gap)}
+.sg-adventure .sg-stage-map:before{display:none}
+.sg-adventure .sg-stage:not(:last-child):after{content:'';position:absolute;top:50%;left:100%;width:calc(var(--gap) + 4px);margin-left:-2px;border-top:8px dashed var(--t-path);pointer-events:none}
+.sg-theme-2 .sg-stage:not(:last-child):after{border-top:10px solid var(--t-path);box-shadow:0 3px 0 #6f687d}
+@media(max-width:760px){.sg-adventure .sg-stage-map{--gap:7px}}
