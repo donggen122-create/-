@@ -55,7 +55,7 @@ export function drawElementScene(ctx, { shots, fields, effects, orbits, mines, b
       ctx.save(); ctx.globalAlpha = .24 * fade; ctx.fillStyle = c; ctx.beginPath(); ctx.ellipse(s.x, s.y, f.r, f.r * .55, 0, 0, TAU); ctx.fill(); ctx.restore();
     } else if (f.kind === 'storm') {
       if (ground) { glow(ctx, s.x, s.y, f.r, c, .25 * fade); ctx.save(); ctx.globalAlpha = .18 * fade; ctx.fillStyle = c; ctx.beginPath(); ctx.ellipse(s.x, s.y, f.r, f.r * .6, 0, 0, TAU); ctx.fill(); ctx.restore(); }
-      if (air) img(ctx, 'lightning_storm', s.x, s.y - 2.6 * U + Math.sin(clock * 3) * 4, f.r * 2.4, { alpha: fade });
+      if (air) img(ctx, 'lightning_storm', s.x, s.y - 2.6 * U + Math.sin(clock * 3) * 4, f.r * 2, { alpha: fade * (nearHero(f.x, f.y - 2.6 * U, f.r * .8) ? .4 : 1) });
     }
   }
   // 지뢰
@@ -111,38 +111,41 @@ export function drawElementScene(ctx, { shots, fields, effects, orbits, mines, b
   // 벌
   for (const b of bees) {
     const s = toScreen(b.x, b.y), flip = player && b.x < player.x - 4;
-    img(ctx, cycle(['lightning_bee_1', 'lightning_bee_2'], b.wing * 16), s.x, s.y + Math.sin(b.wing * 6) * 3, .95 * U, { flip });
+    img(ctx, cycle(['lightning_bee_1', 'lightning_bee_2'], b.wing * 16), s.x, s.y + Math.sin(b.wing * 6) * 3, .95 * U, { flip, alpha: nearHero(b.x, b.y, .45 * U) ? .5 : 1 });   // 주인공 몸 위를 지나는 벌은 반투명(2026-09-24 효과 점검)
   }
   // 이펙트(폭발·튀김·번개…). 2026-09-23: 크기 ×1.3, 충격파 고리 + 불꽃 파편(sparks)으로 "펑펑" 느낌
   // 2026-09-23 저녁: 주인공 몸과 겹치는 이펙트는 반투명(A=0.5) — "이펙트가 캐릭터를 가린다"(사용자)
+  // 2026-09-24 효과 점검(사용자 "과하거나 화면을 가리는 경우", tools/qa/fx-audit.py): 그림이 실제 맞는 범위보다 최대 2배까지 커지던 것을
+  //  맞는 범위 정도로(커지기 .85→1.4배 → .8→1.15배), 빛 번짐은 반지름 1.5~1.9배 → 1.1~1.2배·더 옅게, 흰 번쩍임은 작고 옅게, 하늘 구름은 주인공 위면 옅게.
   for (const e of effects) {
-    const s = toScreen(e.x, e.y), c = COLORS[e.element] || '#fff', p = 1 - e.life / e.maxLife, fade = 1 - p * p, grow = .85 + .55 * p;
-    const A = nearHero(e.x, e.y, e.r * 1.2) ? .5 : 1;
+    const s = toScreen(e.x, e.y), c = COLORS[e.element] || '#fff', p = 1 - e.life / e.maxLife, fade = 1 - p * p, grow = .8 + .35 * p;
+    const A = nearHero(e.x, e.y, e.r * 1.2) ? .5 : 1, skyA = (dy) => nearHero(e.x, e.y + dy, 1.2 * U) ? .4 : 1;
     ctx.save(); ctx.globalAlpha = A;
     switch (e.kind) {
       case 'sparks': {   // 사방으로 튀는 밝은 파편 + 바깥으로 퍼지는 충격파 고리
         ctx.save(); ctx.globalCompositeOperation = 'lighter'; ctx.strokeStyle = c; ctx.lineCap = 'round';
-        for (let i = 0; i < 10; i++) { const a = i / 10 * TAU + (e.x * .01), r0 = e.r * (.3 + p * 1.1), r1 = r0 + e.r * .35 * (1 - p); ctx.globalAlpha = A * fade * .9; ctx.lineWidth = 3 * (1 - p) + 1; ctx.beginPath(); ctx.moveTo(s.x + Math.cos(a) * r0, s.y + Math.sin(a) * r0 * .7); ctx.lineTo(s.x + Math.cos(a) * r1, s.y + Math.sin(a) * r1 * .7); ctx.stroke(); }
-        ctx.globalAlpha = A * fade * .6; ctx.lineWidth = 4 * (1 - p) + 1; ctx.strokeStyle = '#ffffff'; ctx.beginPath(); ctx.ellipse(s.x, s.y, e.r * (.4 + p * 1.2), e.r * (.4 + p * 1.2) * .7, 0, 0, TAU); ctx.stroke();
+        for (let i = 0; i < 10; i++) { const a = i / 10 * TAU + (e.x * .01), r0 = e.r * (.3 + p * .8), r1 = r0 + e.r * .3 * (1 - p); ctx.globalAlpha = A * fade * .9; ctx.lineWidth = 3 * (1 - p) + 1; ctx.beginPath(); ctx.moveTo(s.x + Math.cos(a) * r0, s.y + Math.sin(a) * r0 * .7); ctx.lineTo(s.x + Math.cos(a) * r1, s.y + Math.sin(a) * r1 * .7); ctx.stroke(); }
+        // 충격파 고리: 맞는 범위(반지름 e.r)까지만 퍼진다(2026-09-24 효과 점검 — 전에는 1.6배까지)
+        ctx.globalAlpha = A * fade * .45; ctx.lineWidth = 3.5 * (1 - p) + 1; ctx.strokeStyle = '#ffffff'; ctx.beginPath(); ctx.ellipse(s.x, s.y, e.r * (.35 + p * .7), e.r * (.35 + p * .7) * .7, 0, 0, TAU); ctx.stroke();
         ctx.restore(); break;
       }
-      case 'boom': glow(ctx, s.x, s.y, e.r * 1.5, '#ffb347', .7 * fade); if (p < .15) { ctx.save(); ctx.globalAlpha = A * (1 - p / .15) * .8; ctx.fillStyle = '#fff'; ctx.beginPath(); ctx.arc(s.x, s.y, e.r * .9, 0, TAU); ctx.fill(); ctx.restore(); } img(ctx, frame(['fire_boom_1', 'fire_boom_2', 'fire_boom_3'], p), s.x, s.y, e.r * 2.4 * grow, { alpha: .9 * fade }); break;
-      case 'fwork': glow(ctx, s.x, s.y, e.r * 1.6, '#ffe36a', .7 * fade); img(ctx, frame(['fire_fwork_1', 'fire_fwork_2', 'fire_fwork_3'], p), s.x, s.y, e.r * 2.5 * grow, { alpha: .9 * fade }); break;
-      case 'splashfire': glow(ctx, s.x, s.y, e.r * 1.3, '#ffb347', .5 * fade); img(ctx, frame(['fire_puddle_2', 'fire_puddle_3'], p), s.x, s.y, e.r * 2.1 * grow, { alpha: .85 * fade, anchorY: .7 }); break;
-      case 'splash': glow(ctx, s.x, s.y, e.r * 1.2, c, .4 * fade); img(ctx, frame(['water_splash_1', 'water_splash_2', 'water_splash_3'], p), s.x, s.y, e.r * 2.6 * grow, { alpha: fade, anchorY: .7 }); break;
-      case 'ksplash': glow(ctx, s.x, s.y, e.r * 1.3, c, .5 * fade); img(ctx, frame(['water_ksplash_1', 'water_ksplash_2', 'water_ksplash_3'], p), s.x, s.y, e.r * 2.6 * grow, { alpha: .9 * fade, anchorY: .7 }); break;
+      case 'boom': glow(ctx, s.x, s.y, e.r * 1.15, '#ffb347', .5 * fade); if (p < .12) { ctx.save(); ctx.globalAlpha = A * (1 - p / .12) * .5; ctx.fillStyle = '#fff'; ctx.beginPath(); ctx.arc(s.x, s.y, e.r * .55, 0, TAU); ctx.fill(); ctx.restore(); } img(ctx, frame(['fire_boom_1', 'fire_boom_2', 'fire_boom_3'], p), s.x, s.y, e.r * 2.4 * grow, { alpha: .9 * fade }); break;
+      case 'fwork': glow(ctx, s.x, s.y, e.r * 1.2, '#ffe36a', .5 * fade); img(ctx, frame(['fire_fwork_1', 'fire_fwork_2', 'fire_fwork_3'], p), s.x, s.y, e.r * 2.5 * grow, { alpha: .9 * fade }); break;
+      case 'splashfire': glow(ctx, s.x, s.y, e.r * 1.1, '#ffb347', .4 * fade); img(ctx, frame(['fire_puddle_2', 'fire_puddle_3'], p), s.x, s.y, e.r * 2.1 * grow, { alpha: .85 * fade, anchorY: .7 }); break;
+      case 'splash': glow(ctx, s.x, s.y, e.r * 1.05, c, .3 * fade); img(ctx, frame(['water_splash_1', 'water_splash_2', 'water_splash_3'], p), s.x, s.y, e.r * 2.6 * grow, { alpha: fade, anchorY: .7 }); break;
+      case 'ksplash': glow(ctx, s.x, s.y, e.r * 1.1, c, .35 * fade); img(ctx, frame(['water_ksplash_1', 'water_ksplash_2', 'water_ksplash_3'], p), s.x, s.y, e.r * 2.6 * grow, { alpha: .9 * fade, anchorY: .7 }); break;
       case 'spray': glow(ctx, s.x, s.y, e.r, c, .4 * fade); img(ctx, frame(['water_spray_1', 'water_spray_2'], p), s.x, s.y, e.r * 2.6 * grow, { alpha: fade }); break;
       case 'rspray': glow(ctx, s.x, s.y, e.r, c, .5 * fade); img(ctx, frame(['water_rspray_1', 'water_rspray_2'], p), s.x, s.y, e.r * 2.8 * grow, { alpha: fade }); break;
       case 'dust': img(ctx, frame(['earth_dust_1', 'earth_dust_2'], p), s.x, s.y, e.r * 2.8 * grow, { alpha: fade }); break;
-      case 'dirt': glow(ctx, s.x, s.y, e.r * 1.2, '#e2b06a', .5 * fade); img(ctx, frame(['earth_dirt_1', 'earth_dirt_2'], p), s.x, s.y, e.r * 2.8 * grow, { alpha: fade, anchorY: .7 }); break;
-      case 'bigdirt': glow(ctx, s.x, s.y, e.r * 1.3, '#e2b06a', .6 * fade); img(ctx, frame(['earth_bigdirt_1', 'earth_bigdirt_2'], p), s.x, s.y, e.r * 2.6 * grow, { alpha: .9 * fade, anchorY: .7 }); break;
+      case 'dirt': glow(ctx, s.x, s.y, e.r * 1.05, '#e2b06a', .35 * fade); img(ctx, frame(['earth_dirt_1', 'earth_dirt_2'], p), s.x, s.y, e.r * 2.8 * grow, { alpha: fade, anchorY: .7 }); break;
+      case 'bigdirt': glow(ctx, s.x, s.y, e.r * 1.1, '#e2b06a', .4 * fade); img(ctx, frame(['earth_bigdirt_1', 'earth_bigdirt_2'], p), s.x, s.y, e.r * 2.6 * grow, { alpha: .9 * fade, anchorY: .7 }); break;
       case 'crack': img(ctx, 'earth_crack', s.x, s.y, e.r * 3, { alpha: fade }); break;
       case 'chainring': img(ctx, 'earth_chain_ring', s.x, s.y, e.r * 2.2 * (.6 + .7 * p), { alpha: fade }); break;
-      case 'cloudmark': ctx.save(); ctx.globalAlpha = A * .3 * Math.min(1, p * 2); ctx.fillStyle = c; ctx.beginPath(); ctx.ellipse(s.x, s.y, e.r * 1.4, e.r * .85, 0, 0, TAU); ctx.fill(); ctx.restore(); img(ctx, 'lightning_cloud', s.x, s.y - 2.4 * U + p * .3 * U, 2.4 * U, { alpha: Math.min(1, p * 3) }); break;
-      case 'bolt': glow(ctx, s.x, s.y, e.r * 1.9, '#fff1a0', .9 * fade); if (p < .2) { ctx.save(); ctx.globalAlpha = A * (1 - p / .2) * .7; ctx.fillStyle = '#fff'; ctx.beginPath(); ctx.arc(s.x, s.y, e.r, 0, TAU); ctx.fill(); ctx.restore(); } img(ctx, frame(['lightning_bolt_1', 'lightning_bolt_2'], p), s.x, s.y - 1.5 * U, 1.8 * U, { h: 3.6 * U, alpha: fade }); img(ctx, 'lightning_flash', s.x, s.y, e.r * 2.8 * grow, { alpha: fade, anchorY: .7 }); img(ctx, 'lightning_cloud', s.x, s.y - 3 * U, 2.4 * U, { alpha: fade * .9 }); break;
-      case 'tbolt': glow(ctx, s.x, s.y, e.r * 1.8, '#fff1a0', .9 * fade); img(ctx, frame(['lightning_tbolt_1', 'lightning_tbolt_2'], p), s.x, s.y - 1.4 * U, 2.6 * U, { h: 3.4 * U, alpha: fade }); img(ctx, 'lightning_bigflash', s.x, s.y, e.r * 2.6 * grow, { alpha: fade }); break;
+      case 'cloudmark': ctx.save(); ctx.globalAlpha = A * .3 * Math.min(1, p * 2); ctx.fillStyle = c; ctx.beginPath(); ctx.ellipse(s.x, s.y, e.r * 1.1, e.r * .67, 0, 0, TAU); ctx.fill(); ctx.restore(); img(ctx, 'lightning_cloud', s.x, s.y - 2.4 * U + p * .3 * U, 2.4 * U, { alpha: Math.min(1, p * 3) * skyA(-2.4 * U) / A }); break;
+      case 'bolt': glow(ctx, s.x, s.y, e.r * 1.2, '#fff1a0', .55 * fade); if (p < .15) { ctx.save(); ctx.globalAlpha = A * (1 - p / .15) * .45; ctx.fillStyle = '#fff'; ctx.beginPath(); ctx.arc(s.x, s.y, e.r * .55, 0, TAU); ctx.fill(); ctx.restore(); } img(ctx, frame(['lightning_bolt_1', 'lightning_bolt_2'], p), s.x, s.y - 1.5 * U, 1.8 * U, { h: 3.6 * U, alpha: fade }); img(ctx, 'lightning_flash', s.x, s.y, e.r * 2.4 * grow, { alpha: fade, anchorY: .7 }); img(ctx, 'lightning_cloud', s.x, s.y - 3 * U, 2.4 * U, { alpha: fade * .9 * skyA(-3 * U) / A }); break;
+      case 'tbolt': glow(ctx, s.x, s.y, e.r * 1.2, '#fff1a0', .55 * fade); img(ctx, frame(['lightning_tbolt_1', 'lightning_tbolt_2'], p), s.x, s.y - 1.4 * U, 2.6 * U, { h: 3.4 * U, alpha: fade }); img(ctx, 'lightning_bigflash', s.x, s.y, e.r * 2 * grow, { alpha: fade }); break;
       case 'spark': img(ctx, 'lightning_spark', s.x, s.y, e.r * 2.4 * grow, { alpha: fade, angle: p * 2 }); break;
-      case 'bigburst': glow(ctx, s.x, s.y, e.r * 1.6, '#ffe36a', .7 * fade); img(ctx, 'lightning_bigburst', s.x, s.y, e.r * 2.8 * grow, { alpha: fade, angle: p }); break;
+      case 'bigburst': glow(ctx, s.x, s.y, e.r * 1.2, '#ffe36a', .5 * fade); img(ctx, 'lightning_bigburst', s.x, s.y, e.r * 2.8 * grow, { alpha: fade, angle: p }); break;
       case 'swirl': img(ctx, 'wind_swirl', s.x, s.y, e.r * 2.4 * grow, { alpha: fade, angle: p * 4 }); break;
       case 'windring': img(ctx, 'wind_ring', s.x, s.y, e.r * 2.2 * (.5 + .8 * p), { alpha: fade, h: e.r * 1.4 * (.5 + .8 * p) }); break;
       case 'pull': { const a = toScreen(e.x0, e.y0); ctx.save(); ctx.globalAlpha = A * fade; ctx.strokeStyle = c; ctx.lineWidth = 3; ctx.setLineDash([8, 6]); ctx.beginPath(); ctx.moveTo(a.x, a.y); ctx.lineTo(s.x, s.y); ctx.stroke(); ctx.restore(); break; }

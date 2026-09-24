@@ -179,7 +179,7 @@ async function api(request, env, url) {
 // TEACHER_ID·TEACHER_PW = 선생님 계정 로그인(같은 관리 페이지, 학생 계정 삭제·진행 초기화·그림 보내기 없음 — 2026-09-23 사용자 요청),
 // ADMIN_KEY = 스크립트용 열쇠(X-Admin-Key) 겸 로그인 토큰 서명 키. 넣는 법: `npx wrangler secret bulk <json>`. 값은 문서에 적지 않는다.
 // 아이디가 같아도 된다: 비밀번호가 관리자 것이면 관리자, 선생님 것이면 선생님으로 들어간다.
-const TEACHER_BLOCKED = new Set(["delete", "reset-save", "migrate-v1", "migrate-v2", "config", "as-teacher"]);   // + upload/*
+const TEACHER_BLOCKED = new Set(["delete", "reset-save", "migrate-v1", "migrate-v2", "config", "as-teacher", "test-profile"]);   // test-profile: 시험용 슈퍼 계정(관리자만)   // + upload/*
 async function admin(request, env, sub, method) {
   if (!env.ADMIN_KEY) return json({ error: "관리자 열쇠가 아직 설정되지 않았어요." }, 503);
   const addr = ip(request);
@@ -229,7 +229,7 @@ async function admin(request, env, sub, method) {
 
   await ensureGuardian(env);
   // Codex 개편: 이용권 현황·지급 기록(passes), 이용권·코인 지급(grant-passes, requestId로 중복 방지), 표 만들기(migrate-v1)
-  if (["passes", "grant-passes", "migrate-v1", "migrate-v2"].includes(sub)) {
+  if (["passes", "grant-passes", "migrate-v1", "migrate-v2", "test-profile"].includes(sub)) {
     await ensureGuardian(env);
     let req = request;
     if (role === "teacher" && sub === "grant-passes" && method === "POST") {   // 선생님 계정 지급은 기록 메모 앞에 [선생님]을 붙인다

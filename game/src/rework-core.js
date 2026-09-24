@@ -131,6 +131,18 @@ export function supportValue(id,lv){const s=SUPPORTS[id];return s?s.values[clamp
 // 훈련 효과(공격·체력 단계마다 +3%, 이동 속도 31단계까지 0.5%씩 그 뒤 0.1%씩 → 100단계 +21.9%)
 export function trainingGain(stat,level){const n=Math.max(1,Math.floor(Number(level)||1));return stat==='speed'?Math.min(.15,(n-1)*.005)+Math.max(0,n-31)*.001:(n-1)*.03;}
 export function bonuses(p){return {atkPct:trainingGain('attack',p.training.attack),hpPct:trainingGain('hp',p.training.hp)+(rainbowSet(p)?.05:0),speedPct:trainingGain('speed',p.training.speed),bossDmgPct:0,areaPct:0};}
+// 시험용 슈퍼 계정(2026-09-24 사용자 "테스트 목적의 슈퍼 계정"): 모든 단계 성공(별 3) · 훈련 · 파츠 10종 · 친구 6마리 · 코인·보급권 넉넉히.
+// 서버 관리 API(/api/admin/test-profile)가 'qa'로 시작하는 계정에만 쓴다. copies 80 = 전설, 25 = 에픽. 주인공·무기·난이도는 그대로 둔다.
+export const TEST_ACCOUNT_RE=/^qa[a-z0-9_]{0,10}$/;
+export function superTestProfile(base,{training=100,copies=80,level=10}={}){
+ const p=clone(base||freshProfile()),t=clampInt(training,1,TRAINING_MAX);
+ p.training={attack:t,hp:t,speed:t};p.coins=999999;p.gifts=99;
+ for(const s of STAGES)p.stages[s.id]={...(p.stages[s.id]||{}),cleared:true,stars:3};
+ p.parts=Object.fromEntries(Object.keys(PARTS).map(id=>[id,{copies:clampInt(copies,1,LEGEND_COPIES),level:clampInt(level,1,10)}]));
+ p.equippedParts=Object.keys(PARTS).slice(0,3);p.pets=Object.keys(PETS);p.activePet=p.activePet&&PETS[p.activePet]?p.activePet:'otter';p.friendship=28;
+ p.milestones={...(p.milestones||{}),firstPart:true,firstPet:true,bossPet:true};p.testAccount=true;
+ return p;
+}
 // 개수 상한 없음(2차): 금 뒤에 남는 개수도 그대로 쌓는다. 금 파츠는 고르는 목록·원소 보급에서 빠지므로 "코인 60개" 낭비가 없다.
 export function addPart(p,id,qty=1){
  if(!own(PARTS,id))throw new Error('없는 파츠예요.');

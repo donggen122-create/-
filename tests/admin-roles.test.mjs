@@ -90,3 +90,17 @@ test('선생님 비밀번호 10번 틀리면 선생님 로그인만 15분 잠김
   const owner = await call(env, '/admin/login', { body: OWNER });
   assert.equal(owner.status, 200); assert.equal(owner.role, 'owner');
 });
+
+test('시험용 슈퍼 계정: 관리자만, qa로 시작하는 계정만 모든 단계·훈련·파츠를 채운다(학생 계정은 거절)', async () => {
+  const env = await makeEnv();
+  for (const id of ['qasuper', 'student1']) assert.equal((await call(env, '/register', { body: { id, pw: 'pw-1234' } })).status, 200);
+  const owner = (await call(env, '/admin/login', { body: OWNER })).token, teacher = (await call(env, '/admin/login', { body: TEACHER })).token;
+  assert.equal((await call(env, '/admin/test-profile', { token: teacher, body: { id: 'qasuper' } })).status, 403, '선생님 계정은 못 한다');
+  assert.equal((await call(env, '/admin/test-profile', { token: owner, body: { id: 'student1' } })).status, 400, '학생 계정은 절대 바꾸지 않는다');
+  assert.equal((await call(env, '/admin/test-profile', { token: owner, body: { id: 'qanobody' } })).status, 404);
+  const r = await call(env, '/admin/test-profile', { token: owner, body: { id: 'qasuper' } });
+  assert.equal(r.status, 200); assert.equal(r.stages, 10); assert.equal(r.parts, 10); assert.deepEqual(r.training, { attack: 100, hp: 100, speed: 100 });
+  const row = env.DB.sql.prepare("SELECT state FROM guardian_profiles WHERE user_id='qasuper'").get(), p = JSON.parse(row.state);
+  assert.ok(p.stages.CH10.cleared && p.parts.PART_L2.copies === 80 && p.pets.length === 6 && p.coins === 999999 && p.testAccount);
+  assert.equal(env.DB.sql.prepare("SELECT COUNT(*) c FROM guardian_profiles WHERE user_id='student1' AND state LIKE '%testAccount%'").get().c, 0);
+});

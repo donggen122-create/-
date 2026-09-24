@@ -89,9 +89,37 @@ function resize() {
   ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
   ctx.imageSmoothingEnabled = false;
 }
-window.addEventListener("resize", resize);
-window.addEventListener("orientationchange", () => setTimeout(resize, 100));
-if (window.visualViewport) window.visualViewport.addEventListener("resize", resize);
+// 화면 크기에 맞춘 전투 표시(2026-09-24 사용자 "기기에 따라 UI가 가려지거나 글자가 밀린다 → 화면 크기에 따라 능동적으로"):
+// 1) 배율 --ui: 가로 휴대폰처럼 낮은 화면은 0.8, 보통은 1, 큰 화면(교실 TV·큰 모니터)은 최대 1.3배. 모양 표시 hud-short(높이 520 미만)·hud-narrow(폭 400 미만).
+// 2) 실제 자리를 재서 서로 비켜 놓는다(layoutHud): 체력 막대는 성장 표시 오른쪽에서, 대왕 체력 막대·예고 말풍선은 기술 칸 줄 아래에.
+const hudLayout = { barY: 88, labelTop: 106, ui: 1 };
+let hudLayoutTick = 0;
+function uiScale(W, H) { return H < 520 ? 0.8 : Math.max(1, Math.min(1.3, Math.min(W / 1280, H / 720))); }
+function layoutHud() {
+  const app = document.getElementById("app"); if (!app) return;
+  const W = viewW || innerWidth, H = viewH || innerHeight, ui = uiScale(W, H);
+  hudLayout.ui = ui;
+  app.style.setProperty("--ui", ui);
+  app.classList.toggle("hud-short", H < 520); app.classList.toggle("hud-narrow", W < 400);
+  const rect = (id) => { const e = document.getElementById(id); if (!e || !e.getClientRects().length) return null; const r = e.getBoundingClientRect(); return r.width > 1 ? r : null; };   // 고정 위치(fixed) 요소는 offsetParent가 늘 null이라 getClientRects로 본다
+  const lvl = rect("lvl");
+  if (lvl) app.style.setProperty("--hud-left", Math.round(lvl.right + 8) + "px");
+  // 대왕 체력 막대(가운데, 폭 bw): 기술 칸 줄과 가로로 겹치면 그 아래로, 아니면 경험치 막대 아래로
+  const bw = Math.min(280 * ui, W - 40), bx0 = W / 2 - bw / 2, bx1 = W / 2 + bw / 2;
+  const tools = rect("sg-run-tools"), xp = rect("xpbar-wrap"), timer = rect("timer");
+  let top = Math.max(xp ? xp.bottom : 40, timer ? timer.bottom : 0) + 22;
+  if (tools && tools.left < bx1 && tools.right > bx0) top = Math.max(top, tools.bottom + 22);
+  hudLayout.barY = Math.round(chapter?.theme ? Math.max(top, 60) : Math.max(44, top - 22));
+  hudLayout.labelTop = hudLayout.barY + 22;
+  // 예고 말풍선은 막대보다 넓다(최대 화면 폭-24): 기술 칸과 가로로 겹치면 기술 칸 아래로
+  const lw = Math.min(W - 24, 620 * ui), lx0 = W / 2 - lw / 2, lx1 = W / 2 + lw / 2;
+  if (tools && tools.left < lx1 && tools.right > lx0) hudLayout.labelTop = Math.max(hudLayout.labelTop, Math.round(tools.bottom + 6));
+  app.style.setProperty("--boss-label-top", hudLayout.labelTop + "px");
+}
+function resizeAll() { resize(); layoutHud(); }
+window.addEventListener("resize", resizeAll);
+window.addEventListener("orientationchange", () => setTimeout(resizeAll, 100));
+if (window.visualViewport) window.visualViewport.addEventListener("resize", resizeAll);
 resize();
 
 // ---------- 챕터 상태 (로비·시뮬 양쪽에서 쓰므로 먼저 선언) ----------
@@ -854,6 +882,8 @@ let beams, strikes, blasts, arcs;          // 광선 / 지연 낙뢰 / 폭발 / 
 let fields, minions, traps, swings;        // 장판 / 소환체 / 지뢰 / 근접 휘두르기
 let shake = { t: 0, mag: 0 };              // 화면 흔들림
 let hitStopT = 0;                          // 큰 타격 시 짧은 정지(타격감)
+let qaFxOff = null;                        // QA 전용(효과 점검 __debugFxAudit): 잠깐 끌 그림층 이름 모음. 실제 플레이는 늘 null
+let qaNoGhost = false;                     // QA 전용: 효과 위 주인공 겹쳐 그리기를 끄고 예전 모습 재기
 let runId = null;
 
 function addShake(mag, t = 0.18) {
@@ -2094,7 +2124,7 @@ function dealDamageToTarget(target, dmg, isBoss, dir, knock, resisted = false) {
     x: target.x + (Math.random() - 0.5) * 14, y: target.y - 20,
     text: isCrit ? `${final}!` : String(final),
     life: isCrit ? 0.85 : 0.6, vy: isCrit ? -55 : -40, scale: 0,
-    color: resisted ? "#9aa6b4" : isCrit ? "#ff9a3a" : "#fff2c0", big: isCrit && !resisted,
+    color: resisted ? "#9aa6b4" : isCrit ? "#ff9a3a" : "#fff2c0", big: isCrit && !resisted, dmg: true,
   });
   hitFx.push({ x: target.x, y: target.y, life: 0.22, maxLife: 0.22, color: isCrit ? "#ffb44a" : "#ffe9a8", dir });
 
@@ -3545,7 +3575,7 @@ function getFloorPattern() {
 function drawEntitySprite(spriteImg, screenX, screenY, opts) {
   const {
     size = 48, facing = 1, bob = 0, tint = null, flash = false,
-    spawnScale = 1, alpha = 1, glow = null, smooth = false,
+    spawnScale = 1, alpha = 1, glow = null, smooth = false, shadow = true,
   } = opts;
   if (!spriteImg || !spriteImg.complete || !spriteImg.naturalWidth) return;
 
@@ -3558,10 +3588,12 @@ function drawEntitySprite(spriteImg, screenX, screenY, opts) {
   ctx.globalAlpha = alpha;
 
   // 발밑 그림자(타원)
-  ctx.beginPath();
-  ctx.ellipse(screenX, footY + 2, drawW * 0.32, drawW * 0.13, 0, 0, Math.PI * 2);
-  ctx.fillStyle = "rgba(0,0,0,0.45)";
-  ctx.fill();
+  if (shadow) {
+    ctx.beginPath();
+    ctx.ellipse(screenX, footY + 2, drawW * 0.32, drawW * 0.13, 0, 0, Math.PI * 2);
+    ctx.fillStyle = "rgba(0,0,0,0.45)";
+    ctx.fill();
+  }
 
   if (glow) {
     const grad = ctx.createRadialGradient(screenX, footY - drawH * 0.4, 2, screenX, footY - drawH * 0.4, drawW * 1.1);
@@ -3607,7 +3639,8 @@ function heroFrame() {
   }
   return alt(f.idle, f.rangedIdle)[0];
 }
-function drawHero(screenX, screenY) {
+// ghost > 0: 효과 위에 옅게 한 번 더 그리는 주인공(그림자·빛 없이, 그 투명도로)
+function drawHero(screenX, screenY, ghost = 0) {
   const img = heroFrame();
   if (!img.complete || !img.naturalWidth) return;
   const h = HERO_DRAW_H, w = h * img.naturalWidth / img.naturalHeight;
@@ -3618,8 +3651,8 @@ function drawHero(screenX, screenY) {
   drawEntitySprite(img, screenX, screenY, {
     size: 44, width: w, height: h, facing: player.facing, bob, smooth: true,
     flash: player.hitFlashT > 0.14 || blinking,
-    alpha: player.invulnT > 0 ? 0.7 : 1,
-    glow: "rgba(255,220,150,0.18)",
+    alpha: (player.invulnT > 0 ? 0.7 : 1) * (ghost || 1),
+    glow: ghost ? null : "rgba(255,220,150,0.18)", shadow: !ghost,
   });
   ctx.restore();
 }
@@ -4037,10 +4070,15 @@ function drawArc(a) {
   ctx.restore();
 }
 
+// 주인공 몸(발에서 0.8칸 위) 가까이서 터지는 맞음·정화 효과는 반투명 — 적이 주인공에 붙어 쓰러질 때 주인공을 덮지 않게(2026-09-24 효과 점검)
+const onHeroBody = (x, y) => !!player && Math.hypot(x - player.x, y - (player.y - 0.8 * U)) < 1.2 * U;
 function drawHitFx(fx) {
   if (!!chapter?.theme) {
-    const s = worldToScreen(fx.x, fx.y);
-    themeFx.hit(ctx, s.x, s.y, 1 - fx.life / fx.maxLife, fx.vfxKind, fx.dir); return;
+    const s = worldToScreen(fx.x, fx.y), soft = onHeroBody(fx.x, fx.y);
+    if (soft) { ctx.save(); ctx.globalAlpha = 0.45; }
+    themeFx.hit(ctx, s.x, s.y, 1 - fx.life / fx.maxLife, fx.vfxKind, fx.dir);
+    if (soft) ctx.restore();
+    return;
   }
   const s = worldToScreen(fx.x, fx.y);
   const t = fx.life / fx.maxLife;
@@ -4135,8 +4173,11 @@ function drawMuzzleFlash() {
 }
 function drawDeathFx(fx) {
   if (!!chapter?.theme) {
-    const s = worldToScreen(fx.x, fx.y);
-    themeFx.purify(ctx, s.x, s.y, 1 - fx.life / fx.maxLife, fx.size || 64); return;
+    const s = worldToScreen(fx.x, fx.y), soft = onHeroBody(fx.x, fx.y);
+    if (soft) { ctx.save(); ctx.globalAlpha = 0.45; }
+    themeFx.purify(ctx, s.x, s.y, 1 - fx.life / fx.maxLife, fx.size || 64);
+    if (soft) ctx.restore();
+    return;
   }
   const s = worldToScreen(fx.x, fx.y);
   const t = fx.life / fx.maxLife;
@@ -4206,8 +4247,8 @@ function drawBoss() {
   ctx.restore();
 
   // 보스 이름/체력 패널
-  const w = Math.min(280, viewW - 40);
-  const barY = chapter.theme ? 88 : 44;
+  const w = Math.min(280 * hudLayout.ui, viewW - 40);
+  const barY = hudLayout.barY;                 // layoutHud: 기술 칸 줄·체력 막대와 겹치지 않는 자리
   ctx.fillStyle = "rgba(0,0,0,0.55)"; ctx.fillRect(viewW / 2 - w / 2, barY, w, 12);
   const hpGrad = ctx.createLinearGradient(viewW / 2 - w / 2, 0, viewW / 2 + w / 2, 0);
   hpGrad.addColorStop(0, phase2 ? "#ff6a4a" : "#e0a83a"); hpGrad.addColorStop(1, phase2 ? "#c02020" : "#a06a10");
@@ -4545,7 +4586,7 @@ function draw() {
   for (const d of decor) if (onScreen(d, Math.max(180, d.h || 0))) drawDecorItem(d);
   for (const f of fields) drawField(f);      // 장판은 바닥에
   for (const t of traps) drawTrap(t);
-  sgElements.drawGround(ctx, worldToScreen);   // 원소 스킬 바닥층(불 웅덩이·용암·지뢰·그림자) — 적·주인공 아래
+  if (!qaFxOff?.has("skills")) sgElements.drawGround(ctx, worldToScreen);   // 원소 스킬 바닥층(불 웅덩이·용암·지뢰·그림자) — 적·주인공 아래
   for (const g of gems) if (onScreen(g, 48)) drawGem(g);
 
   // 적 (화면 밖은 그리기만 생략; 이동·공격·정화 계산은 그대로)
@@ -4590,27 +4631,31 @@ function draw() {
   // 플레이어(주인공 프레임 애니메이션)
   {
     const s = worldToScreen(player.x, player.y);
-    drawHero(s.x, s.y);
+    if (!qaFxOff?.has("hero")) drawHero(s.x, s.y);
   }
   for (const m of minions) drawMinion(m);
   for (const sw of swings) drawSwing(sw);
-  sgElements.draw(ctx,worldToScreen);
-  sgWeapon.draw(ctx,worldToScreen);
+  if (!qaFxOff?.has("skills")) sgElements.draw(ctx,worldToScreen);
+  if (!qaFxOff?.has("weapon")) sgWeapon.draw(ctx,worldToScreen);
   sgDrawThreats();
 
-  for (const a of arcs) drawArc(a);
-  for (const b of blasts) drawBlast(b);
+  if (!qaFxOff?.has("blasts")) { for (const a of arcs) drawArc(a); for (const b of blasts) drawBlast(b); }
   // Cap only visual draw work; simulation and damage are unchanged.
-  for (let i = !!chapter?.theme ? Math.max(0, hitFx.length - 96) : 0; i < hitFx.length; i++) drawHitFx(hitFx[i]);
-  for (let i = !!chapter?.theme ? Math.max(0, deathFx.length - 64) : 0; i < deathFx.length; i++) drawDeathFx(deathFx[i]);
-  if (!!chapter?.theme) themeFx.draw(ctx, worldToScreen);
+  if (!qaFxOff?.has("hit")) for (let i = !!chapter?.theme ? Math.max(0, hitFx.length - 96) : 0; i < hitFx.length; i++) drawHitFx(hitFx[i]);
+  if (!qaFxOff?.has("death")) for (let i = !!chapter?.theme ? Math.max(0, deathFx.length - 64) : 0; i < deathFx.length; i++) drawDeathFx(deathFx[i]);
+  if (!!chapter?.theme && !qaFxOff?.has("themefx")) themeFx.draw(ctx, worldToScreen);
+  // 2026-09-24 효과 점검: 폭발·번개처럼 큰 효과가 주인공을 덮어도 늘 보이게, 효과 위에 주인공을 옅게(50%) 한 번 더 그린다.
+  // 아무것도 덮지 않았으면 같은 그림 위에 같은 그림이라 달라 보이지 않는다.
+  if (!qaFxOff?.has("hero") && !qaNoGhost) { const s = worldToScreen(player.x, player.y); drawHero(s.x, s.y, 0.5); }
 
   // 숫자 그림만 최근 40개로 제한, 진화·보상 안내는 별도로 보존한다.
-  const visibleTexts = [...floatingTexts.filter(t=>t.big).slice(-8), ...floatingTexts.filter(t=>!t.big).slice(-40)];
+  // 휴대폰처럼 작은 화면은 숫자를 절반(20개)만 — 같은 세계 크기가 화면을 훨씬 많이 덮는다(2026-09-24 효과 점검)
+  const visibleTexts = qaFxOff?.has("text") ? [] : [...floatingTexts.filter(t=>t.big).slice(-8), ...floatingTexts.filter(t=>!t.big).slice(viewW * viewH < 400000 ? -20 : -40)];
   for (const t of visibleTexts) {
     if (!onScreen(t, 100)) continue;
     const s = worldToScreen(t.x, t.y);
     ctx.save();
+    if (t.dmg && onHeroBody(t.x, t.y)) ctx.globalAlpha = 0.45;   // 주인공 몸 위에 뜬 적 피해 숫자는 옅게(2026-09-24 효과 점검). 안내·진화 글은 그대로
     ctx.translate(s.x, s.y);
     const pop = t.big ? 1.35 : 1;
     ctx.scale((t.scale || 1) * pop, (t.scale || 1) * pop);
@@ -4747,6 +4792,7 @@ function loop(now) {
   updateHud();
   sgHud();
   elPauseBtn.classList.toggle("hidden", !(mode === "playing" || mode === "paused"));
+  if (mode === "playing" && (hudLayoutTick = (hudLayoutTick + 1) % 45) === 0) layoutHud();   // 글자 폭이 바뀌어도(성장 24/24 등) 0.75초 안에 다시 맞춘다
   requestAnimationFrame(loop);
 }
 const elPauseBtn = document.getElementById("btn-pause");
@@ -4823,6 +4869,33 @@ window.__debugUnlockAll = function () {
 };
 // QA 전용: 시뮬만 멈추고 렌더는 계속 — 짧은 이펙트를 스크린샷으로 확인할 때 사용
 window.__debugFreeze = function (seconds) { hitStopT = seconds; return hitStopT; };
+// QA 전용(2026-09-24 사용자 "스킬 이펙트 중 과하거나 화면을 가리는 경우"): 같은 순간을 그림층을 끄고 켜며 여러 번 그려 비교한다.
+//  cover = 효과가 바꾼 화면 비율, near = 주인공 둘레(반지름 nearU칸) 중 바뀐 비율, hero = 주인공 그림 중 바뀐 비율(heavy = 거의 덮임),
+//  white = 효과 때문에 하얗게 된 화면 비율(번쩍임). split에 적은 층은 따로(그 층만 켰을 때)도 잰다. step = 몇 픽셀마다 볼지.
+window.__debugNoGhost = function (on) { qaNoGhost = !!on; return qaNoGhost; };
+window.__debugFxAudit = function (layers = ["skills", "weapon", "blasts", "hit", "death", "themefx", "text"], nearU = 3, split = ["skills"], step = 3) {
+  const cv = ctx.canvas, W = cv.width, H = cv.height, k = W / viewW, keepShake = shake.t;
+  shake.t = 0;
+  const grab = (off) => { qaFxOff = new Set(off); draw(); return ctx.getImageData(0, 0, W, H).data; };
+  const none = grab(layers), noHero = grab([...layers, "hero"]), all = grab([]);
+  const per = split.map((L) => [L, grab(layers.filter((x) => x !== L))]);
+  qaFxOff = null; shake.t = keepShake; draw();
+  const hs = worldToScreen(player.x, player.y), hx = hs.x * k, hy = (hs.y - 0.8 * U) * k, rr = nearU * U * k;
+  const d3 = (a, b, i) => Math.abs(a[i] - b[i]) + Math.abs(a[i + 1] - b[i + 1]) + Math.abs(a[i + 2] - b[i + 2]);
+  const luma = (a, i) => a[i] * .3 + a[i + 1] * .59 + a[i + 2] * .11;
+  const blank = () => ({ cover: 0, near: 0, hero: 0, heavy: 0, white: 0 });
+  const tot = blank(), lay = Object.fromEntries(split.map((L) => [L, blank()]));
+  let n = 0, nearN = 0, heroN = 0;
+  const add = (o, a, i, isNear, isHero) => { const d = d3(a, none, i); if (d <= 60) return; o.cover++; if (isNear) o.near++; if (isHero) { o.hero++; if (d > 200) o.heavy++; } if (luma(a, i) > 235 && luma(none, i) <= 235) o.white++; };
+  for (let y = 0; y < H; y += step) for (let x = 0; x < W; x += step) {
+    const i = (y * W + x) * 4, isNear = (x - hx) ** 2 + (y - hy) ** 2 < rr * rr, isHero = d3(none, noHero, i) > 60;
+    n++; if (isNear) nearN++; if (isHero) heroN++;
+    add(tot, all, i, isNear, isHero);
+    for (const [L, a] of per) add(lay[L], a, i, isNear, isHero);
+  }
+  const pct = (o) => ({ cover: +(o.cover / n * 100).toFixed(1), near: +(o.near / Math.max(1, nearN) * 100).toFixed(1), hero: +(o.hero / Math.max(1, heroN) * 100).toFixed(1), heavy: +(o.heavy / Math.max(1, heroN) * 100).toFixed(1), white: +(o.white / n * 100).toFixed(2) });
+  return { ...pct(tot), heroPx: heroN, layers: Object.fromEntries(split.map((L) => [L, pct(lay[L])])) };
+};
 // QA 전용: 밀집 상황(성능·이펙트 확인)을 만들기 위한 강제 스폰
 window.__debugSpawn = function (typeId, n, radiusPx = 200) {
   for (let i = 0; i < n; i++) {
@@ -5320,7 +5393,7 @@ function sgHud(){
     +`<span class="sg-hud-gap"></span>`
     +Object.entries(sup).map(([id,v])=>{const d=R.SUPPORTS[id];return `<span class="sg-support" title="${d.name}">${sgSkillImg(d)}${v.lv}/3</span>`;}).join('')
     +Array.from({length:Math.max(0,R.RUN_RULES.supportSlots-Object.keys(sup).length)},()=>'<span class="sg-empty-slot sg-support">＋</span>').join('');
-  tools.innerHTML=html;
+  tools.innerHTML=html;layoutHud();
 }
 function sgEnd(cleared){
   if(sgSettling||mode==='result')return;
