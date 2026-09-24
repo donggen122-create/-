@@ -1,8 +1,9 @@
-import { VERSION, SKILLS, COMBOS, SUPPORTS, runParts, action, completeRun, stageUnlocked, durationFor, superTestProfile, TEST_ACCOUNT_RE } from '../../game/src/rework-core.js';
+import { VERSION, SKILLS, COMBOS, SUPPORTS, runParts, action, completeRun, stageUnlocked, durationFor, superTestProfile, TEST_ACCOUNT_RE, needsPetMigration, migratePets } from '../../game/src/rework-core.js';
 import { migrateLegacy } from './legacy-migration.js';
 import { migrateProfileV2, needsPartsRepair, repairObsoleteParts, PARTS_FIX_SNAPSHOT } from './profile-migration-v2.js';
 
 export const DAILY_PASSES = 10;
+export const PETS_FIX_SNAPSHOT = 2002;   // 스냅숏 키(친구 4종 개편 전 원본). 프로필 버전이 아니다.
 export const dayKey = (now=Date.now()) => new Date(now+3600000).toISOString().slice(0,10);
 export const nextReset = (now=Date.now()) => (Math.floor((now+3600000)/86400000)+1)*86400000-3600000;
 // 특별 이벤트(2026-09-23 사용자 요청): 추석 연휴 게임 날짜(아침 8시 기준) 2026-09-24·25·26에는 하루 이용권 20장 = 기본 10 + 이벤트 10.
@@ -53,10 +54,11 @@ export async function getProfile(db,id){
     await db.prepare('INSERT OR IGNORE INTO guardian_profiles(user_id,state) VALUES(?,?)').bind(id,JSON.stringify(state)).run();
     row=await db.prepare('SELECT state,revision FROM guardian_profiles WHERE user_id=?').bind(id).first();}
   for(let retry=0;retry<6;retry++){
-    const profile=JSON.parse(row.state),isLegacy=profile.version!==VERSION;
-    if(!isLegacy&&!needsPartsRepair(profile))return {profile,revision:row.revision};
-    const next=isLegacy?migrateProfileV2(profile):repairObsoleteParts(profile);
-    const target=isLegacy?2:PARTS_FIX_SNAPSHOT;
+    const profile=JSON.parse(row.state),isLegacy=profile.version!==VERSION,partsFix=!isLegacy&&needsPartsRepair(profile);
+    if(!isLegacy&&!partsFix&&!needsPetMigration(profile))return {profile,revision:row.revision};
+    // 친구 4종 개편(2026-09-24 밤): 옛 친구·우정 → 친구 카드. 원본은 스냅숏 PETS_FIX_SNAPSHOT에 남는다.
+    const next=isLegacy?migrateProfileV2(profile):migratePets(repairObsoleteParts(profile));
+    const target=isLegacy?2:partsFix?PARTS_FIX_SNAPSHOT:PETS_FIX_SNAPSHOT;
     // Snapshot + revision-checked write are atomic. Concurrent teacher grants are never overwritten.
     await db.batch([
       db.prepare('INSERT OR IGNORE INTO guardian_profile_snapshots(user_id,target_version,state,revision,created_at) SELECT user_id,?,state,revision,? FROM guardian_profiles WHERE user_id=? AND revision=?').bind(target,Date.now(),id,row.revision),
@@ -121,7 +123,7 @@ export async function guardianAPI(request,env,user,path,now=Date.now()){
     const r=await db.batch([
       db.prepare("UPDATE play_runs SET status='expired',settled_at=? WHERE user_id=? AND status='active' AND started_at<?").bind(now,id,now-1800000),
       db.prepare('INSERT OR IGNORE INTO play_days(user_id,day) VALUES(?,?)').bind(id,day),
-      db.prepare("INSERT INTO play_runs(id,user_id,stage,started_at,duration,result) SELECT ?,?,?,?,?,? FROM play_days WHERE user_id=? AND day=? AND base_used+bonus_used<10+bonus_granted AND NOT EXISTS(SELECT 1 FROM play_runs WHERE user_id=? AND status='active')").bind(b.requestId,id,b.stage,now,duration,JSON.stringify({loadout:{equippedParts:runParts(profile)}}),id,day,id),
+      db.prepare("INSERT INTO play_runs(id,user_id,stage,started_at,duration,result) SELECT ?,?,?,?,?,? FROM play_days WHERE user_id=? AND day=? AND base_used+bonus_used<10+bonus_granted AND NOT EXISTS(SELECT 1 FROM play_runs WHERE user_id=? AND status='active')").bind(b.requestId,id,b.stage,now,duration,JSON.stringify({loadout:{equippedParts:runParts(profile),pet:profile.activePet??null}}),id,day,id),
     ]);
     if(!r[2].meta.changes){const active=await db.prepare("SELECT id,stage FROM play_runs WHERE user_id=? AND status='active'").bind(id).first();return reply({error:active?'진행 중인 도전이 있어요. 먼저 마무리해 주세요.':'오늘 이용권을 다 썼어요. 내일 아침 8시에 다시 만나요!',code:active?'ACTIVE_RUN':'NO_PASSES',active,passes:await passStatus(db,id,now)},409);}
     return reply({runId:b.requestId,duration,...await status(db,id,now)});
@@ -143,8 +145,9 @@ export async function guardianAPI(request,env,user,path,now=Date.now()){
       const skillIds=Array.isArray(b.skillIds)?b.skillIds.filter(s=>SKILLS[s]).slice(0,15):[];
       const fusionIds=Array.isArray(b.fusionIds)?b.fusionIds.filter(s=>COMBOS[s]).slice(0,4):[];
       const supportIds=Array.isArray(b.supportIds)?b.supportIds.filter(s=>SUPPORTS[s]).slice(0,8):[];
-      const equippedPartIds=run.result?JSON.parse(run.result).loadout?.equippedParts:null;
-      const result=completeRun(profile,{day:dayKey(now),equippedPartIds,stage:run.stage,cleared,seconds,litter:Math.max(0,Math.min(99,Math.floor(Number(b.litter)||0))),hpFraction:Math.max(0,Math.min(1,Number(b.hpFraction)||0)),bossSeconds:Number.isFinite(b.bossSeconds)&&b.bossSeconds>=0?b.bossSeconds:Infinity,skillIds,fusionIds,supportIds});
+      const loadout=run.result?JSON.parse(run.result).loadout:null,equippedPartIds=loadout?.equippedParts??null;
+      const pet=loadout&&Object.hasOwn(loadout,'pet')?loadout.pet:undefined;   // 출동할 때의 친구(코인 +%). 배포 전에 시작한 도전은 지금 친구
+      const result=completeRun(profile,{day:dayKey(now),equippedPartIds,pet,stage:run.stage,cleared,seconds,litter:Math.max(0,Math.min(99,Math.floor(Number(b.litter)||0))),hpFraction:Math.max(0,Math.min(1,Number(b.hpFraction)||0)),bossSeconds:Number.isFinite(b.bossSeconds)&&b.bossSeconds>=0?b.bossSeconds:Infinity,skillIds,fusionIds,supportIds});
       const event={reward:result.reward,cleared,stage:run.stage,runId,charged:cleared?1:0};
       try{
         const r=await db.batch([
