@@ -80,8 +80,6 @@
 .sg-grade-ladder{display:flex;flex-wrap:wrap;align-items:center;gap:4px;margin:10px 0 4px}.sg-grade-ladder>i{color:#8aa0ae;font-style:normal}
 .sg-grade-ladder .sg-medal{margin-left:0;height:auto;padding:3px 7px;flex-direction:column;line-height:1.15}.sg-grade-ladder small{font-size:10px;font-weight:600;opacity:.8}
 .sg-supply-go{display:flex;align-items:center;justify-content:center;gap:8px;font-size:17px!important;min-height:58px}.sg-supply-go .sg-icon{width:28px;height:28px}
-.sg-flip-luck{font-weight:900;color:#1f5f94;font-size:15px!important;margin:0!important}.sg-flip-luck.big{color:#b8420f;font-size:18px!important}
-.sg-flip-front.sg-grade-3{border-color:#e89a4c}.sg-flip-front.sg-grade-4{border-color:#e0b53c;background:linear-gradient(180deg,#fffdf3,#fff4fb)}
 .sg-supply .sg-inline{margin-top:6px}
 .sg-supply .sg-gift-dots>i.sg-dot-pick{border-color:#e0b53c;color:#8a6200;font-weight:800;background:#fff8dc}.sg-supply .sg-gift-dots>i.sg-dot-pick.on{background:#ffe8a3}
 .sg-exchange{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:14px;padding-top:12px;border-top:1px dashed #c7d6df;font-size:13px}
@@ -92,21 +90,8 @@
 .sg-next-effect{border:1px solid #d5e0e7;background:#f5f9fc;border-radius:12px;padding:8px 14px;margin:10px 0}.sg-next-effect p{font-size:13px;margin:6px 0;display:flex;align-items:center;gap:6px;flex-wrap:wrap}.sg-next-effect .sg-medal{margin-left:0}
 .sg-swap-list{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin:14px 0}
 .sg-swap-list>button{display:grid;justify-items:center;gap:4px;padding:10px 6px;white-space:normal;text-align:center}.sg-swap-list .sg-icon{width:42px;height:42px}.sg-swap-list small{font-size:11px}
-.sg-flip{perspective:900px;margin:6px auto 14px;width:min(290px,100%);height:330px}
-.sg-flip-inner{position:relative;width:100%;height:100%;transform-style:preserve-3d;animation:sg-flip 1.2s ease-in-out forwards}
-.sg-flip-skip .sg-flip-inner{animation:none;transform:rotateY(180deg)}
-@keyframes sg-flip{0%,35%{transform:rotateY(0)}100%{transform:rotateY(180deg)}}
-.sg-flip-back,.sg-flip-front{position:absolute;inset:0;border-radius:18px;backface-visibility:hidden;-webkit-backface-visibility:hidden;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;padding:16px;text-align:center}
-.sg-flip-back{background:linear-gradient(160deg,#dbe9f1,#c3d8e4);border:2px solid #9dbccc;color:#315b72;font-size:16px}.sg-flip-back .sg-icon{width:72px;height:72px}
-.sg-flip-front{transform:rotateY(180deg);background:#fcfdff;border:2px solid #b8cfdc}
-.sg-flip-front>.sg-icon{width:84px;height:84px}.sg-flip-front h2{margin:4px 0!important;font-size:20px!important}.sg-flip-front p{margin:2px 0;font-size:14px;display:flex;align-items:center;gap:6px;flex-wrap:wrap;justify-content:center}.sg-flip-front .sg-medal{margin-left:0}
 .sg-flip-count b{font-size:18px}.sg-flip-new{color:#24546d;font-weight:700}.sg-flip-slot{color:#2c7a4b;font-weight:700}
-.sg-celebrate{border-color:#e0b53c;box-shadow:0 0 0 4px #ffe8a3;animation:sg-glow 1.4s ease-in-out 1.2s 2}
-.sg-flip-skip .sg-celebrate{animation:none}
-@keyframes sg-glow{50%{box-shadow:0 0 0 9px #ffe8a3}}
 .sg-flip-actions{display:flex;gap:8px;justify-content:center;flex-wrap:wrap}.sg-flip-actions>button{min-width:110px}
-@media(prefers-reduced-motion:reduce){.sg-flip-inner{animation:none;transform:rotateY(180deg)}.sg-celebrate{animation:none}}
-@media(max-width:480px){.sg-flip{height:320px}}
 .sg-gold-feature{border-left:3px solid #e0b53c;background:#fff9e3;padding:6px 9px;border-radius:6px;font-size:12px!important;color:#6b5000}
 .sg-flip-gold{font-size:12px!important;color:#6b5000;background:#fff3c4;border-radius:8px;padding:5px 8px;line-height:1.45}
 .sg-stage-gift{display:block;font-size:10px;font-weight:700;color:#2c6b52;margin-top:2px}.sg-stage-gift.done{color:#8a6a2a}
@@ -266,4 +251,89 @@
  .sg-gear-grid{grid-template-columns:1fr}
  .sg-gear-card{padding:13px!important}
  .sg-gear-first-grid{gap:8px}
+}
+/* ---- 보급 연출(2026-09-24 사용자 "뽑기가 너무 밋밋해") ----
+   drop(상자 떨어짐·흔들림) → open(뚜껑 펑·빛) → reveal(카드가 튀어나옴) → party(결과에 맞는 축하).
+   결과 전(drop·open) 모습은 모든 결과가 같다: 등급 색(--gc)·색종이·띠는 reveal/party에서만 보인다(아이 보호 원칙 docs/23·26). */
+.sg-sup{--gc:#9aa8b1;--b1:#eaaa89;--b2:#efbb99;--rib:#7fb798;--ink:#3a5b51}
+.sg-sup-gear{--b1:#6f8fb8;--b2:#86a7cf;--rib:#f3d36b}
+.sg-sup-stage{position:relative;width:min(340px,100%);min-height:360px;padding:18px 0;margin:0 auto 12px;display:flex;align-items:center;justify-content:center;border-radius:22px;overflow:hidden;background:radial-gradient(circle at 50% 52%,#fffdf0 0%,#e3f0f9 52%,#c6ddec 100%);box-shadow:inset 0 0 0 2px #fff,inset 0 -8px 0 #0000000d}
+.sg-sup-stage:before{content:'';position:absolute;left:50%;top:calc(50% + 62px);width:130px;height:22px;margin-left:-65px;border-radius:50%;background:#1b3a4a22}
+.sg-sup:not([data-state=drop]) .sg-sup-stage:before{opacity:0;transition:opacity .3s}
+/* 상자(파츠: 선물 상자 · 장비: 푸른 상자) */
+#guardian-lobby .sg-sup-box,.sg-dialog .sg-sup-box{position:absolute;z-index:2;left:50%;top:50%;width:136px;height:130px;margin:-72px 0 0 -68px;scale:1.15;padding:0!important;min-height:0!important;border:0!important;background:none!important;box-shadow:none!important;cursor:pointer;transform-origin:50% 100%}
+.sg-sup-body{position:absolute;left:10px;right:10px;bottom:0;height:84px;border:3px solid var(--ink);border-radius:12px;background:linear-gradient(90deg,transparent 42%,var(--rib) 42%,var(--rib) 58%,transparent 58%),var(--b1);box-shadow:inset 0 -9px 0 #0000001a}
+.sg-sup-lid{position:absolute;z-index:1;left:0;right:0;top:20px;height:34px;border:3px solid var(--ink);border-radius:10px;background:linear-gradient(90deg,transparent 41%,var(--rib) 41%,var(--rib) 59%,transparent 59%),var(--b2);box-shadow:inset 0 -5px 0 #0000001a}
+.sg-sup-lid:before,.sg-sup-lid:after{content:'';position:absolute;top:-24px;width:32px;height:26px;border:3px solid var(--ink);background:var(--rib);border-radius:55% 55% 35% 35%}
+.sg-sup-lid:before{left:calc(50% - 32px);transform:rotate(-28deg);transform-origin:100% 100%}
+.sg-sup-lid:after{left:50%;transform:rotate(28deg);transform-origin:0 100%}
+.sg-sup-tap{position:absolute;left:0;right:0;bottom:26px;text-align:center;font-weight:800!important;color:var(--sg-sub);font-size:13px!important}
+/* 빛(결과 전에는 누구나 같은 흰 빛) */
+.sg-sup-rays{position:absolute;left:50%;top:50%;width:420px;height:420px;margin:-210px 0 0 -210px;border-radius:50%;opacity:0;pointer-events:none;
+  background:repeating-conic-gradient(from 0deg,#ffffff 0 9deg,#fff0 9deg 24deg);-webkit-mask:radial-gradient(circle,#000 18%,transparent 68%);mask:radial-gradient(circle,#000 18%,transparent 68%)}
+.sg-sup-glow{position:absolute;left:50%;top:50%;width:330px;height:330px;margin:-165px 0 0 -165px;border-radius:50%;opacity:0;pointer-events:none;background:radial-gradient(circle,var(--gc) 0%,#fff0 66%)}
+.sg-sup-flash{position:absolute;left:50%;top:50%;width:60px;height:60px;margin:-30px 0 0 -30px;border-radius:50%;background:#fff;opacity:0;pointer-events:none;z-index:4}
+/* 결과 카드 */
+.sg-sup-card{position:relative;z-index:3;width:calc(100% - 28px);min-height:292px;border-radius:18px;background:#fcfdff;border:3px solid #b8cfdc;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;padding:18px 14px 14px;text-align:center;opacity:0;transform:translateY(46px) scale(.3);box-shadow:0 8px 0 #00000014}
+.sg-sup-card>.sg-icon{width:84px;height:84px}
+.sg-sup-card h2{margin:4px 0!important;font-size:20px!important}
+.sg-sup-card p{margin:2px 0!important;font-size:14px;display:flex;align-items:center;gap:6px;flex-wrap:wrap;justify-content:center}
+.sg-sup-card .sg-medal{margin-left:0}
+.sg-sup-card.sg-grade-1{border-color:#6aa6d8}.sg-sup-card.sg-grade-2{border-color:#a77bd6}.sg-sup-card.sg-grade-3{border-color:#e89a4c}
+.sg-sup-card.sg-grade-4{border-color:#e0b53c;background:linear-gradient(180deg,#fffdf3,#fff4fb)}
+.sg-sup-banner{position:absolute;z-index:5;left:50%;top:6px;transform:translateX(-50%) scale(0);white-space:nowrap;padding:6px 18px;border-radius:999px;background:var(--gc);color:#fff;font-weight:900;font-size:16px;border:3px solid #fff;box-shadow:0 4px 0 #0002;text-shadow:0 1px 2px #0004}
+.sg-sup-legend .sg-sup-banner{background:linear-gradient(90deg,#ff6b6b,#ffd166,#06d6a0,#4cc9f0,#b388ff)}
+.sg-sup-confetti{position:absolute;left:50%;top:44%;z-index:6;pointer-events:none}
+.sg-sup-confetti>i{position:absolute;left:-4px;top:-6px;width:9px;height:13px;border-radius:2px;background:var(--c);opacity:0}
+.sg-sup-confetti>i:nth-child(3n){border-radius:50%;width:10px;height:10px}
+/* drop: 떨어져 두 번 흔들림(모든 결과 같음) */
+.sg-sup[data-state=drop] .sg-sup-box{animation:sg-sup-drop .55s cubic-bezier(.3,1.35,.5,1) both,sg-sup-wiggle .42s ease-in-out .62s 2}
+.sg-sup[data-state=drop] .sg-sup-tap{animation:sg-sup-blink 1s ease-in-out .5s infinite both}
+/* open: 뚜껑 펑 · 흰 빛(모든 결과 같음) */
+.sg-sup[data-state=open] .sg-sup-lid{animation:sg-sup-lid .42s ease-out forwards}
+.sg-sup[data-state=open] .sg-sup-body{animation:sg-sup-sink .42s ease-in forwards}
+.sg-sup[data-state=open] .sg-sup-flash{animation:sg-sup-flash .45s ease-out forwards}
+.sg-sup[data-state=open] .sg-sup-rays{animation:sg-sup-rays-in .4s ease-out forwards,sg-sup-spin 6s linear infinite}
+.sg-sup:not([data-state=drop]) .sg-sup-tap{display:none}
+.sg-sup[data-state=reveal] .sg-sup-box,.sg-sup[data-state=party] .sg-sup-box{display:none}
+/* reveal: 카드가 튀어나와 자리 잡음, 등급 색 빛 */
+.sg-sup[data-state=reveal] .sg-sup-card{animation:sg-sup-card-in .5s cubic-bezier(.2,1.35,.45,1) forwards}
+.sg-sup[data-state=reveal] .sg-sup-rays,.sg-sup[data-state=party] .sg-sup-rays{opacity:.75;animation:sg-sup-spin 8s linear infinite}
+.sg-sup[data-state=reveal] .sg-sup-glow,.sg-sup[data-state=party] .sg-sup-glow{opacity:.45;transition:opacity .4s}
+/* party: 결과가 보인 뒤에만 — 레벨에 따라 커진다 */
+.sg-sup[data-state=party] .sg-sup-card{opacity:1;transform:none}
+.sg-sup[data-state=party] .sg-sup-banner{animation:sg-sup-stamp .42s cubic-bezier(.2,1.6,.4,1) forwards}
+.sg-sup[data-state=party] .sg-sup-confetti>i{animation:sg-sup-conf 1.5s cubic-bezier(.15,.75,.35,1) var(--d) forwards}
+.sg-sup-lv0[data-state=party] .sg-sup-rays{opacity:.35}
+.sg-sup-lv2[data-state=party] .sg-sup-rays,.sg-sup-lv3[data-state=party] .sg-sup-rays{background:repeating-conic-gradient(from 0deg,var(--gc) 0 9deg,#fff0 9deg 24deg);opacity:.55}
+.sg-sup-lv2[data-state=party] .sg-sup-glow,.sg-sup-lv3[data-state=party] .sg-sup-glow{animation:sg-sup-pulse 1.4s ease-in-out infinite}
+.sg-sup-lv2[data-state=party] .sg-sup-card,.sg-sup-lv3[data-state=party] .sg-sup-card{animation:sg-sup-bump .45s ease-out}
+.sg-sup-lv3[data-state=party] .sg-sup-card{box-shadow:0 0 0 4px #fff,0 0 26px 6px var(--gc)}
+.sg-sup-legend[data-state=party] .sg-sup-card{animation:sg-sup-bump .45s ease-out,sg-sup-legend 2.4s linear .45s infinite}
+@keyframes sg-sup-drop{0%{transform:translateY(-260px) scale(.9);opacity:0}60%{transform:translateY(0) scaleY(.82) scaleX(1.12);opacity:1}80%{transform:translateY(-14px) scale(1)}100%{transform:none}}
+@keyframes sg-sup-wiggle{0%,100%{transform:rotate(0)}25%{transform:rotate(-7deg)}75%{transform:rotate(7deg)}}
+@keyframes sg-sup-blink{0%,100%{opacity:.45}50%{opacity:1}}
+@keyframes sg-sup-lid{to{transform:translateY(-150px) rotate(-38deg);opacity:0}}
+@keyframes sg-sup-sink{to{transform:translateY(30px) scale(.85);opacity:0}}
+@keyframes sg-sup-flash{0%{opacity:.95;transform:scale(.4)}100%{opacity:0;transform:scale(7)}}
+@keyframes sg-sup-rays-in{from{opacity:0}to{opacity:.85}}
+@keyframes sg-sup-spin{to{transform:rotate(360deg)}}
+@keyframes sg-sup-card-in{0%{opacity:0;transform:translateY(46px) scale(.3) rotate(-8deg)}60%{opacity:1;transform:translateY(-8px) scale(1.06) rotate(2deg)}100%{opacity:1;transform:none}}
+@keyframes sg-sup-stamp{0%{transform:translateX(-50%) scale(2.2);opacity:0}100%{transform:translateX(-50%) scale(1);opacity:1}}
+@keyframes sg-sup-conf{0%{opacity:1;transform:translate(0,0) rotate(0) scale(var(--s))}70%{opacity:1;transform:translate(var(--x),var(--y)) rotate(calc(var(--r)*.7)) scale(var(--s))}100%{opacity:0;transform:translate(var(--x),calc(var(--y) + 70px)) rotate(var(--r)) scale(var(--s))}}
+@keyframes sg-sup-pulse{0%,100%{opacity:.4;transform:scale(.95)}50%{opacity:.75;transform:scale(1.08)}}
+@keyframes sg-sup-bump{0%{transform:scale(1)}40%{transform:scale(1.07)}100%{transform:scale(1)}}
+@keyframes sg-sup-legend{0%,100%{box-shadow:0 0 0 4px #fff,0 0 26px 6px #ffd166}33%{box-shadow:0 0 0 4px #fff,0 0 26px 6px #4cc9f0}66%{box-shadow:0 0 0 4px #fff,0 0 26px 6px #ff9ecd}}
+@media(max-width:480px){.sg-sup-stage{min-height:330px}.sg-sup-rays{width:360px;height:360px;margin:-180px 0 0 -180px}}
+@media(prefers-reduced-motion:reduce){.sg-sup *,.sg-sup *:before,.sg-sup *:after{animation:none!important;transition:none!important}}
+/* 보급 연출: 낮은 화면(320×568 등)에서도 [확인]이 바로 보이게 무대·카드를 줄이고 단추는 한 줄 */
+.sg-sup .sg-flip-actions{flex-wrap:nowrap;align-items:center}
+.sg-sup .sg-flip-actions>.sg-inline{min-width:0;font-size:12px!important}
+@media(max-height:700px){
+ .sg-sup-stage{min-height:280px;padding:10px 0;margin-bottom:8px}
+ #guardian-lobby .sg-sup-box,.sg-dialog .sg-sup-box{scale:1}
+ .sg-sup-card{min-height:0;padding:30px 10px 10px}
+ .sg-sup-card>.sg-icon,.sg-sup-card>.sg-gear-icon.big{width:60px;height:60px}
+ .sg-sup-card h2{font-size:18px!important}
+ .sg-sup-card p{font-size:13px}
 }

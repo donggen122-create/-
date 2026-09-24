@@ -262,6 +262,43 @@ export function playSfx(name, volume = 0.6) {
     src.start();
   } catch (e) { /* 재생 실패는 게임 진행에 영향 없음 */ }
 }
+// 보급 연출 효과음(2026-09-24 사용자 "뽑기가 너무 밋밋해"): 소리 파일 없이 짧게 합성한다. 음소거면 나지 않는다.
+// supDrop 상자 쿵 · supShake 달그락 · supOpen 뚜껑 펑 · supReveal 결과(모든 결과 같음) · supLuck/supBig/supGrand 결과가 보인 뒤 축하(3·7개·등급 오름)
+export function playSynth(kind) {
+  if (muted) return;
+  const ctx = ensureCtx();
+  if (!ctx || !masterGain) return;
+  if (ctx.state === "suspended") ctx.resume().catch(() => {});
+  const t0 = ctx.currentTime + 0.01;
+  const tone = (f, t, d, { type = "triangle", vol = 0.18, to = null } = {}) => {
+    const o = ctx.createOscillator(), g = ctx.createGain();
+    o.type = type; o.frequency.setValueAtTime(f, t0 + t);
+    if (to) o.frequency.exponentialRampToValueAtTime(to, t0 + t + d);
+    g.gain.setValueAtTime(0.0001, t0 + t); g.gain.exponentialRampToValueAtTime(vol, t0 + t + 0.012); g.gain.exponentialRampToValueAtTime(0.0001, t0 + t + d);
+    o.connect(g); g.connect(masterGain); o.start(t0 + t); o.stop(t0 + t + d + 0.05);
+    o.onended = () => { o.disconnect(); g.disconnect(); };
+  };
+  const noise = (t, d, vol, f0, f1) => {
+    const buf = ctx.createBuffer(1, Math.max(1, Math.floor(ctx.sampleRate * d)), ctx.sampleRate), a = buf.getChannelData(0);
+    for (let i = 0; i < a.length; i++) a[i] = Math.random() * 2 - 1;
+    const src = ctx.createBufferSource(), bp = ctx.createBiquadFilter(), g = ctx.createGain();
+    src.buffer = buf; bp.type = "bandpass"; bp.frequency.setValueAtTime(f0, t0 + t); bp.frequency.exponentialRampToValueAtTime(f1, t0 + t + d);
+    g.gain.setValueAtTime(vol, t0 + t); g.gain.exponentialRampToValueAtTime(0.0001, t0 + t + d);
+    src.connect(bp); bp.connect(g); g.connect(masterGain); src.start(t0 + t);
+    src.onended = () => { src.disconnect(); bp.disconnect(); g.disconnect(); };
+  };
+  const arp = (notes, step, d, o) => notes.forEach((f, i) => tone(f, i * step, d, o));
+  if (kind === "supDrop") { tone(200, 0, 0.2, { type: "sine", vol: 0.35, to: 55 }); noise(0, 0.09, 0.1, 400, 150); }
+  else if (kind === "supShake") { tone(620, 0, 0.05, { vol: 0.09 }); tone(760, 0.17, 0.05, { vol: 0.09 }); }
+  else if (kind === "supOpen") { noise(0, 0.3, 0.16, 700, 5200); tone(330, 0, 0.32, { type: "sine", vol: 0.16, to: 1050 }); }
+  else if (kind === "supReveal") arp([784, 988, 1319], 0.07, 0.35, { vol: 0.13 });
+  else if (kind === "supLuck") arp([659, 784, 988, 1319, 1568], 0.06, 0.4, { vol: 0.13 });
+  else if (kind === "supBig") { arp([523, 659, 784, 1047], 0.08, 0.5, { vol: 0.15 }); [1047, 1319, 1568].forEach((f) => tone(f, 0.36, 0.8, { type: "sine", vol: 0.07 })); }
+  else if (kind === "supGrand") {
+    arp([523, 659, 784, 1047, 1319], 0.08, 0.55, { vol: 0.15 }); [523, 659, 784, 1047].forEach((f) => tone(f, 0.45, 1.3, { type: "sine", vol: 0.06 }));
+    for (let i = 0; i < 9; i++) tone(1700 + Math.random() * 1700, 0.5 + i * 0.07, 0.22, { type: "sine", vol: 0.05 });
+  }
+}
 export function isMuted() { return muted; }
 export function setMuted(v) {
   muted = v;

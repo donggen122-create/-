@@ -1,5 +1,8 @@
 # 서호팡팡수호대 — Claude 작업 안내 (모든 PC 공통)
 
+## 2026-09-24 저녁. 보급 연출(배포 전) — `docs/35_보급_연출.md`
+- 보급 결과는 `rework-ui.js supplyShow`(상자 → 펑 → 카드 → 축하). 결과 전 모습은 모든 결과가 같게(아이 보호 원칙) — 등급 색·축하는 party 단계에서만. 소리는 `assets.js playSynth`.
+
 ## 2026-09-24 저녁. 장비 시스템 구현(배포 전) — `docs/34_장비_시스템_기획.md` 13절
 - 장비 데이터 `game/src/equipment.js`, 규칙 `rework-core.js`(choose-hero·choose-first-gear·draw-gear·merge-gear·equip-gear·unequip-gear), 전투 `main.js` sgGear*, 화면 `rework-ui.js` gear 탭. 캐릭터는 모든 학생이 로그인 때 한 번 신중히 고르고 고정(`heroLocked`는 직접 고른 학생만 true), 고르면 원거리·근거리 무기 1개씩 무료. 바꾸기는 관리 API `set-hero`. 장비 아이콘은 임시 그림 — 사용자 그림이 오면 `GEAR_ART`에 넣는다. 격리 서버 가입 제한은 `/_qa/reset-attempts`로 비운다(시험 아이디는 12글자 이하).
 

@@ -25,7 +25,7 @@ def lobby(page):
     if not page.evaluate("document.getElementById('title').classList.contains('hidden')"):page.evaluate("document.getElementById('btn-title-start').click()")
     page.wait_for_function("document.getElementById('title').classList.contains('hidden')");page.locator('#guardian-lobby .sg-nav').wait_for();page.wait_for_timeout(500)
 def card(page):
-    page.locator('dialog[open] .sg-flip').wait_for();page.wait_for_timeout(1400);return dialog_text(page)
+    page.locator('dialog[open] .sg-sup').wait_for();page.wait_for_function("document.querySelector('dialog[open] .sg-sup')?.dataset.state==='party'");return dialog_text(page)
 def state(page):return page.evaluate("async()=>await(await fetch('/api/guardian',{headers:{Authorization:'Bearer '+localStorage.lumen_token}})).json()")
 
 with sync_playwright() as pw:
@@ -46,7 +46,7 @@ with sync_playwright() as pw:
         ladder=page.locator('.sg-grade-ladder').inner_text();assert all(x in ladder for x in ['노말','레어','유니크','에픽','전설','80개']),ladder
         page.screenshot(path=str(OUT/f'parts-random-{w}.png'),full_page=True)
         before=state(page)['profile']
-        page.locator('[data-do="draw-part"]').click();page.locator('dialog[open] .sg-flip').wait_for();page.wait_for_timeout(500);page.screenshot(path=str(OUT/f'card-flipping-{w}.png'))
+        page.locator('[data-do="draw-part"]').click();page.locator('dialog[open] .sg-sup').wait_for();page.wait_for_timeout(500);page.screenshot(path=str(OUT/f'card-box-{w}.png'))
         t=card(page);assert '×' in t,t;page.screenshot(path=str(OUT/f'card-{w}.png'));close(page)
         after=state(page)['profile'];got=sum(v['copies'] for v in after['parts'].values())-sum(v['copies'] for v in before['parts'].values())
         assert after['gifts']==before['gifts']-1 and got in (1,3,7) and after['giftCounts']['part']==1,(after['gifts'],got);checks.append('random draw 1/3/7')

@@ -42,6 +42,8 @@ const gearBase=(it,g)=>entries(it.base).map(([k,v])=>gearStat(k,v*R.GEAR_GRADE_M
 const gearSpecialLines=(it,g)=>['유니크','에픽','전설'].map((n,i)=>({name:n,text:it.special.text[i],on:g>=i+2}));
 const typeName=t=>t==='ranged'?'원거리':'근거리';
 const heroName=h=>h==='minji'?'민지':'호야';
+// 보급 결과 등급 색(노말 회색 · 레어 파랑 · 유니크 보라 · 에픽 주황 · 전설 금색) — 결과가 보인 뒤에만 쓴다
+const SUPPLY_COLORS=['#9aa8b1','#4f95d6','#9a6bd6','#ec8a3a','#e0b53c'];
 const starText=n=>'★'.repeat(Math.max(0,Math.min(3,n)));
 const difficultyHelp=id=>{const d=R.DIFFICULTIES[id]||R.DIFFICULTIES.easy;return `<b>${esc(d.name)} ${starText(d.stars)}</b><span>${esc(d.desc)}</span>`;};
 
@@ -151,19 +153,45 @@ export class GuardianUI {
     this.openDialog(`<h2>파츠 보급 규칙</h2><div class="sg-rules"><p><b>보급</b> 보급권 1장으로 10종 중 무작위 파츠를 받아요(전설이 된 파츠는 빼고, 남은 파츠는 모두 같은 확률). 고를 수는 없어요.</p><p><b>개수</b> ${R.SUPPLY_BUNDLES.map(b=>`${b.qty}개 ${Math.round(b.chance*100)}%`).join(' · ')} — 운이 좋으면 한 번에 여러 개!</p><p><b>등급</b> 같은 파츠를 모으면 올라가요. ${R.GRADE_NAMES.map((n,i)=>`${n} ${R.GRADE_COPIES[i]}개`).join(' → ')}. </p>${R.GRADE_NAMES.map((n,i)=>`<p class="sg-grade-row">${`<span class="sg-medal sg-medal-${i}">${n}</span>`} ${gradeAbility(i)}</p>`).join('')}<p><p><b>전설</b> 아주 오래 모아야 해요. 매일 열심히 해도 두 달쯤 걸려요.</p><p><b>보급권 받는 곳</b> 성공 보상(쉬움·보통 1장, 어려움 2장, 같은 단계는 하루 2번 성공까지), 실패 격려(하루 1장까지), 코인 교환(하루 ${R.SUPPLY_EXCHANGE_COSTS.length}번, ${R.SUPPLY_EXCHANGE_COSTS.join(' → ')}코인). 결제·광고는 없어요.</p></div><button class="sg-primary" data-close>확인</button>`);
   }
   // 결과 카드: 모든 결과에 같은 1.2초 뒤집기, 결과 전 힌트 없음, 축하는 등급이 오르거나 3·7개일 때만. 건너뛰기는 기억한다.
+  // ---- 보급 연출(2026-09-24 사용자 "뽑기가 너무 밋밋해"): 상자가 떨어져 흔들리다 뚜껑이 펑! → 카드가 튀어나옴 → 결과에 맞는 축하 ----
+  // 아이 보호 원칙(docs/23·26)은 그대로: 결과가 보이기 전(떨어짐·흔들림·열림·빛)은 모든 결과가 똑같다(힌트 없음). 등급 색·색종이·팡파르는 결과가 보인 뒤에만.
+  // 크게 축하하는 것은 3·7개 운과 등급이 오를 때뿐. 건너뛰기는 기억(다음부터 바로 결과), "더 뽑기" 재촉 없음. 움직임 줄이기 설정이면 바로 결과.
+  // level: 0 조용히(등급 색 빛만) · 1 행운 3개 · 2 대박 7개·등급 오름 · 3 에픽·전설 달성
+  supplyShow({box='part',label='보급',front,grade=0,level=0,banner='',noBox=false}){
+    let skip=false;try{skip=localStorage.getItem('seoho_supply_skip_flip')==='1';}catch(e){}
+    let reduce=false;try{reduce=matchMedia('(prefers-reduced-motion: reduce)').matches;}catch(e){}
+    const fast=skip||reduce||noBox,g=Math.max(0,Math.min(4,grade|0)),lv=Math.max(0,Math.min(3,level|0));
+    const pal=g>=4?['#ff6b6b','#ffd166','#06d6a0','#4cc9f0','#b388ff','#ff9ecd']:[SUPPLY_COLORS[g],'#ffd76a','#ffffff',SUPPLY_COLORS[Math.min(4,g+1)]],n=[0,16,28,44][lv];
+    const conf=Array.from({length:n},(_,i)=>{const a=Math.random()*Math.PI*2,d=(70+Math.random()*100)*(lv>=3?1.3:1);
+      return `<i style="--x:${Math.round(Math.cos(a)*d)}px;--y:${Math.round(Math.sin(a)*d*.8-50)}px;--r:${Math.round(Math.random()*720-360)}deg;--c:${pal[i%pal.length]};--d:${Math.round(Math.random()*140)}ms;--s:${(.6+Math.random()*.7).toFixed(2)}"></i>`;}).join('');
+    this.openDialog(`<div class="sg-sup sg-sup-${box} sg-sup-lv${lv}${g>=4?' sg-sup-legend':''}" data-state="${fast?'party':'drop'}" style="--gc:${SUPPLY_COLORS[g]}"><div class="sg-sup-stage">
+      <div class="sg-sup-rays"></div><div class="sg-sup-glow"></div>
+      ${noBox?'':`<button class="sg-sup-box" aria-label="${esc(label)} 상자 열기"><span class="sg-sup-lid"></span><span class="sg-sup-body"></span></button><small class="sg-sup-tap">${esc(label)} 상자 · 누르면 바로 열려요</small>`}
+      <div class="sg-sup-flash"></div><div class="sg-sup-card sg-grade-${g}">${front}</div>${banner?`<div class="sg-sup-banner">${esc(banner)}</div>`:''}<div class="sg-sup-confetti">${conf}</div>
+    </div><div class="sg-flip-actions">${noBox?'':skip?'<button class="sg-inline" data-do="flip-on">상자 연출 다시 켜기</button>':'<button data-do="flip-skip">건너뛰기</button>'}<button class="sg-primary" data-close>확인</button></div></div>`);
+    const root=this.dialog.querySelector('.sg-sup'),timers=[],sfx=k=>{try{this.c.sfx?.(k);}catch(e){}};
+    const cheer=()=>{if(lv)sfx(lv>=3?'supGrand':lv>=2?'supBig':'supLuck');};
+    const set=st=>{root.dataset.state=st;};
+    const relabel=()=>{const b=this.dialog.querySelector('[data-do="flip-skip"]');if(b&&!b.disabled){b.textContent='다음부터 바로 결과 보기';b.classList.add('sg-inline');}};   // 결과가 나온 뒤에는 '건너뛸' 것이 없다
+    const reveal=()=>{set('reveal');sfx('supReveal');timers.push(setTimeout(()=>{set('party');cheer();relabel();},520));};
+    const open=()=>{if(root.dataset.state!=='drop')return;timers.forEach(clearTimeout);timers.length=0;set('open');sfx('supOpen');timers.push(setTimeout(reveal,380));};
+    const done=()=>{timers.forEach(clearTimeout);timers.length=0;if(root.dataset.state!=='party'){set('party');cheer();}};
+    if(fast){sfx('supReveal');timers.push(setTimeout(cheer,120));}
+    else{sfx('supDrop');timers.push(setTimeout(()=>sfx('supShake'),640),setTimeout(open,1250));root.querySelector('.sg-sup-box').onclick=open;}
+    this.dialog.addEventListener('close',()=>timers.forEach(clearTimeout),{once:true});
+    const remember=v=>{try{if(v)localStorage.setItem('seoho_supply_skip_flip','1');else localStorage.removeItem('seoho_supply_skip_flip');}catch(e){}};
+    this.dialog.querySelector('[data-do="flip-skip"]')?.addEventListener('click',e=>{remember(true);done();e.target.textContent='다음부터 바로 결과를 보여 줘요';e.target.disabled=true;});
+    this.dialog.querySelector('[data-do="flip-on"]')?.addEventListener('click',e=>{remember(false);e.target.textContent='다음부터 상자 연출을 보여 줘요';e.target.disabled=true;});
+  }
   showDrawResult(d){
     if(R.GEAR[d?.id]){this.showGearResult(d);return;}
     const part=R.PARTS[d?.id];if(!part)return;
-    let skip=false;try{skip=localStorage.getItem('seoho_supply_skip_flip')==='1';}catch(e){}
     const up=d.gradeAfter>Math.max(0,d.gradeBefore),skill=R.SKILLS[part.skill],next=toNext(d.after);
-    // 개수 운: 3개·7개는 결과가 나온 뒤(앞면)에만 표시 — 뒤집기 전 힌트는 없다
-    const luck=d.qty>=7?'<p class="sg-flip-luck big">대박! 7개</p>':d.qty>=3?'<p class="sg-flip-luck">행운! 3개</p>':'';
-    const front=`<div class="sg-flip-front ${up||d.qty>=3?'sg-celebrate':''} sg-grade-${d.gradeAfter}">${luck}${partIcon(d.id)}<h2>${esc(part.name)} ×${d.qty}</h2>${d.isNew?`<p class="sg-flip-new">새 파츠! ${esc(skill?.name)}에 기능이 생겨요</p><p>${esc(desc(part))}</p>`:`<p class="sg-flip-count">${d.before}개 → <b>${d.after}개</b></p>`}<p>${medal(d.after)} ${up?`<b>${gradeName(d.after)} 달성!</b>`:next?`${next.name}까지 ${next.left}개`:'최고 등급'}</p>${up&&d.gradeAfter>=2?`<p class="sg-flip-gold">${d.gradeAfter===2?`유니크 기능이 열렸어요! ${esc(part.gold)}`:`${gradeName(d.after)} 능력: ${gradeAbility(d.gradeAfter)}`}</p>`:''}${d.autoEquipped?'<p class="sg-flip-slot">빈 칸에 끼웠어요</p>':''}</div>`;
-    this.openDialog(`<div class="sg-flip ${skip?'sg-flip-skip':''}"><div class="sg-flip-inner"><div class="sg-flip-back">${icon('gift')}<b>파츠 보급</b></div>${front}</div></div><div class="sg-flip-actions">${skip?'<button class="sg-inline" data-do="flip-on">뒤집기 연출 켜기</button>':'<button data-do="flip-skip">건너뛰기</button>'}<button class="sg-primary" data-close>확인</button></div>`);
-    const box=this.dialog.querySelector('.sg-flip');
-    const set=v=>{try{if(v)localStorage.setItem('seoho_supply_skip_flip','1');else localStorage.removeItem('seoho_supply_skip_flip');}catch(e){}};
-    this.dialog.querySelector('[data-do="flip-skip"]')?.addEventListener('click',()=>{set(true);box.classList.add('sg-flip-skip');});
-    this.dialog.querySelector('[data-do="flip-on"]')?.addEventListener('click',e=>{set(false);e.target.textContent='다음부터 뒤집기 연출을 보여 줘요';e.target.disabled=true;});
+    const front=`${partIcon(d.id)}<h2>${esc(part.name)} ×${d.qty}</h2>${d.isNew?`<p class="sg-flip-new">새 파츠! ${esc(skill?.name)}에 기능이 생겨요</p><p>${esc(desc(part))}</p>`:`<p class="sg-flip-count">${d.before}개 → <b>${d.after}개</b></p>`}<p>${medal(d.after)} ${up?`<b>${gradeName(d.after)} 달성!</b>`:next?`${next.name}까지 ${next.left}개`:'최고 등급'}</p>${up&&d.gradeAfter>=2?`<p class="sg-flip-gold">${d.gradeAfter===2?`유니크 기능이 열렸어요! ${esc(part.gold)}`:`${gradeName(d.after)} 능력: ${gradeAbility(d.gradeAfter)}`}</p>`:''}${d.autoEquipped?'<p class="sg-flip-slot">빈 칸에 끼웠어요</p>':''}`;
+    // 개수 운·등급은 결과가 보인 뒤(카드 위 띠)에만
+    const level=up?(d.gradeAfter>=3?3:2):d.qty>=7?2:d.qty>=3?1:0;
+    const banner=up?`${gradeName(d.after)} 달성!`:d.qty>=7?'대박! 7개':d.qty>=3?'행운! 3개':d.isNew?'새 파츠!':'';
+    this.supplyShow({box:'part',label:'파츠 보급',front,grade:d.gradeAfter,level,banner});
   }
   swapDialog(id){
     const p=this.state().profile,d=R.PARTS[id];if(!d||!p.parts[id])return;
@@ -207,15 +235,17 @@ export class GuardianUI {
   }
   showGearResult(d){
     const it=R.GEAR[d?.id];if(!it)return;
-    if(d.mode==='merge'){const lines=gearSpecialLines(it,d.grade),newly=d.grade>=2?lines[d.grade-2]:null;
-      this.openDialog(`<div class="sg-flip sg-flip-skip"><div class="sg-flip-inner"><div class="sg-flip-back"></div><div class="sg-flip-front sg-celebrate sg-grade-${d.grade}"><p class="sg-flip-luck big">합성 성공!</p>${gearIcon(d.id,'big')}<h2>${esc(it.name)}</h2><p><span class="sg-medal sg-medal-${d.grade}">${R.GRADE_NAMES[d.grade]}</span> 등급이 되었어요</p><p>${esc(gearBase(it,d.grade))}</p>${newly?`<p class="sg-flip-gold">${newly.name} 특수 효과 · ${esc(newly.text)}</p>`:''}</div></div></div><div class="sg-flip-actions"><button class="sg-primary" data-close>확인</button></div>`);return;}
-    if(d.mode==='first'&&Array.isArray(d.ids)){   // 첫 무기 2개(원거리·근거리) — 캐릭터를 고를 때 받는다
+    if(d.mode==='merge'){   // 합성: 운이 아니라 내가 누른 것 → 상자 없이 바로 축하
+      const lines=gearSpecialLines(it,d.grade),newly=d.grade>=2?lines[d.grade-2]:null;
+      this.supplyShow({box:'gear',noBox:true,grade:d.grade,level:d.grade>=3?3:2,banner:'합성 성공!',
+        front:`${gearIcon(d.id,'big')}<h2>${esc(it.name)}</h2><p><span class="sg-medal sg-medal-${d.grade}">${R.GRADE_NAMES[d.grade]}</span> 등급이 되었어요</p><p>${esc(gearBase(it,d.grade))}</p>${newly?`<p class="sg-flip-gold">${newly.name} 특수 효과 · ${esc(newly.text)}</p>`:''}`});return;}
+    if(d.mode==='first'&&Array.isArray(d.ids)){   // 첫 무기 2개(원거리·근거리) — 캐릭터를 고를 때 받는 선물
       const p=this.state().profile,row=d.ids.filter(id=>R.GEAR[id]).map(id=>`<div class="sg-first-weapon ${id===d.id?'on':''}">${gearIcon(id,'big')}<b>${esc(R.GEAR[id].name)}</b><small>${typeName(R.GEAR[id].type)}${id===d.id?' · 끼웠어요':''}</small></div>`).join('');
-      this.openDialog(`<div class="sg-flip sg-flip-skip"><div class="sg-flip-inner"><div class="sg-flip-back"></div><div class="sg-flip-front sg-celebrate sg-grade-0">${p?`<p class="sg-flip-luck">${heroName(p.hero)}와 함께해요!</p>`:''}<h2>무기 2개를 받았어요</h2><div class="sg-first-weapons">${row}</div><p>끼운 무기가 공격 방식을 정해요. 장비 탭에서 바꿔 낄 수 있어요.</p></div></div></div><div class="sg-flip-actions"><button class="sg-primary" data-close>확인</button></div>`);return;}
-    let skip=false;try{skip=localStorage.getItem('seoho_supply_skip_flip')==='1';}catch(e){}
-    const luck=d.qty>=7?'<p class="sg-flip-luck big">대박! 7개</p>':d.qty>=3?'<p class="sg-flip-luck">행운! 3개</p>':'',g=d.grade??0,next=R.GRADE_COPIES[g+1];
-    const front=`<div class="sg-flip-front ${d.qty>=3||d.mergeReady?'sg-celebrate':''} sg-grade-${g}">${luck}${gearIcon(d.id,'big')}<h2>${esc(it.name)} ×${d.qty}</h2><p>${esc(it.setName)} · ${R.GEAR_SLOT_NAMES[it.slot]}</p>${d.isNew?`<p class="sg-flip-new">새 장비! ${esc(gearBase(it,g))}</p>`:`<p class="sg-flip-count">${d.before}개 → <b>${d.after}개</b></p>`}${d.mergeReady?`<p class="sg-flip-gold">합성할 수 있어요! 장비 탭에서 [합성]을 눌러요</p>`:next?`<p>${next}개면 ${R.GRADE_NAMES[g+1]} 합성</p>`:''}${d.mode==='first'?'<p class="sg-flip-slot">무기 칸에 끼웠어요</p>':''}</div>`;
-    this.openDialog(`<div class="sg-flip ${skip||d.mode==='first'?'sg-flip-skip':''}"><div class="sg-flip-inner"><div class="sg-flip-back">${icon('gift')}<b>장비 보급</b></div>${front}</div></div><div class="sg-flip-actions"><button class="sg-primary" data-close>확인</button></div>`);
+      this.supplyShow({box:'gear',label:'선물',grade:0,level:1,banner:p?`${heroName(p.hero)}와 함께해요!`:'선물!',
+        front:`<h2>무기 2개를 받았어요</h2><div class="sg-first-weapons">${row}</div><p>끼운 무기가 공격 방식을 정해요. 장비 탭에서 바꿔 낄 수 있어요.</p>`});return;}
+    const g=d.grade??0,next=R.GRADE_COPIES[g+1];
+    const front=`${gearIcon(d.id,'big')}<h2>${esc(it.name)} ×${d.qty}</h2><p>${esc(it.setName)} · ${R.GEAR_SLOT_NAMES[it.slot]}</p>${d.isNew?`<p class="sg-flip-new">새 장비! ${esc(gearBase(it,g))}</p>`:`<p class="sg-flip-count">${d.before}개 → <b>${d.after}개</b></p>`}${d.mergeReady?`<p class="sg-flip-gold">합성할 수 있어요! 장비 탭에서 [합성]을 눌러요</p>`:next?`<p>${next}개면 ${R.GRADE_NAMES[g+1]} 합성</p>`:''}${d.mode==='first'?'<p class="sg-flip-slot">무기 칸에 끼웠어요</p>':''}`;
+    this.supplyShow({box:'gear',label:'장비 보급',front,grade:g,level:d.qty>=7?2:d.qty>=3?1:0,banner:d.qty>=7?'대박! 7개':d.qty>=3?'행운! 3개':d.isNew?'새 장비!':''});
   }
   // 캐릭터 고르기(2026-09-24 사용자 "로그인 시에 1회 선택지, 바꿀 수 없으니 신중히 하라고 메시지 띄우고 확인받아"):
   // 로그인해 로비에 오면 모든 학생에게 한 번(닫을 수 없음) → 한 번 더 확인. 고른 뒤에는 학생이 바꿀 수 없다(선생님 관리 페이지만).

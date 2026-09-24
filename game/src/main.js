@@ -14,7 +14,7 @@ import {
   COLLECTIBLES, SETS, RARITY, parseReward, CURRENCY_ICON, MISSIONS, ACHIEVEMENTS,
   CHALLENGES, RULES, challengeMods, MODES,
 } from "./meta.js";
-import { SPRITES, UI_IMAGES, HEROES, tintedSprite, playSfx, isMuted, toggleMuted } from "./assets.js";
+import { SPRITES, UI_IMAGES, HEROES, tintedSprite, playSfx, playSynth, isMuted, toggleMuted } from "./assets.js";
 import { music } from "./music.js";
 import { createFrameClock, createRenderQuality, setText, setWidth } from "./runtime-performance.js";
 import { createThemeEffects } from "./theme-effects.js";
@@ -5299,11 +5299,12 @@ async function connectCloud() {
 }
 document.getElementById("btn-retry").addEventListener("click", () => { playSfx("uiClick", 0.4); connectCloud(); });
 sgUI=new GuardianUI(elMenu,{
-  getState:()=>sgState,start:sgStart,action:sgAction,refresh:sgRefresh,abandon:sgAbandon,
+  getState:()=>sgState,start:sgStart,action:sgAction,refresh:sgRefresh,abandon:sgAbandon,sfx:playSynth,
   logout:async()=>{await cloud.logout();sgState={profile:null,passes:null,user:null,active:null,error:null};elTitle.classList.remove('hidden');refreshTitle();sgUI.render();}
 });
 for(const id of ['sg-objective','sg-run-tools']){const el=document.createElement('div');el.id=id;document.body.append(el);}
 sgUI.render();
+if(SG_LOCAL)window.__sgUI=sgUI;   // 로컬 확인용(보급 연출 결과별 캡처 등)
 sgUI.dialog.addEventListener('close',()=>queueMicrotask(sgMaybeGuidance));
 setInterval(()=>{if(cloud.loggedIn&&mode==='menu'&&!sgUI.busy&&!sgSettling)sgRefresh().catch(()=>{});},15000);
 connectCloud();
