@@ -77,7 +77,8 @@ def main():
             ui = out.startswith("supply_")
             im = cut(col, alpha, box, BOX if ui else ICON, mode, frac)
             path = (UI if ui else GEAR) / out
-            im.save(path, optimize=True); made.append((out, im))
+            # 256색으로 줄여 저장(화질 차이 없이 약 1/5 크기 — 학교 와이파이·태블릿)
+            im.quantize(colors=256, method=Image.Quantize.FASTOCTREE, dither=Image.Dither.FLOYDSTEINBERG).save(path, optimize=True); made.append((out, im))
             print(out, im.size, round(path.stat().st_size / 1024), "KB")
     # 미리보기: 체크 무늬 위에 전부
     cell = 190; cols = 6; rows = (len(made) + cols - 1) // cols

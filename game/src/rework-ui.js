@@ -46,7 +46,7 @@ const heroName=h=>h==='minji'?'민지':'호야';
 const SUPPLY_COLORS=['#9aa8b1','#4f95d6','#9a6bd6','#ec8a3a','#e0b53c'];
 // 보급 상자 그림(사용자 Gemini 2026-09-24, cut_gear.py): 파츠 = 선물 상자(닫힘·뚜껑·열림), 장비 = 보물 상자(닫힘·열림). 첫 보급 때 비어 보이지 않게 미리 불러 둔다.
 const SUPPLY_BOX=(box,kind)=>`./assets/sprites/ui/supply_${box==='gear'?'gear':'part'}_${kind}.png`;
-if(typeof Image!=='undefined')for(const b of ['part','gear'])for(const k of ['closed','open','lid'])if(!(b==='gear'&&k==='lid'))new Image().src=SUPPLY_BOX(b,k);
+let supplyPreloaded=false;const preloadSupply=()=>{if(supplyPreloaded||typeof Image==='undefined')return;supplyPreloaded=true;for(const b of ['part','gear'])for(const k of ['closed','open','lid'])if(!(b==='gear'&&k==='lid'))new Image().src=SUPPLY_BOX(b,k);};   // 파츠·장비 탭을 처음 열 때
 const starText=n=>'★'.repeat(Math.max(0,Math.min(3,n)));
 const difficultyHelp=id=>{const d=R.DIFFICULTIES[id]||R.DIFFICULTIES.easy;return `<b>${esc(d.name)} ${starText(d.stars)}</b><span>${esc(d.desc)}</span>`;};
 
@@ -137,6 +137,7 @@ export class GuardianUI {
   }
   elementFilter(current,attribute){return `<div class="sg-element-filter" aria-label="원소별 보기"><button data-${attribute}="all" class="${current==='all'?'on':''}">전체</button>${elements().map(([id,d])=>`<button data-${attribute}="${id}" class="${current===id?'on':''}">${icon(`element_${id}`)}${esc(d.name)}</button>`).join('')}</div>`;}
   parts(p,passes){
+    preloadSupply();
     const equipped=p.equippedParts||[],pending=R.pendingPart(p),counts=R.setCounts(p),runIds=R.runParts(p),distinct=new Set(runIds.map(id=>R.PARTS[id].element)).size,rainbow=R.rainbowSet(p);
     return `<div class="sg-heading"><div><span class="sg-eyebrow">SKILL PARTS</span><h1>나만의 공격을 만드는 파츠</h1><p>파츠 3개까지 장착할 수 있어요. 해당 스킬을 고르면 새 기능이 발동해요.</p></div><span class="sg-progress">장착 ${equipped.length} / 3</span></div>
     ${pending?`<div class="sg-panel sg-first-part"><span class="sg-eyebrow">1-1 첫 성공 보상</span><h2>원하는 파츠 1개를 선택하세요</h2><p>10종 중 하나를 바로 받아요. 사용했던 스킬의 파츠를 먼저 보여드려요. 보급권과 보급 횟수는 사용하지 않아요.</p><label>첫 파츠<select id="sg-first-part">${partOptions(p,true)}</select></label><button class="sg-primary" data-do="choose-first-part" ${R.selectableParts(p).length?'':'disabled'}>선택한 파츠 받기</button></div>`:''}
@@ -205,6 +206,7 @@ export class GuardianUI {
   gearAlert(p){return !R.heroLocked(p)||!p.milestones?.firstGear||R.gearIdsFor(p.hero).some(id=>R.gearMergeReady(p,id));}
   heroPick(){const p=this.state().profile,now=(p?.runs||0)>0?p.hero:null;return `<div class="sg-hero-choice sg-hero-pick">${[['hoya','호야','야구복 세트 · 교복 세트'],['minji','민지','피구복 세트 · 교복 세트']].map(([id,name,detail])=>`<button data-pick-hero="${id}">${now===id?'<span class="sg-hero-now-tag">지금 쓰는 캐릭터</span>':''}<img src="./assets/sprites/heroes/${id}_idle_1.png" alt=""/><b>${name}</b><small>${detail}</small></button>`).join('')}</div>`;}
   gear(p,passes){
+    preloadSupply();
     const hero=p.hero==='minji'?'minji':'hoya';
     if(!R.heroLocked(p))return `<div class="sg-heading"><div><span class="sg-eyebrow">EQUIPMENT</span><h1>먼저 함께할 캐릭터를 골라요</h1><p>한 번 고르면 바꿀 수 없어요. 장비는 고른 캐릭터 것만 나와요. 호야와 민지는 능력이 똑같아요.</p></div></div><div class="sg-panel">${this.heroPick()}</div>`;
     const eq=p.equippedGear||{},gb=R.gearBonuses(p),sets=[`${hero}_ranged`,`${hero}_melee`],first=!p.milestones?.firstGear,open=!!p.stages.CH01?.cleared,pool=R.gearDrawPool(p).length,worn=R.GEAR_SLOTS.filter(s=>R.GEAR[eq[s]]).length;
