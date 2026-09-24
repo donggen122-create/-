@@ -264,7 +264,7 @@ function sgMods(){
 }
 const sgSkillImg=(d,cls='')=>d&&d.sprite?`<img class="sg-icon ${cls}" src="./assets/sprites/skills/${d.sprite}.png" alt="" />`:'';
 const sgElements=createElementCombat({U,getPlayer:()=>player,getEnemies:()=>enemies,getBoss:()=>boss,getProfile:()=>sgRunProfile,damage:sgDamage,projectiles:()=>sgHostileShots,getMods:sgMods,
-  onBlast:(at,r,big)=>{addShake(Math.min(big?9:6,2+r/U*1.6),big?.22:.14);if(big)addHitStop(.04);}});   // 펑펑 터지는 느낌: 폭발마다 화면 흔들림, 큰 폭발은 잠깐 멈춤
+  onBlast:()=>{}});   // 스킬 폭발 화면 흔들림·멈춤은 없앴다(2026-09-24 밤 사용자 "자꾸 진동 때문에 거슬려") — 폭발 그림·소리로만
 const sgWeapon=createWeaponCombat({U,getPlayer:()=>player,getEnemies:()=>enemies,getBoss:()=>boss,getProfile:()=>sgRunProfile,damage:sgDamage,images:ELEMENT_WEAPONS,sound:()=>playSfx('attack',.12),getMods:sgMods,
   getHostileShots:()=>sgHostileShots,onSpecial:(key)=>sgGearCount(key)});
 const SG_LOCAL=['localhost','127.0.0.1','[::1]'].includes(location.hostname);
@@ -1996,7 +1996,6 @@ function fireSkill(skillId) {
       player.aimAngle = baseAngle;
       player.muzzleT = 0.12;
       playSfx("attackFire", def.kind === "spread" ? 0.4 : 0.26);
-      if (def.kind === "spread") addShake(2.5, 0.1);
       break;
     }
     case "pierce": {
@@ -2134,7 +2133,6 @@ function fireSkill(skillId) {
       }
       swings.push({ angle: ang, reach, half, life: 0.18, maxLife: 0.18, color: def.color });
       player.aimAngle = ang;
-      if (hit) addShake(2, 0.08);
       playSfx("attackFire", 0.3);
       break;
     }
@@ -2267,11 +2265,8 @@ function dealDamageToTarget(target, dmg, isBoss, dir, knock, resisted = false) {
     target.kbVx = (target.kbVx || 0) + (dir.x / len) * push;
     target.kbVy = (target.kbVy || 0) + (dir.y / len) * push;
   }
-  // 히트스톱은 보스·엘리트 치명타에만(잡몹까지 멈추면 화면이 끊겨 보인다)
-  if (isCrit) {
-    addShake(isBoss ? 4 : 2.5, 0.12);
-    if (isBoss || target.elite) addHitStop(0.045);
-  }
+  // 치명타 흔들림·멈춤은 대왕에게만, 약하게(2026-09-24 밤 사용자 "진동 거슬려" — 잡몹·엘리트 치명타는 숫자·소리로만)
+  if (isCrit && isBoss) addShake(2, 0.1);
   playSfx(isBoss || target.elite ? "hitBoss" : (Math.random() < 0.5 ? "hitLight" : "hitLight2"), isBoss || target.elite ? 0.5 : 0.2);
   return final;
 }
@@ -2282,8 +2277,6 @@ function explodeAt(x, y, radiusPx, dmg, knock, color) {
   for (const e of enemiesInRadius(x, y, radiusPx)) {
     dealDamageToTarget(e, dmg, e === boss, { x: e.x - x, y: e.y - y }, knock);
   }
-  addShake(4, 0.16);
-  addHitStop(0.03);
   playSfx("hitBoss", 0.35);
 }
 
@@ -2717,8 +2710,8 @@ function enemyExplodeAt(x, y, radiusPx, dmg, color) {
     player.invulnT = 0.3; player.hitFlashT = 0.25;
     floatingTexts.push({ x: player.x, y: player.y - 20, text: `-${Math.round(dmg)}`, life: 0.7, vy: -30, color: "#ff6060", scale: 0 });
     if (player.hp <= 0) onPlayerDeath();
+    addShake(3, 0.14);   // 흔들림은 주인공이 맞았을 때만
   }
-  addShake(3, 0.14);
   playSfx("hitBoss", 0.3);
 }
 
@@ -2756,7 +2749,7 @@ function onEnemyDeath(e) {
   }
   if (e.elite) {
     log(`엘리트 처치: ${def.name}`);
-    addShake(5, 0.25);
+    addShake(2, 0.15);   // 5 → 2(2026-09-24 밤 사용자 "진동 거슬려")
   }
 }
 
@@ -4708,7 +4701,7 @@ function draw() {
 
   // 화면 흔들림(타격감): 카메라를 미세하게 흔든다. 판정에는 영향 없음.
   const shakeAmt = !!chapter?.theme
-    ? (themeFx.reducedMotion ? 0 : shake.t > 0 ? Math.min(8, shake.mag * (shake.t / 0.18)) : 0)
+    ? (themeFx.reducedMotion ? 0 : shake.t > 0 ? Math.min(5, shake.mag * (shake.t / 0.18)) : 0)   // 흔들림 상한 8 → 5px(주인공이 맞을 때·대왕 기술만 흔들림)
     : shake.t > 0 ? shake.mag * (shake.t / 0.18) : 0;
   cam.x = player.x + (shakeAmt ? (Math.random() - 0.5) * shakeAmt * 2 : 0);
   cam.y = player.y + (shakeAmt ? (Math.random() - 0.5) * shakeAmt * 2 : 0);
@@ -5514,7 +5507,7 @@ function sgT2Tick(dt){
       if(!e.armT&&d<1.3*U)e.armT=.8;
       if(e.armT){e.armT-=dt;if(e.armT<=0){
         if(d<=1.9*U)sgEnemyHit(e.atk*1.2);
-        blasts.push({x:e.x,y:e.y,radius:1.9*U,life:.45,maxLife:.45,color:'#8fe06a',vfxKind:'splat'});addShake(4,.15);e.hp=0;}}
+        blasts.push({x:e.x,y:e.y,radius:1.9*U,life:.45,maxLife:.45,color:'#8fe06a',vfxKind:'splat'});e.hp=0;}}   // (흔들림 없앰: 2장 세균몬 터짐이 잦음)
     }else if(e.behavior==='raincloud'){        // 5.5초마다 내 발밑 1곳 + 주변 2곳에 빗방울 표시 → 1.2초 뒤 산성비
       e.rainCd=(e.rainCd??(2+Math.random()*2))-dt;
       if(e.rainCd<=0&&d<10*U&&sgAcid.length<18){
