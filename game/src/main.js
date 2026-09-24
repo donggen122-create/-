@@ -4895,7 +4895,7 @@ function bossDodge(target){
   return best;
 }
 window.__debugPilot=(seconds)=>{
-  window.__debugGod=false;
+  window.__debugGod=!!window.__pilotGod;   // 보상 규칙만 확인하는 검사는 __pilotGod=true(쓰러지지 않음), 난이도 모의는 기본(false)
   const n=Math.floor(seconds*60);
   for(let i=0;i<n&&mode!=='result';i++){
     if(mode==='levelup'){

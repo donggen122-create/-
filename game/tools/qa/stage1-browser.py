@@ -30,7 +30,9 @@ def enter_lobby(page):
     # The title button pulses continuously; wait for readiness, then issue a real pointer click without a stability wait.
     page.locator('#btn-title-start').wait_for(state='visible')
     page.wait_for_function("!document.querySelector('#btn-title-start').disabled")
-    page.locator('#btn-title-start').click(force=True)
+    page.locator('#btn-title-start').click(force=True);page.wait_for_timeout(400)
+    # 헤드리스에서 시작 화면 요소가 버튼 위를 덮어 좌표 클릭이 빗나갈 때가 있어, 시작 화면이 안 닫혔으면 버튼을 직접 누른다
+    if not page.evaluate("document.getElementById('title').classList.contains('hidden')"):page.evaluate("document.getElementById('btn-title-start').click()")
 
 def screen(page,name):
     page.screenshot(path=str(OUT/f'{name}.png'),full_page=True)

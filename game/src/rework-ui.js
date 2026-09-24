@@ -27,9 +27,16 @@ const weaponHelp=(mode,hero)=>`<b>${mode==='ranged'?'원거리':'근거리'} 기
 const starText=n=>'★'.repeat(Math.max(0,Math.min(3,n)));
 const difficultyHelp=id=>{const d=R.DIFFICULTIES[id]||R.DIFFICULTIES.easy;return `<b>${esc(d.name)} ${starText(d.stars)}</b><span>${esc(d.desc)}</span>`;};
 
+// 모험 장(챕터) — 2026-09-23 밤 사용자 "챕터 이동 버튼, 스테이지 UI 색감도 테마 분위기에 맞게". 1장은 지금 단계(R.STAGES),
+// 2장 대기오염 공장 지대는 그림이 오면 연다(이미지 에셋/테마2_대기오염_프롬프트.md). 색은 rework.css의 .sg-theme-1 / .sg-theme-2.
+const CHAPTERS=[
+ {n:'1',eyebrow:'CHAPTER 01',name:'쓰레기 마을',short:'쓰레기 마을',title:'다섯 원소로 지키는 마을',sub:'이동에 집중하세요. 공격은 자동으로, 스킬은 내 선택으로.'},
+ {n:'2',eyebrow:'CHAPTER 02',name:'대기오염 공장 지대',short:'대기오염 공장',title:'매연을 걷어 내는 공장 지대',sub:'굴뚝마다 시커먼 매연! 먼지몬·가스몬·세균몬을 정화하고 맑은 공기를 되찾아요.',soon:true,
+  stages:[['공단 입구','먼지몬'],['굴뚝 골목','가스몬'],['가스 탱크 공장','세균몬 · 왕먼지몬'],['매연 도로','산성비 구름몬'],['굴뚝 대왕의 공장','굴뚝 가스 대왕']]},
+];
 export class GuardianUI {
   constructor(menu,callbacks){
-    this.c=callbacks;this.tab='adventure';this.stage='CH01';this.element='fire';this.partFilter='all';this.bookFilter='all';this.bookTab='skills';this.busy=false;
+    this.c=callbacks;this.tab='adventure';this.stage='CH01';this.chapter='1';this.element='fire';this.partFilter='all';this.bookFilter='all';this.bookTab='skills';this.busy=false;
     menu.classList.add('sg-mode');this.root=document.createElement('div');this.root.id='guardian-lobby';menu.append(this.root);
     this.dialog=document.createElement('dialog');this.dialog.className='sg-dialog';document.body.append(this.dialog);
     this.dialog.addEventListener('click',e=>{if(e.target===this.dialog)this.dialog.close();});
@@ -70,7 +77,23 @@ export class GuardianUI {
       this.dialog.close();await this.perform({kind:'choose-part',id:button.dataset.firstPart});
     });
   }
+  // 장 이동 막대: ‹ [1장 쓰레기 마을] [2장 대기오염 공장 지대] ›
+  chapterBar(p,cur){
+    const i=CHAPTERS.indexOf(cur),prev=CHAPTERS[i-1],next=CHAPTERS[i+1],done=R.STAGES.filter(s=>p.stages[s.id]?.cleared).length;
+    const state=c=>c.soon?(p.stages.CH05?.cleared?'준비 중':'1-5 정화 후 열림'):`${done} / 5 정화`;
+    return `<nav class="sg-chapter-bar" aria-label="장 이동"><button class="sg-chapter-arrow" ${prev?`data-chapter="${prev.n}"`:'disabled'} aria-label="이전 장">‹</button><div class="sg-chapter-chips">${CHAPTERS.map(c=>`<button class="sg-chapter-chip sg-chip-${c.n} ${c===cur?'on':''}" data-chapter="${c.n}" aria-current="${c===cur?'true':'false'}"><b>${c.n}장</b><span><i class="sg-long">${esc(c.name)}</i><i class="sg-short">${esc(c.short)}</i></span><small>${state(c)}</small></button>`).join('')}</div><button class="sg-chapter-arrow" ${next?`data-chapter="${next.n}"`:'disabled'} aria-label="다음 장">›</button></nav>`;
+  }
+  soonChapter(p,c){
+    return `<div class="sg-heading"><div><span class="sg-eyebrow">${c.eyebrow} · ${esc(c.name)}</span><h1>${esc(c.title)}</h1><p>${esc(c.sub)}</p></div><span class="sg-progress">준비 중</span></div>
+    <div class="sg-stage-map">${c.stages.map(([name,foe],i)=>`<button class="sg-stage sg-stage-soon" disabled aria-label="${c.n}-${i+1} ${esc(name)} 준비 중"><span class="sg-stage-number">${c.n}-${i+1}</span><span class="sg-soon-art" aria-hidden="true">?</span><strong>${esc(name)}</strong><span class="sg-soon-foe">${esc(foe)}</span><small class="sg-stage-gift done">준비 중</small></button>`).join('')}</div>
+    <div class="sg-departure"><div class="sg-hero-scene sg-smog-scene" aria-hidden="true"><i class="sg-chimney c1"></i><i class="sg-chimney c2"></i><i class="sg-chimney c3"></i><span>매연이 가득한 공장 지대</span></div><div class="sg-brief"><span class="sg-eyebrow">곧 열려요</span><h2>매연을 뿜는 굴뚝 가스 대왕</h2><p>공장 파이프와 부품이 모여 생긴 대왕이 가까이·중간·멀리에서 서로 다른 기술을 써요. 가스가 새는 밸브를 잠그면 대왕이 약해져요.</p><div class="sg-goal">${icon('element_wind')} 환경 목표: 가스가 새는 밸브 잠그기</div><small>${p.stages.CH05?.cleared?'새 그림이 준비되면 바로 열려요.':'1장의 1-5 쓰레기 산 대왕을 정화하면 열려요.'}</small><button class="sg-primary sg-start" disabled>준비 중</button></div></div>`;
+  }
   adventure(p,passes){
+    const chapter=CHAPTERS.find(c=>c.n===String(this.chapter))||CHAPTERS[0];
+    if(chapter.soon)return `<div class="sg-adventure sg-theme-${chapter.n}">${this.chapterBar(p,chapter)}${this.soonChapter(p,chapter)}</div>`;
+    return `<div class="sg-adventure sg-theme-1">${this.chapterBar(p,chapter)}${this.chapterOne(p,passes)}</div>`;
+  }
+  chapterOne(p,passes){
     const st=R.STAGES.find(s=>s.id===this.stage),duration=R.durationFor(p,st.id),done=R.STAGES.filter(s=>p.stages[s.id]?.cleared).length,pictures=['en_snackbag','en_buttbug','en_bottle','en_baggy','boss_calm'];
     const mode=p.weaponMode||'melee',difficulty=R.difficultyOf(p),weaponName=mode==='melee'?(p.hero==='minji'?'연필':'검'):(p.hero==='minji'?'피구공':'야구 배트');
     return `<div class="sg-heading"><div><span class="sg-eyebrow">CHAPTER 01 · 쓰레기 마을</span><h1>다섯 원소로 지키는 마을</h1><p>이동에 집중하세요. 공격은 자동으로, 스킬은 내 선택으로.</p></div><span class="sg-progress">${done} / 5 정화</span></div>
@@ -141,7 +164,7 @@ export class GuardianUI {
   }
   async click(e){
     const b=e.target.closest('button');if(!b||b.disabled||this.busy)return;
-    for(const [data,field] of [['tab','tab'],['stage','stage'],['partFilter','partFilter'],['bookFilter','bookFilter'],['bookTab','bookTab']])if(b.dataset[data]){this[field]=b.dataset[data];this.render();return;}
+    for(const [data,field] of [['tab','tab'],['chapter','chapter'],['stage','stage'],['partFilter','partFilter'],['bookFilter','bookFilter'],['bookTab','bookTab']])if(b.dataset[data]){this[field]=b.dataset[data];this.render();return;}
     const {profile:p,passes}=this.state();
     if(b.dataset.detail){this.details(b.dataset.detail);return;}
     if(b.dataset.reset){const id=b.dataset.reset,item=p.parts[id],refund=R.partResetRefund?R.partResetRefund(item.level):60*(item.level-1)+10*(item.level-1)*(item.level-2);this.openDialog(`<h2>레벨 되돌리기</h2><p>${esc(R.PARTS[id].name)}${objJosa(R.PARTS[id].name)} Lv.1로 되돌리고, 레벨 올리기에 쓴 <strong>${refund} 코인</strong>을 모두 돌려받아요. 모은 개수와 메달은 그대로예요.</p><button class="sg-primary" id="sg-confirm-reset">${refund} 코인 돌려받기</button><button data-close>돌아가기</button>`);this.dialog.querySelector('#sg-confirm-reset').onclick=async()=>{this.dialog.close();await this.perform({kind:'reset-part',id});};return;}

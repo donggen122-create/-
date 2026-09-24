@@ -20,7 +20,10 @@ def close(page):
     page.evaluate("document.querySelectorAll('dialog[open]').forEach(d=>d.close())");page.wait_for_timeout(150)
 def lobby(page):
     page.locator('#btn-title-start').wait_for(state='visible');page.wait_for_function("!document.querySelector('#btn-title-start').disabled")
-    page.locator('#btn-title-start').click(force=True);page.locator('#guardian-lobby .sg-nav').wait_for();page.wait_for_timeout(500)
+    page.locator('#btn-title-start').click(force=True);page.wait_for_timeout(400)
+    # 헤드리스에서 시작 화면 요소가 버튼 위를 덮어 좌표 클릭이 빗나갈 때가 있어, 시작 화면이 안 닫혔으면 버튼을 직접 누른다
+    if not page.evaluate("document.getElementById('title').classList.contains('hidden')"):page.evaluate("document.getElementById('btn-title-start').click()")
+    page.wait_for_function("document.getElementById('title').classList.contains('hidden')");page.locator('#guardian-lobby .sg-nav').wait_for();page.wait_for_timeout(500)
 def card(page):
     page.locator('dialog[open] .sg-flip').wait_for();page.wait_for_timeout(1400);return dialog_text(page)
 def state(page):return page.evaluate("async()=>await(await fetch('/api/guardian',{headers:{Authorization:'Bearer '+localStorage.lumen_token}})).json()")
@@ -33,7 +36,7 @@ with sync_playwright() as pw:
         ctx=b.new_context(viewport={'width':w,'height':h},has_touch=w<1200);page=ctx.new_page();page.on('pageerror',lambda e:errors.append(str(e)))
         page.goto(BASE,wait_until='networkidle');page.locator('#login-id').fill(uid);page.locator('#login-pw').fill('qa_local_1234');page.locator('#btn-register').click()
         page.locator('#btn-title-start').wait_for(state='visible')
-        seed(page,uid,profile(coins=700,gifts=8,stages={'CH01':{'cleared':True,'stars':1}},milestones={'firstPart':True},parts={'PART_F1':{'copies':1,'level':1}},equippedParts=['PART_F1'],skillUsage={'L2':3}))
+        seed(page,uid,profile(coins=700,gifts=8,stages={'CH01':{'cleared':True,'stars':1}},milestones={'firstPart':True},parts={'PART_F1':{'copies':1,'level':1}},equippedParts=['PART_F1'],skillUsage={'L2':3},training={'attack':100,'hp':100,'speed':50}))   # 어려움 재조정(docs/28) 뒤 1-1 어려움 성공 확인용 훈련
         lobby(page)
         # 1) 새 규칙 안내가 한 번 뜬다
         assert '파츠 보급이 바뀌었어요' in dialog_text(page) and '전설(80개)' in dialog_text(page);page.screenshot(path=str(OUT/f'notice-{w}.png'));close(page);checks.append('rules notice')
@@ -82,7 +85,7 @@ with sync_playwright() as pw:
         page.screenshot(path=str(OUT/f'stage-gift-{w}.png'),full_page=True)
         def clear_ch01():
             page.locator('[data-stage="CH01"]').click();page.locator('#sg-start').click();page.locator('#levelup:not(.hidden)').wait_for()
-            page.evaluate('window.__debugGod=true');page.evaluate('window.__debugPilot(301)');page.locator('#btn-continue:enabled').wait_for(timeout=30000)
+            page.evaluate('window.__pilotGod=true');page.evaluate('window.__debugPilot(301)');page.locator('#btn-continue:enabled').wait_for(timeout=30000)
             t=page.locator('#result-table').inner_text();page.screenshot(path=str(OUT/f'stage-gift-result-{w}.png'));page.locator('#btn-continue').click();page.wait_for_timeout(400);close(page);return t
         t=clear_ch01();assert '+2' in t and '여기까지' in t,t
         assert '오늘 보급권 끝' in page.locator('[data-stage="CH01"]').inner_text()
