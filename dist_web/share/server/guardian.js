@@ -183,6 +183,22 @@ export async function guardianAdmin(request,env,sub,method,now=Date.now()){
     await db.prepare('UPDATE guardian_profiles SET state=?,revision=revision+1 WHERE user_id=?').bind(JSON.stringify(next),id).run();
     return reply({ok:true,id,training:next.training,parts:Object.keys(next.parts).length,stages:Object.keys(next.stages).filter(k=>next.stages[k].cleared).length});
   }
+  // 캐릭터(성별) 바꾸기: 가입 때 고정된 캐릭터를 선생님이 한 번 바꿔 준다 — 장비가 하나도 없을 때만(장비는 성별마다 달라서)
+  if(sub==='set-hero'&&method==='POST'){
+    let b;try{b=await request.json();}catch{return reply({error:'입력 형식을 확인해 주세요.'},400);}
+    const id=String(b.id||'').toLowerCase();if(!['hoya','minji'].includes(b.hero))return reply({error:'호야나 민지를 골라 주세요.'},400);
+    if(!await db.prepare('SELECT id FROM users WHERE id=?').bind(id).first())return reply({error:'없는 아이디예요.'},404);
+    const {profile,revision}=await getProfile(db,id);
+    // 첫 무료 무기(원거리·근거리 1개씩)만 가진 학생은 새 캐릭터의 같은 종류 무기로 바꿔 준다(잘못 고른 경우). 장비를 더 모았으면 거절.
+    const owned=Object.entries(profile.gear||{}).filter(([,g])=>g.copies>0);
+    const firstOnly=owned.every(([id,g])=>g.copies===1&&/_(ranged|melee)_weapon$/.test(id));
+    if(!firstOnly)return reply({error:'장비를 모은 학생이라 캐릭터를 바꿀 수 없어요.'},400);
+    const swap=id=>id.replace(/^(hoya|minji)_/,`${b.hero}_`),next={...profile,hero:b.hero,heroLocked:true,equippedGear:{}};
+    if(owned.length){next.gear=Object.fromEntries(owned.map(([id,g])=>[swap(id),{...g}]));if(profile.equippedGear?.weapon)next.equippedGear={weapon:swap(profile.equippedGear.weapon)};}
+    const r=await db.prepare('UPDATE guardian_profiles SET state=?,revision=revision+1 WHERE user_id=? AND revision=?').bind(JSON.stringify(next),id,revision).run();
+    if(!r.meta.changes)return reply({error:'다른 곳에서 저장 중이에요. 다시 눌러 주세요.'},409);
+    return reply({ok:true,id,hero:b.hero});
+  }
   if(sub==='grant-passes'&&method==='POST'){
     let b;try{b=await request.json();}catch{return reply({error:'입력 형식을 확인해 주세요.'},400);}
     if(!uuid(b.requestId)||!integer(b.passes,0,100)||!integer(b.gold||0,0,1000000)||(!b.passes&&!b.gold))return reply({error:'이용권은 0~100장, 코인은 0~1000000개를 입력하세요.'},400);

@@ -256,6 +256,7 @@ function render() {
         <button class="sm" data-act="pw">비번</button>
         <button class="sm" data-act="lock">${u.locked ? "풀기" : "잠금"}</button>
         <button class="sm" data-act="grant">선물</button>
+        <button class="sm" data-act="hero" title="잘못 고른 캐릭터를 바꿔 줘요(장비가 없을 때만)">캐릭터</button>
         ${isOwner() ? `<button class="sm danger" data-act="reset">초기화</button>
         <button class="sm danger" data-act="del">삭제</button>` : ""}
       </td>
@@ -322,6 +323,11 @@ $("#tbl").addEventListener("click", async (e) => {
       const locked = !u.locked;
       if (!confirm(locked ? `${name} 계정을 잠글까요? 잠그면 게임에 들어올 수 없어요.` : `${name} 계정 잠금을 풀까요?`)) return;
       await api("lock", { id, locked }); toast(locked ? `${name} 잠금` : `${name} 잠금 해제`); await load(); await loadOnline();
+    } else if (btn.dataset.act === "hero") {
+      // 장비(2026-09-24): 학생 캐릭터는 가입 때 고정. 잘못 골랐을 때만 여기서 바꾼다(서버가 장비를 가진 학생은 거절).
+      const next = u.hero === "minji" ? "hoya" : "minji", label = next === "minji" ? "민지" : "호야";
+      if (!confirm(`${name}의 캐릭터를 ${label}(으)로 바꿀까요? 첫 무료 무기는 새 캐릭터 무기로 바꿔 줘요. 장비를 더 모은 학생은 바꿀 수 없어요.`)) return;
+      await api("set-hero", { id, hero: next }); toast(`${name} → ${label}`); await load();
     } else if (btn.dataset.act === "grant") {
       grantTarget = u; $("#dlg-grant-who").textContent = name; $("#dlg-grant").showModal();
     } else if ((btn.dataset.act === "reset" || btn.dataset.act === "del") && !isOwner()) {
