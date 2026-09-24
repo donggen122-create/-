@@ -45,6 +45,11 @@ export const SCHEMA = [
     INSERT INTO play_days(user_id,day,bonus_granted) VALUES(NEW.user_id,NEW.day,NEW.passes) ON CONFLICT(user_id,day) DO UPDATE SET bonus_granted=bonus_granted+NEW.passes;
     UPDATE guardian_profiles SET state=json_set(state,'$.coins',json_extract(state,'$.coins')+NEW.gold), revision=revision+1 WHERE user_id=NEW.user_id AND NEW.gold>0;
   END`,
+  // 보급권 지급(2026-09-24 밤 사용자 "선생님 관리에 보급권 부여 기능"): 요청 번호(request_id)마다 한 번만 → 트리거가 프로필 gifts에 더한다(만료 없음).
+  `CREATE TABLE IF NOT EXISTS play_admin_gift_grants (request_id TEXT NOT NULL, user_id TEXT NOT NULL REFERENCES users(id) ON DELETE CASCADE, gifts INTEGER NOT NULL CHECK(gifts BETWEEN 1 AND 100), note TEXT NOT NULL, created_at INTEGER NOT NULL, PRIMARY KEY(request_id,user_id))`,
+  `CREATE TRIGGER IF NOT EXISTS play_admin_gift_apply AFTER INSERT ON play_admin_gift_grants BEGIN
+    UPDATE guardian_profiles SET state=json_set(state,'$.gifts',COALESCE(json_extract(state,'$.gifts'),0)+NEW.gifts), revision=revision+1 WHERE user_id=NEW.user_id;
+  END`,
 ];
 export async function migrate(db){await db.batch(SCHEMA.map(sql=>db.prepare(sql)));return {ok:true,version:VERSION};}
 export async function getProfile(db,id){
@@ -172,6 +177,11 @@ export async function guardianAdmin(request,env,sub,method,now=Date.now()){
     const users=rows.map(u=>{const baseRemaining=10-(u.base_used||0),bonusRemaining=(u.bonus_granted||0)-(u.bonus_used||0);return {id:u.id,display_id:u.display_id,baseRemaining,bonusRemaining,remaining:baseRemaining+bonusRemaining,resetAt:nextReset(now)};});
     // 이벤트 자동 지급(request_id event-…)은 학생마다 하루 한 줄씩 생기므로 기록 목록에서 뺀다
     const audit=(await db.prepare("SELECT request_id,user_id,day,passes,gold,note,created_at FROM play_admin_grants WHERE request_id NOT LIKE 'event-%' ORDER BY created_at DESC LIMIT 100").all()).results;
+    // 보급권 지급 기록을 같은 요청(요청 번호·학생)에 합친다. 보급권만 준 요청은 새 줄
+    const gifts=(await db.prepare('SELECT request_id,user_id,gifts,note,created_at FROM play_admin_gift_grants ORDER BY created_at DESC LIMIT 100').all()).results;
+    for(const a of audit)a.gifts=0;
+    for(const g of gifts){const a=audit.find(x=>x.request_id===g.request_id&&x.user_id===g.user_id);if(a)a.gifts=g.gifts;else audit.push({request_id:g.request_id,user_id:g.user_id,passes:0,gold:0,gifts:g.gifts,note:g.note,created_at:g.created_at});}
+    audit.sort((a,b)=>b.created_at-a.created_at);audit.length=Math.min(audit.length,100);
     const ev=activePassEvent(now);
     return reply({users,audit,now,event:ev?{id:ev.id,title:ev.title,bonus:ev.bonus,days:ev.days}:null});
   }
@@ -204,7 +214,8 @@ export async function guardianAdmin(request,env,sub,method,now=Date.now()){
   }
   if(sub==='grant-passes'&&method==='POST'){
     let b;try{b=await request.json();}catch{return reply({error:'입력 형식을 확인해 주세요.'},400);}
-    if(!uuid(b.requestId)||!integer(b.passes,0,100)||!integer(b.gold||0,0,1000000)||(!b.passes&&!b.gold))return reply({error:'이용권은 0~100장, 코인은 0~1000000개를 입력하세요.'},400);
+    const passes=b.passes??0,gold=b.gold||0,gifts=b.gifts||0;
+    if(!uuid(b.requestId)||!integer(passes,0,100)||!integer(gold,0,1000000)||!integer(gifts,0,100)||(!passes&&!gold&&!gifts))return reply({error:'이용권은 0~100장, 보급권은 0~100장, 코인은 0~1000000개를 입력하세요.'},400);
     const rows=(await db.prepare('SELECT u.id,s.data,g.state FROM users u LEFT JOIN saves s ON s.user_id=u.id LEFT JOIN guardian_profiles g ON g.user_id=u.id WHERE ?=1 OR u.id=?').bind(b.all===true?1:0,String(b.id||'').toLowerCase()).all()).results;
     const ids=rows.map(u=>u.id);
     if(!ids.length)return reply({error:'대상 학생을 찾을 수 없어요.'},404);
@@ -213,9 +224,10 @@ export async function guardianAdmin(request,env,sub,method,now=Date.now()){
     // All inserts and triggers are one transaction; retrying the request ID grants nothing twice.
     await db.batch([
       db.prepare("INSERT OR IGNORE INTO guardian_profiles(user_id,state) SELECT json_extract(value,'$.id'),json_extract(value,'$.state') FROM json_each(?)").bind(JSON.stringify(missing)),
-      db.prepare('INSERT OR IGNORE INTO play_admin_grants(request_id,user_id,day,passes,gold,note,created_at) SELECT ?,value,?,?,?,?,? FROM json_each(?)').bind(b.requestId,day,b.passes,b.gold||0,note,now,JSON.stringify(ids)),
+      ...(passes||gold?[db.prepare('INSERT OR IGNORE INTO play_admin_grants(request_id,user_id,day,passes,gold,note,created_at) SELECT ?,value,?,?,?,?,? FROM json_each(?)').bind(b.requestId,day,passes,gold,note,now,JSON.stringify(ids))]:[]),
+      ...(gifts?[db.prepare('INSERT OR IGNORE INTO play_admin_gift_grants(request_id,user_id,gifts,note,created_at) SELECT ?,value,?,?,? FROM json_each(?)').bind(b.requestId,gifts,note,now,JSON.stringify(ids))]:[]),
     ]);
-    return reply({ok:true,count:ids.length,passes:b.passes,gold:b.gold||0,day,expiresAt:nextReset(now)});
+    return reply({ok:true,count:ids.length,passes,gold,gifts,day,expiresAt:nextReset(now)});
   }
   return null;
 }
