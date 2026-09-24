@@ -189,12 +189,12 @@ export async function guardianAdmin(request,env,sub,method,now=Date.now()){
     const id=String(b.id||'').toLowerCase();if(!['hoya','minji'].includes(b.hero))return reply({error:'호야나 민지를 골라 주세요.'},400);
     if(!await db.prepare('SELECT id FROM users WHERE id=?').bind(id).first())return reply({error:'없는 아이디예요.'},404);
     const {profile,revision}=await getProfile(db,id);
-    // 첫 무료 무기 1개만 받은 학생은 새 캐릭터의 같은 종류 무기로 바꿔 준다(가입 직후 잘못 고른 경우). 장비를 더 모았으면 거절.
-    const owned=Object.entries(profile.gear||{}).filter(([,g])=>g.copies>0),total=owned.reduce((n,[,g])=>n+g.copies,0);
-    const firstOnly=owned.length===1&&total===1&&/_(ranged|melee)_weapon$/.test(owned[0][0]);
-    if(owned.length&&!firstOnly)return reply({error:'장비를 모은 학생이라 캐릭터를 바꿀 수 없어요.'},400);
-    const next={...profile,hero:b.hero,heroLocked:true,equippedGear:{}};
-    if(firstOnly){const [old,g]=owned[0],swap=old.replace(/^(hoya|minji)_/,`${b.hero}_`);next.gear={[swap]:{...g}};if(profile.equippedGear?.weapon===old)next.equippedGear={weapon:swap};}
+    // 첫 무료 무기(원거리·근거리 1개씩)만 가진 학생은 새 캐릭터의 같은 종류 무기로 바꿔 준다(잘못 고른 경우). 장비를 더 모았으면 거절.
+    const owned=Object.entries(profile.gear||{}).filter(([,g])=>g.copies>0);
+    const firstOnly=owned.every(([id,g])=>g.copies===1&&/_(ranged|melee)_weapon$/.test(id));
+    if(!firstOnly)return reply({error:'장비를 모은 학생이라 캐릭터를 바꿀 수 없어요.'},400);
+    const swap=id=>id.replace(/^(hoya|minji)_/,`${b.hero}_`),next={...profile,hero:b.hero,heroLocked:true,equippedGear:{}};
+    if(owned.length){next.gear=Object.fromEntries(owned.map(([id,g])=>[swap(id),{...g}]));if(profile.equippedGear?.weapon)next.equippedGear={weapon:swap(profile.equippedGear.weapon)};}
     const r=await db.prepare('UPDATE guardian_profiles SET state=?,revision=revision+1 WHERE user_id=? AND revision=?').bind(JSON.stringify(next),id,revision).run();
     if(!r.meta.changes)return reply({error:'다른 곳에서 저장 중이에요. 다시 눌러 주세요.'},409);
     return reply({ok:true,id,hero:b.hero});

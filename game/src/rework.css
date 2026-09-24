@@ -243,6 +243,15 @@
 .sg-hero-pick>button{padding:14px!important}
 .sg-hero-now>div{flex:1;display:flex;flex-direction:column;align-items:center;gap:4px}
 .sg-hero-confirm{height:120px;width:auto}
+.sg-hero-warn{background:#fff4e0;border:1.5px solid #f0b85a;border-radius:12px;padding:10px 12px!important;color:#7a4300!important}
+.sg-hero-pick>button{position:relative}
+.sg-hero-now-tag{position:absolute;top:6px;left:50%;transform:translateX(-50%);font-size:11px;font-weight:800;background:#e0efe6;color:#185849;border-radius:10px;padding:1px 8px;white-space:nowrap}
+.sg-gear-first-grid em{font-style:normal;font-size:12px;font-weight:800;color:#185849;margin-top:2px}
+.sg-first-weapons{display:flex;gap:10px;justify-content:center;margin:8px 0}
+.sg-first-weapon{display:flex;flex-direction:column;align-items:center;gap:4px;flex:1;padding:8px;border-radius:14px;border:1.5px solid var(--sg-line)}
+.sg-first-weapon.on{border-color:#268169;background:#eef8f1}
+.sg-first-weapon .sg-gear-icon.big{width:60px;height:60px}
+.sg-first-weapon b{font-size:14px;line-height:1.3}
 @media(max-width:760px){
  .sg-gear-top{grid-template-columns:1fr}
  .sg-gear-grid{grid-template-columns:repeat(2,minmax(0,1fr))}

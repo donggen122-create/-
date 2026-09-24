@@ -1,7 +1,7 @@
 # 서호팡팡수호대 — Claude 작업 안내 (모든 PC 공통)
 
 ## 2026-09-24 저녁. 장비 시스템 구현(배포 전) — `docs/34_장비_시스템_기획.md` 13절
-- 장비 데이터 `game/src/equipment.js`, 규칙 `rework-core.js`(choose-hero·choose-first-gear·draw-gear·merge-gear·equip-gear·unequip-gear), 전투 `main.js` sgGear*, 화면 `rework-ui.js` gear 탭. 캐릭터는 가입 뒤 한 번 고르면 고정(`heroLocked`), 바꾸기는 관리 API `set-hero`. 장비 아이콘은 임시 그림 — 사용자 그림이 오면 `GEAR_ART`에 넣는다. 격리 서버 가입 제한은 `/_qa/reset-attempts`로 비운다(시험 아이디는 12글자 이하).
+- 장비 데이터 `game/src/equipment.js`, 규칙 `rework-core.js`(choose-hero·choose-first-gear·draw-gear·merge-gear·equip-gear·unequip-gear), 전투 `main.js` sgGear*, 화면 `rework-ui.js` gear 탭. 캐릭터는 모든 학생이 로그인 때 한 번 신중히 고르고 고정(`heroLocked`는 직접 고른 학생만 true), 고르면 원거리·근거리 무기 1개씩 무료. 바꾸기는 관리 API `set-hero`. 장비 아이콘은 임시 그림 — 사용자 그림이 오면 `GEAR_ART`에 넣는다. 격리 서버 가입 제한은 `/_qa/reset-attempts`로 비운다(시험 아이디는 12글자 이하).
 
 ## 2026-09-24 14:1x KST. 성능 최적화 실서버 배포 완료 f99f7854 — `docs/33_성능_최적화.md`
 - 피해 숫자·효과 목록 상한(숫자 90·효과 120), 적 목록 캐시, ImageBitmap 캐시, 고해상도 적 그림 줄인 사본. 측정 도구 `game/tools/qa/perf.py`·`bench.py`. 새 기능을 넣을 때 매 프레임 쌓이는 배열은 상한을 두고, 캔버스를 반복해서 그리지 말고 ImageBitmap으로.

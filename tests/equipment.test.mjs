@@ -23,24 +23,34 @@ test('data: 24 items, 12 per hero, every slot once per set; boys and girls get i
   assert.equal(R.GEAR.hoya_melee_weapon.name, '목검'); assert.equal(R.GEAR.minji_melee_weapon.name, '왕 연필');
 });
 
-test('hero is chosen once at sign-up and locked; old players who already played are locked to their current hero', () => {
+test('hero is chosen once at login and locked; old players also choose once (no automatic lock)', () => {
   const fresh = R.freshProfile(); assert.equal(R.heroLocked(fresh), false);
   const p = R.action(fresh, { kind: 'choose-hero', hero: 'minji' }).profile; assert.equal(p.hero, 'minji'); assert.equal(R.heroLocked(p), true);
   assert.throws(() => R.action(p, { kind: 'choose-hero', hero: 'hoya' }), /이미 정해졌/);
   assert.throws(() => R.action(p, { kind: 'settings', hero: 'hoya' }), /가입할 때 정해져/);
   assert.equal(R.action(p, { kind: 'settings', difficulty: 'normal' }).profile.difficulty, 'normal', '다른 설정은 그대로 바꿀 수 있다');
-  const old = { ...R.freshProfile(), runs: 3, hero: 'minji' }; delete old.heroLocked; assert.equal(R.heroLocked(old), true, '한 판이라도 한 옛 학생은 지금 캐릭터로 고정');
-  const unplayed = { ...R.freshProfile(), runs: 0 }; delete unplayed.heroLocked; assert.equal(R.heroLocked(unplayed), false, '안 해 본 옛 학생은 처음에 고른다');
+  const old = { ...R.freshProfile(), runs: 3, hero: 'minji' }; delete old.heroLocked; assert.equal(R.heroLocked(old), false, '옛 학생도 로그인할 때 한 번 고른다');
+  const chosen = R.action(old, { kind: 'choose-hero', hero: 'hoya' }).profile; assert.equal(chosen.hero, 'hoya'); assert.equal(R.heroLocked(chosen), true);
 });
 
-test('first free gear: one normal weapon of my hero, equipped, and it decides melee/ranged', () => {
-  let p = hero('hoya');
-  assert.throws(() => act(p, { kind: 'choose-first-gear', id: 'minji_ranged_weapon' }), /고를 수 있는 무기가 아니/);
-  assert.throws(() => act(p, { kind: 'choose-first-gear', id: 'hoya_ranged_helm' }), /고를 수 있는 무기가 아니/);
-  p = act(p, { kind: 'choose-first-gear', id: 'hoya_melee_weapon' }).profile;
-  assert.equal(p.gear.hoya_melee_weapon.copies, 1); assert.equal(R.gearGrade(p, 'hoya_melee_weapon'), 0); assert.equal(p.equippedGear.weapon, 'hoya_melee_weapon'); assert.equal(p.weaponMode, 'melee');
-  assert.throws(() => act(p, { kind: 'choose-first-gear', id: 'hoya_ranged_weapon' }), /이미 받았/);
-  assert.throws(() => act(p, { kind: 'settings', weaponMode: 'ranged' }), /근거리 무기/);
+test('first free gear: choosing a hero gives one ranged and one melee weapon of that hero; the equipped one decides melee/ranged', () => {
+  const fresh = { ...R.freshProfile(), weaponMode: 'ranged' };
+  const r = R.action(fresh, { kind: 'choose-hero', hero: 'hoya' }); let p = r.profile;
+  assert.deepEqual(Object.keys(p.gear).sort(), ['hoya_melee_weapon', 'hoya_ranged_weapon']);
+  assert.ok(Object.values(p.gear).every((g) => g.copies === 1 && g.grade === 0)); assert.equal(p.milestones.firstGear, true);
+  assert.equal(p.equippedGear.weapon, 'hoya_ranged_weapon', '지금 공격 방식의 무기를 끼운다'); assert.equal(p.weaponMode, 'ranged');
+  assert.equal(r.draw.mode, 'first'); assert.deepEqual(r.draw.ids, ['hoya_ranged_weapon', 'hoya_melee_weapon']);
+  assert.throws(() => act(p, { kind: 'choose-first-gear', id: 'hoya_melee_weapon' }), /이미 받았/);
+  assert.throws(() => act(p, { kind: 'settings', weaponMode: 'melee' }), /원거리 무기/);
+  p = act(p, { kind: 'equip-gear', id: 'hoya_melee_weapon' }).profile; assert.equal(p.weaponMode, 'melee', '근거리 무기로 바꿔 끼우면 근거리');
+  // 캐릭터가 이미 정해졌는데 무기를 못 받은 계정(선생님이 바꿔 준 경우 등): choose-first-gear로 2개, 고른 것을 끼운다
+  let q = { ...R.freshProfile(), hero: 'minji', heroLocked: true };
+  assert.throws(() => act(q, { kind: 'choose-first-gear', id: 'hoya_melee_weapon' }), /고를 수 있는 무기가 아니/);
+  assert.throws(() => act(q, { kind: 'choose-first-gear', id: 'minji_ranged_helm' }), /고를 수 있는 무기가 아니/);
+  q = act(q, { kind: 'choose-first-gear', id: 'minji_melee_weapon' }).profile;
+  assert.deepEqual(Object.keys(q.gear).sort(), ['minji_melee_weapon', 'minji_ranged_weapon']); assert.equal(q.equippedGear.weapon, 'minji_melee_weapon'); assert.equal(q.weaponMode, 'melee');
+  // 선생님이 바꿔 준 뒤 다시 고르기(무기를 이미 받았으면 또 주지 않음)
+  const again = R.action({ ...q, heroLocked: false }, { kind: 'choose-hero', hero: 'minji' }); assert.equal(again.draw, undefined); assert.equal(again.profile.gear.minji_melee_weapon.copies, 1);
 });
 
 test('gear supply: only my gender, one ticket, 1/3/7 luck, legendary items leave the pool', () => {
@@ -111,9 +121,10 @@ test('admin set-hero: teacher can change a locked hero when the student has no g
   DB.sql.prepare("UPDATE guardian_profiles SET state=? WHERE user_id='kid1'").run(JSON.stringify({ ...p, gear: { minji_melee_helm: { copies: 1, grade: 0 } } }));
   assert.equal((await call(env, '/admin/set-hero', { token: teacher, body: { id: 'kid1', hero: 'hoya' } })).status, 400, '장비가 있으면 못 바꿈');
   assert.equal((await call(env, '/admin/set-hero', { token: teacher, body: { id: 'nobody', hero: 'hoya' } })).status, 404);
-  // 첫 무료 무기 1개만 있으면 새 캐릭터의 같은 종류 무기로 바꿔 준다
-  DB.sql.prepare("UPDATE guardian_profiles SET state=? WHERE user_id='kid1'").run(JSON.stringify({ ...p, gear: { minji_ranged_weapon: { copies: 1, grade: 0 } }, equippedGear: { weapon: 'minji_ranged_weapon' }, weaponMode: 'ranged' }));
+  // 첫 무료 무기(원거리·근거리 1개씩)만 있으면 새 캐릭터의 같은 종류 무기로 바꿔 준다
+  const free = { minji_ranged_weapon: { copies: 1, grade: 0 }, minji_melee_weapon: { copies: 1, grade: 0 } };
+  DB.sql.prepare("UPDATE guardian_profiles SET state=? WHERE user_id='kid1'").run(JSON.stringify({ ...p, gear: free, equippedGear: { weapon: 'minji_ranged_weapon' }, weaponMode: 'ranged' }));
   assert.equal((await call(env, '/admin/set-hero', { token: teacher, body: { id: 'kid1', hero: 'hoya' } })).status, 200);
   const q = JSON.parse(DB.sql.prepare("SELECT state FROM guardian_profiles WHERE user_id='kid1'").get().state);
-  assert.equal(q.hero, 'hoya'); assert.deepEqual(q.gear, { hoya_ranged_weapon: { copies: 1, grade: 0 } }); assert.deepEqual(q.equippedGear, { weapon: 'hoya_ranged_weapon' });
+  assert.equal(q.hero, 'hoya'); assert.deepEqual(q.gear, { hoya_ranged_weapon: { copies: 1, grade: 0 }, hoya_melee_weapon: { copies: 1, grade: 0 } }); assert.deepEqual(q.equippedGear, { weapon: 'hoya_ranged_weapon' });
 });

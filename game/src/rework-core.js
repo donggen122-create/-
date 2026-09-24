@@ -146,8 +146,9 @@ export function bonuses(p){
  b.gearSpecials=g.specials;b.gearSets=g.sets;return b;
 }
 // ---- 장비(2026-09-24, docs/34) ----
-// 가입할 때 호야/민지 하나를 고르고 고정(heroLocked). 전에 만든 계정은 한 판이라도 했으면 지금 캐릭터로 고정, 안 했으면 처음에 고른다.
-export const heroLocked=p=>p?.heroLocked??((p?.runs||0)>0);
+// 캐릭터(호야/민지): 모든 학생이 게임에 들어올 때 한 번 고르고 고정(heroLocked). 2026-09-24 사용자: "로그인 시에 1회 선택지, 바꿀 수 없으니 신중히 하라고 확인받아"
+// → 전에 만든 계정도 한 판 했든 안 했든 한 번 고른다(바꾸기는 선생님 관리 페이지에서만).
+export const heroLocked=p=>!!p?.heroLocked;
 export const gearOf=(p,id)=>p?.gear?.[id]||null;
 export function gearGrade(p,id){const g=gearOf(p,id);return g&&g.copies>0?clampInt(g.grade??0,0,GRADE_COPIES.length-1):-1;}
 // 합성: 같은 장비를 모아 다음 등급 개수(3·7·25·80)에 닿으면 누를 수 있다. 모은 개수는 그대로 쌓인다(파츠와 같은 기준).
@@ -173,6 +174,13 @@ export function addGear(p,id,qty=1){
 }
 // 받침 있으면 을/이, 없으면 를/가
 export const josa=(w,a,b)=>{const c=String(w).charCodeAt(String(w).length-1);return w+(c>=0xAC00&&c<=0xD7A3&&(c-0xAC00)%28>0?a:b);};
+// 첫 장비(2026-09-24 사용자 "무료로 근거리 원거리 무기 1개 줘"): 내 캐릭터의 원거리·근거리 무기를 1개씩 무료로. 끼우는 것은 고른 것(없으면 지금 공격 방식).
+export const firstWeapons=hero=>['ranged','melee'].map(t=>`${hero==='minji'?'minji':'hoya'}_${t}_weapon`);
+function grantFirstWeapons(p,equip){
+ const ids=firstWeapons(p.hero),pick=ids.includes(equip)?equip:ids.find(id=>GEAR[id].type===p.weaponMode)||ids[1];
+ for(const id of ids)addGear(p,id,1);equipGearItem(p,pick);p.milestones ||= {};p.milestones.firstGear=true;
+ return {id:pick,mode:'first',ids,qty:1,before:0,after:1,isNew:true,grade:0};
+}
 function equipGearItem(p,id){const it=GEAR[id];p.equippedGear ||= {};p.equippedGear[it.slot]=id;if(it.slot==='weapon')p.weaponMode=it.type;}
 export function gearDrawMessage(d){const it=GEAR[d.id];return `${it.name}${d.qty>1?` ×${d.qty}`:''} ${d.isNew?'획득!':`· ${d.before}→${d.after}개`}${d.mergeReady?' · 합성할 수 있어요!':''}`;}
 // 시험용 슈퍼 계정(2026-09-24 사용자 "테스트 목적의 슈퍼 계정"): 모든 단계 성공(별 3) · 훈련 · 파츠 10종 · 친구 6마리 · 코인·보급권 넉넉히.
@@ -288,11 +296,13 @@ export function action(profile,a,rng=Math.random,ctx={}){
   // 가입할 때 한 번만: 호야/민지 고정(장비 뽑기는 이 성별 장비만)
   check(!heroLocked(p),'캐릭터는 이미 정해졌어요. 바꾸려면 선생님께 부탁해 주세요.');check(['hoya','minji'].includes(a.hero),'캐릭터를 골라 주세요.');
   p.hero=a.hero;p.heroLocked=true;message=`${a.hero==='minji'?'민지':'호야'}와 함께해요!`;   // 민지·호야 모두 받침 없음
+  // 고르면서 첫 무기 2개(원거리·근거리)를 준다. 이미 받은 학생(선생님이 바꿔 준 경우 등)은 그대로.
+  if(!p.milestones?.firstGear){draw=grantFirstWeapons(p);message+=` 무기 2개를 받았어요.`;}
  }else if(a.kind==='choose-first-gear'){
-  // 첫 장비: 내 성별 무기 1개(노말) 무료 — 원거리/근거리 고르기
+  // 첫 장비: 캐릭터를 고를 때 받지 못한 학생(캐릭터가 이미 정해진 계정)용. 원거리·근거리 무기 1개씩 무료, a.id를 끼운다.
   p.milestones ||= {};check(heroLocked(p),'먼저 캐릭터를 골라 주세요.');check(!p.milestones.firstGear,'첫 장비를 이미 받았어요.');
-  const it=GEAR[a.id];check(it&&it.hero===p.hero&&it.slot==='weapon','고를 수 있는 무기가 아니에요.');
-  draw={...addGear(p,a.id,1),mode:'first'};equipGearItem(p,a.id);p.milestones.firstGear=true;message=`${josa(it.name,'을','를')} 받아 끼웠어요!`;
+  check(!a.id||firstWeapons(p.hero).includes(a.id),'고를 수 있는 무기가 아니에요.');
+  draw=grantFirstWeapons(p,a.id);message=`무기 2개를 받았어요! ${josa(GEAR[draw.id].name,'을','를')} 끼웠어요.`;
  }else if(a.kind==='draw-gear'){
   check(!!p.stages.CH01?.cleared,'1-1을 성공하면 보급이 열려요.');check(heroLocked(p),'먼저 캐릭터를 골라 주세요.');check(p.gifts>0,'보급권이 더 필요해요.');
   const pool=gearDrawPool(p);check(pool.length,'모든 장비가 전설이에요!');p.giftCounts ||= {part:0,pet:0};
