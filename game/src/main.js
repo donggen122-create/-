@@ -75,18 +75,27 @@ bgmOn();   // 처음 화면(시작 화면)부터. 자동 재생이 막히면 첫
 
 // 그리기 좌표는 항상 CSS 픽셀(viewW/viewH)을 쓰고, 백버퍼만 devicePixelRatio로 키운다.
 // (이렇게 해야 레티나 폰에서 픽셀아트가 흐려지지 않는다)
-let viewW = 0, viewH = 0;
+// 2026-09-24 사용자 선택 "멀리서 보기": 작은 화면(휴대폰)은 세계를 멀리서 본다(viewZoom < 1). 짧은 쪽에 16칸이 보이게,
+// 375px 폰은 약 0.73배, 가장 작게 0.62배. 태블릿·PC는 1배 그대로. viewW/viewH = 보이는 세계 크기(스폰·가림·화면 밖 판정이 따른다),
+// screenW/screenH = 실제 화면 크기(대왕 체력 막대·조이스틱·글처럼 화면에 붙는 것은 screenSpace()로 그린다).
+let viewW = 0, viewH = 0, screenW = 0, screenH = 0, viewZoom = 1, viewDpr = 1;
 const renderQuality = createRenderQuality(window.devicePixelRatio || 1);
 let vignetteCache = null;
+const VIEW_MIN_TILES = 16;
+function worldZoom(W, H) { return Math.max(0.62, Math.min(1, Math.min(W, H) / (VIEW_MIN_TILES * U))); }
+function worldSpace() { ctx.setTransform(viewDpr * viewZoom, 0, 0, viewDpr * viewZoom, 0, 0); }
+function screenSpace() { ctx.setTransform(viewDpr, 0, 0, viewDpr, 0, 0); }
 function resize() {
   const dpr = renderQuality.ratio;
-  viewW = document.documentElement.clientWidth || window.innerWidth;
-  viewH = document.documentElement.clientHeight || window.innerHeight;
-  canvas.style.width = viewW + "px";
-  canvas.style.height = viewH + "px";
-  canvas.width = Math.round(viewW * dpr);
-  canvas.height = Math.round(viewH * dpr);
-  ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+  screenW = document.documentElement.clientWidth || window.innerWidth;
+  screenH = document.documentElement.clientHeight || window.innerHeight;
+  viewZoom = worldZoom(screenW, screenH);
+  viewW = screenW / viewZoom; viewH = screenH / viewZoom;
+  canvas.style.width = screenW + "px";
+  canvas.style.height = screenH + "px";
+  canvas.width = Math.round(screenW * dpr);
+  canvas.height = Math.round(screenH * dpr);
+  viewDpr = dpr; worldSpace();
   ctx.imageSmoothingEnabled = false;
 }
 // 화면 크기에 맞춘 전투 표시(2026-09-24 사용자 "기기에 따라 UI가 가려지거나 글자가 밀린다 → 화면 크기에 따라 능동적으로"):
@@ -97,7 +106,7 @@ let hudLayoutTick = 0;
 function uiScale(W, H) { return H < 520 ? 0.8 : Math.max(1, Math.min(1.3, Math.min(W / 1280, H / 720))); }
 function layoutHud() {
   const app = document.getElementById("app"); if (!app) return;
-  const W = viewW || innerWidth, H = viewH || innerHeight, ui = uiScale(W, H);
+  const W = screenW || innerWidth, H = screenH || innerHeight, ui = uiScale(W, H);
   hudLayout.ui = ui;
   app.style.setProperty("--ui", ui);
   app.classList.toggle("hud-short", H < 520); app.classList.toggle("hud-narrow", W < 400);
@@ -4246,18 +4255,20 @@ function drawBoss() {
 
   ctx.restore();
 
-  // 보스 이름/체력 패널
-  const w = Math.min(280 * hudLayout.ui, viewW - 40);
+  // 보스 이름/체력 패널(화면에 붙음 — 멀리서 보기와 상관없이 같은 크기)
+  ctx.save(); screenSpace();
+  const w = Math.min(280 * hudLayout.ui, screenW - 40), cx = screenW / 2;
   const barY = hudLayout.barY;                 // layoutHud: 기술 칸 줄·체력 막대와 겹치지 않는 자리
-  ctx.fillStyle = "rgba(0,0,0,0.55)"; ctx.fillRect(viewW / 2 - w / 2, barY, w, 12);
-  const hpGrad = ctx.createLinearGradient(viewW / 2 - w / 2, 0, viewW / 2 + w / 2, 0);
+  ctx.fillStyle = "rgba(0,0,0,0.55)"; ctx.fillRect(cx - w / 2, barY, w, 12);
+  const hpGrad = ctx.createLinearGradient(cx - w / 2, 0, cx + w / 2, 0);
   hpGrad.addColorStop(0, phase2 ? "#ff6a4a" : "#e0a83a"); hpGrad.addColorStop(1, phase2 ? "#c02020" : "#a06a10");
-  ctx.fillStyle = hpGrad; ctx.fillRect(viewW / 2 - w / 2, barY, w * Math.max(0, boss.hp / boss.hpMax), 12);
-  ctx.strokeStyle = "rgba(0,0,0,0.7)"; ctx.strokeRect(viewW / 2 - w / 2 + 0.5, barY + 0.5, w - 1, 11);
+  ctx.fillStyle = hpGrad; ctx.fillRect(cx - w / 2, barY, w * Math.max(0, boss.hp / boss.hpMax), 12);
+  ctx.strokeStyle = "rgba(0,0,0,0.7)"; ctx.strokeRect(cx - w / 2 + 0.5, barY + 0.5, w - 1, 11);
   ctx.fillStyle = "#fff"; ctx.font = "bold 12px sans-serif"; ctx.textAlign = "center";
   ctx.shadowColor = "#000"; ctx.shadowBlur = 3;
-  ctx.fillText(`${bossDef.name}${phase2 ? " · 2페이즈" : ""}`, viewW / 2, barY - 6);
+  ctx.fillText(`${bossDef.name}${phase2 ? " · 2페이즈" : ""}`, cx, barY - 6);
   ctx.shadowBlur = 0;
+  ctx.restore();
 
   if (boss.activePattern) drawTelegraph(boss.activePattern, s);
 }
@@ -4543,6 +4554,7 @@ function onScreen(entity, margin=160) {
   return q.x>=-margin&&q.x<=viewW+margin&&q.y>=-margin&&q.y<=viewH+margin;
 }
 function draw() {
+  worldSpace();
   if (mode === "menu") { ctx.fillStyle = "#0d0d14"; ctx.fillRect(0, 0, viewW, viewH); return; }
   // The floor is opaque: do not paint the same full-screen background twice.
 
@@ -4650,14 +4662,14 @@ function draw() {
 
   // 숫자 그림만 최근 40개로 제한, 진화·보상 안내는 별도로 보존한다.
   // 휴대폰처럼 작은 화면은 숫자를 절반(20개)만 — 같은 세계 크기가 화면을 훨씬 많이 덮는다(2026-09-24 효과 점검)
-  const visibleTexts = qaFxOff?.has("text") ? [] : [...floatingTexts.filter(t=>t.big).slice(-8), ...floatingTexts.filter(t=>!t.big).slice(viewW * viewH < 400000 ? -20 : -40)];
+  const visibleTexts = qaFxOff?.has("text") ? [] : [...floatingTexts.filter(t=>t.big).slice(-8), ...floatingTexts.filter(t=>!t.big).slice(screenW * screenH < 400000 ? -20 : -40)];
   for (const t of visibleTexts) {
     if (!onScreen(t, 100)) continue;
     const s = worldToScreen(t.x, t.y);
     ctx.save();
     if (t.dmg && onHeroBody(t.x, t.y)) ctx.globalAlpha = 0.45;   // 주인공 몸 위에 뜬 적 피해 숫자는 옅게(2026-09-24 효과 점검). 안내·진화 글은 그대로
     ctx.translate(s.x, s.y);
-    const pop = t.big ? 1.35 : 1;
+    const pop = (t.big ? 1.35 : 1) / Math.sqrt(viewZoom);   // 멀리서 볼 때 글자가 너무 작아지지 않게 절반만 따라 작아진다
     ctx.scale((t.scale || 1) * pop, (t.scale || 1) * pop);
     ctx.font = `bold ${t.big ? 19 : 15}px sans-serif`; ctx.textAlign = "center";
     ctx.lineWidth = 3; ctx.strokeStyle = "rgba(0,0,0,0.7)";
@@ -4668,6 +4680,7 @@ function draw() {
   }
 
   if (!!chapter?.theme && boss?.activePattern) themeFx.telegraph(ctx, boss.activePattern, boss, boss.telegraphT, runTime, U, worldToScreen);
+  screenSpace();   // 여기부터 화면에 붙는 것(조이스틱·가장자리 어둡게·안내 글)
   drawTouchJoystick();
 
   // 비네트(황혼 분위기) — 어둠 지대 안이거나 시야 제한 규칙이면 시야가 좁아진다
@@ -4675,23 +4688,23 @@ function draw() {
   const vision = Math.min(inDark ? 0.62 : 1, runMods.vision || 1);
   const themed = !!chapter?.theme;
   const edge = vision < 1 ? (themed ? 0.75 : 0.9) : (themed ? 0.22 : 0.55);
-  const vgKey = `${viewW}:${viewH}:${vision}:${themed}`;
+  const vgKey = `${screenW}:${screenH}:${vision}:${themed}`;
   if (!vignetteCache || vignetteCache.key !== vgKey) {
-    const image = document.createElement('canvas');image.width=Math.ceil(viewW/2);image.height=Math.ceil(viewH/2);
+    const image = document.createElement('canvas');image.width=Math.ceil(screenW/2);image.height=Math.ceil(screenH/2);
     const g=image.getContext('2d');g.scale(.5,.5);
-    const vg=g.createRadialGradient(viewW/2,viewH/2,viewH*.35*vision,viewW/2,viewH/2,viewH*.75*vision);
+    const vg=g.createRadialGradient(screenW/2,screenH/2,screenH*.35*vision,screenW/2,screenH/2,screenH*.75*vision);
     vg.addColorStop(0,'rgba(0,0,0,0)');vg.addColorStop(1,`rgba(${themed?'40,50,20':'5,4,10'},${edge})`);
-    g.fillStyle=vg;g.fillRect(0,0,viewW,viewH);vignetteCache={key:vgKey,image};
+    g.fillStyle=vg;g.fillRect(0,0,screenW,screenH);vignetteCache={key:vgKey,image};
   }
-  ctx.save();ctx.imageSmoothingEnabled=true;ctx.drawImage(vignetteCache.image,0,0,viewW,viewH);ctx.restore();
+  ctx.save();ctx.imageSmoothingEnabled=true;ctx.drawImage(vignetteCache.image,0,0,screenW,screenH);ctx.restore();
   if (inDark) {
     ctx.fillStyle = themed ? "#f0ff9a" : "#c9a8ff"; ctx.font = "bold 12px sans-serif"; ctx.textAlign = "center";
-    ctx.fillText(themed ? "악취 구역 · 새싹 ×1.5" : "어둠 지대 · 보석 ×1.5", viewW / 2, viewH - 18);
+    ctx.fillText(themed ? "악취 구역 · 새싹 ×1.5" : "어둠 지대 · 보석 ×1.5", screenW / 2, screenH - 18);
   }
 
   if (debugFast) {
     ctx.fillStyle = "#ffe9a8"; ctx.font = "bold 12px sans-serif"; ctx.textAlign = "left";
-    ctx.fillText("DEBUG FAST-FORWARD x8 (F)", 12, viewH - 12);
+    ctx.fillText("DEBUG FAST-FORWARD x8 (F)", 12, screenH - 12);
   }
 }
 
