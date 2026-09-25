@@ -143,8 +143,8 @@ test('hard readiness: chapter 1 needs training 40/40/20 + 3 unique parts + 6 gea
   p.parts = { PART_F1: { copies: 7, level: 1 }, PART_W1: { copies: 25, level: 1 }, PART_L2: { copies: 7, level: 1 } }; p.equippedParts = ['PART_F1', 'PART_W1', 'PART_L2'];
   for (const slot of R.GEAR_SLOTS) { const id = `hoya_ranged_${slot}`; p.gear[id] = { copies: 1, grade: 0 }; p = act(p, { kind: 'equip-gear', id }).profile; }
   assert.equal(R.hardReadiness(p, 'CH05').ready, true, '1장: 노말 장비 6칸(같은 세트 6)이면 충분');
-  const r2 = R.hardReadiness(p, 'CH08'); assert.equal(r2.chapter, 2); assert.equal(r2.ready, false); assert.equal(r2.items.find((i) => i.key === 'gearUnique').now, 0);
-  for (const slot of R.GEAR_SLOTS) p.gear[`hoya_ranged_${slot}`] = { copies: 7, grade: 2 };
+  const r2 = R.hardReadiness(p, 'CH08'); assert.equal(r2.chapter, 2); assert.equal(r2.ready, false); assert.equal(r2.items.find((i) => i.key === 'gearRare').now, 0);
+  for (const slot of R.GEAR_SLOTS) p.gear[`hoya_ranged_${slot}`] = { copies: 20, grade: 1 };
   p.training = { attack: R.HARD_READY[2].attack, hp: R.HARD_READY[2].hp, speed: R.HARD_READY[2].speed };
-  assert.equal(R.hardReadiness(p, 'CH10').ready, true, '2장: 유니크 장비 6세트');
+  assert.equal(R.hardReadiness(p, 'CH10').ready, true, '2장: 레어 장비 6세트(2026-09-25 낮춤)');
 });

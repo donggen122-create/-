@@ -287,8 +287,9 @@ export function gearDrawMessage(d){const it=GEAR[d.id];return `${it.name}${d.qty
 // 1장은 docs/28(훈련 40 + 유니크 파츠면 겨우 성공), 2장은 docs/34 모의(훈련 40 + 유니크 파츠에 유니크 장비 6세트가 있어야 2-3 성공이 보임)를 따른다.
 // 항목: 훈련(공격·체력·이동 속도) · 유니크 이상 파츠 장착 수 · 장비 착용 칸 · 같은 세트 개수 · 유니크 이상 장비 수. 화면(실패 뒤 안내·출동 화면 한 줄)과 검사가 같이 쓴다.
 export const HARD_READY={
- 1:{attack:40,hp:40,speed:20,uniqueParts:3,gearWorn:6,gearSet:4,gearUnique:0},
- 2:{attack:40,hp:40,speed:20,uniqueParts:3,gearWorn:6,gearSet:6,gearUnique:6},
+ 1:{attack:40,hp:40,speed:20,uniqueParts:3,gearWorn:6,gearSet:4,gearRare:0},
+ // 2장: 2026-09-25 사용자 "권장치 낮춰" — 장비 2배 최대치(docs/38)에서 레어 6세트로도 2-3 어려움 4/6, 유니크는 보급권 약 427장이라 너무 멀어 "레어 이상 6개"로
+ 2:{attack:40,hp:40,speed:20,uniqueParts:3,gearWorn:6,gearSet:6,gearRare:6},
 };
 export function stageChapter(stageId){const n=Number(String(stageId||'').replace(/\D/g,''))||1;return Math.floor((n-1)/5)+1;}
 export function hardReadiness(p,stageId){
@@ -296,7 +297,7 @@ export function hardReadiness(p,stageId){
  const parts=runParts(p).filter(id=>grade(p.parts?.[id]?.copies||0)>=2).length;
  const worn=GEAR_SLOTS.map(s=>eq[s]).filter(id=>GEAR[id]&&GEAR[id].hero===p.hero&&gearGrade(p,id)>=0);
  const sets={};for(const id of worn)sets[GEAR[id].set]=(sets[GEAR[id].set]||0)+1;
- const bestSet=Math.max(0,...Object.values(sets)),uniqueGear=worn.filter(id=>gearGrade(p,id)>=2).length;
+ const bestSet=Math.max(0,...Object.values(sets)),rareGear=worn.filter(id=>gearGrade(p,id)>=1).length;
  const items=[
   {key:'attack',label:'훈련 · 공격력',now:t.attack||1,need:need.attack,unit:'단계',tab:'training'},
   {key:'hp',label:'훈련 · 체력',now:t.hp||1,need:need.hp,unit:'단계',tab:'training'},
@@ -305,7 +306,7 @@ export function hardReadiness(p,stageId){
   {key:'gearWorn',label:'장비 착용 칸',now:worn.length,need:need.gearWorn,unit:'칸',tab:'gear'},
   {key:'gearSet',label:'같은 세트 장비',now:bestSet,need:need.gearSet,unit:'개',tab:'gear'},
  ];
- if(need.gearUnique)items.push({key:'gearUnique',label:`유니크 이상 장비(같은 장비 ${CARD_COPIES[2]}개 모아 합성)`,now:uniqueGear,need:need.gearUnique,unit:'개',tab:'gear'});
+ if(need.gearRare)items.push({key:'gearRare',label:`레어 이상 장비(같은 장비 ${CARD_COPIES[1]}개 모아 합성)`,now:rareGear,need:need.gearRare,unit:'개',tab:'gear'});
  for(const it of items)it.ok=it.now>=it.need;
  return {chapter:ch,items,ready:items.every(it=>it.ok),missing:items.filter(it=>!it.ok).length};
 }
