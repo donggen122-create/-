@@ -5,6 +5,7 @@ import { migrateProfileV2, needsPartsRepair, repairObsoleteParts, PARTS_FIX_SNAP
 export const DAILY_PASSES = 10;
 export const PETS_FIX_SNAPSHOT = 2002;   // 스냅숏 키(친구 4종 개편 전 원본). 프로필 버전이 아니다.
 export const CARDS_SCALE_SNAPSHOT = 2003;   // 스냅숏 키(장비·친구 카드 개수 1.5배 전 원본, 2026-09-25).
+export const CARDS_REMAP_SNAPSHOT = 2004;   // 스냅숏 키(등급 개수 1·20·40·80·120으로 옮기기 전 원본, 2026-09-25).
 export const dayKey = (now=Date.now()) => new Date(now+3600000).toISOString().slice(0,10);
 export const nextReset = (now=Date.now()) => (Math.floor((now+3600000)/86400000)+1)*86400000-3600000;
 // 특별 이벤트(2026-09-23 사용자 요청): 추석 연휴 게임 날짜(아침 8시 기준) 2026-09-24·25·26에는 하루 이용권 20장 = 기본 10 + 이벤트 10.
@@ -64,7 +65,7 @@ export async function getProfile(db,id){
     if(!isLegacy&&!partsFix&&!needsPetMigration(profile))return {profile,revision:row.revision};
     // 친구 4종 개편(2026-09-24 밤): 옛 친구·우정 → 친구 카드. 원본은 스냅숏 PETS_FIX_SNAPSHOT에 남는다.
     const next=isLegacy?migrateProfileV2(profile):migratePets(repairObsoleteParts(profile));
-    const target=isLegacy?2:partsFix?PARTS_FIX_SNAPSHOT:profile.petVersion===2?CARDS_SCALE_SNAPSHOT:PETS_FIX_SNAPSHOT;   // 2003: 카드 개수 1.5배 전 원본
+    const target=isLegacy?2:partsFix?PARTS_FIX_SNAPSHOT:profile.petVersion===2?CARDS_SCALE_SNAPSHOT:profile.petVersion===3?CARDS_REMAP_SNAPSHOT:PETS_FIX_SNAPSHOT;   // 2003: 1.5배 전 · 2004: 1·20·40·80·120 전 원본
     // Snapshot + revision-checked write are atomic. Concurrent teacher grants are never overwritten.
     await db.batch([
       db.prepare('INSERT OR IGNORE INTO guardian_profile_snapshots(user_id,target_version,state,revision,created_at) SELECT user_id,?,state,revision,? FROM guardian_profiles WHERE user_id=? AND revision=?').bind(target,Date.now(),id,row.revision),

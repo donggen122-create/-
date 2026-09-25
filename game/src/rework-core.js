@@ -14,8 +14,10 @@ export const GRADE_COPIES=[1,3,7,25,80];
 export const GOLD_COPIES=7;                // 유니크(옛 금): 파츠마다 유니크 기능이 열리는 개수
 export const LEGEND_COPIES=80;
 // 장비·친구 카드 등급 개수(2026-09-25 사용자 "장비 2배 최대치 배포, 그대신 등급업까지 필요한 개수 50% 상향, 전설은 120개. 펫도 똑같이"):
-// 1 · 5 · 11 · 38 · 120(옛 1·3·7·25·80 × 1.5, 올림). 파츠는 옛 개수 그대로(GRADE_COPIES). 옛 기록은 migratePets가 개수를 1.5배(올림)로 맞춰 등급이 내려가지 않게.
-export const CARD_COPIES=[1,5,11,38,120];
+// 1 · 5 · 11 · 38 · 120(옛 1·3·7·25·80 × 1.5, 올림) → 2026-09-25 사용자 "등급업 기준 1, 20, 40, 80, 120으로 해" → 1 · 20 · 40 · 80 · 120.
+// 파츠는 옛 개수 그대로(GRADE_COPIES). 옛 기록은 migratePets가 개수를 새 기준에 맞춰 옮겨 등급이 내려가지 않게(아래 remapCards).
+export const CARD_COPIES=[1,20,40,80,120];
+const CARD_COPIES_V3=[1,5,11,38,120];
 export const CARD_LEGEND=120;
 export function cardGrade(copies){const n=Number(copies)||0;let g=0;for(let i=1;i<CARD_COPIES.length;i++)if(n>=CARD_COPIES[i])g=i;return g;}
 export function nextCardAt(copies){return CARD_COPIES.find(n=>n>(Number(copies)||0))??null;}
@@ -59,7 +61,7 @@ export const PETS = {
 };
 export const PET_IDS=Object.keys(PETS);
 export const PET_MERGE={sparrow:'cat',seal:'otter'};
-export const PET_VERSION=3;   // 2 = 4종 카드(2026-09-24), 3 = 장비·친구 카드 개수 1.5배(2026-09-25)
+export const PET_VERSION=4;   // 2 = 4종 카드(2026-09-24), 3 = 장비·친구 카드 개수 1.5배(2026-09-25), 4 = 등급 개수 1·20·40·80·120으로 옮김(2026-09-25)
 const PET_STAT={dmgPct:'모든 스킬 피해',areaPct:'스킬 범위',takenPct:'받는 피해',regenPct:'초당 체력 회복',hpPct:'최대 체력',speedPct:'이동 속도',atkSpeedPct:'공격 속도',magnetPct:'새싹 줍기 범위',xpPct:'새싹 경험치',coinPct:'코인 획득'};
 const pctLabel=v=>{const x=Math.round(Math.abs(v)*1000)/10;return `${x}%`;};
 const petRate=g=>PET_GRADE_RATE[Math.max(0,Math.min(4,g|0))];
@@ -77,12 +79,12 @@ export function petBuffFor(p,id,key){if(!hasPet(p,id))return 0;return petValue(P
 export function petBuff(p,key){return petBuffFor(p,p?.activePet,key);}
 export function petDrawPool(p){return PET_IDS.filter(id=>petCopies(p,id)<CARD_LEGEND);}
 export const needsPetMigration=p=>!!p&&p.petVersion!==PET_VERSION;
-const scaleCards=n=>Math.min(CARD_LEGEND,Math.ceil((Math.max(0,Math.floor(Number(n)||0)))*1.5));
+const scaleCards=n=>Math.min(CARD_LEGEND,Math.ceil((Math.max(0,Math.floor(Number(n)||0)))*1.5));   // v2 → v3(1.5배, 올림)
 // 옛 친구(6종 · 우정 0~28) → 4종 친구 카드. 가진 친구마다 1장(참새·물범이는 합쳐진 친구에), 우정 4마다 함께 출동하던 친구에게 1장 더
 // (우정 28 = +7장 → 유니크, 우정 8 = +2장 → 레어). 원래 값은 petMigration에 남긴다. 몇 번 불러도 같은 결과.
 export function migratePets(previous){
  const p=structuredClone(previous);if(!needsPetMigration(p))return p;
- if(p.petVersion===2)return scaleCardCounts(p);
+ if(p.petVersion===2||p.petVersion===3)return upgradeCardCounts(p);
  const copies={},mapped=id=>own(PETS,PET_MERGE[id]||id)?PET_MERGE[id]||id:null;
  for(const old of Array.isArray(p.pets)?p.pets:[]){const id=mapped(old);if(id)copies[id]=(copies[id]||0)+1;}
  const wanted=mapped(p.activePet),active=wanted&&copies[wanted]?wanted:PET_IDS.find(id=>copies[id])||null;
@@ -90,13 +92,28 @@ export function migratePets(previous){
  if(bonus)copies[active]+=bonus;
  if(p.pets?.length||friendship)p.petMigration={pets:[...(p.pets||[])],activePet:p.activePet??null,friendship,bonus,to:active};
  p.petCopies=copies;p.pets=PET_IDS.filter(id=>copies[id]>0);p.activePet=active;p.petVersion=2;delete p.friendship;
- return scaleCardCounts(p);
+ return upgradeCardCounts(p);
 }
 // 2026-09-25 등급 개수 1.5배: 모은 친구 카드·장비 개수도 1.5배(올림)로 → 등급이 그대로(3→5 레어, 7→11 유니크, 25→38 에픽, 80→120 전설). 장비 등급(grade)은 그대로 둔다.
-function scaleCardCounts(p){
- for(const id of Object.keys(p.petCopies||{}))p.petCopies[id]=scaleCards(p.petCopies[id]);
- for(const g of Object.values(p.gear||{}))if(g&&g.copies>0)g.copies=scaleCards(g.copies);
- p.petVersion=PET_VERSION;p.cardScale={at:'2026-09-25',x:1.5};return p;
+// 2026-09-25 두 번째: 등급 개수 1·5·11·38·120 → 1·20·40·80·120. 같은 등급 구간 안의 위치(몇 % 왔는지)를 그대로 옮긴다(내림 → 다음 등급을 넘지 않음).
+//   예: 5장(레어 시작) → 20장, 12장(유니크) → 41장, 2장(노말) → 5장, 120장 → 120장. 장비 등급(grade)은 그대로.
+function remapCards(n,from,to){
+ n=Math.max(0,Math.floor(Number(n)||0));if(n<=0)return 0;if(n>=from[from.length-1])return to[to.length-1];
+ let g=0;for(let i=1;i<from.length;i++)if(n>=from[i])g=i;
+ return Math.floor(to[g]+(n-from[g])*(to[g+1]-to[g])/(from[g+1]-from[g]));
+}
+function upgradeCardCounts(p){
+ if(p.petVersion===2){
+  for(const id of Object.keys(p.petCopies||{}))p.petCopies[id]=scaleCards(p.petCopies[id]);
+  for(const g of Object.values(p.gear||{}))if(g&&g.copies>0)g.copies=scaleCards(g.copies);
+  p.petVersion=3;p.cardScale={at:'2026-09-25',x:1.5};
+ }
+ if(p.petVersion===3){
+  for(const id of Object.keys(p.petCopies||{}))p.petCopies[id]=remapCards(p.petCopies[id],CARD_COPIES_V3,CARD_COPIES);
+  for(const g of Object.values(p.gear||{}))if(g&&g.copies>0)g.copies=remapCards(g.copies,CARD_COPIES_V3,CARD_COPIES);
+  p.petVersion=4;p.cardRemap={at:'2026-09-25',to:[...CARD_COPIES]};
+ }
+ return p;
 }
 
 export function addPetCards(p,id,qty=1){

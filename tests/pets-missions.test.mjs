@@ -19,19 +19,20 @@ test('four friends = four directions (1 survival · 2 speed · 3 attack · 4 gro
  const old={...base(),pets:['cat','sparrow','seal','deer','otter'],activePet:'seal',friendship:28};delete old.petCopies;delete old.petVersion;
  const p=R.migratePets(old);
  // 참새·물범이는 합쳐지고, 우정 28 → 함께 출동하던 친구(물범이 → 수달이)에 7장 → 2026-09-25 개수 1.5배(올림): cat 2→3, otter 9→14, deer 1→2
- assert.deepEqual(p.petCopies,{cat:3,otter:14,deer:2});assert.deepEqual(p.cardScale,{at:'2026-09-25',x:1.5});
- assert.equal(p.activePet,'otter');assert.deepEqual(p.pets,['cat','otter','deer']);assert.equal(R.petGrade(p,'otter'),2,'14장 = 유니크(11장부터) — 옛 9장 유니크 그대로');
+ // → 같은 날 등급 개수 1·20·40·80·120으로 옮김(구간 안 위치 그대로, 내림): cat 3→10, otter 14→44, deer 2→5
+ assert.deepEqual(p.petCopies,{cat:10,otter:44,deer:5});assert.deepEqual(p.cardScale,{at:'2026-09-25',x:1.5});assert.deepEqual(p.cardRemap.to,[1,20,40,80,120]);
+ assert.equal(p.activePet,'otter');assert.deepEqual(p.pets,['cat','otter','deer']);assert.equal(R.petGrade(p,'otter'),2,'44장 = 유니크(40장부터) — 옛 9장 유니크 그대로');
  assert.ok(!('friendship' in p));assert.deepEqual(p.petMigration,{pets:['cat','sparrow','seal','deer','otter'],activePet:'seal',friendship:28,bonus:7,to:'otter'});
  assert.deepEqual(R.migratePets(p),p,'여러 번 해도 같다');
  const none={...base(),pets:[],activePet:null,friendship:3};delete none.petVersion;const q=R.migratePets(none);
  assert.deepEqual(q.petCopies,{});assert.equal(q.activePet,null);assert.equal(q.petVersion,R.PET_VERSION);
- const lone={...base(),pets:['sparrow'],activePet:'sparrow',friendship:8};delete lone.petVersion;assert.deepEqual(R.migratePets(lone).petCopies,{cat:5},'우정 8 → +2장 = 3장 → ×1.5 = 5장 레어');
+ const lone={...base(),pets:['sparrow'],activePet:'sparrow',friendship:8};delete lone.petVersion;assert.deepEqual(R.migratePets(lone).petCopies,{cat:20},'우정 8 → +2장 = 3장(레어) → 5장 → 20장 레어');
 });
 
 test('legacy saves reach the four friends in one step',()=>{
  const v1=migrateLegacy({pets:{PT07:{lv:3},PT05:{lv:1}},activePet:'PT07'});
  assert.equal(v1.version,1);assert.ok(!('petVersion' in v1));
- const v2=migrateProfileV2(v1);assert.equal(v2.petVersion,R.PET_VERSION);assert.deepEqual(v2.petCopies,{cat:5,otter:2});assert.equal(v2.activePet,'cat');
+ const v2=migrateProfileV2(v1);assert.equal(v2.petVersion,R.PET_VERSION);assert.deepEqual(v2.petCopies,{cat:20,otter:5});assert.equal(v2.activePet,'cat');
 });
 
 test('friend supply: one ticket, random friend, 1·3·7 cards, grades like parts; legend friends leave the pool',()=>{
@@ -45,8 +46,8 @@ test('friend supply: one ticket, random friend, 1·3·7 cards, grades like parts
  p.petCopies.cat=120;assert.throws(()=>R.action(p,{kind:'draw-pet'}),/모든 친구가 전설/);
  const locked=R.freshProfile();locked.gifts=3;assert.throws(()=>R.action(locked,{kind:'draw-pet'}),/1-1을 성공/);
  const empty=base();empty.gifts=0;assert.throws(()=>R.action(empty,{kind:'draw-pet'}),/보급권/);
- p=base();p.petCopies={otter:10};p.pets=['otter'];p.activePet='otter';const up=R.action(p,{kind:'draw-pet'},()=>.6).draw;   // 0.6 → 3번째 친구(otter), 장수 운 0.6 → 1장
- assert.equal(up.id,'otter');assert.equal(up.gradeBefore,1);assert.equal(up.gradeAfter,2,'11장 = 유니크');
+ p=base();p.petCopies={otter:39};p.pets=['otter'];p.activePet='otter';const up=R.action(p,{kind:'draw-pet'},()=>.6).draw;   // 0.6 → 3번째 친구(otter), 장수 운 0.6 → 1장
+ assert.equal(up.id,'otter');assert.equal(up.gradeBefore,1);assert.equal(up.gradeAfter,2,'40장 = 유니크');
 });
 
 test('old "friend meeting" requests change nothing and ask for a refresh',()=>{
@@ -67,10 +68,10 @@ test('friend choices: 1-3 gives one card of any friend, 1-5 gives three cards (o
 test('buffs grow with the grade; specials open at unique (1) → epic (2) → legend (3)',()=>{
  const p=base();p.petCopies={otter:1};p.pets=['otter'];p.activePet='otter';
  const at=n=>{p.petCopies.otter=n;return {dmg:R.petBuff(p,'dmgPct'),sp:R.petSpecial(p)};};
- // 친구 카드 등급 1·5·11·38·120장(2026-09-25)
- assert.equal(at(1).dmg,.1);assert.equal(at(1).sp,null);assert.equal(at(5).sp,null);assert.equal(at(10).sp,null);
- assert.deepEqual(at(11).sp,{id:'otter',key:'splash',tier:1});assert.equal(at(38).sp.tier,2);assert.equal(at(120).sp.tier,3);assert.equal(at(119).sp.tier,2);
- assert.equal(at(120).dmg,.5);assert.equal(at(5).dmg,.2);assert.equal(at(38).dmg,.4);assert.equal(at(4).dmg,.1);assert.equal(R.petBuff(p,'takenPct'),0,'다른 친구 버프는 없음');
+ // 친구 카드 등급 1·20·40·80·120장(2026-09-25 사용자)
+ assert.equal(at(1).dmg,.1);assert.equal(at(1).sp,null);assert.equal(at(20).sp,null);assert.equal(at(39).sp,null);
+ assert.deepEqual(at(40).sp,{id:'otter',key:'splash',tier:1});assert.equal(at(80).sp.tier,2);assert.equal(at(120).sp.tier,3);assert.equal(at(119).sp.tier,2);
+ assert.equal(at(120).dmg,.5);assert.equal(at(20).dmg,.2);assert.equal(at(80).dmg,.4);assert.equal(at(19).dmg,.1);assert.equal(R.petBuff(p,'takenPct'),0,'다른 친구 버프는 없음');
  p.activePet='cat';assert.equal(R.petBuff(p,'dmgPct'),0,'없는 친구가 함께 출동 중이면 0');
  // 성장 테이블: 전설(최대)의 20·40·60·80·100%(사용자 최대치)
  assert.deepEqual(R.PET_GRADE_RATE,[.2,.4,.6,.8,1]);
@@ -82,7 +83,7 @@ test('buffs grow with the grade; specials open at unique (1) → epic (2) → le
 });
 
 test('4 growth friend (deer): coin gain +% on every settlement, using the friend taken into the run',()=>{
- const p=base();p.petCopies={deer:11,otter:1};p.pets=['otter','deer'];p.activePet='deer';
+ const p=base();p.petCopies={deer:40,otter:1};p.pets=['otter','deer'];p.activePet='deer';
  const plain=R.completeRun({...p,activePet:'otter'},{stage:'CH01',cleared:true,seconds:300}).reward,withDeer=R.completeRun(p,{stage:'CH01',cleared:true,seconds:300}).reward;
  assert.equal(plain.petCoinPct,0);assert.equal(withDeer.petCoinPct,.3,'유니크 = 최대 50%의 60% = +30%');assert.equal(withDeer.coins,Math.floor(plain.coins*1.3));
  assert.equal(R.completeRun(p,{stage:'CH01',cleared:true,seconds:300,pet:'otter'}).reward.petCoinPct,0,'출동할 때 수달이였으면 코인 보너스 없음');
@@ -117,7 +118,7 @@ async function api(env,path,body,t=now){const res=await guardianAPI(new Request(
 test('API: stored old friends are converted once with a snapshot; pet supply and missions go through the server',async()=>{
  const old={...base(),pets:['seal','turtle'],activePet:'turtle',friendship:16,coins:500};delete old.petCopies;delete old.petVersion;
  const env=await setup(old);
- const {profile}=await getProfile(env.DB,'qa');assert.deepEqual(profile.petCopies,{otter:2,turtle:8},'otter 1·turtle 1+4 → ×1.5(올림)');assert.equal(profile.activePet,'turtle');
+ const {profile}=await getProfile(env.DB,'qa');assert.deepEqual(profile.petCopies,{otter:5,turtle:30},'otter 1·turtle 1+4 → ×1.5(올림) 2·8 → 1·20·40·80·120으로 5·30');assert.equal(profile.activePet,'turtle');
  const snap=env.DB.sql.prepare('SELECT state FROM guardian_profile_snapshots WHERE user_id=? AND target_version=?').get('qa',PETS_FIX_SNAPSHOT);assert.equal(JSON.parse(snap.state).friendship,16,'원본 보관');
  const d=await api(env,'/guardian/action',{kind:'draw-pet'});assert.equal(d.status,200,d.error);assert.equal(d.draw.mode,'pet');assert.equal(d.profile.gifts,29);
  const t=await api(env,'/guardian/action',{kind:'train',stat:'attack'});assert.match(t.message,/미션 완료/);assert.equal(t.profile.gifts,31);assert.equal(t.profile.missions.day,'2026-09-24');
@@ -126,14 +127,26 @@ test('API: stored old friends are converted once with a snapshot; pet supply and
  assert.deepEqual(f.reward.missions.map(m=>m.id),['win1','goal1']);assert.equal(f.profile.gifts,31+f.reward.gifts+4);
 });
 
-test('2026-09-25 카드 개수 1.5배: 어제 바뀐 학생(친구 카드 v2)·장비도 개수만 1.5배(올림), 등급 그대로, 원본은 스냅숏 2003', async () => {
+test('2026-09-25 카드 개수 옮기기: 어제 바뀐 학생(v2)·장비는 1.5배 → 1·20·40·80·120 기준으로, 등급 그대로, 원본은 스냅숏 2003', async () => {
  const v2 = { ...base(), hero: 'hoya', heroLocked: true, petCopies: { otter: 8, turtle: 3, cat: 1 }, pets: ['turtle', 'cat', 'otter'], activePet: 'otter', petVersion: 2,
   gear: { hoya_ranged_weapon: { copies: 7, grade: 2 }, hoya_ranged_helm: { copies: 4, grade: 1 }, hoya_melee_weapon: { copies: 1, grade: 0 } }, equippedGear: { weapon: 'hoya_ranged_weapon' } };
  const oldGrades = Object.fromEntries(Object.keys(v2.petCopies).map(id => [id, [0, 1, 2, 3, 4].filter(g => v2.petCopies[id] >= [1, 3, 7, 25, 80][g]).pop()]));
  const env = await setup(v2); const { profile } = await getProfile(env.DB, 'qa');
- assert.deepEqual(profile.petCopies, { otter: 12, turtle: 5, cat: 2 }); assert.equal(profile.petVersion, R.PET_VERSION);
+ assert.deepEqual(profile.petCopies, { otter: 41, turtle: 20, cat: 5 }); assert.equal(profile.petVersion, R.PET_VERSION);
  for (const id of Object.keys(oldGrades)) assert.equal(R.petGrade(profile, id), oldGrades[id], `${id} 등급 그대로`);
- assert.deepEqual(profile.gear.hoya_ranged_weapon, { copies: 11, grade: 2 }); assert.deepEqual(profile.gear.hoya_ranged_helm, { copies: 6, grade: 1 }); assert.deepEqual(profile.gear.hoya_melee_weapon, { copies: 2, grade: 0 });
+ assert.deepEqual(profile.gear.hoya_ranged_weapon, { copies: 40, grade: 2 }); assert.deepEqual(profile.gear.hoya_ranged_helm, { copies: 23, grade: 1 }); assert.deepEqual(profile.gear.hoya_melee_weapon, { copies: 5, grade: 0 });
  const snap = env.DB.sql.prepare('SELECT state FROM guardian_profile_snapshots WHERE user_id=? AND target_version=?').get('qa', CARDS_SCALE_SNAPSHOT); assert.equal(JSON.parse(snap.state).petCopies.otter, 8, '원본 보관');
  const again = (await getProfile(env.DB, 'qa')).profile; assert.deepEqual(again.petCopies, profile.petCopies, '한 번만');
+});
+
+test('2026-09-25 두 번째: 오늘 아침 1.5배로 바뀐 학생(v3)도 1·20·40·80·120으로 옮기고 원본은 스냅숏 2004, 등급은 그대로', async () => {
+ const {CARDS_REMAP_SNAPSHOT} = await import('../server/src/guardian.js');
+ const v3 = { ...base(), petCopies: { deer: 5, otter: 2, cat: 38, turtle: 120 }, pets: ['turtle', 'cat', 'otter', 'deer'], activePet: 'deer', petVersion: 3,
+  hero: 'hoya', heroLocked: true, gear: { hoya_ranged_weapon: { copies: 14, grade: 2 } } };
+ const oldCut = [1, 5, 11, 38, 120], g = n => [0, 1, 2, 3, 4].filter(i => n >= oldCut[i]).pop();
+ const env = await setup(v3); const { profile } = await getProfile(env.DB, 'qa');
+ assert.deepEqual(profile.petCopies, { deer: 20, otter: 5, cat: 80, turtle: 120 });
+ for (const [id, n] of Object.entries(v3.petCopies)) assert.equal(R.petGrade(profile, id), g(n), id);
+ assert.deepEqual(profile.gear.hoya_ranged_weapon, { copies: 44, grade: 2 });
+ assert.equal(JSON.parse(env.DB.sql.prepare('SELECT state FROM guardian_profile_snapshots WHERE user_id=? AND target_version=?').get('qa', CARDS_REMAP_SNAPSHOT).state).petCopies.deer, 5);
 });

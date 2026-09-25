@@ -66,11 +66,11 @@ test('gear supply: only my gender, one ticket, 1/3/7 luck, legendary items leave
   const locked = R.freshProfile(); locked.stages.CH01 = { cleared: true }; locked.gifts = 3; assert.throws(() => act(locked, { kind: 'draw-gear' }), /캐릭터를 골라/);
 });
 
-test('merge: grade goes up only when copies reach 5 / 11 / 38 / 120 (2026-09-25: ×1.5), copies stay', () => {
-  assert.deepEqual(R.CARD_COPIES, [1, 5, 11, 38, 120]);
-  let p = hero(); const id = 'hoya_ranged_armor'; p.gear[id] = { copies: 4, grade: 0 };
-  assert.equal(R.gearMergeReady(p, id), false); assert.throws(() => act(p, { kind: 'merge-gear', id }), /5개 모으면/);
-  for (const [copies, next] of [[5, 1], [11, 2], [38, 3], [120, 4]]) {
+test('merge: grade goes up only when copies reach 20 / 40 / 80 / 120 (2026-09-25 사용자), copies stay', () => {
+  assert.deepEqual(R.CARD_COPIES, [1, 20, 40, 80, 120]);
+  let p = hero(); const id = 'hoya_ranged_armor'; p.gear[id] = { copies: 19, grade: 0 };
+  assert.equal(R.gearMergeReady(p, id), false); assert.throws(() => act(p, { kind: 'merge-gear', id }), /20개 모으면/);
+  for (const [copies, next] of [[20, 1], [40, 2], [80, 3], [120, 4]]) {
     p.gear[id].copies = copies; assert.equal(R.gearMergeReady(p, id), true);
     p = act(p, { kind: 'merge-gear', id }).profile; assert.equal(R.gearGrade(p, id), next); assert.equal(p.gear[id].copies, copies);
   }
