@@ -168,7 +168,7 @@ test('5번 연속 보급: 보급권 5장으로 파츠·장비·친구를 한 번
  assert.throws(() => R.action(poor, { kind: 'draw-part', mode: 'random', times: 5 }), /5번 보급에는 보급권 5장/); assert.deepEqual(poor, before2);
  assert.equal(R.action(poor, { kind: 'draw-part', mode: 'random' }, rngSeed(1)).draw.mode, 'random', '한 번 보급은 그대로');
  // 친구가 거의 다 전설: 한 마리만 남고 79장 → 첫 보급에서 전설이 되면 멈추고 남은 보급권은 그대로
- const nearly = supplyProfile(); nearly.gifts = 10; nearly.petCopies = { otter: 80, turtle: 80, deer: 80, cat: 79 }; nearly.pets = ['turtle', 'cat', 'otter', 'deer']; nearly.activePet = 'otter';
+ const nearly = supplyProfile(); nearly.gifts = 10; nearly.petCopies = { otter: 120, turtle: 120, deer: 120, cat: 119 }; nearly.pets = ['turtle', 'cat', 'otter', 'deer']; nearly.activePet = 'otter';
  const stop = R.action(nearly, { kind: 'draw-pet', times: 5 }, rngSeed(2));
- assert.equal(stop.draw.items.length, 1); assert.equal(stop.profile.gifts, 9); assert.equal(stop.profile.petCopies.cat, 80);
+ assert.equal(stop.draw.items.length, 1); assert.equal(stop.profile.gifts, 9); assert.equal(stop.profile.petCopies.cat, 120);
 });

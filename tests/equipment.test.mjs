@@ -59,17 +59,18 @@ test('gear supply: only my gender, one ticket, 1/3/7 luck, legendary items leave
     for (let i = 0; i < 300; i++) { const r = act(p, { kind: 'draw-gear' }, rng); p = r.profile; assert.equal(R.GEAR[r.draw.id].hero, h); qty[r.draw.qty] = (qty[r.draw.qty] || 0) + 1; }
     assert.equal(p.gifts, 100); assert.equal(p.giftCounts.gear, 300); assert.ok(qty[1] > 200 && qty[3] > 25, JSON.stringify(qty));
   }
-  let p = hero('minji', 5); for (const id of R.gearIdsFor('minji').slice(1)) p.gear[id] = { copies: 80, grade: 4 };
-  for (let i = 0; i < 3; i++) { const r = act(p, { kind: 'draw-gear' }); p = r.profile; assert.equal(r.draw.id, R.gearIdsFor('minji')[0], '전설(80개)이 된 장비는 안 나온다'); }
-  p.gear[R.gearIdsFor('minji')[0]] = { copies: 80, grade: 4 }; assert.throws(() => act(p, { kind: 'draw-gear' }), /모든 장비가 전설/);
+  let p = hero('minji', 5); for (const id of R.gearIdsFor('minji').slice(1)) p.gear[id] = { copies: 120, grade: 4 };
+  for (let i = 0; i < 3; i++) { const r = act(p, { kind: 'draw-gear' }); p = r.profile; assert.equal(r.draw.id, R.gearIdsFor('minji')[0], '전설(120개)이 된 장비는 안 나온다'); }
+  p.gear[R.gearIdsFor('minji')[0]] = { copies: 120, grade: 4 }; assert.throws(() => act(p, { kind: 'draw-gear' }), /모든 장비가 전설/);
   assert.throws(() => act({ ...hero(), gifts: 0 }, { kind: 'draw-gear' }), /보급권이 더 필요/);
   const locked = R.freshProfile(); locked.stages.CH01 = { cleared: true }; locked.gifts = 3; assert.throws(() => act(locked, { kind: 'draw-gear' }), /캐릭터를 골라/);
 });
 
-test('merge: grade goes up only when copies reach 3 / 7 / 25 / 80, copies stay', () => {
-  let p = hero(); const id = 'hoya_ranged_armor'; p.gear[id] = { copies: 2, grade: 0 };
-  assert.equal(R.gearMergeReady(p, id), false); assert.throws(() => act(p, { kind: 'merge-gear', id }), /3개 모으면/);
-  for (const [copies, next] of [[3, 1], [7, 2], [25, 3], [80, 4]]) {
+test('merge: grade goes up only when copies reach 5 / 11 / 38 / 120 (2026-09-25: ×1.5), copies stay', () => {
+  assert.deepEqual(R.CARD_COPIES, [1, 5, 11, 38, 120]);
+  let p = hero(); const id = 'hoya_ranged_armor'; p.gear[id] = { copies: 4, grade: 0 };
+  assert.equal(R.gearMergeReady(p, id), false); assert.throws(() => act(p, { kind: 'merge-gear', id }), /5개 모으면/);
+  for (const [copies, next] of [[5, 1], [11, 2], [38, 3], [120, 4]]) {
     p.gear[id].copies = copies; assert.equal(R.gearMergeReady(p, id), true);
     p = act(p, { kind: 'merge-gear', id }).profile; assert.equal(R.gearGrade(p, id), next); assert.equal(p.gear[id].copies, copies);
   }

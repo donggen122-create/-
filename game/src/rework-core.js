@@ -13,6 +13,12 @@ export const GRADE_NAMES=['노말','레어','유니크','에픽','전설'];
 export const GRADE_COPIES=[1,3,7,25,80];
 export const GOLD_COPIES=7;                // 유니크(옛 금): 파츠마다 유니크 기능이 열리는 개수
 export const LEGEND_COPIES=80;
+// 장비·친구 카드 등급 개수(2026-09-25 사용자 "장비 2배 최대치 배포, 그대신 등급업까지 필요한 개수 50% 상향, 전설은 120개. 펫도 똑같이"):
+// 1 · 5 · 11 · 38 · 120(옛 1·3·7·25·80 × 1.5, 올림). 파츠는 옛 개수 그대로(GRADE_COPIES). 옛 기록은 migratePets가 개수를 1.5배(올림)로 맞춰 등급이 내려가지 않게.
+export const CARD_COPIES=[1,5,11,38,120];
+export const CARD_LEGEND=120;
+export function cardGrade(copies){const n=Number(copies)||0;let g=0;for(let i=1;i<CARD_COPIES.length;i++)if(n>=CARD_COPIES[i])g=i;return g;}
+export function nextCardAt(copies){return CARD_COPIES.find(n=>n>(Number(copies)||0))??null;}
 // 보급 1번 = 10종 중 무작위 파츠(전설 파츠 제외)를 운으로 1개 80% · 3개 18% · 7개 2%. 고르는 것은 없다(사용자: "선택지를 주지 말자, 운이 필요하게").
 export const SUPPLY_BUNDLES=[{qty:1,chance:.8},{qty:3,chance:.18},{qty:7,chance:.02}];
 export const SUPPLY_EXCHANGE_COST=300;   // 첫 교환 값(옛 이름, 화면·검사 호환)
@@ -53,7 +59,7 @@ export const PETS = {
 };
 export const PET_IDS=Object.keys(PETS);
 export const PET_MERGE={sparrow:'cat',seal:'otter'};
-export const PET_VERSION=2;
+export const PET_VERSION=3;   // 2 = 4종 카드(2026-09-24), 3 = 장비·친구 카드 개수 1.5배(2026-09-25)
 const PET_STAT={dmgPct:'모든 스킬 피해',areaPct:'스킬 범위',takenPct:'받는 피해',regenPct:'초당 체력 회복',hpPct:'최대 체력',speedPct:'이동 속도',atkSpeedPct:'공격 속도',magnetPct:'새싹 줍기 범위',xpPct:'새싹 경험치',coinPct:'코인 획득'};
 const pctLabel=v=>{const x=Math.round(Math.abs(v)*1000)/10;return `${x}%`;};
 const petRate=g=>PET_GRADE_RATE[Math.max(0,Math.min(4,g|0))];
@@ -64,31 +70,40 @@ export function petBuffText(id,g=0){const pet=PETS[id];if(!pet)return '';return 
 export const petIntervalCut=a=>a>0?1-1/(1+a):0;
 export const petCopies=(p,id)=>Math.max(0,Math.floor(Number(p?.petCopies?.[id])||0));
 export const hasPet=(p,id)=>own(PETS,id)&&petCopies(p,id)>0;
-export function petGrade(p,id){const c=petCopies(p,id);return c>0?grade(c):-1;}
+export function petGrade(p,id){const c=petCopies(p,id);return c>0?cardGrade(c):-1;}
 // 함께 출동한 친구의 특수 능력 단계: 0 없음 · 1 유니크 · 2 에픽 · 3 전설
 export function petSpecial(p){const id=p?.activePet,g=hasPet(p,id)?petGrade(p,id):-1;return g>=2?{id,key:PETS[id].special.key,tier:g-1}:null;}
 export function petBuffFor(p,id,key){if(!hasPet(p,id))return 0;return petValue(PETS[id].buffs[key]||0,petGrade(p,id));}
 export function petBuff(p,key){return petBuffFor(p,p?.activePet,key);}
-export function petDrawPool(p){return PET_IDS.filter(id=>petCopies(p,id)<LEGEND_COPIES);}
+export function petDrawPool(p){return PET_IDS.filter(id=>petCopies(p,id)<CARD_LEGEND);}
 export const needsPetMigration=p=>!!p&&p.petVersion!==PET_VERSION;
+const scaleCards=n=>Math.min(CARD_LEGEND,Math.ceil((Math.max(0,Math.floor(Number(n)||0)))*1.5));
 // 옛 친구(6종 · 우정 0~28) → 4종 친구 카드. 가진 친구마다 1장(참새·물범이는 합쳐진 친구에), 우정 4마다 함께 출동하던 친구에게 1장 더
 // (우정 28 = +7장 → 유니크, 우정 8 = +2장 → 레어). 원래 값은 petMigration에 남긴다. 몇 번 불러도 같은 결과.
 export function migratePets(previous){
  const p=structuredClone(previous);if(!needsPetMigration(p))return p;
+ if(p.petVersion===2)return scaleCardCounts(p);
  const copies={},mapped=id=>own(PETS,PET_MERGE[id]||id)?PET_MERGE[id]||id:null;
  for(const old of Array.isArray(p.pets)?p.pets:[]){const id=mapped(old);if(id)copies[id]=(copies[id]||0)+1;}
  const wanted=mapped(p.activePet),active=wanted&&copies[wanted]?wanted:PET_IDS.find(id=>copies[id])||null;
  const friendship=Math.max(0,Math.min(28,Math.floor(Number(p.friendship)||0))),bonus=active?Math.floor(friendship/4):0;
  if(bonus)copies[active]+=bonus;
  if(p.pets?.length||friendship)p.petMigration={pets:[...(p.pets||[])],activePet:p.activePet??null,friendship,bonus,to:active};
- p.petCopies=copies;p.pets=PET_IDS.filter(id=>copies[id]>0);p.activePet=active;p.petVersion=PET_VERSION;delete p.friendship;
- return p;
+ p.petCopies=copies;p.pets=PET_IDS.filter(id=>copies[id]>0);p.activePet=active;p.petVersion=2;delete p.friendship;
+ return scaleCardCounts(p);
 }
+// 2026-09-25 등급 개수 1.5배: 모은 친구 카드·장비 개수도 1.5배(올림)로 → 등급이 그대로(3→5 레어, 7→11 유니크, 25→38 에픽, 80→120 전설). 장비 등급(grade)은 그대로 둔다.
+function scaleCardCounts(p){
+ for(const id of Object.keys(p.petCopies||{}))p.petCopies[id]=scaleCards(p.petCopies[id]);
+ for(const g of Object.values(p.gear||{}))if(g&&g.copies>0)g.copies=scaleCards(g.copies);
+ p.petVersion=PET_VERSION;p.cardScale={at:'2026-09-25',x:1.5};return p;
+}
+
 export function addPetCards(p,id,qty=1){
  if(!own(PETS,id))throw new Error('없는 친구예요.');p.petCopies ||= {};
- const before=petCopies(p,id),after=Math.min(LEGEND_COPIES,before+Math.max(1,Math.floor(qty)));
+ const before=petCopies(p,id),after=Math.min(CARD_LEGEND,before+Math.max(1,Math.floor(qty)));
  p.petCopies[id]=after;p.pets=PET_IDS.filter(x=>petCopies(p,x)>0);if(!hasPet(p,p.activePet))p.activePet=id;
- return {id,qty,before,after,gradeBefore:before?grade(before):-1,gradeAfter:grade(after),isNew:!before,mode:'pet'};
+ return {id,qty,before,after,gradeBefore:before?cardGrade(before):-1,gradeAfter:cardGrade(after),isNew:!before,mode:'pet'};
 }
 // 5번 연속 보급 한 줄 요약: "5번 보급! 불꽃병 ×3 · 물대포 · …"
 export function multiDrawMessage(m){const name=d=>m.kind==='pet'?PETS[d.id]?.name:m.kind==='gear'?GEAR[d.id]?.name:PARTS[d.id]?.name;return `${m.items.length}번 보급! ${m.items.map(d=>`${name(d)}${d.qty>1?` ×${d.qty}`:''}`).join(' · ')}`;}
@@ -218,10 +233,10 @@ export function bonuses(p){
 // → 전에 만든 계정도 한 판 했든 안 했든 한 번 고른다(바꾸기는 선생님 관리 페이지에서만).
 export const heroLocked=p=>!!p?.heroLocked;
 export const gearOf=(p,id)=>p?.gear?.[id]||null;
-export function gearGrade(p,id){const g=gearOf(p,id);return g&&g.copies>0?clampInt(g.grade??0,0,GRADE_COPIES.length-1):-1;}
+export function gearGrade(p,id){const g=gearOf(p,id);return g&&g.copies>0?clampInt(g.grade??0,0,CARD_COPIES.length-1):-1;}
 // 합성: 같은 장비를 모아 다음 등급 개수(3·7·25·80)에 닿으면 누를 수 있다. 모은 개수는 그대로 쌓인다(파츠와 같은 기준).
-export function gearMergeReady(p,id){const g=gearOf(p,id),gr=gearGrade(p,id);return gr>=0&&gr<GRADE_COPIES.length-1&&g.copies>=GRADE_COPIES[gr+1];}
-export function gearDrawPool(p){return gearIdsFor(p.hero).filter(id=>(gearOf(p,id)?.copies||0)<LEGEND_COPIES);}
+export function gearMergeReady(p,id){const g=gearOf(p,id),gr=gearGrade(p,id);return gr>=0&&gr<CARD_COPIES.length-1&&g.copies>=CARD_COPIES[gr+1];}
+export function gearDrawPool(p){return gearIdsFor(p.hero).filter(id=>(gearOf(p,id)?.copies||0)<CARD_LEGEND);}
 // 장착 장비의 능력 합: 기본 능력 × 등급 배율 + 세트 효과(같은 세트 2·4·6개) + 특수 효과 단계(유니크 1 · 에픽 2 · 전설 3)
 export function gearBonuses(p){
  const stats={},sets={},specials={};
@@ -236,7 +251,7 @@ export function gearBonuses(p){
 }
 export function addGear(p,id,qty=1){
  if(!own(GEAR,id))throw new Error('없는 장비예요.');p.gear ||= {};
- const before=p.gear[id]?.copies||0,after=Math.min(LEGEND_COPIES,before+Math.max(1,Math.floor(qty)));
+ const before=p.gear[id]?.copies||0,after=Math.min(CARD_LEGEND,before+Math.max(1,Math.floor(qty)));
  p.gear[id]={copies:after,grade:p.gear[id]?.grade??0};
  return {id,qty,before,after,isNew:before===0,grade:p.gear[id].grade,mergeReady:gearMergeReady(p,id)};
 }
@@ -273,7 +288,7 @@ export function hardReadiness(p,stageId){
   {key:'gearWorn',label:'장비 착용 칸',now:worn.length,need:need.gearWorn,unit:'칸',tab:'gear'},
   {key:'gearSet',label:'같은 세트 장비',now:bestSet,need:need.gearSet,unit:'개',tab:'gear'},
  ];
- if(need.gearUnique)items.push({key:'gearUnique',label:'유니크 이상 장비(같은 장비 7개 모아 합성)',now:uniqueGear,need:need.gearUnique,unit:'개',tab:'gear'});
+ if(need.gearUnique)items.push({key:'gearUnique',label:`유니크 이상 장비(같은 장비 ${CARD_COPIES[2]}개 모아 합성)`,now:uniqueGear,need:need.gearUnique,unit:'개',tab:'gear'});
  for(const it of items)it.ok=it.now>=it.need;
  return {chapter:ch,items,ready:items.every(it=>it.ok),missing:items.filter(it=>!it.ok).length};
 }
@@ -286,10 +301,10 @@ export function superTestProfile(base,{training=100,copies=80,level=10}={}){
  for(const s of STAGES)p.stages[s.id]={...(p.stages[s.id]||{}),cleared:true,stars:3};
  p.parts=Object.fromEntries(Object.keys(PARTS).map(id=>[id,{copies:clampInt(copies,1,LEGEND_COPIES),level:clampInt(level,1,10)}]));
  p.equippedParts=Object.keys(PARTS).slice(0,3);
- const petN=clampInt(copies,1,LEGEND_COPIES);p.petCopies=Object.fromEntries(PET_IDS.map(id=>[id,petN]));p.pets=[...PET_IDS];p.petVersion=PET_VERSION;delete p.friendship;p.activePet=own(PETS,p.activePet)?p.activePet:'otter';
+ const cardN=CARD_COPIES[grade(clampInt(copies,1,LEGEND_COPIES))],petN=cardN;p.petCopies=Object.fromEntries(PET_IDS.map(id=>[id,petN]));p.pets=[...PET_IDS];p.petVersion=PET_VERSION;delete p.friendship;p.activePet=own(PETS,p.activePet)?p.activePet:'otter';
  p.milestones={...(p.milestones||{}),firstPart:true,firstPet:true,bossPet:true,firstGear:true};p.testAccount=true;
  // 장비(2026-09-24): 내 캐릭터 장비 12종을 같은 개수·그 개수의 등급으로, 원거리 세트 6개 장착
- p.heroLocked=true;p.gear=Object.fromEntries(gearIdsFor(p.hero).map(id=>[id,{copies:clampInt(copies,1,LEGEND_COPIES),grade:grade(clampInt(copies,1,LEGEND_COPIES))}]));
+ p.heroLocked=true;p.gear=Object.fromEntries(gearIdsFor(p.hero).map(id=>[id,{copies:cardN,grade:cardGrade(cardN)}]));
  p.equippedGear=Object.fromEntries(GEAR_SLOTS.map(s=>[s,`${p.hero}_ranged_${s}`]));p.weaponMode='ranged';
  return p;
 }
@@ -423,7 +438,7 @@ export function action(profile,a,rng=Math.random,ctx={}){
    p.giftCounts.gear=(p.giftCounts.gear||0)+1;return {...addGear(p,id,qty),mode:'gear'};});
   message=draw.mode==='multi'?multiDrawMessage(draw):gearDrawMessage(draw);
  }else if(a.kind==='merge-gear'){
-  check(own(GEAR,a.id)&&gearGrade(p,a.id)>=0,'아직 없는 장비예요.');check(gearMergeReady(p,a.id),`같은 장비를 ${GRADE_COPIES[gearGrade(p,a.id)+1]??''}개 모으면 합성할 수 있어요.`);
+  check(own(GEAR,a.id)&&gearGrade(p,a.id)>=0,'아직 없는 장비예요.');check(gearMergeReady(p,a.id),`같은 장비를 ${CARD_COPIES[gearGrade(p,a.id)+1]??''}개 모으면 합성할 수 있어요.`);
   p.gear[a.id].grade++;message=`${GEAR[a.id].name} ${GRADE_NAMES[p.gear[a.id].grade]} 등급으로 합성!`;draw={id:a.id,mode:'merge',grade:p.gear[a.id].grade};
  }else if(a.kind==='equip-gear'){
   const it=GEAR[a.id];check(it&&gearGrade(p,a.id)>=0,'아직 없는 장비예요.');check(it.hero===p.hero,'내 캐릭터 장비가 아니에요.');
