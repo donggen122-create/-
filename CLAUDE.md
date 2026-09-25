@@ -13,6 +13,10 @@
 ## 2026-09-24 저녁. 장비 시스템 구현(배포 전) — `docs/34_장비_시스템_기획.md` 13절
 - 장비 데이터 `game/src/equipment.js`, 규칙 `rework-core.js`(choose-hero·choose-first-gear·draw-gear·merge-gear·equip-gear·unequip-gear), 전투 `main.js` sgGear*, 화면 `rework-ui.js` gear 탭. 캐릭터는 모든 학생이 로그인 때 한 번 신중히 고르고 고정(`heroLocked`는 직접 고른 학생만 true), 고르면 원거리·근거리 무기 1개씩 무료. 바꾸기는 관리 API `set-hero`. 장비 아이콘은 임시 그림 — 사용자 그림이 오면 `GEAR_ART`에 넣는다. 격리 서버 가입 제한은 `/_qa/reset-attempts`로 비운다(시험 아이디는 12글자 이하).
 
+## 2026-09-25 09:1x KST. 장비 2배 최대치·장비/친구 카드 개수 ×1.5·5번 보급 실서버 배포 완료 38ff48f9 — `docs/38`
+- 장비 능력 = `GEAR_MAX`(전설) × `GEAR_GRADE_RATE` 20/40/60/80/100%. 장비·친구 카드 등급 개수 `CARD_COPIES` 1·5·11·38·120(파츠는 `GRADE_COPIES` 1·3·7·25·80 그대로 — 섞지 않는다). 옛 기록은 `migratePets`(PET_VERSION 3)가 1.5배, 스냅숏 2003.
+- 5번 보급: `action({kind:'draw-*', times:5})` → `draw.mode==='multi'`, 화면 `showMultiResult`.
+
 ## 2026-09-24 20:2x KST. 전투 화면 흔들림 줄이기 실서버 배포 완료 909d8779
 - 사용자가 흔들림을 싫어함: 스킬 폭발·무기 맞힘·치명타(대왕 제외)·세균몬 터짐에는 흔들림/멈춤을 넣지 않는다. 주인공이 맞을 때·대왕 기술만 짧게(상한 5px).
 
