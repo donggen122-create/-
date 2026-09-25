@@ -5377,9 +5377,9 @@ function sgMaybeGuidance(){
 const sgStorageKey=kind=>`seoho_v1_${kind}_${cloud.user||'guest'}`;
 function sgReadPending(kind){try{return JSON.parse(localStorage.getItem(sgStorageKey(kind))||'null');}catch{return null;}}
 function sgKeepPending(kind,data){if(data)localStorage.setItem(sgStorageKey(kind),JSON.stringify(data));else localStorage.removeItem(sgStorageKey(kind));}
-async function sgPost(path,payload){
-  try{return await cloud.request(path,{method:'POST',body:JSON.stringify(payload)});}
-  catch(e){if(e.status)throw e;return cloud.request(path,{method:'POST',body:JSON.stringify(payload)});}
+async function sgPost(path,payload,opt={}){
+  try{return await cloud.request(path,{method:'POST',body:JSON.stringify(payload),...opt});}
+  catch(e){if(e.status)throw e;return cloud.request(path,{method:'POST',body:JSON.stringify(payload),...opt});}
 }
 async function sgRefresh(){
   if(!cloud.loggedIn)return;
@@ -5390,6 +5390,7 @@ async function sgRefresh(){
     const pending=sgReadPending('result');
     if(pending){try{const r=await sgPost('/play/finish',pending);sgKeepPending('result',null);sgApplyServer({...r,active:null});}catch(e){if(e.data?.code==='EXPIRED')sgKeepPending('result',null);else throw e;}}
     sgApplyServer(await cloud.request('/guardian'));
+    await sgTidyLeftRun().catch(()=>{});
   }catch(e){sgState.error=e.message;refreshMenuMeta();throw e;}
 }
 async function sgAction(payload){
@@ -5399,16 +5400,37 @@ async function sgAction(payload){
   try{const r=await sgPost('/guardian/action',a);sgKeepPending('action',null);sgApplyServer(r);playSfx('cardSelect',.45);return r;}
   catch(e){if(e.status&&e.status<500)sgKeepPending('action',null);throw e;}
 }
+// 판 도중 나간 도전 정리: 실패로 마무리(이용권 그대로·코인 없음). 이미 끝났거나 30분이 지나 서버가 정리한 도전이면 그대로 넘어간다.
 async function sgAbandon(){
   const active=sgState.active;if(!active)return;
-  const r=await sgPost('/play/finish',{requestId:crypto.randomUUID(),runId:active.id,cleared:false,seconds:0,litter:0});
-  sgApplyServer({...r,active:null});
+  try{const r=await sgPost('/play/finish',{requestId:crypto.randomUUID(),runId:active.id,cleared:false,seconds:0,litter:0});sgApplyServer({...r,active:null});}
+  catch(e){if(e.data?.code!=='EXPIRED'&&e.status!==404)throw e;sgApplyServer(await cloud.request('/guardian'));}
+}
+// 같은 브라우저의 다른 창이 그 도전을 하는 중인지 묻는다(대답이 없으면 나간 도전).
+const sgRunChannel=typeof BroadcastChannel==='function'?new BroadcastChannel('seoho-run'):null;
+let sgAliveWait=null;
+sgRunChannel?.addEventListener('message',e=>{
+  const d=e.data||{};
+  if(d.ask&&d.ask===runId&&(sgSettling||['playing','levelup','paused'].includes(mode)))sgRunChannel.postMessage({alive:d.ask});
+  if(d.alive&&sgAliveWait?.id===d.alive)sgAliveWait.done(true);
+});
+function sgRunAliveElsewhere(id){
+  if(!sgRunChannel)return Promise.resolve(false);
+  return new Promise(done=>{sgAliveWait={id,done};sgRunChannel.postMessage({ask:id});setTimeout(()=>done(false),400);}).finally(()=>{sgAliveWait=null;});
+}
+// 판 도중 나갔던 도전(창 닫기·새로고침·기기 꺼짐)은 알림 없이 정리한다(이용권 그대로). 이 브라우저에서 시작한 판은 다른 창이 하는 중이 아니면 바로,
+// 다른 기기에서 시작한 판은 10분이 지나면(한 판은 6분 안에 끝남). 새로 출동할 때는 남은 도전을 언제나 먼저 정리한다(sgStart).
+async function sgTidyLeftRun(){
+  const a=sgState.active;if(!a||sgSettling||(a.id===runId&&['playing','levelup','paused','result'].includes(mode)))return;
+  const mine=sgReadPending('run')===a.id,age=(sgState.passes?.serverNow||Date.now())-(a.started_at||0);
+  if(mine?await sgRunAliveElsewhere(a.id):age<600000)return;
+  await sgAbandon();
 }
 async function sgStart(stage){
   await sgRefresh();
-  if(sgState.active)throw new Error('진행 중인 도전을 먼저 정리해 주세요. 이용권은 줄지 않아요.');
+  if(sgState.active)await sgAbandon();   // 다른 창·기기에 남은 도전은 새로 출동할 때 정리(이용권 그대로)
   const r=await sgPost('/play/start',{stage,clientVersion:2,requestId:crypto.randomUUID()});
-  sgApplyServer({...r,active:{id:r.runId,stage}});sgRunToken=r.runId;sgServerDuration=r.duration;
+  sgApplyServer({...r,active:{id:r.runId,stage}});sgRunToken=r.runId;sgServerDuration=r.duration;sgKeepPending('run',r.runId);
   selectedChapterId=stage;selectedMode='M01';
   bgmOff();   // 출동해서 전투가 시작되면 테마곡 정지(서버가 출동을 받아 준 뒤에만 — 실패하면 로비 음악은 계속)
   newRun(stage,'M01');
@@ -5593,18 +5615,21 @@ function sgHud(){
     +Array.from({length:Math.max(0,R.RUN_RULES.supportSlots-Object.keys(sup).length)},()=>'<span class="sg-empty-slot sg-support">＋</span>').join('');
   tools.innerHTML=html;layoutHud();
 }
-function sgEnd(cleared){
+function sgEnd(cleared,leaving=false){
   if(sgSettling||mode==='result')return;
   mode='result';sgSettling=true;elBossLabel.textContent='';keys.clear();touchJoy.active=false;
   elLevelup.classList.add('hidden');elPause.classList.add('hidden');elResult.classList.remove('hidden');
   const pending={requestId:crypto.randomUUID(),runId,cleared,seconds:Math.min(360,runTime),litter:runStats.litter||0,hpFraction:player.hp/player.hpMax,bossSeconds:runCfg.bossPhase?Math.max(0,runTime-runCfg.timeLimitS):null,skillIds:player.sgUsedSkills,fusionIds:player.sgUsedFusions,supportIds:player.sgUsedSupports||[],partEffects:sgElements.snapshot().parts,revives:runStats.revives||0};
-  sgKeepPending('result',pending);sgSettle(pending);
+  sgKeepPending('result',pending);sgSettle(pending,leaving);
 }
-async function sgSettle(pending){
+// 판 도중 창을 닫거나 새로고침·뒤로 가기로 나가면 그 판을 바로 실패로 정리한다(일시정지 → 나가기와 같음: 이용권 그대로, 버틴 시간만큼 실패 코인).
+// 창이 닫혀도 요청이 가도록 keepalive로 보내고, 못 보냈으면 보관한 결과를 다음에 들어올 때 보낸다(sgRefresh).
+window.addEventListener('pagehide',()=>{if(cloud.loggedIn&&runId&&!sgSettling&&['playing','levelup','paused'].includes(mode))sgEnd(false,true);});
+async function sgSettle(pending,leaving=false){
   const btn=document.getElementById('btn-continue');btn.disabled=true;elResultTitle.textContent='모험을 기록하는 중…';
   elResultTable.innerHTML='<tr><td>잠깐만 기다려 주세요. 결과와 이용권을 확인하고 있어요.</td></tr>';
   try{
-    const r=await sgPost('/play/finish',pending);sgKeepPending('result',null);sgApplyServer({...r,active:null});
+    const r=await sgPost('/play/finish',pending,leaving?{keepalive:true}:{});sgKeepPending('result',null);sgApplyServer({...r,active:null});
     sgHardLoss=!r.cleared&&r.reward?.difficulty==='hard'?(r.stage||null):null;   // 어려움 실패 → 로비로 돌아가면 준비 권장치 안내
     const w=r.reward,dn=R.DIFFICULTIES[w.difficulty]?.name;elResultTitle.textContent=r.cleared?'우리 마을이 반짝반짝!':'멋진 도전이었어요!';
     elResultTable.innerHTML=`<tr><td colspan="2" style="text-align:center;font-size:28px;color:#ffd16e">${'★'.repeat(w.stars)}${'☆'.repeat(3-w.stars)}${dn?`<div style="font-size:13px;color:#cfe3ee">${dn} 난이도${r.cleared?` 성공 → 별 ${w.stars}개`:''}</div>`:''}</td></tr><tr><td>코인</td><td>+${w.coins}${w.goal?' (환경 목표 +30 포함)':''}${w.petCoinPct>0?` · 친구 코인 +${Math.round(w.petCoinPct*1000)/10}%`:''}</td></tr><tr><td>보급권</td><td>+${w.gifts}${w.stageGift?.capped?' · 오늘 이 단계는 2번 다 받았어요. 다른 단계에 도전해 봐요!':w.stageGift?(w.stageGift.left?` · 오늘 이 단계 ${w.stageGift.left}번 더`:' · 오늘 이 단계 보급권은 여기까지! 다른 단계는 또 받아요'):''}</td></tr><tr><td>미션</td><td>${w.missions?.length?`완료! 보급권 +${w.missions.reduce((n,m)=>n+m.gifts,0)} · ${w.missions.map(m=>m.name).join(', ')}`:'오늘의 미션은 모험 화면에서 확인해요'}</td></tr><tr><td>이용권</td><td>${r.charged?'1장 사용':'그대로!'} · ${r.passes.remaining}장 남음</td></tr><tr><td colspan="2"><div class="sg-settlement">${r.cleared?(w.notes.join('<br/>')||'코인으로 훈련하고 파츠 레벨을 올려 보세요.'):'실패해도 이용권은 줄지 않아요. 조금 쉬었다가 다시 도전해요.'}<br/>${R.STAGES.find(s=>s.id===r.stage).tip}</div></td></tr>`;

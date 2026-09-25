@@ -1,5 +1,8 @@
 # 서호팡팡수호대 — Claude 작업 안내 (모든 PC 공통)
 
+## 2026-09-25 오전. 판 도중 나가면 자동 정리(배포 전)
+- 로비 "이용권 차감 없이 정리하기" 알림 없앰(사용자 요청). 창을 떠날 때 `main.js` pagehide → `sgEnd(false,true)`(keepalive), 남은 도전은 `sgTidyLeftRun`(이 브라우저 판은 바로 · 다른 기기 판은 10분 뒤)과 출동 때 `sgAbandon`이 정리. 이용권은 그대로.
+
 ## 2026-09-24 18:0x KST. 장비 탭 한 화면·칸 장비 창 실서버 배포 완료 8bd7549c
 - 장비 탭: 6칸 · 세트 한 줄 · 보급 한 줄(스크롤 없음). 칸 → `gearSlotDialog`, 세트 → `gearSetDialog`, 보관함 → `gearBagDialog`, 끼우기·빼기는 `toast`. 확인 도구 `responsive-audit.py`가 새 창까지 본다.
 
