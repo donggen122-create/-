@@ -149,7 +149,8 @@ test('first 1-5 clear bonus stays on top of the difficulty tickets',()=>{
 });
 
 test('API: the third clear of the same stage in a day pays no ticket; the settlement day resets it',async()=>{
- const p=supplyProfile();p.difficulty='hard';p.gifts=0;const env=await setup(p);let t=now;const win=async()=>{const s=await api(env,'/play/start',{stage:'CH01'},t);const r=await api(env,'/play/finish',{runId:s.runId,cleared:true,seconds:300},t+301000);t+=310000;return r;};
+ const p=supplyProfile();p.difficulty='hard';p.gifts=0;p.stages.CH01.stars=2;p.training={...p.training,attack:15,hp:15};const env=await setup(p);   // 어려움 최소 기준(HARD_MIN)
+ let t=now;const win=async()=>{const s=await api(env,'/play/start',{stage:'CH01'},t);const r=await api(env,'/play/finish',{runId:s.runId,cleared:true,seconds:300},t+301000);t+=310000;return r;};
  assert.equal((await win()).reward.gifts,2);assert.equal((await win()).reward.gifts,2);const third=await win();assert.equal(third.reward.gifts,0);assert.equal(third.reward.stageGift.capped,true);
  t=Date.parse('2026-09-23T23:05Z');assert.equal((await win()).reward.gifts,2,'아침 8시 뒤 새 날');
  assert.equal((await getProfile(env.DB,'qa')).profile.gifts,6+(2+2)+2,'일일 미션 보급권 포함');

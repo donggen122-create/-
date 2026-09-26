@@ -310,6 +310,22 @@ export function hardReadiness(p,stageId){
  for(const it of items)it.ok=it.now>=it.need;
  return {chapter:ch,items,ready:items.every(it=>it.ok),missing:items.filter(it=>!it.ok).length};
 }
+// 어려움 최소 기준(2026-09-26 사용자 "어려움 클리어를 위한 최소 기준을 두자" → "15, 20으로 해"): 채워야 그 단계를 어려움으로 시작할 수 있다(서버 /play/start도 막음).
+// ① 그 단계를 보통 이상(별 2개 이상)으로 먼저 성공 ② 훈련 공격력·체력 1장 15 · 2장 20. 실제 기록(9/23 저녁~9/26): 2장 어려움은 공격 훈련 9 이하 15판 0승.
+// 장비·파츠는 보급 운이 섞여 최소 기준에서 뺀다(권장치 HARD_READY는 안내로 그대로).
+export const HARD_MIN={1:{attack:15,hp:15},2:{attack:20,hp:20}};
+export const stageLabel=id=>`${stageChapter(id)}-${((Number(String(id||'').replace(/\D/g,''))||1)-1)%5+1}`;
+export function hardGate(p,stageId){
+ const ch=Math.min(2,Math.max(1,stageChapter(stageId))),need=HARD_MIN[ch],t=p?.training||{};
+ const items=[
+  {key:'stage',label:`${stageLabel(stageId)} 보통 이상으로 먼저 성공`,now:(p?.stages?.[stageId]?.stars||0)>=DIFFICULTIES.normal.stars?1:0,need:1,unit:'',tab:'adventure'},
+  {key:'attack',label:'공격력 훈련',now:t.attack||1,need:need.attack,unit:'단계',tab:'training'},
+  {key:'hp',label:'체력 훈련',now:t.hp||1,need:need.hp,unit:'단계',tab:'training'},
+ ];
+ for(const it of items)it.ok=it.now>=it.need;
+ return {chapter:ch,items,open:items.every(it=>it.ok),missing:items.filter(it=>!it.ok).length};
+}
+export const hardGateText=g=>g.items.filter(it=>!it.ok).map(it=>it.key==='stage'?it.label:`${it.label} ${it.now}/${it.need}${it.unit}`).join(' · ');
 // 시험용 슈퍼 계정(2026-09-24 사용자 "테스트 목적의 슈퍼 계정"): 모든 단계 성공(별 3) · 훈련 · 파츠 10종 · 친구 4마리(파츠와 같은 카드 수) · 코인·보급권 넉넉히.
 // 서버 관리 API(/api/admin/test-profile)가 'qa'로 시작하는 계정에만 쓴다. copies 80 = 전설, 25 = 에픽. 주인공·무기·난이도는 그대로 둔다.
 export const TEST_ACCOUNT_RE=/^qa[a-z0-9_]{0,10}$/;

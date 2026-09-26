@@ -109,12 +109,14 @@ test('first part, drawing, upgrades and refunds are idempotent across duplicate 
 test('difficulty is locked during an active run and decides the stars at settlement',async()=>{
   const env=await setup();
   const hard=await api(env,'/guardian/action',{requestId:uid(),kind:'settings',difficulty:'hard',weaponMode:'ranged',hero:'hoya'});assert.equal(hard.status,200);assert.equal(hard.profile.difficulty,'hard');
+  const locked=await api(env,'/play/start',{requestId:uid(),stage:'CH01'});assert.equal(locked.status,409);assert.equal(locked.code,'HARD_LOCKED','어려움 최소 기준: 1-1 보통 성공 · 공격력·체력 훈련 15');assert.match(locked.error,/1-1 보통 이상으로 먼저 성공 · 공격력 훈련 1\/15단계 · 체력 훈련 1\/15단계/);
+  await env.DB.prepare('UPDATE guardian_profiles SET state=? WHERE user_id=?').bind(JSON.stringify({...hard.profile,training:{attack:15,hp:15,speed:1},stages:{CH01:{cleared:true,stars:2}}}),'test').run();
   const s=await api(env,'/play/start',{requestId:uid(),stage:'CH01'});assert.equal(s.status,200);
   const lower=await api(env,'/guardian/action',{requestId:uid(),kind:'settings',difficulty:'easy'});assert.equal(lower.status,409);assert.equal(lower.code,'ACTIVE_RUN');
   const hero=await api(env,'/guardian/action',{requestId:uid(),kind:'settings',hero:'minji',difficulty:'hard'});assert.equal(hero.status,200,'같은 난이도로 주인공만 바꾸는 것은 허용');
-  const won=await api(env,'/play/finish',{requestId:uid(),runId:s.runId,cleared:true,seconds:180,litter:3,hpFraction:.1},start+180000);
+  const won=await api(env,'/play/finish',{requestId:uid(),runId:s.runId,cleared:true,seconds:300,litter:3,hpFraction:.1},start+300000);   // 1-1을 이미 깼으니 5분 도전
   assert.equal(won.reward.stars,3);assert.equal(won.reward.difficulty,'hard');assert.equal(won.profile.stages.CH01.stars,3);
-  const easy=await api(env,'/guardian/action',{requestId:uid(),kind:'settings',difficulty:'easy'},start+181000);assert.equal(easy.status,200,'도전이 끝나면 다시 바꿀 수 있다');
+  const easy=await api(env,'/guardian/action',{requestId:uid(),kind:'settings',difficulty:'easy'},start+301000);assert.equal(easy.status,200,'도전이 끝나면 다시 바꿀 수 있다');
 });
 test('Chuseok event: 2026-09-24..26 (8am KST days) give 20 passes a day, granted once, shown as passes.event, hidden from admin audit', async()=>{
   const env=await setup();
