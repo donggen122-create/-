@@ -1,4 +1,4 @@
-import { VERSION, SKILLS, COMBOS, SUPPORTS, runParts, action, completeRun, stageUnlocked, durationFor, superTestProfile, TEST_ACCOUNT_RE, needsPetMigration, migratePets } from '../../game/src/rework-core.js';
+import { VERSION, SKILLS, COMBOS, SUPPORTS, runParts, action, completeRun, stageUnlocked, difficultyOf, hardGate, hardGateText, durationFor, superTestProfile, TEST_ACCOUNT_RE, needsPetMigration, migratePets } from '../../game/src/rework-core.js';
 import { migrateLegacy } from './legacy-migration.js';
 import { migrateProfileV2, needsPartsRepair, repairObsoleteParts, PARTS_FIX_SNAPSHOT } from './profile-migration-v2.js';
 
@@ -125,6 +125,7 @@ export async function guardianAPI(request,env,user,path,now=Date.now()){
     if(old)return old.status==='active'?reply({runId:old.id,duration:old.duration,...await status(db,id,now)}):reply({error:'이미 끝난 도전이에요.'},409);
     const {profile}=await getProfile(db,id);
     if(!stageUnlocked(profile,b.stage))return reply({error:'앞 단계를 먼저 성공해 주세요.'},400);
+    if(difficultyOf(profile)==='hard'){const g=hardGate(profile,b.stage);if(!g.open)return reply({error:`어려움은 아직 잠겨 있어요 · ${hardGateText(g)}`,code:'HARD_LOCKED',gate:g},409);}   // 어려움 최소 기준(HARD_MIN)
     await grantPassEvent(db,id,now);
     const duration=durationFor(profile,b.stage),day=dayKey(now);
     const r=await db.batch([
