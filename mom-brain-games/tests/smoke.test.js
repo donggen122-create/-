@@ -1,4 +1,4 @@
-/* 스모크 테스트: 브라우저 없이(jsdom + node-canvas) 네 가지 놀이를 끝까지 한 번씩 진행해 봐요.
+/* 스모크 테스트: 브라우저 없이(jsdom + node-canvas) 그림 목록을 점검하고 퍼즐을 처음부터 끝까지 진행해 봐요.
    실행: npm install && npm test */
 const fs = require('fs');
 const path = require('path');
@@ -25,7 +25,7 @@ function check(cond, label) {
   if (!cond) failures++;
 }
 
-async function open(levels) {
+async function open(storage) {
   const dom = new JSDOM(html, {
     url: BASE,
     runScripts: 'dangerously',
@@ -33,13 +33,13 @@ async function open(levels) {
     pretendToBeVisual: true,
     beforeParse(w) {
       w.scrollTo = () => {};
-      if (levels) w.localStorage.setItem('mbp:levels', JSON.stringify(levels));
+      for (const [k, v] of Object.entries(storage || {})) w.localStorage.setItem(k, JSON.stringify(v));
     },
   });
   const w = dom.window;
   const errors = [];
   w.addEventListener('error', (e) => errors.push(e.message));
-  for (let i = 0; i < 50 && !w.document.querySelector('.act'); i++) await sleep(50);
+  for (let i = 0; i < 50 && !w.document.querySelector('[data-action="play"]'); i++) await sleep(50);
   const d = w.document;
   return {
     w, d, errors,
@@ -52,98 +52,108 @@ async function open(levels) {
   };
 }
 
+// 퍼즐 그림 목록: 200점 넘게, 파일이 모두 있고, 규칙(4:3 이내, 필수 항목, 저작권)을 지켜요
+function testPictures() {
+  console.log('퍼즐 그림 목록');
+  const sandbox = { window: {} };
+  require('vm').runInNewContext(fs.readFileSync(path.join(ROOT, 'js/paintings.js'), 'utf8'), sandbox);
+  const list = sandbox.window.PAINTINGS;
+  check(list.length >= 200, `그림이 200점 넘게 있어요 (${list.length}점)`);
+  check(new Set(list.map((p) => p.id)).size === list.length, 'id가 겹치지 않아요');
+  const need = ['id', 'cat', 't', 'a', 'src', 'w', 'h', 'enTitle', 'enArtist', 'source'];
+  const bad = list.filter((p) => need.some((k) => p[k] === undefined || p[k] === '') || !('artistDied' in p));
+  check(bad.length === 0, '필수 항목이 모두 채워져 있어요' + (bad.length ? ` (${bad.map((p) => p.id).join(', ')})` : ''));
+  const missing = list.filter((p) => !fs.existsSync(path.join(ROOT, p.src)));
+  check(missing.length === 0, '그림 파일이 모두 있어요' + (missing.length ? ` (${missing.map((p) => p.id).join(', ')})` : ''));
+  const wide = list.filter((p) => p.w / p.h > 4 / 3 + 0.01 || p.w / p.h < 3 / 4 - 0.01 || Math.max(p.w, p.h) > 800);
+  check(wide.length === 0, '모두 4:3(세로 3:4) 이내, 긴 변 800px 이하예요' + (wide.length ? ` (${wide.map((p) => p.id).join(', ')})` : ''));
+  const recent = list.filter((p) => p.artistDied !== null && p.artistDied > new Date().getFullYear() - 70);
+  check(recent.length === 0, '작가 사망 후 70년이 지난 작품만 있어요');
+}
+
 async function testHome() {
   console.log('처음 화면');
   const t = await open();
-  check(t.d.querySelectorAll('.act').length === 4, '놀이 4개가 보여요');
-  check(t.d.querySelectorAll('.lvpill').length === 4, '놀이마다 레벨이 표시돼요');
+  const buttons = [...t.d.querySelectorAll('#app button')];
+  check(t.text('.stage') === '스테이지 1', '스테이지 1부터 시작해요');
+  check(!!t.d.querySelector('.home-pic'), '그림이 보여요');
+  check(buttons.length === 1 && buttons[0].textContent === '시작하기', '버튼은 시작하기 하나뿐이에요');
+  check(!!t.d.getElementById('soundBtn'), '소리 버튼이 따로 있어요');
   check(t.errors.length === 0, '스크립트 오류 없음');
   t.w.close();
 }
 
-async function testJigsaw() {
-  console.log('그림 조각 맞추기');
+async function testSound() {
+  console.log('소리 버튼');
   const t = await open();
-  t.click('[data-game="jigsaw"]');
-  check(/15개/.test(t.text('.lv-info')), '레벨 1은 15조각');
+  t.click('#soundBtn');
+  check(t.text('#soundBtn') === '🔇 소리 끔', '누르면 소리가 꺼져요');
+  check(JSON.parse(t.w.localStorage.getItem('mbp:settings')).sound === false, '꺼진 상태가 저장돼요');
   t.click('[data-action="play"]');
-  for (let i = 0; i < 60 && !t.d.querySelector('#jplay canvas'); i++) await sleep(100);
-  const n = t.d.querySelectorAll('#jplay canvas.jp').length;
-  check(n === 15, `퍼즐 조각이 만들어져요 (${n}개)`);
-  for (let i = 0; i < n; i++) {
+  check(!!t.d.getElementById('soundBtn'), '퍼즐 화면에도 소리 버튼이 있어요');
+  t.click('#soundBtn');
+  check(t.text('#soundBtn') === '🔊 소리', '다시 누르면 소리가 켜져요');
+  await waitPieces(t);
+  t.w.close();
+}
+
+async function waitPieces(t) {
+  for (let i = 0; i < 80 && !t.d.querySelector('#jplay canvas'); i++) await sleep(100);
+  return [...t.d.querySelectorAll('#jplay canvas.jp')];
+}
+
+async function testPuzzle() {
+  console.log('퍼즐 한 판');
+  const t = await open();
+  const first = t.d.querySelector('.home-pic').getAttribute('src');
+  t.click('[data-action="play"]');
+  const pieces = await waitPieces(t);
+  check(pieces.length >= 20 && pieces.length <= 25, `조각은 20~25개 (${pieces.length}개)`);
+  check(!pieces.some((el) => el.style.transform), '조각이 돌아가 있지 않아요');
+  for (let i = 0; i < pieces.length; i++) {
     if (/(\d+) \/ \1$/.test(t.text('#jprog') || '')) break;
     t.click('[data-action="hint"]');
     await sleep(520);
   }
   await sleep(2000);
-  check(t.text('.result-title') === '레벨 1 완성!', '힌트로 끝까지 맞추면 완성 화면이 나와요');
-  check(/레벨 2가 열렸어요/.test(t.text('.result-note') || ''), '다음 레벨이 열려요');
+  check(t.text('.result-title') === '스테이지 1 완성!', '다 맞추면 완성 화면이 나와요');
+  check(t.d.querySelector('.result-img').getAttribute('src') === first, '완성 화면에 맞춘 그림이 보여요');
+  check(t.text('[data-action="home"]') === '다음 스테이지', "'다음 스테이지' 버튼이 있어요");
+  t.click('[data-action="home"]');
+  check(t.text('.stage') === '스테이지 2', '다음은 스테이지 2예요');
+  check(t.d.querySelector('.home-pic').getAttribute('src') !== first, '다음 스테이지는 다른 그림이에요');
   check(t.errors.length === 0, '스크립트 오류 없음');
   t.w.close();
 }
 
-async function testMatch() {
-  console.log('짝 맞추기');
+async function testStages() {
+  console.log('스테이지 순서');
   const t = await open();
-  t.click('[data-game="match"]');
-  t.click('[data-action="play"]');
-  const names = [...t.d.querySelectorAll('.card .nm')].map((x) => x.textContent);
-  check(names.length === 12, `레벨 1은 카드 12장 (${names.length}장)`);
-  const done = new Set();
-  for (let i = 0; i < names.length; i++) {
-    if (done.has(i)) continue;
-    const j = names.findIndex((v, k) => k !== i && v === names[i]);
-    t.click(`.card[data-i="${i}"]`);
-    t.click(`.card[data-i="${j}"]`);
-    done.add(i); done.add(j);
-  }
-  await sleep(1100);
-  check(t.text('.result-title') === '다 찾으셨어요!', '모두 찾으면 완성 화면이 나와요');
-  check(t.errors.length === 0, '스크립트 오류 없음');
+  const order = JSON.parse(t.w.localStorage.getItem('mbp:order'));
+  const n = t.w.PAINTINGS.length;
+  check(Array.isArray(order) && order.length === n && new Set(order).size === n, '그림 순서를 섞어서 저장해요 (겹치는 그림 없음)');
+  const sorted = order.every((v, i) => v === i);
+  check(!sorted, '목록 순서 그대로가 아니라 무작위예요');
   t.w.close();
-}
-
-async function testShop() {
-  console.log('장보기 기억');
-  const t = await open({ shop: { cur: 3, max: 3 } });
-  t.click('[data-game="shop"]');
-  t.click('[data-action="play"]');
-  const targets = [...t.d.querySelectorAll('.list li span:last-child')].map((s) => s.textContent);
-  check(targets.length === 5, `레벨 3은 물건 5개 외우기 (${targets.length}개)`);
-  t.click('[data-action="memorized"]');
-  check(!!t.d.querySelector('.qbox'), '레벨 3부터는 중간에 계산 문제가 나와요');
-  t.click('.choice[data-i="0"]');
-  t.click('[data-action="to-pick"]');
-  t.d.querySelectorAll('.tile').forEach((x) => {
-    if (targets.includes(x.querySelector('.nm').textContent)) x.dispatchEvent(new t.w.MouseEvent('click', { bubbles: true }));
-  });
-  t.click('[data-action="check-pick"]');
-  check(t.text('.result-title') === '모두 기억하셨어요!', '모두 고르면 성공');
-  check(t.errors.length === 0, '스크립트 오류 없음');
-  t.w.close();
-}
-
-async function testProverb() {
-  console.log('속담 잇기');
-  const t = await open();
-  t.click('[data-game="proverb"]');
-  t.click('[data-action="play"]');
-  check(t.d.querySelectorAll('.choice').length === 3, '레벨 1은 보기 3개');
-  for (let q = 0; q < 5; q++) {
-    t.click('.choice[data-i="0"]');
-    t.click('[data-action="next-q"]');
-  }
-  check(/5문제 중/.test(t.text('.result-title') || ''), '5문제를 풀면 결과가 나와요');
-  check(t.errors.length === 0, '스크립트 오류 없음');
-  t.w.close();
+  const u = await open({ 'mbp:stage': 200, 'mbp:order': order });
+  check(u.text('.stage') === '스테이지 200', '마지막은 스테이지 200이에요');
+  u.click('[data-action="play"]');
+  const pieces = await waitPieces(u);
+  for (let i = 0; i < pieces.length; i++) { u.click('[data-action="hint"]'); await sleep(520); }
+  await sleep(2000);
+  check(/모두 마치셨어요/.test(u.text('.result-detail') || ''), '200스테이지를 다 마치면 축하해요');
+  u.click('[data-action="home"]');
+  check(u.text('.stage') === '스테이지 1', '그다음은 스테이지 1부터 새 순서로 다시 해요');
+  check(u.errors.length === 0, '스크립트 오류 없음');
+  u.w.close();
 }
 
 (async () => {
+  testPictures();
   await testHome();
-  await testJigsaw();
-  await testMatch();
-  await testShop();
-  await testProverb();
+  await testSound();
+  await testPuzzle();
+  await testStages();
   console.log(failures ? `실패 ${failures}개` : '모두 통과');
   process.exit(failures ? 1 : 0);
 })().catch((e) => { console.error(e); process.exit(1); });

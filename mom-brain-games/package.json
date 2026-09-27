@@ -2,7 +2,7 @@
   "name": "mom-brain-games",
   "version": "0.3.0",
   "private": true,
-  "description": "엄마를 위한 두뇌 놀이 웹앱 (그림 조각 맞추기, 짝 맞추기, 장보기 기억, 속담 잇기)",
+  "description": "엄마를 위한 명화 직소 퍼즐 웹앱 (스테이지 1~200, 20~25조각)",
   "scripts": {
     "start": "python3 -m http.server 8000",
     "test": "node tests/smoke.test.js"
