@@ -1,0 +1,63 @@
+# 명화 퍼즐 웹 배포: puzzle-game 브랜치에 mom-brain-games/ 가 바뀌어 올라오면
+# 검사(npm test) → dist 만들기 → Cloudflare Workers(masterpiece-puzzle)에 배포 → 주소 확인.
+# 필요한 저장소 비밀값: CLOUDFLARE_API_TOKEN(Workers 편집 권한). seoho-game 배포와 같은 토큰이라
+# 그쪽처럼 CLOUDFLARE 등 비슷한 이름도 함께 읽어요. 값은 출력하지 않아요.
+name: Puzzle deploy
+on:
+  push:
+    branches: [puzzle-game]
+    paths: ['mom-brain-games/**', '.github/workflows/puzzle-deploy.yml']
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: puzzle-deploy
+  cancel-in-progress: false
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    defaults:
+      run:
+        working-directory: mom-brain-games
+    env:
+      CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN || secrets.CLOUDFLARE || secrets.CF_API_TOKEN || secrets.CLOUDFLARE_TOKEN || secrets.CLOUDFLARE_API_KEY }}
+      CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+          cache-dependency-path: mom-brain-games/package-lock.json
+      - name: 배포 열쇠 확인
+        run: |
+          if [ -z "$CLOUDFLARE_API_TOKEN" ]; then
+            echo "::error::배포 열쇠가 없어요. 저장소 Settings → Secrets and variables → Actions → Repository secrets에 CLOUDFLARE_API_TOKEN 이름으로 넣어 주세요."
+            exit 1
+          fi
+      - name: 설치
+        run: npm ci --no-audit --no-fund
+      - name: 검사
+        run: npm test
+      - name: 배포
+        run: |
+          set -o pipefail
+          node tools/build-web.mjs
+          npx wrangler deploy --message "github ${GITHUB_SHA::7}" 2>&1 | tee deploy-output.txt
+      - name: 게임 주소 확인
+        run: |
+          URL=$(grep -oE 'https://[a-zA-Z0-9.-]+\.workers\.dev' deploy-output.txt | head -1)
+          if [ -z "$URL" ]; then
+            echo "::warning::배포는 됐지만 workers.dev 주소를 찾지 못했어요. Cloudflare 대시보드 → Workers → masterpiece-puzzle 에서 주소를 확인해 주세요."
+            exit 0
+          fi
+          echo "게임 주소: $URL"
+          echo "### 게임 주소: $URL" >> "$GITHUB_STEP_SUMMARY"
+          # 새 Worker 주소는 열리기까지 조금 걸릴 수 있어서 몇 번 다시 확인해요
+          for i in $(seq 1 12); do
+            if curl -fsS -o /dev/null "$URL/" && curl -fsS -o /dev/null "$URL/js/app.js"; then echo "주소가 열려요"; exit 0; fi
+            sleep 10
+          done
+          echo "::error::배포 뒤 2분이 지나도 $URL 이 열리지 않아요."
+          exit 1

@@ -16,6 +16,15 @@ npm start        # python3 -m http.server 8000
 
 브라우저에서 http://localhost:8000 을 열어요. 폰에서 보려면 같은 와이파이에서 `http://<컴퓨터 IP>:8000`으로 접속해요.
 
+## 인터넷에서 하기 (Cloudflare)
+
+- 주소: `https://masterpiece-puzzle.<계정 서브도메인>.workers.dev` — 폰이든 컴퓨터든 브라우저로 열면 바로 할 수 있어요.
+- 배포는 자동이에요. GitHub의 `puzzle-game` 브랜치에 `mom-brain-games/`가 바뀌어 올라오면
+  `.github/workflows/puzzle-deploy.yml`이 검사 → 빌드 → Cloudflare Workers 배포까지 해요.
+  (저장소 비밀값 `CLOUDFLARE_API_TOKEN`을 써요. seoho-game 배포와 같은 토큰이에요.)
+- 직접 배포하려면: `CLOUDFLARE_API_TOKEN=... npm run deploy:web`
+- 진행 상황은 그 기기의 브라우저에 저장돼요(다른 기기에서는 스테이지 1부터).
+
 ## 토스(앱인토스)에 올리기
 
 1. 앱인토스 콘솔에서 앱을 등록하고([개발자센터](https://developers-apps-in-toss.toss.im/) 참고), `apps-in-toss.config.ts`의 `appName`을 등록한 이름과 똑같이 바꿔요.

@@ -1,4 +1,6 @@
-// 토스 앱에 올릴 웹 묶음(dist/)을 만들어요. `npm run build`가 이 스크립트 다음에 `ait build`를 실행해요.
+// 올릴 웹 묶음(dist/)을 만들어요.
+// - 웹(Cloudflare): `npm run deploy:web` 또는 GitHub Actions가 이 스크립트 다음에 `wrangler deploy`를 실행해요.
+// - 토스(앱인토스): `npm run build`가 이 스크립트 다음에 `ait build`를 실행해요.
 //
 // - index.html, css/, js/, assets/paintings/ 를 dist/ 로 복사해요.
 // - src/toss-bridge.js 를 esbuild로 묶어 dist/js/toss-bridge.js 를 만들고,
@@ -36,5 +38,8 @@ await writeFile(
   path.join(out, 'index.html'),
   html.replace(appScript, '<script src="js/toss-bridge.js"></script>\n' + appScript),
 );
+
+// 웹(Cloudflare)으로 올릴 때: 그림은 잘 바뀌지 않으니 브라우저가 일주일 동안 다시 받지 않게 해요
+await writeFile(path.join(out, '_headers'), '/assets/*\n  Cache-Control: public, max-age=604800\n');
 
 console.log('dist/ 를 만들었어요.');

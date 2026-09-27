@@ -8,12 +8,14 @@
     "test": "node tests/smoke.test.js",
     "build:web": "node tools/build-web.mjs",
     "build": "node tools/build-web.mjs && ait build",
-    "deploy": "ait deploy"
+    "deploy": "ait deploy",
+    "deploy:web": "node tools/build-web.mjs && wrangler deploy"
   },
   "devDependencies": {
     "canvas": "^3.1.0",
     "esbuild": "^0.28.2",
-    "jsdom": "^26.1.0"
+    "jsdom": "^26.1.0",
+    "wrangler": "^4.141.0"
   },
   "dependencies": {
     "@apps-in-toss/web-framework": "^3.5.0"

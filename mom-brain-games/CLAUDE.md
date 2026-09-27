@@ -22,6 +22,15 @@
 - 코드를 고친 뒤에는 반드시 `npm test`를 돌리고, 새 기능이면 `tests/smoke.test.js`에 확인 항목을 추가하세요.
 - jsdom에는 `elementsFromPoint`가 없어서 테스트는 힌트로 퍼즐을 끝까지 맞춰요. 실제 끌기는 브라우저에서 확인하세요.
 
+## 웹 배포 (Cloudflare Workers)
+
+- `wrangler.toml`: Worker `masterpiece-puzzle`, 정적 파일만(`[assets] directory = "./dist"`). 서버 코드는 없어요.
+- 자동 배포: 저장소 루트의 `.github/workflows/puzzle-deploy.yml`. `puzzle-game` 브랜치에 `mom-brain-games/**`가 바뀌어 push되면 `npm ci` → `npm test` → `tools/build-web.mjs` → `wrangler deploy` → workers.dev 주소가 열리는지 확인해요. 주소는 Actions 실행 요약(Summary)에 나와요.
+- 토큰: 저장소 비밀값 `CLOUDFLARE_API_TOKEN`(없으면 `CLOUDFLARE` 등 비슷한 이름). seoho-game 배포와 같은 토큰이에요.
+- 수동 배포: `npm run deploy:web` (환경 변수 `CLOUDFLARE_API_TOKEN` 필요).
+- `dist/_headers`로 그림(`/assets/*`)은 브라우저가 일주일 동안 다시 받지 않게 해요. 그림 파일을 같은 이름으로 바꿀 때는 이름을 새로 지으세요.
+- 웹에서도 `dist/js/toss-bridge.js`가 함께 올라가지만, 토스 앱 밖에서는 아무 일도 하지 않아요.
+
 ## 토스(앱인토스) 출시
 
 - 빌드: `npm run build` → `tools/build-web.mjs`가 `dist/`를 만들고, `ait build`가 `<appName>.ait`(지금은 `masterpiece-puzzle.ait`)를 만들어요.
@@ -42,7 +51,8 @@
 index.html              화면 뼈대 (스크립트 2개를 불러오기만 함)
 apps-in-toss.config.ts  앱인토스 설정 (appName, 색, 네비게이션 바, 웹뷰)
 src/toss-bridge.js      토스 SDK 연결부 → window.TossBridge (빌드 때만 묶여 들어가요)
-tools/build-web.mjs     토스에 올릴 dist/ 를 만드는 스크립트
+tools/build-web.mjs     올릴 dist/ 를 만드는 스크립트 (웹·토스 공통)
+wrangler.toml           Cloudflare Workers 설정 (웹 배포)
 css/style.css           디자인 토큰(:root 색상 변수) + 화면별 스타일, 다크 모드 포함
 js/paintings.js         퍼즐 그림 목록 window.PAINTINGS (tools/build_pictures.py 가 만든 파일)
 js/app.js               앱 전체 로직 (빌드 도구 없는 순수 JS, 즉시 실행 함수 하나)
