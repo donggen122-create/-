@@ -2,14 +2,45 @@
 'use strict';
 var app=document.getElementById('app');
 
-var store={
-  get:function(k,d){try{var v=window.localStorage.getItem(k);return v===null?d:JSON.parse(v);}catch(e){return d;}},
-  set:function(k,v){try{window.localStorage.setItem(k,JSON.stringify(v));return true;}catch(e){return false;}}
-};
+// 토스 앱 안이면 src/toss-bridge.js 가 만들어 둔 연결부(저장소, 뒤로가기, 화면 켜짐, 진동)를 써요
+var bridge=window.TossBridge||null;
 
-var saved=store.get('mbp:settings',null)||{};
-var settings={sound:saved.sound!==false};
-function saveSettings(){store.set('mbp:settings',settings);}
+/* ---------- 저장: 토스 앱 안에서는 토스 저장소, 밖에서는 브라우저 저장소 ---------- */
+// 진행 상황은 키 하나(mbp:save)에 JSON으로 모아 둬요.
+// {v:1, stage:지금 스테이지, order:섞어 둔 그림 순서, sound:소리 켜짐, puzzle:하다 만 퍼즐 {stage, id, placed:[맞춘 조각 번호]}}
+var SAVE_KEY='mbp:save';
+function readLocal(k){try{return window.localStorage.getItem(k);}catch(e){return null;}}
+function writeLocal(k,v){try{window.localStorage.setItem(k,v);}catch(e){}}
+function readJSON(text){if(typeof text!=='string')return null;try{return JSON.parse(text);}catch(e){return null;}}
+function asObject(v){return v&&typeof v==='object'&&!Array.isArray(v)?v:null;}
+// 예전 버전이 따로따로 저장하던 값(mbp:stage, mbp:order, mbp:settings)도 이어받아요
+function legacySave(){
+  var s=readJSON(readLocal('mbp:stage')),o=readJSON(readLocal('mbp:order')),set=asObject(readJSON(readLocal('mbp:settings')));
+  if(s===null&&o===null&&set===null)return null;
+  return {stage:s,order:o,sound:!(set&&set.sound===false)};
+}
+// cb(저장값, 늦음): 토스 저장소가 3초 안에 대답하지 않으면 브라우저 저장값으로 먼저 시작하고(늦음=true),
+// 나중에 온 대답은 onLate 로 넘겨요.
+function loadSave(cb,onLate){
+  var local=asObject(readJSON(readLocal(SAVE_KEY)))||legacySave();
+  if(!bridge){cb(local,false);return;}
+  var done=false,timer=0;
+  function finish(v,late){if(done)return;done=true;clearTimeout(timer);cb(v,late);}
+  timer=setTimeout(function(){finish(local,true);},3000);
+  bridge.getItem(SAVE_KEY).then(function(v){
+    var o=asObject(readJSON(v));
+    if(!done)finish(o||local,false);else if(o)onLate(o);
+  },function(){finish(local,false);});
+}
+var touched=false; // 시작한 뒤 사용자가 뭔가 해서 저장한 적이 있는지
+function save(){
+  touched=true;
+  var data=JSON.stringify({v:1,stage:stage,order:order,sound:settings.sound,puzzle:puzzle});
+  writeLocal(SAVE_KEY,data);
+  if(bridge)bridge.setItem(SAVE_KEY,data).catch(function(){});
+}
+
+var settings={sound:true};
 
 var actx=null;
 function chime(kind){
@@ -32,6 +63,18 @@ function chime(kind){
     });
   }catch(e){}
 }
+function haptic(type){if(bridge)bridge.haptic(type);}
+// 퍼즐을 하는 동안에만 화면이 꺼지지 않게 해요
+var awake=false;
+function keepAwake(on){if(bridge&&awake!==on){awake=on;bridge.keepAwake(on);}}
+// 앱이 뒤로 가면 소리를 멈추고, 돌아와서 다음 효과음 때 다시 켜요(chime이 resume).
+// 화면 켜짐은 앱을 벗어나면 풀릴 수 있어서, 퍼즐 화면으로 돌아오면 다시 켜요.
+document.addEventListener('visibilitychange',function(){
+  if(document.hidden){
+    if(actx&&actx.state==='running'&&actx.suspend){try{actx.suspend();}catch(e){}}
+    awake=false;
+  }else if(screen==='play'){keepAwake(true);}
+});
 
 function shuffle(a){var b=a.slice();for(var i=b.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1));var t=b[i];b[i]=b[j];b[j]=t;}return b;}
 function pick(a){return a[Math.floor(Math.random()*a.length)];}
@@ -45,16 +88,21 @@ var STAGES=200;
 var TOL=0.3; // 제자리에서 이만큼(조각 짧은 변 기준) 가까이 놓으면 딱 붙어요
 // 그림 순서를 한 번 섞어 저장해 두고 스테이지 번호대로 꺼내요. 200스테이지 동안 같은 그림이 두 번 나오지 않아요.
 function newOrder(){var a=[];for(var i=0;i<PAINTINGS.length;i++)a.push(i);return shuffle(a);}
-var stage=parseInt(store.get('mbp:stage',1),10)||1;
-if(stage<1||stage>STAGES)stage=1;
-var order=store.get('mbp:order',null);
-if(!Array.isArray(order)||order.length!==PAINTINGS.length){order=newOrder();store.set('mbp:order',order);}
+// 그림 수가 바뀌면(업데이트로 그림을 더하면) 순서를 새로 섞어요
+function validOrder(o){
+  if(!Array.isArray(o)||o.length!==PAINTINGS.length)return false;
+  var seen={};
+  for(var i=0;i<o.length;i++){if(typeof o[i]!=='number'||o[i]<0||o[i]>=o.length||seen[o[i]])return false;seen[o[i]]=true;}
+  return true;
+}
+var stage=1,order=newOrder(),puzzle=null;
 function currentPainting(){return PAINTINGS[order[(stage-1)%order.length]]||PAINTINGS[0];}
 function nextStage(){
   stage++;
-  if(stage>STAGES){stage=1;order=newOrder();store.set('mbp:order',order);}
-  store.set('mbp:stage',stage);
+  if(stage>STAGES){stage=1;order=newOrder();}
 }
+// 하다 만 퍼즐이 지금 스테이지의 그림이면 맞춘 조각 번호를 돌려줘요
+function savedPieces(p){return puzzle&&puzzle.stage===stage&&puzzle.id===p.id?puzzle.placed:[];}
 // 조각은 늘 20~25개: 가로 그림 5×4, 세로 그림 4×5, 정사각형에 가까우면 5×5
 function gridFor(p){var R=p.w/p.h;return R>=1.15?{cols:5,rows:4}:R<=0.87?{cols:4,rows:5}:{cols:5,rows:5};}
 
@@ -69,26 +117,24 @@ function renderSound(){
   soundBtn.setAttribute('aria-label',settings.sound?'소리 끄기':'소리 켜기');
 }
 soundBtn.addEventListener('click',function(){
-  settings.sound=!settings.sound;saveSettings();renderSound();
+  settings.sound=!settings.sound;save();renderSound();
   if(settings.sound)chime('good');
 });
-renderSound();
-document.body.appendChild(soundBtn);
 
-/* ---------- 처음 화면: 스테이지 번호, 그림, 시작하기 ---------- */
+/* ---------- 처음 화면: 스테이지 번호, 그림, 시작하기(하다 만 퍼즐이 있으면 이어서 하기) ---------- */
 function renderHome(){
-  screen='home';st={};
+  screen='home';st={};keepAwake(false);
   var p=currentPainting();
   show('<section class="home">'+
     '<p class="stage">스테이지 '+stage+'</p>'+
     '<img class="home-pic" src="'+p.src+'" alt="'+esc(p.t)+'">'+
-    '<button type="button" class="btn start" data-action="play">시작하기</button>'+
+    '<button type="button" class="btn start" data-action="play">'+(savedPieces(p).length?'이어서 하기':'시작하기')+'</button>'+
   '</section>');
 }
 
 /* ---------- 완성 화면 ---------- */
 function result(){
-  screen='result';chime('done');
+  screen='result';chime('done');keepAwake(false);
   show('<section class="result">'+
       '<img class="result-img" src="'+st.pic.src+'" alt="'+esc(st.pic.t)+'">'+
       '<h2 class="result-title">스테이지 '+st.stage+' 완성!</h2>'+
@@ -120,6 +166,10 @@ function startJigsaw(){
   var img=currentPainting(),gr=gridFor(img),cols=gr.cols,rows=gr.rows,H=[],V=[],r,k;
   for(r=0;r<rows;r++){H.push([]);V.push([]);for(k=0;k<cols;k++){H[r].push(r>0?mkEdge():null);V[r].push(k>0?mkEdge():null);}}
   st={stage:stage,cols:cols,rows:rows,N:cols*rows,pic:img,done:false,peekTimer:null,edges:{H:H,V:V},placed:{},count:0,imgEl:null};
+  // 하다 만 퍼즐이면 맞춰 둔 조각을 제자리에 두고 시작해요
+  savedPieces(img).forEach(function(id){if(id>=0&&id<st.N&&!st.placed[id]){st.placed[id]=true;st.count++;}});
+  if(st.count>=st.N){st.placed={};st.count=0;}
+  var resumed=st.count>0;
   JIG.pieces=[];JIG.drag=null;
   show('<header class="topbar"><button type="button" class="home-btn" data-action="home">‹ 처음으로</button></header>'+
     '<div class="jhead-text"><p class="lead" id="msg" aria-live="polite">그림을 조각내는 중이에요…</p><p class="sub" id="jprog"></p></div>'+
@@ -130,7 +180,7 @@ function startJigsaw(){
       '<button type="button" class="btn secondary" data-action="scatter">다시 흩기</button>'+
     '</div>');
   var s=st,el=new Image();
-  el.onload=function(){if(s!==st)return;s.imgEl=el;buildJigsaw();setMsg('조각을 끌어다 틀 안 제자리에 놓아 보세요');};
+  el.onload=function(){if(s!==st)return;s.imgEl=el;buildJigsaw();setMsg(resumed?'하던 퍼즐을 이어서 해요':'조각을 끌어다 틀 안 제자리에 놓아 보세요');};
   el.onerror=function(){if(s!==st)return;setMsg('그림을 불러오지 못했어요. 처음 화면으로 돌아가 다시 시작해 주세요.');};
   el.src=img.src;
 }
@@ -205,7 +255,10 @@ function placePiece(p,viaHint){
   if(p.placed||st.done)return;
   p.placed=true;st.placed[p.id]=true;st.count++;
   setPos(p,p.tx,p.ty);p.el.classList.remove('drag');p.el.classList.add('placed');p.el.style.zIndex=1;
-  chime('good');
+  chime('good');haptic('tickMedium');
+  // 조각 하나 맞출 때마다 저장해서, 앱을 닫았다 열어도 이어서 할 수 있어요
+  puzzle={stage:st.stage,id:st.pic.id,placed:Object.keys(st.placed).map(Number)};
+  if(st.count<st.N)save();
   setMsg(viaHint?'힌트로 한 조각을 제자리에 놓았어요':pick(['딱 맞았어요!','제자리를 찾았어요!','잘하셨어요! 계속해 보세요']));
   jprog();
   if(st.count===st.N)finishJigsaw();
@@ -230,7 +283,8 @@ function finishJigsaw(){
   st.done=true;
   var f=app.querySelector('.jframe');if(f)f.classList.add('done');
   setMsg('다 맞추셨어요! 그림이 완성됐어요');
-  nextStage();
+  haptic('success');
+  puzzle=null;nextStage();save();
   var s=st;
   setTimeout(function(){if(s===st)result();},1800);
 }
@@ -277,13 +331,35 @@ window.addEventListener('resize',function(){
   },300);
 });
 
+/* ---------- 뒤로가기 ---------- */
+// 토스 앱: 시스템 뒤로가기를 받아서, 퍼즐·완성 화면이면 처음 화면으로, 처음 화면이면 앱을 닫아요.
+// 브라우저: 퍼즐을 시작할 때 방문 기록을 하나 쌓아서 뒤로가기가 처음 화면으로 오게 해요.
+var pushed=false,ignorePop=false;
+function goBack(){
+  if(screen==='home'){if(bridge)bridge.close();return;}
+  pushed=false;renderHome();
+}
+function enterPlay(){
+  screen='play';keepAwake(true);
+  if(!bridge&&!pushed){try{window.history.pushState({mbp:'play'},'');pushed=true;}catch(e){}}
+  startJigsaw();
+}
+function goHome(){
+  renderHome();
+  if(pushed){pushed=false;ignorePop=true;try{window.history.back();}catch(e){ignorePop=false;}}
+}
+window.addEventListener('popstate',function(){
+  if(ignorePop){ignorePop=false;return;}
+  goBack();
+});
+
 /* ---------- 동작 연결 ---------- */
 app.addEventListener('click',function(e){
   var t=e.target&&e.target.closest?e.target.closest('[data-action]'):null;
   if(!t||!app.contains(t))return;
   switch(t.getAttribute('data-action')){
-    case 'home':renderHome();break;
-    case 'play':screen='play';startJigsaw();break;
+    case 'home':goHome();break;
+    case 'play':enterPlay();break;
     case 'scatter':scatterLoose(false);break;
     case 'hint':hint();break;
     case 'peek':peek();break;
@@ -291,5 +367,29 @@ app.addEventListener('click',function(e){
   }
 });
 
-renderHome();
+/* ---------- 시작: 저장된 진행 상황을 불러온 뒤 처음 화면을 그려요 ---------- */
+function applySave(saved){
+  saved=saved||{};
+  settings.sound=saved.sound!==false;
+  var n=parseInt(saved.stage,10);
+  stage=n>=1&&n<=STAGES?n:1;
+  if(validOrder(saved.order))order=saved.order;
+  var pz=asObject(saved.puzzle);
+  puzzle=pz&&Array.isArray(pz.placed)?{stage:pz.stage,id:pz.id,placed:pz.placed.filter(function(x){return typeof x==='number';})}:null;
+}
+loadSave(function(saved,late){
+  applySave(saved);
+  // 토스 저장소가 늦게 대답한 경우에는 브라우저 저장값으로 토스 저장소를 덮어쓰지 않아요
+  if(!late)save();
+  touched=false;
+  renderSound();
+  document.body.appendChild(soundBtn);
+  if(bridge)bridge.onBack(goBack);
+  renderHome();
+},function(saved){
+  // 늦게 온 토스 저장값: 아직 아무것도 하지 않고 처음 화면에 있으면 그 값으로 다시 그려요
+  if(touched||screen!=='home')return;
+  applySave(saved);save();touched=false;
+  renderSound();renderHome();
+});
 })();

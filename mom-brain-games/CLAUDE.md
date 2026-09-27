@@ -1,6 +1,7 @@
 # 엄마의 두뇌 놀이터
 
 어머니(60~70대, 스마트폰 사용)를 위한 명화 직소 퍼즐 웹앱이에요. Claude 채팅에서 한 파일짜리 artifact로 만든 것을 이 프로젝트로 옮겼어요.
+토스 앱 안의 미니앱(앱인토스, WebView SDK `@apps-in-toss/web-framework` 3.x)으로 출시할 예정이에요.
 
 화면은 최대한 단순하게 두기로 했어요(사용자 요청).
 - 처음 화면: 스테이지 번호, 그림 한 점, '시작하기' 버튼뿐이에요.
@@ -14,17 +15,34 @@
 
 ## 실행과 테스트
 
-- 실행: `npm start` (= `python3 -m http.server 8000`) 후 http://localhost:8000
+- 실행: `npm install` 한 번, 그다음 `npm start` (= `python3 -m http.server 8000`) 후 http://localhost:8000
   - `file://`로 직접 열면 캔버스 보안 정책 때문에 조각을 집는 판정이 부정확해질 수 있어요. 꼭 로컬 서버로 여세요.
   - 폰에서 확인할 때는 같은 와이파이에서 `http://<컴퓨터 IP>:8000` 으로 접속하세요.
-- 테스트: `npm install` 후 `npm test` (jsdom + node-canvas로 그림 목록 점검, 처음 화면, 소리 버튼, 퍼즐 한 판, 스테이지 200 이후를 확인하는 스모크 테스트)
+- 테스트: `npm install` 후 `npm test` (jsdom + node-canvas로 그림 목록 점검, 처음 화면, 소리 버튼, 퍼즐 한 판, 스테이지 200 이후, 하다 만 퍼즐 이어서 하기, 예전 저장값 이어받기, 뒤로가기, 토스 연결부(가짜 TossBridge), 토스용 빌드(dist)를 확인하는 스모크 테스트)
 - 코드를 고친 뒤에는 반드시 `npm test`를 돌리고, 새 기능이면 `tests/smoke.test.js`에 확인 항목을 추가하세요.
 - jsdom에는 `elementsFromPoint`가 없어서 테스트는 힌트로 퍼즐을 끝까지 맞춰요. 실제 끌기는 브라우저에서 확인하세요.
+
+## 토스(앱인토스) 출시
+
+- 빌드: `npm run build` → `tools/build-web.mjs`가 `dist/`를 만들고, `ait build`가 `<appName>.ait`(지금은 `masterpiece-puzzle.ait`)를 만들어요.
+- 배포: 앱인토스 콘솔에 `.ait`를 올리거나, `npx ait token add`로 토큰을 등록한 뒤 `npm run deploy`.
+- `apps-in-toss.config.ts`의 `appName`은 콘솔에 등록한 앱 이름과 반드시 같아야 해요.
+- 앱 표시 이름(한국어), 아이콘, 소개, 등급분류는 콘솔에서 정해요. 앱 이름을 영어로만 쓰면 검수에서 반려된 사례가 있어요.
+- 게임은 게임물 등급분류가 필요해요(구글 플레이에 먼저 내서 자체등급을 받아 입력하면 비용이 들지 않아요).
+- 토스 연결부는 `src/toss-bridge.js` 하나에 모아 뒀어요. 빌드 때 esbuild가 `dist/js/toss-bridge.js`로 묶고 `dist/index.html`에만 넣어요. 개발용 `index.html`에는 없어서 브라우저에서 그냥 열면 토스 기능 없이 동작해요.
+- 토스 앱 안인지는 `window.ReactNativeWebView`가 있는지로 판단해요(SDK와 같은 기준). 있을 때만 `window.TossBridge`가 생겨요.
+- 쓰는 SDK 기능: `Storage`(진행 상황 저장), `graniteEvent`의 `backEvent`(뒤로가기), `Screen.close`(앱 닫기), `Screen.setAwakeMode`(퍼즐 중 화면 켜짐), `Device.triggerHaptic`(조각이 맞을 때 진동).
+- 웹뷰 설정: 조각을 끌 때 화면이 튕기거나 당겨서 새로고침되지 않도록 `bounces`, `pullToRefreshEnabled`, `overScrollMode`를 껐어요.
+- 외부 리소스(웹 폰트 등)는 쓰지 않아요. 글꼴은 기기 기본 글꼴이에요.
+- 효과음은 앱이 백그라운드로 가면 멈추고(`AudioContext.suspend`), 다음 효과음 때 다시 켜져요. 배경음은 없어요.
 
 ## 폴더 구조
 
 ```
 index.html              화면 뼈대 (스크립트 2개를 불러오기만 함)
+apps-in-toss.config.ts  앱인토스 설정 (appName, 색, 네비게이션 바, 웹뷰)
+src/toss-bridge.js      토스 SDK 연결부 → window.TossBridge (빌드 때만 묶여 들어가요)
+tools/build-web.mjs     토스에 올릴 dist/ 를 만드는 스크립트
 css/style.css           디자인 토큰(:root 색상 변수) + 화면별 스타일, 다크 모드 포함
 js/paintings.js         퍼즐 그림 목록 window.PAINTINGS (tools/build_pictures.py 가 만든 파일)
 js/app.js               앱 전체 로직 (빌드 도구 없는 순수 JS, 즉시 실행 함수 하나)
@@ -36,17 +54,19 @@ tests/smoke.test.js     스모크 테스트
 
 ## app.js 구조
 
-- 전역 상태: `screen`('home'|'play'|'result'), `st`(지금 판의 상태), `settings`(소리만), `stage`, `order`
-- 화면 전환: `renderHome` → (시작하기) `startJigsaw` → `finishJigsaw` → `result` → (다음 스테이지) `renderHome`
+- 전역 상태: `screen`('home'|'play'|'result'), `st`(지금 판의 상태), `settings`(소리만), `stage`, `order`, `puzzle`(하다 만 퍼즐)
+- 화면 전환: `renderHome` → (시작하기/이어서 하기) `enterPlay` → `startJigsaw` → `finishJigsaw` → `result` → (다음 스테이지) `goHome`
+- 시작할 때 `loadSave`로 저장값을 불러온 뒤에 처음 화면을 그려요(토스 저장소는 비동기).
+- 뒤로가기: 토스 앱에서는 `backEvent`를 받아 퍼즐·완성 화면이면 처음 화면으로, 처음 화면이면 앱을 닫아요. 브라우저에서는 퍼즐을 시작할 때 `history.pushState`로 기록을 하나 쌓아요.
 - 버튼은 `data-action` 속성 + `app`에 붙은 click 위임 하나로 처리해요. 소리 버튼(`#soundBtn`)만 `body`에 따로 붙어 있어요.
 - 스테이지: `currentPainting()`이 `order[stage-1]`번 그림을 줘요. `nextStage()`가 스테이지를 올리고, 200을 넘으면 1로 돌아가며 순서를 새로 섞어요.
 - 조각 나누기: `gridFor(그림)`, 딱 붙는 거리: `TOL`(조각 짧은 변 × 0.3).
 - 화면에 넣는 그림 제목은 `esc()`로 감싸요.
-- localStorage 키 (모두 try/catch로 감싸서 사용):
-  - `mbp:settings` `{sound}` 소리 켜짐/꺼짐
-  - `mbp:stage` 지금 스테이지(1~200)
-  - `mbp:order` 섞어 둔 그림 순서(`PAINTINGS` 번호 배열). 그림 수가 바뀌면 새로 섞어요.
-  - 예전 버전이 남긴 `mbp:levels`, `mbp:jigcount`, `mbp:photo`, `mbp:done:*` 등은 이제 쓰지 않아요.
+- 저장: 키 하나 `mbp:save`에 JSON으로 모아요. 토스 앱 안에서는 토스 `Storage`와 localStorage 둘 다에, 밖에서는 localStorage에만 써요.
+  - `{v:1, stage, order, sound, puzzle}`. `order`는 섞어 둔 그림 순서(`PAINTINGS` 번호 배열)이고, 그림 수가 바뀌면 새로 섞어요.
+  - `puzzle` = `{stage, id(그림 id), placed:[맞춘 조각 번호]}`. 조각을 하나 맞출 때마다 저장하고, 완성하면 지워요. 흩어진 조각 위치는 저장하지 않고 다시 흩어요.
+  - 토스 앱이 업데이트되면 웹 주소가 바뀌어 localStorage가 비어 있을 수 있어서 토스 `Storage`를 먼저 읽어요. 3초 안에 대답이 없으면 localStorage로 먼저 시작하고, 이때는 토스 쪽 기록을 덮어쓰지 않아요. 늦게 대답이 오면(아직 아무것도 안 했을 때) 그 기록으로 다시 그려요.
+  - 예전 버전이 따로 저장하던 `mbp:stage`, `mbp:order`, `mbp:settings`는 처음 한 번 읽어서 `mbp:save`로 옮겨요. `mbp:levels`, `mbp:jigcount`, `mbp:photo`, `mbp:done:*` 등은 쓰지 않아요.
 
 ## 그림 조각 맞추기 엔진
 
@@ -80,12 +100,10 @@ tests/smoke.test.js     스모크 테스트
 
 ## 다음에 할 일
 
-1. 한국 옛 그림 더 넣기 (지금은 국립중앙박물관 조선 그림 6점만 있어요)
+1. 앱인토스 콘솔에 앱 등록 → `appName` 맞추기 → `npm run build` → 샌드박스/토스 앱에서 실제 기기 테스트 → 등급분류 → 검수 요청
+   - 실제 토스 앱에서 확인할 것: 저장·이어서 하기, 뒤로가기, 화면 켜짐, 진동, 끌기 감도
+   - 빌드 파일이 약 19MB(그림 207점)예요. 콘솔 업로드 용량 제한이 있으면 그림 품질(JPEG 80)이나 수를 조정하기
+2. 한국 옛 그림 더 넣기 (지금은 국립중앙박물관 조선 그림 6점만 있어요)
    - 후보: 김홍도 「씨름」「서당」「무동」, 신윤복 「단오풍정」, 신사임당 「초충도」, 정선 「인왕제색도」
    - 이 작업 환경에서는 위키미디어 공용에 접속할 수 없었어요. 라이선스를 확인하고 받아서 `NEW` 표에 추가하기
-2. 실제 폰 테스트와 조정: iOS Safari, 안드로이드 Chrome에서 끌기 감도, 스크롤과의 충돌, 스냅 허용 범위
-3. 토스 앱인토스 출시 준비 (나중에)
-   - WebView SDK 3.x(`@apps-in-toss/web-framework`) 연동, 앱인토스 개발자센터 문서 기준으로 진행
-   - 게임은 등급분류가 필수: 구글 플레이에 먼저 내서 자체등급을 받고 콘솔에 입력하는 방법이 비용이 안 들어요
-   - 검수에서 반려된 사례: 앱 이름을 영어로 표기, 백그라운드에서 돌아왔을 때 배경음이 안 나옴
-   - 보상형 광고는 '힌트'나 '그림 보기' 같은 도움 기능에 붙이는 것을 검토
+3. 보상형 광고는 '힌트'나 '그림 보기' 같은 도움 기능에 붙이는 것을 검토 (SDK의 `loadFullScreenAd`/`showFullScreenAd`)
