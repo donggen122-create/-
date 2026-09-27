@@ -1,10 +1,7 @@
-# 웹에서 바로 하는 명화 퍼즐 — Cloudflare Workers 정적 파일 배포
-# 주소: https://masterpiece-puzzle.<계정 서브도메인>.workers.dev
+# 웹에서 바로 하는 명화 퍼즐 — Cloudflare Pages 정적 사이트
+# 주소: https://mompuzzle.pages.dev
 # 배포: GitHub의 puzzle-game 브랜치에 올리면 .github/workflows/puzzle-deploy.yml 이 알아서 배포해요.
 #       직접 하려면 `npm run deploy:web` (CLOUDFLARE_API_TOKEN 이 필요해요).
-name = "masterpiece-puzzle"
+name = "mompuzzle"
+pages_build_output_dir = "./dist"
 compatibility_date = "2025-09-01"
-
-[assets]
-# tools/build-web.mjs 가 만드는 폴더(index.html, css, js, 그림)
-directory = "./dist"
