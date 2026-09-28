@@ -1,9 +1,10 @@
 // 서호초등학교 바이브코딩 전시관 — 작품 저장 API (Cloudflare Pages Functions + D1)
 // 전시관 화면은 Pages 가 그대로 보여 주고, /api/* 요청만 여기서 처리해요 (functions/api/[[path]].js).
 //
-// 비밀값(Cloudflare 대시보드 → Pages → vibe-gallery → Settings → Variables and Secrets, 또는 GitHub 비밀값으로 배포):
-//   ADMIN_PASSWORD  선생님 비밀번호. 작품 삭제·추천에 필요해요. 없으면 삭제·추천을 할 수 없어요.
-//   UPLOAD_CODE     (선택) 등록 코드. 정해 두면 이 코드를 아는 사람만 작품을 올릴 수 있어요.
+// 선생님 비밀번호와 등록 코드는 두 곳 중 한 곳에 둘 수 있어요.
+//   1) Pages 비밀값 ADMIN_PASSWORD / UPLOAD_CODE (GitHub 비밀값 GALLERY_ADMIN_PASSWORD / GALLERY_UPLOAD_CODE 로 배포돼요)
+//   2) D1 의 settings 표: key 'admin_password' / 'upload_code', value '소금:SHA-256(소금+비밀번호)' (알아볼 수 없게 바꾼 값)
+//   1)이 있으면 1)을 먼저 써요. 둘 다 없으면 삭제·추천을 할 수 없고, 등록 코드 없이 누구나 올릴 수 있어요.
 
 const MAX_HTML_BYTES = 5 * 1024 * 1024;
 const MAX_BODY_BYTES = 8 * 1024 * 1024;
@@ -21,7 +22,13 @@ const SCHEMA = [
   "CREATE INDEX IF NOT EXISTS works_created_at ON works (created_at)",
   `CREATE TABLE IF NOT EXISTS work_files (
     work_id TEXT NOT NULL, part INTEGER NOT NULL, data TEXT NOT NULL, PRIMARY KEY (work_id, part))`,
+  "CREATE TABLE IF NOT EXISTS settings (key TEXT PRIMARY KEY, value TEXT NOT NULL)",
 ];
+
+const SECRETS = {
+  admin: { env: "ADMIN_PASSWORD", key: "admin_password" },
+  upload: { env: "UPLOAD_CODE", key: "upload_code" },
+};
 
 const CORS = {
   "Access-Control-Allow-Origin": "*",
@@ -64,7 +71,7 @@ async function route(request, env, url) {
   const method = request.method;
 
   if (parts[0] === "health" && method === "GET") return json({ ok: true });
-  if (parts[0] === "info" && method === "GET") return json(info(env));
+  if (parts[0] === "info" && method === "GET") return json(await info(env));
 
   if (parts[0] === "works") {
     const id = parts[1] ? decodeURIComponent(parts[1]) : "";
@@ -80,8 +87,9 @@ async function route(request, env, url) {
 
 /* ---------- 읽기 ---------- */
 
-function info(env) {
-  return { ok: true, needCode: !!env.UPLOAD_CODE, canManage: !!env.ADMIN_PASSWORD };
+async function info(env) {
+  const [needCode, canManage] = await Promise.all([hasSecret(env, SECRETS.upload), hasSecret(env, SECRETS.admin)]);
+  return { ok: true, needCode, canManage };
 }
 
 function toWork(row, url) {
@@ -106,7 +114,7 @@ const WORK_COLUMNS =
 
 async function listWorks(env, url) {
   const { results } = await env.DB.prepare(`SELECT ${WORK_COLUMNS} FROM works ORDER BY created_at DESC`).all();
-  return { ok: true, works: results.map((row) => toWork(row, url)), ...info(env) };
+  return { ok: true, works: results.map((row) => toWork(row, url)), ...(await info(env)) };
 }
 
 async function getWork(env, url, id) {
@@ -145,7 +153,7 @@ const int = (value) => {
 };
 
 async function createWork(env, b) {
-  if (env.UPLOAD_CODE && !(await sameText(text(b.code, 100), env.UPLOAD_CODE))) {
+  if ((await hasSecret(env, SECRETS.upload)) && !(await matchesSecret(env, SECRETS.upload, text(b.code, 100)))) {
     throw new UserError("등록 코드가 맞지 않아요. 선생님께 여쭤보세요.", 403);
   }
   const work = {
@@ -206,8 +214,29 @@ async function deleteWork(env, id, b) {
 /* ---------- 도우미 ---------- */
 
 async function checkAdmin(env, password) {
-  if (!env.ADMIN_PASSWORD) throw new UserError("선생님 비밀번호(ADMIN_PASSWORD)가 아직 서버에 설정되지 않았어요.", 403);
-  if (!(await sameText(text(password, 200), env.ADMIN_PASSWORD))) throw new UserError("선생님 비밀번호가 맞지 않아요.", 403);
+  if (!(await hasSecret(env, SECRETS.admin))) throw new UserError("선생님 비밀번호가 아직 서버에 정해지지 않았어요.", 403);
+  if (!(await matchesSecret(env, SECRETS.admin, text(password, 200)))) throw new UserError("선생님 비밀번호가 맞지 않아요.", 403);
+}
+
+async function storedSecret(env, secret) {
+  const row = await env.DB.prepare("SELECT value FROM settings WHERE key = ?").bind(secret.key).first();
+  return row ? String(row.value) : "";
+}
+
+async function hasSecret(env, secret) {
+  return !!env[secret.env] || !!(await storedSecret(env, secret));
+}
+
+async function matchesSecret(env, secret, given) {
+  if (env[secret.env]) return sameText(given, env[secret.env]);
+  const [salt, hash] = (await storedSecret(env, secret)).split(":");
+  if (!salt || !hash) return false;
+  return sameText(await sha256Hex(salt + given), hash);
+}
+
+async function sha256Hex(value) {
+  const digest = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(value));
+  return Array.from(new Uint8Array(digest), (b) => b.toString(16).padStart(2, "0")).join("");
 }
 
 // 비밀번호를 비교할 때 걸리는 시간으로 답을 알아낼 수 없게 해요.

@@ -1,10 +1,10 @@
 # 바이브코딩 전시관 배포: main 에 올라오거나, gallery-deploy/<아무 이름> 브랜치를 만들면
-# Cloudflare Pages(vibe-gallery)에 배포해요. 주소: https://vibe-gallery-a3d.pages.dev
+# Cloudflare Pages(seoho-vibe)에 배포해요. 주소: https://seoho-vibe.pages.dev
 # Actions 탭의 "Run workflow" 버튼으로도 할 수 있어요(main 에 합친 뒤).
 #
 # 필요한 저장소 비밀값(Settings → Secrets and variables → Actions → Repository secrets)
 #   CLOUDFLARE_API_TOKEN      서호팡팡·명화 퍼즐 배포에 쓰는 것과 같아요(CLOUDFLARE 이름도 읽어요). 값은 출력하지 않아요.
-#   GALLERY_ADMIN_PASSWORD    (선택) 선생님 비밀번호. 작품 삭제·추천에 써요.
+#   GALLERY_ADMIN_PASSWORD    (선택) 선생님 비밀번호. 넣으면 D1 에 저장된 비밀번호보다 먼저 써요.
 #   GALLERY_UPLOAD_CODE       (선택) 등록 코드. 넣으면 이 코드를 아는 사람만 작품을 올릴 수 있어요.
 name: Gallery deploy
 on:
@@ -26,7 +26,7 @@ jobs:
     env:
       CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN || secrets.CLOUDFLARE || secrets.CF_API_TOKEN || secrets.CLOUDFLARE_TOKEN || secrets.CLOUDFLARE_API_KEY }}
       CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-      PROJECT: vibe-gallery
+      PROJECT: seoho-vibe
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -73,6 +73,9 @@ jobs:
           done
           echo "::error::배포 뒤 3분이 지나도 $URL 이 열리지 않아요."
           exit 1
+      - name: 예전 주소 정리
+        # 처음에 올렸던 vibe-gallery 프로젝트(vibe-gallery-a3d.pages.dev)를 지워요. 작품은 D1 에 있어서 그대로예요. 이미 없으면 그냥 넘어가요.
+        run: npx wrangler pages project delete vibe-gallery --yes 2>&1 | tail -3 || true
       - name: 배포 브랜치 정리
         if: startsWith(github.ref_name, 'gallery-deploy/')
         working-directory: .

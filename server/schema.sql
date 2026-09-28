@@ -27,3 +27,10 @@ CREATE TABLE IF NOT EXISTS work_files (
   data TEXT NOT NULL,
   PRIMARY KEY (work_id, part)
 );
+
+-- 선생님 비밀번호(admin_password)·등록 코드(upload_code)를 알아볼 수 없게 바꿔 저장해요.
+-- value 모양: '소금:SHA-256(소금+비밀번호)' (16진수)
+CREATE TABLE IF NOT EXISTS settings (
+  key TEXT PRIMARY KEY,
+  value TEXT NOT NULL
+);

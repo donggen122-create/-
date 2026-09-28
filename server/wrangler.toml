@@ -1,7 +1,7 @@
 # 서호초등학교 바이브코딩 전시관 — Cloudflare Pages(전시관 화면) + Pages Functions(작품 저장 API) + D1(작품 저장 DB)
-# 주소: https://vibe-gallery-a3d.pages.dev
+# 주소: https://seoho-vibe.pages.dev
 # 배포: GitHub 에 올리면 .github/workflows/gallery-deploy.yml 이 알아서 배포해요. (저장소 README.md 참고)
-name = "vibe-gallery"
+name = "seoho-vibe"
 pages_build_output_dir = "./dist"
 compatibility_date = "2025-09-01"
 

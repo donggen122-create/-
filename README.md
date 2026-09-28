@@ -3,7 +3,7 @@
 학생들이 AI와 함께 **바이브코딩**으로 만든 html 작품을 올리고, 반별로 구경하고, 눌러서 바로 실행해 볼 수 있는 전시관이에요.
 (옛 플래시 게임 사이트 '주전자닷컴'처럼 작품 그림을 누르면 바로 실행 화면으로 들어가요.)
 
-- 전시관 주소: **https://vibe-gallery-a3d.pages.dev**
+- 전시관 주소: **https://seoho-vibe.pages.dev**
 - 전시관 화면 + 작품 저장 서버: Cloudflare Pages (+ Pages Functions)
 - 작품 저장소: Cloudflare D1 데이터베이스 `seoho-vibe-gallery-db` (이미 만들어 두었고 표도 준비돼 있어요)
 
@@ -27,17 +27,18 @@
   `main` 에 합친 뒤라면 GitHub → Actions → Gallery deploy → **Run workflow** 버튼도 돼요.
 - 배포 기록의 '실서버 확인' 단계에 전시관 주소가 나와요.
 
-### 2. 선생님 비밀번호 · 등록 코드 정하기 (꼭 해 주세요)
+### 2. 선생님 비밀번호 · 등록 코드
 
-GitHub 저장소 → Settings → Secrets and variables → Actions → **Repository secrets** 에 넣고 다시 배포하면 돼요.
+- **선생님 비밀번호는 이미 정해 두었어요.** (작품 저장 DB 에 알아볼 수 없게 바꾼 값으로 저장돼 있고, 저장소에는 적혀 있지 않아요.)
+- 비밀번호를 바꾸거나 등록 코드를 정하고 싶으면 Claude 에게 부탁하거나, 아래 GitHub 비밀값을 넣고 다시 배포하면 돼요.
+  GitHub 비밀값이 있으면 그걸 먼저 써요.
 
 | 비밀값 이름 | 쓰임 |
 | --- | --- |
-| `GALLERY_ADMIN_PASSWORD` | 선생님 비밀번호. 작품 **삭제**와 **추천**에 필요해요. 없으면 삭제·추천을 할 수 없어요. |
+| `GALLERY_ADMIN_PASSWORD` | 선생님 비밀번호. 작품 **삭제**와 **추천**에 필요해요. |
 | `GALLERY_UPLOAD_CODE` | (선택) 등록 코드. 넣으면 이 코드를 아는 사람만 작품을 올릴 수 있어요. 전시관 주소가 밖으로 퍼질까 걱정되면 넣어 주세요. |
 
-Cloudflare 대시보드에서 바로 넣어도 돼요: Workers & Pages → `vibe-gallery` → Settings → Variables and Secrets → Add → **Secret**
-(이름은 `ADMIN_PASSWORD`, `UPLOAD_CODE`). 넣은 뒤 한 번 다시 배포해야 적용돼요.
+넣는 곳: GitHub 저장소 → Settings → Secrets and variables → Actions → **Repository secrets**
 
 ### 3. 작품 관리
 
