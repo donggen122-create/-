@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<title>기획팀 활동지 — 4·5단계 대왕, 랭킹 안건</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Jua&family=Gowun+Dodum&display=swap" rel="stylesheet">
+<style>
+  @page { size: A4; margin: 0; }
+  * { box-sizing: border-box; }
+  :root { --ink: #1d2a30; --soft: #5b6b72; --line: #9fb3bb; --faint: #eef4f6; --accent: #2a6f93; --fire: #c8562b; --fire-bg: #fdebe2; --sea: #1f7aa8; --sea-bg: #e3f1f8; }
+  html, body { margin: 0; padding: 0; background: #fff; color: var(--ink); }
+  body { font-family: "Gowun Dodum", "Malgun Gothic", sans-serif; font-size: 10.4pt; line-height: 1.4; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  .page { width: 210mm; height: 297mm; padding: 9mm 11mm 8mm; overflow: hidden; break-after: page; display: flex; flex-direction: column; gap: 2.6mm; }
+  .page:last-child { break-after: auto; }
+  h1, h2, h3, .jua, b.j { font-family: "Jua", "Malgun Gothic", sans-serif; font-weight: normal; }
+  .top { display: flex; justify-content: space-between; align-items: center; font-size: 9pt; color: var(--soft); }
+  .tag { border: 1.2px solid var(--accent); color: var(--accent); border-radius: 99px; padding: .2mm 3mm; font-family: "Jua", sans-serif; font-size: 10pt; }
+  h1 { margin: 0; font-size: 21pt; line-height: 1.15; }
+  h1 small { font-size: 11.5pt; color: var(--soft); margin-left: 2mm; }
+  .info { display: flex; gap: 5mm; font-size: 10pt; align-items: flex-end; }
+  .info span { white-space: nowrap; }
+  .blank { display: inline-block; border-bottom: 1.1px solid var(--ink); height: 4.6mm; vertical-align: bottom; }
+  .box { border: 1.3px solid var(--ink); border-radius: 2.5mm; padding: 2mm 3.5mm; background: var(--faint); }
+  h2 { margin: 0; font-size: 13pt; display: flex; align-items: center; gap: 2mm; }
+  .num { flex: none; width: 6.6mm; height: 6.6mm; border-radius: 50%; border: 1.5px solid var(--accent); color: var(--accent); display: grid; place-items: center; font-size: 10.5pt; }
+  .hint { font-family: "Gowun Dodum", sans-serif; font-size: 8.8pt; color: var(--soft); margin-left: 1mm; }
+  .rules { display: grid; grid-template-columns: 1fr 1fr; gap: .6mm 5mm; font-size: 9.3pt; margin: 1mm 0 0; padding: 0; list-style: none; }
+  .rules li::before { content: "▸ "; color: var(--accent); }
+  .shapes { display: flex; flex-wrap: wrap; gap: 1mm 1.6mm; margin-top: 1.4mm; font-size: 8.8pt; }
+  .shapes span { background: #fff; border: 1px solid var(--line); border-radius: 99px; padding: .2mm 2.2mm; white-space: nowrap; }
+  .shapes span b { font-family: "Jua", sans-serif; font-weight: normal; color: var(--accent); }
+  table { width: 100%; border-collapse: collapse; table-layout: fixed; }
+  th, td { border: 1px solid var(--line); padding: 1.1mm 2mm; vertical-align: top; text-align: left; }
+  th { font-family: "Jua", sans-serif; font-weight: normal; font-size: 10.6pt; }
+  .plan th.item { width: 30mm; background: #f6f8f9; font-size: 9.8pt; line-height: 1.25; }
+  .plan th.item small { display: block; font-family: "Gowun Dodum", sans-serif; font-size: 7.8pt; color: var(--soft); margin-top: .5mm; }
+  .plan thead th { text-align: center; font-size: 11.5pt; padding: 1.4mm; }
+  .plan thead th.fire { background: var(--fire-bg); color: var(--fire); border-top: 2px solid var(--fire); }
+  .plan thead th.sea { background: var(--sea-bg); color: var(--sea); border-top: 2px solid var(--sea); }
+  .plan thead th small { display: block; font-family: "Gowun Dodum", sans-serif; font-size: 8.3pt; color: var(--soft); }
+  .plan td { font-size: 8.4pt; color: var(--soft); }
+  .plan td .ln { display: flex; gap: 1.5mm; align-items: flex-end; margin-top: 1.1mm; }
+  .plan td .ln i { font-style: normal; white-space: nowrap; }
+  .plan td .ln u { flex: 1; text-decoration: none; border-bottom: 1px solid var(--line); height: 4.2mm; }
+  .plan tr.s td { height: 21mm; }
+  .plan tr.m td { height: 14.6mm; }
+  .plan tr.l td { height: 18mm; }
+  .foot { margin-top: auto; display: flex; justify-content: space-between; font-size: 8.6pt; color: var(--soft); border-top: 1px dashed var(--line); padding-top: 1.2mm; }
+  .chk { display: inline-block; width: 3.4mm; height: 3.4mm; border: 1.2px solid var(--ink); border-radius: .7mm; vertical-align: -.5mm; margin-right: 1mm; }
+
+  /* 2쪽 */
+  .two { display: grid; grid-template-columns: 1fr 1fr; gap: 3mm; }
+  .card { border: 1.3px solid var(--line); border-radius: 2.5mm; padding: 1.6mm 3mm 2mm; }
+  .card h3 { margin: 0 0 .8mm; font-size: 11pt; }
+  .card.good h3 { color: #2e7d4f; } .card.bad h3 { color: #b24a2a; }
+  .card li { font-size: 9pt; }
+  .card ul { margin: 0; padding-left: 4.5mm; }
+  .wline { border-bottom: 1px solid var(--line); height: 6mm; }
+  .opts th { background: var(--accent); color: #fff; text-align: center; font-size: 9.8pt; padding: 1mm; }
+  .opts td { font-size: 8.9pt; padding: 1mm 1.8mm; vertical-align: middle; }
+  .opts td.k { font-family: "Jua", sans-serif; font-size: 10pt; text-align: center; }
+  .opts td.v { text-align: center; white-space: nowrap; }
+  .decide { display: grid; grid-template-columns: 27mm 1fr; gap: 1.1mm 2mm; font-size: 9.1pt; align-items: center; }
+  .decide .q { font-family: "Jua", sans-serif; font-size: 9.8pt; }
+  .decide .a { display: flex; flex-wrap: wrap; gap: .6mm 3mm; }
+  .decide .a span { white-space: nowrap; }
+  .rec { display: grid; grid-template-columns: 30mm 1fr; }
+  .rec div { border-bottom: 1px solid var(--line); padding: 1mm 0 .8mm; font-size: 9.4pt; min-height: 8.4mm; }
+  .rec div.l { font-family: "Jua", sans-serif; color: var(--accent); }
+</style>
+</head>
+<body>
+
+<!-- ─────────── 1쪽: 대왕 기획서 ─────────── -->
+<section class="page">
+  <div class="top"><span>서호팡팡수호대 · 기획팀 활동지 ①</span><span class="tag">4·5단계 대왕 기획 + 랭킹 안건</span></div>
+  <h1>4·5단계 대왕(보스) 기획서 <small>기술과 특성을 우리가 정해요</small></h1>
+  <div class="info">
+    <span>날짜 <span class="blank" style="width:24mm"></span></span>
+    <span>기획팀 이름 <span class="blank" style="width:34mm"></span></span>
+    <span>참여한 사람 <span class="blank" style="width:64mm"></span></span>
+  </div>
+
+  <div class="box">
+    <b class="j">대왕 기술 만들기 규칙</b> <span class="hint">지금 게임의 1단계 쓰레기 산 대왕, 2단계 굴뚝 가스 대왕이 이 규칙으로 움직여요</span>
+    <ul class="rules">
+      <li>각 단계 5번째 판(4-5, 5-5)에서 <b>4분을 버티면</b> 대왕이 나와요.</li>
+      <li>기술 전에 꼭 <b>경고 표시</b>(약 1초)가 나와야 해요. 피할 수 있어야 공정해요.</li>
+      <li>나와의 <b>거리</b>에 따라 기술이 달라요: 가까이 · 중간 · 멀리.</li>
+      <li>체력이 <b>절반 아래</b>면 화가 나서 더 빠르고, 한 번 더 공격해요.</li>
+      <li>3번째 기술마다 <b>환경 미션 물건</b>을 뿌려요. 해결하면 대왕이 약해져요.</li>
+      <li>예) 증기 폭발: 대왕 둘레에 빨간 원 → 원 밖으로 피해요!</li>
+    </ul>
+    <div class="shapes">기술 모양:
+      <span><b>원</b> 내려찍기·폭발</span><span><b>부채꼴</b> 입김·브레스</span><span><b>빨간 길</b> 돌진·휘두르기</span><span><b>폭격</b> 여러 곳에 떨어짐</span>
+      <span><b>날아오는 탄</b> 연속 던지기</span><span><b>점프</b> 그림자에 내려앉기</span><span><b>끌어당기기</b> 흡입</span><span><b>부하 부르기</b></span><span><b>바닥에 남기</b> 불길·기름</span>
+    </div>
+  </div>
+
+  <table class="plan">
+    <thead><tr>
+      <th class="item" style="background:#fff;border-top:0;border-left:0"></th>
+      <th class="fire">4단계 대왕 · 불타는 숲<small>원래 기획 이름: 산불 거인 (바꿔도 돼요)</small></th>
+      <th class="sea">5단계 대왕 · 플라스틱 바다<small>원래 기획 이름: 쓰레기 섬 문어왕 (바꿔도 돼요)</small></th>
+    </tr></thead>
+    <tbody>
+      <tr class="m"><th class="item">① 대왕 이름</th><td></td><td></td></tr>
+      <tr class="l"><th class="item">② 모습과 특성<small>무엇이 모였나요? 크기·색·눈에 띄는 곳</small></th><td></td><td></td></tr>
+      <tr class="s"><th class="item">③ 가까이 기술<small>3칸 안에 있을 때</small></th>
+        <td><div class="ln"><i>이름</i><u></u><i>모양</i><u style="flex:.8"></u></div><div class="ln"><i>하는 일</i><u></u></div><div class="ln"><i>피하는 법</i><u></u></div></td>
+        <td><div class="ln"><i>이름</i><u></u><i>모양</i><u style="flex:.8"></u></div><div class="ln"><i>하는 일</i><u></u></div><div class="ln"><i>피하는 법</i><u></u></div></td></tr>
+      <tr class="s"><th class="item">④ 중간 기술<small>조금 떨어져 있을 때</small></th>
+        <td><div class="ln"><i>이름</i><u></u><i>모양</i><u style="flex:.8"></u></div><div class="ln"><i>하는 일</i><u></u></div><div class="ln"><i>피하는 법</i><u></u></div></td>
+        <td><div class="ln"><i>이름</i><u></u><i>모양</i><u style="flex:.8"></u></div><div class="ln"><i>하는 일</i><u></u></div><div class="ln"><i>피하는 법</i><u></u></div></td></tr>
+      <tr class="s"><th class="item">⑤ 멀리 기술<small>멀리 도망갔을 때</small></th>
+        <td><div class="ln"><i>이름</i><u></u><i>모양</i><u style="flex:.8"></u></div><div class="ln"><i>하는 일</i><u></u></div><div class="ln"><i>피하는 법</i><u></u></div></td>
+        <td><div class="ln"><i>이름</i><u></u><i>모양</i><u style="flex:.8"></u></div><div class="ln"><i>하는 일</i><u></u></div><div class="ln"><i>피하는 법</i><u></u></div></td></tr>
+      <tr class="m"><th class="item">⑥ 화났을 때<small>체력 절반 아래에서 달라지는 점</small></th><td></td><td></td></tr>
+      <tr class="m"><th class="item">⑦ 부르는 부하<small>어떤 몬스터를 몇 마리?</small></th><td></td><td></td></tr>
+      <tr class="m"><th class="item">⑧ 환경 미션<small>무엇을 해결하면 대왕이 약해져요?</small></th><td></td><td></td></tr>
+      <tr class="m"><th class="item">⑨ 정화되면<small>물리친 뒤 무엇이 돌아와요?</small></th><td></td><td></td></tr>
+      <tr class="m"><th class="item">⑩ 지식 카드<small>환경을 지키는 한 줄</small></th><td></td><td></td></tr>
+    </tbody>
+  </table>
+
+  <div class="foot"><span>경고 없이 갑자기 맞는 기술, 피할 곳이 없는 기술은 넣지 않아요. 한 대왕에 기술 3~5개면 충분해요.</span><span>뒤쪽: 랭킹 안건 →</span></div>
+</section>
+
+<!-- ─────────── 2쪽: 랭킹 안건 ─────────── -->
+<section class="page">
+  <div class="top"><span>서호팡팡수호대 · 기획팀 활동지 ②</span><span>기획팀 이름 <span class="blank" style="width:30mm"></span></span></div>
+  <h1>안건: "랭킹(순위)을 만들어 주세요" <small>학생 피드백</small></h1>
+
+  <div class="box" style="font-size:9.6pt">
+    <b class="j">지금은?</b> 게임에 순위가 없어요. 각자 별·기록만 보고, 전체 기록은 선생님만 관리 페이지에서 봐요.<br>
+    <b class="j">오늘 정할 것</b> ① 랭킹을 만들까요, 말까요? ② 만든다면 어떤 방식으로, 어떤 약속과 함께 만들까요?
+  </div>
+
+  <div class="step">
+    <h2><span class="num">1</span>좋은 점과 걱정되는 점 <span class="hint">예시를 읽고, 우리 생각을 더 적어요</span></h2>
+    <div class="two">
+      <div class="card good"><h3>😀 좋은 점</h3><ul><li>더 열심히 하고 싶어져요.</li><li>친구와 겨루는 재미가 생겨요.</li><li>잘하는 친구에게 방법을 물어볼 수 있어요.</li></ul><div class="wline"></div><div class="wline"></div><div class="wline"></div></div>
+      <div class="card bad"><h3>😟 걱정되는 점</h3><ul><li>순위가 낮은 친구가 속상하거나 놀림받을 수 있어요.</li><li>오래 하는 친구, 빠른 기기를 가진 친구가 유리해요.</li><li>보급 운(장비·친구)에 따라 차이가 나요.</li></ul><div class="wline"></div><div class="wline"></div><div class="wline"></div></div>
+    </div>
+  </div>
+
+  <div class="step">
+    <h2><span class="num">2</span>어떤 방식이 좋을까요? <span class="hint">찬성하는 사람 수를 적어요</span></h2>
+    <table class="opts">
+      <thead><tr><th style="width:9mm"></th><th style="width:33mm">방식</th><th>어떻게?</th><th style="width:40mm">생각해 볼 점</th><th style="width:17mm">찬성</th></tr></thead>
+      <tbody>
+        <tr><td class="k">A</td><td><b class="j">전교 개인 순위</b></td><td>정화한 수나 가장 빠른 기록으로 전교 1등부터</td><td>경쟁이 가장 세요</td><td class="v"><span class="blank" style="width:8mm"></span>명</td></tr>
+        <tr><td class="k">B</td><td><b class="j">반 협동 순위</b></td><td>우리 반 친구들이 함께 정화한 수를 모아 반끼리 겨뤄요</td><td>모두 조금씩 보탤 수 있어요</td><td class="v"><span class="blank" style="width:8mm"></span>명</td></tr>
+        <tr><td class="k">C</td><td><b class="j">이번 주 도전</b></td><td>매주 정한 단계 하나의 기록으로 겨루고, 매주 새로 시작해요</td><td>새로 시작하니 누구나 기회가 있어요</td><td class="v"><span class="blank" style="width:8mm"></span>명</td></tr>
+        <tr><td class="k">D</td><td><b class="j">나만의 기록</b></td><td>남과 비교하지 않고, 내 최고 기록을 넘으면 축하해요</td><td>겨루는 재미는 적어요</td><td class="v"><span class="blank" style="width:8mm"></span>명</td></tr>
+        <tr><td class="k">E</td><td><b class="j">명예의 전당</b></td><td>목표(예: 2-5 대왕 정화)를 이룬 친구 이름을 순위 없이 모두 올려요</td><td>누구나 올라갈 수 있어요</td><td class="v"><span class="blank" style="width:8mm"></span>명</td></tr>
+        <tr><td class="k">F</td><td><b class="j">만들지 않기</b></td><td>지금처럼 순위 없이 해요</td><td></td><td class="v"><span class="blank" style="width:8mm"></span>명</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="step">
+    <h2><span class="num">3</span>만든다면 무엇을 정할까요? <span class="hint">알맞은 것에 ✔ 해요(여러 개 가능)</span></h2>
+    <div class="decide box" style="background:#fff">
+      <div class="q">무엇으로 겨뤄요?</div><div class="a"><span><span class="chk"></span>정화한 적 수</span><span><span class="chk"></span>가장 빠른 성공 시간</span><span><span class="chk"></span>대왕을 잡은 시간</span><span><span class="chk"></span>환경 목표 해낸 수</span><span><span class="chk"></span>별 개수</span><span><span class="chk"></span>기타 <span class="blank" style="width:18mm"></span></span></div>
+      <div class="q">누구와 겨뤄요?</div><div class="a"><span><span class="chk"></span>전교</span><span><span class="chk"></span>같은 학년</span><span><span class="chk"></span>같은 반 안에서</span><span><span class="chk"></span>반끼리</span></div>
+      <div class="q">언제 새로 시작?</div><div class="a"><span><span class="chk"></span>매일</span><span><span class="chk"></span>매주</span><span><span class="chk"></span>매달</span><span><span class="chk"></span>새로 시작하지 않음</span></div>
+      <div class="q">화면에 보이는 것</div><div class="a"><span><span class="chk"></span>1~10등만</span><span><span class="chk"></span>내 순위만</span><span><span class="chk"></span>전체</span><span><span class="chk"></span>이름 일부 가리기(김○○)</span><span><span class="chk"></span>별명으로</span></div>
+      <div class="q">상을 줄까요?</div><div class="a"><span><span class="chk"></span>없음</span><span><span class="chk"></span>칭호·배지</span><span><span class="chk"></span>보급권 조금</span><span><span class="chk"></span>기타 <span class="blank" style="width:18mm"></span></span></div>
+    </div>
+  </div>
+
+  <div class="step">
+    <h2><span class="num">4</span>랭킹과 함께 지킬 우리의 약속 <span class="hint">예) 순위로 친구를 놀리지 않아요</span></h2>
+    <div class="wline"></div><div class="wline"></div><div class="wline"></div>
+  </div>
+
+  <div class="step">
+    <h2><span class="num">5</span>회의 결과</h2>
+    <div class="rec">
+      <div class="l">결정한 것</div><div></div>
+      <div class="l">투표 결과</div><div></div>
+      <div class="l">선생님께 전할 말</div><div></div>
+      <div class="l">다음 회의</div><div><span class="blank" style="width:12mm"></span>월 <span class="blank" style="width:12mm"></span>일 · 할 일 <span class="blank" style="width:80mm"></span></div>
+    </div>
+  </div>
+
+  <div class="foot"><span>참고: 서버에는 판마다 성공·시간, 단계별 최고 기록·별이 남아 있어요. 정화한 적 수는 아직 남기지 않아서 새로 기록해야 해요.</span><span>선생님 확인 <span class="chk" style="margin:0 0 0 1mm"></span></span></div>
+</section>
+
+</body>
+</html>
