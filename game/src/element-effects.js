@@ -17,8 +17,11 @@ function img(ctx, name, x, y, w, { angle = 0, alpha = 1, h = null, flip = false,
   ctx.drawImage(im, -w / 2, -hh * anchorY, w, hh); ctx.restore(); return true;
 }
 const glowCache = new Map();
+// 효과량(main.js 화질 단계 fx): 1 이상이면 장식용 빛 번짐('lighter' 합성, 화면 넓게 칠함)을 그리지 않는다 — 판정·피해와 무관(2026-09-28 태블릿)
+let effectQuality = 0;
+export function setEffectQuality(n) { effectQuality = n | 0; }
 function glow(ctx, x, y, r, color, alpha = .35) {
-  if(r<=0)return;
+  if(r<=0||effectQuality>=1)return;
   let image=glowCache.get(color);
   if(!image){
     image=typeof OffscreenCanvas!=='undefined'?new OffscreenCanvas(128,128):document.createElement('canvas');

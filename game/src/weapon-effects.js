@@ -40,18 +40,26 @@ export function createWeaponCombat({U,getPlayer,getEnemies,getBoss,getProfile,da
    if(attack.age>=.3)attack=null;
   }
   if(!attack&&cooldown<=0){
-   const e=targets().filter(e=>distance(e,p)<=reach*U+(mode==='melee'?(e.radiusU||0)*U:0)).sort((a,b)=>distance(a,p)-distance(b,p))[0];
+   // 가장 가까운 적 하나(전: 전부 거르고 정렬 → 같은 결과를 한 번 훑어서, 거리가 같으면 앞의 적)
+   let e=null,best=Infinity;
+   for(const o of targets()){const d=distance(o,p);if(d<=reach*U+(mode==='melee'?(o.radiusU||0)*U:0)&&d<best){best=d;e=o;}}
    if(e){const angle=Math.atan2(e.y-p.y,e.x-p.x);attack={angle,age:0,fired:false};p.aimAngle=angle;p.facing=Math.cos(angle)>=0?1:-1;p.attackT=.3;cooldown=rule.interval*(getMods()?.intervalMul||1);casts++;}
   }
   for(const s of shots){
    const ox=s.x,oy=s.y;s.x+=Math.cos(s.angle)*s.speed*dt;s.y+=Math.sin(s.angle)*s.speed*dt;s.life-=dt;
-   const contacts=targets().map(e=>{
-    const dx=e.x-ox,dy=e.y-oy,ux=Math.cos(s.angle),uy=Math.sin(s.angle),along=dx*ux+dy*uy,perp=dx*uy-dy*ux,r=(e.radiusU||.4)*U+.18*U;
-    return {e,entry:along-Math.sqrt(Math.max(0,r*r-perp*perp))};
-   }).sort((a,b)=>a.entry-b.entry);
+   // 2026-09-28 태블릿: 전에는 공마다·틱마다 적 전체를 복사·정렬했다. 이번 틱에 공이 지나간 선분에 닿는 적만 골라 같은 기준(entry)으로 정렬 → 맞는 순서·결과는 같다.
+   const ux=Math.cos(s.angle),uy=Math.sin(s.angle),vx=s.x-ox,vy=s.y-oy,vv=vx*vx+vy*vy||1,contacts=[];
+   const consider=e=>{
+    if(!e||e.hp<=0)return;
+    const r=(e.radiusU||.4)*U+.18*U,t=Math.max(0,Math.min(1,((e.x-ox)*vx+(e.y-oy)*vy)/vv));
+    if(Math.hypot(e.x-ox-vx*t,e.y-oy-vy*t)>r)return;
+    const dx=e.x-ox,dy=e.y-oy,along=dx*ux+dy*uy,perp=dx*uy-dy*ux;
+    contacts.push({e,entry:along-Math.sqrt(Math.max(0,r*r-perp*perp))});
+   };
+   for(const e of getEnemies())consider(e);consider(getBoss());   // 공마다 새로 읽는다(쪼개진 적 포함, 전과 같음)
+   contacts.sort((a,b)=>a.entry-b.entry);
    for(const {e} of contacts){
-    const vx=s.x-ox,vy=s.y-oy,t=Math.max(0,Math.min(1,((e.x-ox)*vx+(e.y-oy)*vy)/(vx*vx+vy*vy||1)));
-    if(s.seen.has(e)||Math.hypot(e.x-ox-vx*t,e.y-oy-vy*t)>(e.radiusU||.4)*U+.18*U)continue;
+    if(s.seen.has(e))continue;
     hit(e,s.value,{x:ox,y:oy});s.seen.add(e);
     if(s.boom){for(const o of targets())if(o!==e&&distance(o,e)<=1.3*U)hit(o,s.value*.5,e);sparks.push({x:e.x,y:e.y,life:.3,big:true});s.boom=false;}   // 전설 강속구: 맞은 자리 작은 폭발(한 번)
     if(s.pierce>0){s.pierce--;continue;}   // 장비 6세트·강속구: 적을 뚫고 계속 날아간다

@@ -6,7 +6,7 @@ import * as R from '../game/src/rework-core.js';
 import {createElementCombat} from '../game/src/element-combat.js';
 import {migrate,guardianAPI,getProfile,passStatus} from '../server/src/guardian.js';
 import {repairObsoleteParts,migrateProfileV2,PARTS_FIX_SNAPSHOT} from '../server/src/profile-migration-v2.js';
-import {createFrameClock,createRenderQuality,setText} from '../game/src/runtime-performance.js';
+import {createFrameClock,createRenderQuality,qualityLevels,setText} from '../game/src/runtime-performance.js';
 const rngSeed=seed=>()=>{seed=(Math.imul(seed,1664525)+1013904223)>>>0;return seed/4294967296;};
 function partProfile(ids=['PART_F1']){const p=R.freshProfile();p.stages.CH01={cleared:true,stars:1};p.gifts=20;for(const id of ids)R.addPart(p,id);return p;}
 
@@ -120,11 +120,22 @@ for(const hz of [30,60,120,144])test(`fixed step advances exactly 60 simulated t
 test('overdue frame is bounded; pause clears fractional remainder and background time',()=>{
  const c=createFrameClock();assert.equal(c.advance(10),4);assert.equal(c.advance(0),0);c.advance(1/120);assert.equal(c.advance(3,false),0);assert.equal(c.advance(1/120),0);assert.equal(c.advance(1/120),1);
 });
-test('adaptive quality uses hysteresis and never increases beyond device resolution',()=>{
- const q=createRenderQuality(2);for(let i=0;i<40;i++)q.sample(.06);assert.equal(q.ratio,1.5);
- for(let i=0;i<30;i++)q.sample(.06);assert.equal(q.ratio,1.5);for(let i=0;i<400;i++)q.sample(.06);assert.equal(q.ratio,1);
- for(let i=0;i<180;i++)q.sample(1/60);assert.equal(q.ratio,1);for(let i=0;i<2100;i++)q.sample(1/60);assert.ok(q.ratio>1&&q.ratio<=2);
- const low=createRenderQuality(1);for(let i=0;i<500;i++)low.sample(.1);assert.equal(low.ratio,1);
+test('quality levels lower resolution first, then decorative effects, down to 0.7x',()=>{
+ assert.deepEqual(qualityLevels(2),[{ratio:2,fx:0},{ratio:1.5,fx:0},{ratio:1.25,fx:1},{ratio:1,fx:1},{ratio:.85,fx:2},{ratio:.7,fx:2}]);
+ assert.deepEqual(qualityLevels(1),[{ratio:1,fx:0},{ratio:1,fx:1},{ratio:.85,fx:2},{ratio:.7,fx:2}]);
+ assert.deepEqual(qualityLevels(3),qualityLevels(2));
+ for(const d of [1,1.5,2,3]){const L=qualityLevels(d);for(let i=1;i<L.length;i++){assert.ok(L[i].ratio<=L[i-1].ratio);assert.ok(L[i].fx>=L[i-1].fx);}}
+});
+test('adaptive quality uses hysteresis, steps faster when very slow, never exceeds device resolution',()=>{
+ const m=createRenderQuality(2);for(let i=0;i<40;i++)m.sample(.03);assert.equal(m.ratio,2);for(let i=0;i<30;i++)m.sample(.03);assert.equal(m.ratio,1.5);assert.equal(m.fx,0);
+ const q=createRenderQuality(2);for(let i=0;i<40;i++)q.sample(.06);assert.equal(q.ratio,1.25);assert.equal(q.fx,1);
+ for(let i=0;i<30;i++)q.sample(.06);assert.equal(q.ratio,1.25);for(let i=0;i<400;i++)q.sample(.06);assert.equal(q.ratio,.7);assert.equal(q.fx,2);
+ for(let i=0;i<180;i++)q.sample(1/60);assert.equal(q.ratio,.7);for(let i=0;i<2100;i++)q.sample(1/60);assert.ok(q.ratio>.7&&q.ratio<=2);
+ const low=createRenderQuality(1);for(let i=0;i<500;i++)low.sample(.1);assert.equal(low.ratio,.7);assert.equal(low.fx,2);
+ const fast=createRenderQuality(1);for(let i=0;i<5000;i++)fast.sample(1/60);assert.equal(fast.ratio,1);assert.equal(fast.fx,0);
+});
+test('game clock keeps real speed down to 12 frames per second',()=>{
+ const c=createFrameClock(1/60,5);let ticks=0;for(let i=0;i<12;i++)ticks+=c.advance(1/12);assert.equal(ticks,60);assert.equal(createFrameClock(1/60,5).advance(10),5);
 });
 test('unchanged HUD text causes zero DOM writes',()=>{
  let changes=0,text='same';const node={get textContent(){return text;},set textContent(v){changes++;text=v;}};
