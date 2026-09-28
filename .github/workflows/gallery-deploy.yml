@@ -1,5 +1,5 @@
 # 바이브코딩 전시관 배포: main 에 올라오거나, gallery-deploy/<아무 이름> 브랜치를 만들면
-# Cloudflare Pages(vibe-gallery)에 배포해요. 주소: https://vibe-gallery.pages.dev
+# Cloudflare Pages(vibe-gallery)에 배포해요. 주소: https://vibe-gallery-a3d.pages.dev
 # Actions 탭의 "Run workflow" 버튼으로도 할 수 있어요(main 에 합친 뒤).
 #
 # 필요한 저장소 비밀값(Settings → Secrets and variables → Actions → Repository secrets)

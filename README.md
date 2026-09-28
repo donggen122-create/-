@@ -3,7 +3,7 @@
 학생들이 AI와 함께 **바이브코딩**으로 만든 html 작품을 올리고, 반별로 구경하고, 눌러서 바로 실행해 볼 수 있는 전시관이에요.
 (옛 플래시 게임 사이트 '주전자닷컴'처럼 작품 그림을 누르면 바로 실행 화면으로 들어가요.)
 
-- 전시관 주소: **https://vibe-gallery.pages.dev**
+- 전시관 주소: **https://vibe-gallery-a3d.pages.dev**
 - 전시관 화면 + 작품 저장 서버: Cloudflare Pages (+ Pages Functions)
 - 작품 저장소: Cloudflare D1 데이터베이스 `seoho-vibe-gallery-db` (이미 만들어 두었고 표도 준비돼 있어요)
 
