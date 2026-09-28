@@ -3,92 +3,110 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>가계부</title>
-    <link rel="stylesheet" href="styles.css" />
+    <title>서호초등학교 바이브코딩 전시관</title>
+    <meta name="description" content="서호초등학교 학생들이 AI와 함께 바이브코딩으로 만든 작품을 모아 둔 전시관이에요." />
+    <link rel="icon" href="assets/img/school-logo.png" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Jua&family=Noto+Sans+KR:wght@400;500;700;900&display=swap" />
+    <link rel="stylesheet" href="assets/css/style.css" />
   </head>
   <body>
-    <main class="app">
-      <header>
-        <h1>컴퓨터용 가계부</h1>
-        <p>수입/지출을 기록하고 월별 합계를 확인하세요.</p>
-      </header>
-
-      <section class="summary" aria-label="요약">
-        <article>
-          <h2>총 수입</h2>
-          <p id="total-income">₩0</p>
-        </article>
-        <article>
-          <h2>총 지출</h2>
-          <p id="total-expense">₩0</p>
-        </article>
-        <article>
-          <h2>잔액</h2>
-          <p id="balance">₩0</p>
-        </article>
-      </section>
-
-      <section class="panel">
-        <h2>내역 추가</h2>
-        <form id="entry-form">
-          <label>
-            날짜
-            <input type="date" id="date" required />
-          </label>
-
-          <label>
-            유형
-            <select id="type" required>
-              <option value="income">수입</option>
-              <option value="expense">지출</option>
-            </select>
-          </label>
-
-          <label>
-            카테고리
-            <input type="text" id="category" placeholder="예: 식비, 급여" required />
-          </label>
-
-          <label>
-            금액
-            <input type="number" id="amount" min="1" step="1" required />
-          </label>
-
-          <label>
-            메모
-            <input type="text" id="memo" placeholder="선택사항" />
-          </label>
-
-          <button type="submit">추가</button>
-        </form>
-      </section>
-
-      <section class="panel">
-        <div class="panel-header">
-          <h2>내역</h2>
-          <div class="actions">
-            <button id="export-csv" type="button">CSV 내보내기</button>
-            <button id="clear-all" type="button" class="danger">전체 삭제</button>
+    <header class="site-header">
+      <div class="wrap header-top">
+        <a class="brand" href="index.html">
+          <img class="brand-logo" src="assets/img/school-logo.png" alt="서호초등학교 교표" width="78" height="78" />
+          <div>
+            <h1 class="brand-title"><span class="school">서호초등학교</span> 바이브코딩 전시관</h1>
+            <p class="brand-sub">AI와 함께 만든 우리들의 작품을 구경해요!</p>
           </div>
-        </div>
+        </a>
+        <p class="header-bubble">🎉 작품 <b id="work-count">0</b>개 전시 중!</p>
+      </div>
+      <nav class="wrap tabs" id="tabs" aria-label="전시실"></nav>
+    </header>
 
-        <table>
-          <thead>
-            <tr>
-              <th>날짜</th>
-              <th>유형</th>
-              <th>카테고리</th>
-              <th>금액</th>
-              <th>메모</th>
-              <th>삭제</th>
-            </tr>
-          </thead>
-          <tbody id="entry-table-body"></tbody>
-        </table>
-        <p id="empty-message" class="empty">아직 내역이 없습니다.</p>
-      </section>
+    <div class="toolbar-band" id="toolbar" hidden>
+      <div class="wrap toolbar">
+        <div class="chip-group" id="cat-chips" role="group" aria-label="분류로 보기"></div>
+        <form class="search" id="search-form" role="search">
+          <select id="search-by" aria-label="찾을 항목">
+            <option value="title">제목</option>
+            <option value="author">이름</option>
+          </select>
+          <input id="search-input" type="search" placeholder="작품 찾기" aria-label="찾을 말" />
+          <button type="submit" aria-label="찾기">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><circle cx="11" cy="11" r="7" /><path d="m20 20-3.5-3.5" /></svg>
+          </button>
+        </form>
+      </div>
+    </div>
+
+    <main class="wrap">
+      <div class="notices" id="notices"></div>
+
+      <div class="layout">
+        <aside class="sidebar">
+          <section class="spotlight" id="spotlight" aria-label="추천 작품">
+            <h2 class="spotlight-head"><span class="hot">추천</span> 작품</h2>
+            <a class="spotlight-screen" id="spot-link"></a>
+            <p class="spotlight-caption" id="spot-title">&nbsp;</p>
+            <p class="spotlight-by" id="spot-by">&nbsp;</p>
+            <div class="spotlight-dots" id="spot-dots"></div>
+          </section>
+          <div>
+            <a class="cta-register" href="register.html"><strong>내 작품 등록</strong><small>UPLOAD</small></a>
+            <section class="side-box">
+              <h3>작품 올리는 방법</h3>
+              <ol>
+                <li>위의 <b>작품 등록</b>을 눌러요.</li>
+                <li>제목, 반, 번호, 이름, 내용을 써요.</li>
+                <li>html 파일을 넣고 등록하면 끝!</li>
+              </ol>
+            </section>
+          </div>
+        </aside>
+
+        <div class="content">
+          <section class="section" id="home-classes">
+            <div class="section-head">
+              <h2 class="section-title">🏫 반별 전시실</h2>
+            </div>
+            <div class="doors" id="doors"></div>
+          </section>
+
+          <section class="section" id="home-new">
+            <div class="section-head">
+              <h2 class="section-title">🆕 새로 올라온 작품</h2>
+            </div>
+            <div class="grid" id="new-grid"></div>
+          </section>
+
+          <section class="section" id="class-view" hidden>
+            <div class="section-head">
+              <h2 class="section-title"><span id="class-title"></span> <span class="accent">전시실</span> <span class="count" id="class-count"></span></h2>
+              <label class="sort">
+                정렬
+                <select id="sort">
+                  <option value="new">최신순</option>
+                  <option value="number">번호순</option>
+                  <option value="title">제목순</option>
+                </select>
+              </label>
+            </div>
+            <div class="grid" id="class-grid"></div>
+          </section>
+        </div>
+      </div>
     </main>
 
-    <script src="script.js"></script>
+    <footer class="site-footer">
+      <div class="wrap"><img src="assets/img/school-logo.png" alt="" /> 서호초등학교 바이브코딩 전시관 · 학생들이 AI와 함께 만든 작품을 모아요</div>
+    </footer>
+
+    <script src="assets/js/common.js"></script>
+    <script src="config.js"></script>
+    <script src="works.js"></script>
+    <script src="assets/js/gallery.js"></script>
   </body>
 </html>

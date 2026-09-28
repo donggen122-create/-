@@ -1,0 +1,21 @@
+# 서호초등학교 바이브코딩 전시관 — Cloudflare Workers(서버) + D1(작품 저장 DB) + 정적 파일(전시관 화면)
+# 배포: 저장소 README.md 의 'Cloudflare 배포' 참고
+name = "seoho-vibe-gallery"
+main = "src/index.js"
+compatibility_date = "2025-09-01"
+
+# 전시관 화면(저장소 맨 위 폴더)을 같은 주소에서 보여 줘요. /api/* 만 Worker 가 먼저 처리해요.
+# 올리지 않을 파일은 저장소 맨 위의 .assetsignore 에 적어요.
+[assets]
+directory = ".."
+binding = "ASSETS"
+not_found_handling = "none"
+run_worker_first = ["/api/*"]
+
+[[d1_databases]]
+binding = "DB"
+database_name = "seoho-vibe-gallery-db"
+database_id = "e9cd844d-e37d-4fcb-9007-a53a517dc198"
+
+[observability]
+enabled = true

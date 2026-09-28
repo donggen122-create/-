@@ -1,0 +1,153 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>작품 등록 · 서호초등학교 바이브코딩 전시관</title>
+    <link rel="icon" href="assets/img/school-logo.png" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Jua&family=Noto+Sans+KR:wght@400;500;700;900&display=swap" />
+    <link rel="stylesheet" href="assets/css/style.css" />
+  </head>
+  <body>
+    <header class="site-header">
+      <div class="wrap header-top">
+        <a class="brand" href="index.html">
+          <img class="brand-logo" src="assets/img/school-logo.png" alt="서호초등학교 교표" width="78" height="78" />
+          <div>
+            <p class="brand-title"><span class="school">서호초등학교</span> 바이브코딩 전시관</p>
+            <p class="brand-sub">AI와 함께 만든 우리들의 작품을 구경해요!</p>
+          </div>
+        </a>
+      </div>
+      <nav class="wrap tabs" id="tabs" aria-label="전시실"></nav>
+    </header>
+
+    <main class="wrap">
+      <div class="notices" id="notices"></div>
+
+      <div id="form-view">
+        <div class="page-hero">
+          <h1>✏️ 내 작품 등록하기</h1>
+          <p>바이브코딩으로 만든 작품을 친구들에게 자랑해 보세요!</p>
+        </div>
+
+        <ol class="how">
+          <li><span class="how-num">1</span><div><b>작품 정보 쓰기</b>제목, 반, 번호, 이름, 내용을 써요</div></li>
+          <li><span class="how-num">2</span><div><b>html 파일 넣기</b>파일을 고르거나 끌어다 놓아요</div></li>
+          <li><span class="how-num">3</span><div><b>등록 버튼 누르기</b>바로 우리 반 전시실에 올라가요!</div></li>
+        </ol>
+
+        <div class="register-layout">
+          <form class="form-card" id="form" novalidate>
+            <h2>📝 작품 정보</h2>
+            <div class="form-grid">
+              <div class="field full">
+                <label for="f-title">작품 제목 <span class="req">*</span></label>
+                <input id="f-title" type="text" maxlength="60" placeholder="예) 우주 비행기 피하기" autocomplete="off" />
+              </div>
+              <div class="field">
+                <label for="f-class">학년·반 <span class="req">*</span></label>
+                <select id="f-class"></select>
+              </div>
+              <div class="field">
+                <label for="f-number">번호 <span class="req">*</span></label>
+                <input id="f-number" type="number" min="1" max="60" inputmode="numeric" placeholder="예) 13" />
+              </div>
+              <div class="field">
+                <label for="f-name">이름 <span class="req">*</span></label>
+                <input id="f-name" type="text" maxlength="20" placeholder="예) 김서호" autocomplete="off" />
+              </div>
+              <div class="field full">
+                <span class="label" id="cat-label">분류 <span class="req">*</span></span>
+                <div class="pills" id="f-category" role="radiogroup" aria-labelledby="cat-label"></div>
+              </div>
+              <div class="field full">
+                <label for="f-desc">작품 내용 <span class="req">*</span></label>
+                <textarea id="f-desc" maxlength="1000" placeholder="어떤 작품인지, 어떻게 하는지(조작 방법)를 알려 주세요.&#10;예) 방향키로 비행기를 움직여서 떨어지는 운석을 피하는 게임이에요."></textarea>
+                <span class="hint" id="desc-count">0 / 1000</span>
+              </div>
+            </div>
+
+            <h2>📎 작품 파일 <span class="req">*</span></h2>
+            <label class="dropzone" id="dropzone">
+              <input type="file" id="f-file" accept=".html,.htm,text/html" />
+              <span class="big">📂</span>
+              <strong>여기를 눌러 html 파일 고르기</strong>
+              <span class="hint">또는 파일을 여기로 끌어다 놓으세요 (5MB까지)</span>
+            </label>
+            <div id="file-view" hidden>
+              <div class="file-chosen">
+                <span>✅</span>
+                <span class="name" id="file-name"></span>
+                <span class="size" id="file-size"></span>
+                <button type="button" class="btn btn-line" id="btn-preview">▶ 미리 실행</button>
+                <button type="button" class="btn btn-line" id="btn-change">다시 고르기</button>
+              </div>
+              <div class="preview-frame" id="preview" hidden></div>
+            </div>
+            <details class="help">
+              <summary>💡 html 파일은 어떻게 만들어요?</summary>
+              <ol>
+                <li>AI가 만들어 준 코드를 <b>전부 복사</b>해요.</li>
+                <li><b>메모장</b>을 열고 붙여 넣어요.</li>
+                <li><kbd>파일</kbd> → <kbd>다른 이름으로 저장</kbd>을 누르고, 파일 형식을 <b>모든 파일</b>로 바꿔요.</li>
+                <li>파일 이름 끝에 <code>.html</code> 을 붙여 저장해요. 예) <code>space-game.html</code></li>
+                <li>저장한 파일을 두 번 눌러서 잘 움직이는지 먼저 확인해 봐요.</li>
+              </ol>
+            </details>
+
+            <h2>🖼️ 게시판 그림 <span class="hint">(안 해도 돼요)</span></h2>
+            <p class="hint">작품을 나타낼 그림 글자를 고르거나, 작품 화면을 캡처한 사진을 올려요.</p>
+            <div class="emoji-row" id="emoji-row"></div>
+            <div class="thumb-pick">
+              <label class="btn btn-line" for="f-thumb">📷 사진 올리기</label>
+              <input type="file" id="f-thumb" accept="image/*" hidden />
+              <button type="button" class="btn btn-line" id="btn-thumb-clear" hidden>사진 빼기</button>
+              <span class="hint">화면 캡처: <kbd>Win</kbd> + <kbd>Shift</kbd> + <kbd>S</kbd></span>
+            </div>
+
+            <div id="code-field" hidden>
+              <h2>🔑 등록 코드</h2>
+              <div class="field">
+                <label for="f-code">선생님이 알려 주신 등록 코드 <span class="req">*</span></label>
+                <input id="f-code" type="password" autocomplete="off" />
+              </div>
+            </div>
+
+            <p class="form-error" id="form-error" role="alert" hidden></p>
+            <div class="submit-row">
+              <button class="btn btn-submit" id="btn-submit" type="submit">🚀 작품 등록하기</button>
+            </div>
+          </form>
+
+          <aside class="preview-side" aria-label="게시판 미리보기">
+            <h3>게시판에 이렇게 보여요</h3>
+            <div id="card-preview"></div>
+          </aside>
+        </div>
+      </div>
+
+      <section class="done" id="done-view" hidden>
+        <div class="big">🎉</div>
+        <h2>작품이 등록됐어요!</h2>
+        <p id="done-text"></p>
+        <div class="done-actions">
+          <a class="btn btn-orange" id="done-play">▶ 내 작품 보러 가기</a>
+          <a class="btn btn-line" id="done-class">우리 반 전시실</a>
+          <button class="btn btn-line" id="done-again" type="button">다른 작품 등록하기</button>
+        </div>
+      </section>
+    </main>
+
+    <footer class="site-footer">
+      <div class="wrap"><img src="assets/img/school-logo.png" alt="" /> 서호초등학교 바이브코딩 전시관 · 학생들이 AI와 함께 만든 작품을 모아요</div>
+    </footer>
+
+    <script src="assets/js/common.js"></script>
+    <script src="config.js"></script>
+    <script src="works.js"></script>
+    <script src="assets/js/register.js"></script>
+  </body>
+</html>

@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>작품 보기 · 서호초등학교 바이브코딩 전시관</title>
+    <link rel="icon" href="assets/img/school-logo.png" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Jua&family=Noto+Sans+KR:wght@400;500;700;900&display=swap" />
+    <link rel="stylesheet" href="assets/css/style.css" />
+  </head>
+  <body>
+    <header class="site-header">
+      <div class="wrap header-top">
+        <a class="brand" href="index.html">
+          <img class="brand-logo" src="assets/img/school-logo.png" alt="서호초등학교 교표" width="78" height="78" />
+          <div>
+            <p class="brand-title"><span class="school">서호초등학교</span> 바이브코딩 전시관</p>
+            <p class="brand-sub">AI와 함께 만든 우리들의 작품을 구경해요!</p>
+          </div>
+        </a>
+      </div>
+      <nav class="wrap tabs" id="tabs" aria-label="전시실"></nav>
+    </header>
+
+    <main class="wrap">
+      <div class="notices" id="notices"></div>
+      <nav class="crumbs" id="crumbs" aria-label="지금 있는 곳"></nav>
+
+      <div class="play-layout">
+        <section class="stage" id="stage" aria-label="작품 실행 화면">
+          <div class="stage-screen" id="screen">
+            <div class="stage-loading" id="loading"><div class="spinner"></div>작품을 불러오는 중이에요…</div>
+          </div>
+          <div class="stage-bar">
+            <span>💡 작품 화면을 한 번 누르면 키보드로 조작할 수 있어요.</span>
+            <div class="stage-actions">
+              <button class="btn btn-dark" id="btn-restart" type="button" disabled>↻ 처음부터</button>
+              <button class="btn btn-dark" id="btn-full" type="button" disabled>⛶ 크게 보기</button>
+              <a class="btn btn-dark" id="btn-window" target="_blank" rel="noopener" hidden>↗ 새 창</a>
+            </div>
+          </div>
+        </section>
+        <aside class="info" id="info" hidden></aside>
+      </div>
+
+      <section class="section more" id="more" hidden>
+        <div class="section-head">
+          <h2 class="section-title" id="more-title">같은 반 친구들의 작품</h2>
+        </div>
+        <div class="grid" id="more-grid"></div>
+      </section>
+    </main>
+
+    <footer class="site-footer">
+      <div class="wrap"><img src="assets/img/school-logo.png" alt="" /> 서호초등학교 바이브코딩 전시관 · 학생들이 AI와 함께 만든 작품을 모아요</div>
+    </footer>
+
+    <script src="assets/js/common.js"></script>
+    <script src="config.js"></script>
+    <script src="works.js"></script>
+    <script src="assets/js/play.js"></script>
+  </body>
+</html>
