@@ -4947,8 +4947,9 @@ function simTick(dt) {
 
 // ---------- Main loop ----------
 const FIXED_DT = 1 / 60;
-// 한 화면에 계산 최대 5번(2026-09-28, 전 4번): 초당 12화면까지는 게임이 제 속도로 흐른다(그보다 느리면 슬로모션). 계산은 틱당 1ms 안팎이라 늘려도 부담이 작다.
-const frameClock = createFrameClock(FIXED_DT, 5);
+// 슬로모션 금지(2026-09-28 사용자 "슬로우모션으로 움직이게 하지는 마라"): 화면이 느려도 밀린 계산을 그 화면에서 다 해서 게임은 늘 제 속도로 흐른다.
+// 한 화면 최대 15번 = 0.25초(아래 realDt 상한과 같음) → 초당 4화면까지 제 속도. 느린 기기의 부담은 화질 자동 조절(renderQuality)이 그리기를 줄여 맞춘다.
+const frameClock = createFrameClock(FIXED_DT, 15);
 let lastT = performance.now();
 function loop(now) {
   const rawMs = now - lastT;   // QA 측정용(자르기 전 실제 프레임 간격)

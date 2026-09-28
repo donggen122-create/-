@@ -134,8 +134,12 @@ test('adaptive quality uses hysteresis, steps faster when very slow, never excee
  const low=createRenderQuality(1);for(let i=0;i<500;i++)low.sample(.1);assert.equal(low.ratio,.7);assert.equal(low.fx,2);
  const fast=createRenderQuality(1);for(let i=0;i<5000;i++)fast.sample(1/60);assert.equal(fast.ratio,1);assert.equal(fast.fx,0);
 });
-test('game clock keeps real speed down to 12 frames per second',()=>{
- const c=createFrameClock(1/60,5);let ticks=0;for(let i=0;i<12;i++)ticks+=c.advance(1/12);assert.equal(ticks,60);assert.equal(createFrameClock(1/60,5).advance(10),5);
+for(const fps of [4,6,8,12,20])test(`game clock never slows the game: real speed at ${fps} frames per second`,()=>{
+ const c=createFrameClock(1/60,15);let ticks=0;for(let i=0;i<fps*3;i++)ticks+=c.advance(1/fps);assert.equal(ticks,180);
+});
+test('game clock uses the same max steps as main.js (no slow motion above 4 fps)',async()=>{
+ const src=(await import('node:fs')).readFileSync(new URL('../game/src/main.js',import.meta.url),'utf8');
+ assert.match(src,/createFrameClock\(FIXED_DT, 15\)/);assert.match(src,/if \(realDt > 0\.25\) realDt = 0\.25;/);
 });
 test('unchanged HUD text causes zero DOM writes',()=>{
  let changes=0,text='same';const node={get textContent(){return text;},set textContent(v){changes++;text=v;}};
