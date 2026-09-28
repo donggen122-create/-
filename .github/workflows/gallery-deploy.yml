@@ -1,5 +1,5 @@
 # 바이브코딩 전시관 배포: main 에 올라오거나, gallery-deploy/<아무 이름> 브랜치를 만들면
-# Cloudflare(seoho-vibe-gallery Worker)에 배포해요. Actions 탭의 "Run workflow" 버튼으로도 할 수 있어요.
+# Cloudflare(vibe-gallery Worker)에 배포해요. Actions 탭의 "Run workflow" 버튼으로도 할 수 있어요.
 #
 # 필요한 저장소 비밀값(Settings → Secrets and variables → Actions → Repository secrets)
 #   CLOUDFLARE_API_TOKEN      Workers·D1 편집 권한 (서호팡팡 배포에 쓰는 것과 같아요. CLOUDFLARE 이름도 읽어요)

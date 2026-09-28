@@ -3,7 +3,7 @@
 학생들이 AI와 함께 **바이브코딩**으로 만든 html 작품을 올리고, 반별로 구경하고, 눌러서 바로 실행해 볼 수 있는 전시관이에요.
 (옛 플래시 게임 사이트 '주전자닷컴'처럼 작품 그림을 누르면 바로 실행 화면으로 들어가요.)
 
-- 전시관 주소(배포 후): **https://seoho-vibe-gallery.seoho-pangpang-server.workers.dev**
+- 전시관 주소(배포 후): **https://vibe-gallery.seoho-pangpang-server.workers.dev**
 - 전시관 화면 + 작품 저장 서버: Cloudflare Workers
 - 작품 저장소: Cloudflare D1 데이터베이스 `seoho-vibe-gallery-db` (이미 만들어 두었고 표도 준비돼 있어요)
 
@@ -36,7 +36,7 @@ GitHub 저장소 → Settings → Secrets and variables → Actions → **Reposi
 | `GALLERY_ADMIN_PASSWORD` | 선생님 비밀번호. 작품 **삭제**와 **추천**에 필요해요. 없으면 삭제·추천을 할 수 없어요. |
 | `GALLERY_UPLOAD_CODE` | (선택) 등록 코드. 넣으면 이 코드를 아는 사람만 작품을 올릴 수 있어요. 전시관 주소가 밖으로 퍼질까 걱정되면 넣어 주세요. |
 
-Cloudflare 대시보드에서 바로 넣어도 돼요: Workers & Pages → `seoho-vibe-gallery` → Settings → Variables and Secrets → Add → **Secret**
+Cloudflare 대시보드에서 바로 넣어도 돼요: Workers & Pages → `vibe-gallery` → Settings → Variables and Secrets → Add → **Secret**
 (이름은 `ADMIN_PASSWORD`, `UPLOAD_CODE`).
 
 ### 3. 작품 관리

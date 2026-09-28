@@ -1,6 +1,6 @@
 # 서호초등학교 바이브코딩 전시관 — Cloudflare Workers(서버) + D1(작품 저장 DB) + 정적 파일(전시관 화면)
 # 배포: 저장소 README.md 의 'Cloudflare 배포' 참고
-name = "seoho-vibe-gallery"
+name = "vibe-gallery"
 main = "src/index.js"
 compatibility_date = "2025-09-01"
 
