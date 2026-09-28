@@ -142,7 +142,7 @@
     if (box.hidden) {
       box.innerHTML = "";
     } else {
-      G.mountWork(box, { html: picked.html }, "미리 실행").focus();
+      G.mountWork(box, picked.html, "미리 실행").focus();
     }
     $("btn-preview").textContent = box.hidden ? "▶ 미리 실행" : "■ 미리 실행 닫기";
   });

@@ -304,6 +304,57 @@ dialog.login::backdrop {
   margin-top: 16px;
 }
 
+dialog.editor {
+  width: min(540px, calc(100vw - 32px));
+}
+
+.editor label {
+  display: grid;
+  gap: 4px;
+  margin-top: 12px;
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.editor input,
+.editor select,
+.editor textarea {
+  width: 100%;
+  margin: 0;
+  padding: 10px 12px;
+  border: 2px solid var(--line);
+  border-radius: 12px;
+  background: #fff;
+  font-size: 15px;
+  font-weight: 400;
+}
+
+.editor textarea {
+  resize: vertical;
+}
+
+.editor select:focus,
+.editor textarea:focus {
+  border-color: var(--orange);
+  outline: none;
+}
+
+.editor-row {
+  display: grid;
+  grid-template-columns: 1.3fr 0.8fr 1fr;
+  gap: 10px;
+}
+
+@media (max-width: 560px) {
+  .editor-row {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .editor-row label:first-child {
+    grid-column: 1 / -1;
+  }
+}
+
 /* ---------- 안내 상자 ---------- */
 
 .notices:empty {

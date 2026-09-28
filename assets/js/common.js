@@ -1,4 +1,4 @@
-/* 모든 페이지가 함께 쓰는 기능. config.js, works.js 보다 먼저 불러와야 오류를 잡을 수 있어요. */
+/* 모든 페이지가 함께 쓰는 기능. config.js 보다 먼저 불러와야 오류를 잡을 수 있어요. */
 (function () {
   "use strict";
 
@@ -31,16 +31,13 @@
 
   const scriptErrors = {};
   window.addEventListener("error", (event) => {
-    const match = event.filename && /(works|config)\.js/.exec(event.filename);
-    if (match) scriptErrors[`${match[1]}.js`] = event.lineno || 0;
+    if (event.filename && /config\.js/.test(event.filename)) scriptErrors["config.js"] = event.lineno || 0;
   });
 
   function brokenScripts() {
     const broken = { ...scriptErrors };
     // eslint-disable-next-line no-undef
     if (document.querySelector('script[src$="config.js"]') && typeof CONFIG === "undefined") broken["config.js"] ??= 0;
-    // eslint-disable-next-line no-undef
-    if (document.querySelector('script[src$="works.js"]') && typeof WORKS === "undefined") broken["works.js"] ??= 0;
     return Object.entries(broken);
   }
 
@@ -135,7 +132,6 @@
     const klass = toNumber(f.klass);
     return {
       id: text(f.id),
-      source: f.source,
       title: text(f.title) || "제목 없는 작품",
       author: text(f.author) || "이름 없음",
       grade,
@@ -145,7 +141,6 @@
       category: category.name,
       categoryEmoji: category.emoji,
       description: text(f.description),
-      file: text(f.file),
       thumbnail: safeImage(f.thumbnail),
       emoji: Array.from(text(f.emoji)).slice(0, 8).join("") || category.emoji,
       date,
@@ -155,29 +150,9 @@
     };
   }
 
-  function fromStatic(raw) {
-    return makeWork({
-      id: raw["파일"],
-      source: "static",
-      title: raw["제목"],
-      author: raw["만든이"],
-      grade: raw["학년"],
-      klass: raw["반"],
-      number: raw["번호"],
-      category: raw["분류"],
-      description: raw["소개"],
-      file: raw["파일"],
-      thumbnail: raw["썸네일"],
-      emoji: raw["이모지"],
-      date: raw["등록일"],
-      featured: raw["추천"],
-    });
-  }
-
   function fromUpload(raw) {
     return makeWork({
       id: raw.id,
-      source: "upload",
       title: raw.title,
       author: raw.name,
       grade: raw.grade,
@@ -190,16 +165,6 @@
       date: raw.createdAt,
       featured: raw.featured,
     });
-  }
-
-  function getStaticWorks() {
-    // eslint-disable-next-line no-undef
-    const raw = typeof WORKS !== "undefined" && Array.isArray(WORKS) ? WORKS : [];
-    const seen = new Set();
-    return raw
-      .filter((item) => item && typeof item === "object" && text(item["파일"]))
-      .map(fromStatic)
-      .filter((work) => !seen.has(work.id) && seen.add(work.id));
   }
 
   function sortNewest(works) {
@@ -332,9 +297,10 @@
       return { ok: true, id: item.id };
     },
 
-    async setFeatured(id, featured, password) {
-      if ((await detectMode()) === "server") return serverCall("PATCH", `/works/${encodeURIComponent(id)}`, { featured, password }, 30000);
-      demoWrite(demoRead().map((w) => (w.id === id ? { ...w, featured } : w)));
+    // fields: featured, title, grade, klass, number, name, category, description 중 바꿀 것만
+    async updateWork(id, fields, password) {
+      if ((await detectMode()) === "server") return serverCall("PATCH", `/works/${encodeURIComponent(id)}`, { ...fields, password }, 30000);
+      demoWrite(demoRead().map((w) => (w.id === id ? { ...w, ...fields } : w)));
       return { ok: true };
     },
 
@@ -351,13 +317,12 @@
   };
 
   async function loadWorks() {
-    const staticWorks = getStaticWorks();
     try {
       const data = await api.list();
-      const uploads = (data.works || []).map(fromUpload).filter((w) => w.id);
-      return { works: sortNewest(uploads.concat(staticWorks)), needCode: !!data.needCode, error: null };
+      const works = (data.works || []).map(fromUpload).filter((w) => w.id);
+      return { works: sortNewest(works), needCode: !!data.needCode, error: null };
     } catch (error) {
-      return { works: sortNewest(staticWorks), needCode: false, error };
+      return { works: [], needCode: false, error };
     }
   }
 
@@ -381,19 +346,14 @@
     return STORAGE_SHIM + html;
   }
 
-  // source: { src } 는 저장소 안의 작품 파일, { html } 은 학생이 올린 작품 내용
-  function mountWork(container, source, title) {
+  function mountWork(container, html, title) {
     container.querySelectorAll("iframe").forEach((old) => old.remove());
     const frame = document.createElement("iframe");
     frame.title = title || "작품 실행 화면";
     frame.setAttribute("allow", "fullscreen; autoplay; gamepad; accelerometer; gyroscope");
     frame.setAttribute("allowfullscreen", "");
-    if (source.html !== undefined) {
-      frame.setAttribute("sandbox", SANDBOX);
-      frame.srcdoc = withStorageShim(source.html);
-    } else {
-      frame.src = source.src;
-    }
+    frame.setAttribute("sandbox", SANDBOX);
+    frame.srcdoc = withStorageShim(html);
     container.appendChild(frame);
     return frame;
   }
@@ -427,18 +387,19 @@
     return `play.html?id=${encodeURIComponent(work.id)}`;
   }
 
-  // manage: 선생님 모드에서 학생이 올린 작품 위에 추천·삭제 버튼을 붙여요.
+  // manage: 선생님 모드에서 작품 그림 위에 추천·수정·삭제 버튼을 붙여요.
   function cardHTML(work, { link = true, withClass = true, manage = false } = {}) {
     const tag = link ? "a" : "div";
     const href = link ? ` href="${esc(playUrl(work))}"` : "";
     const who = withClass ? [classLabel(work), work.author].filter(Boolean).join(" ") : studentLine(work, { withClass: false });
     const card = cardInner(work, tag, href, who);
-    if (!manage || work.source !== "upload") return card;
+    if (!manage) return card;
     return `
       <div class="card-wrap">
         ${card}
         <div class="card-admin">
           <button type="button" data-admin="feature" data-id="${esc(work.id)}" aria-pressed="${work.featured}" title="${work.featured ? "추천 빼기" : "추천 작품으로"}">⭐</button>
+          <button type="button" data-admin="edit" data-id="${esc(work.id)}" title="제목·내용 고치기">✏️</button>
           <button type="button" class="danger" data-admin="delete" data-id="${esc(work.id)}" title="삭제">🗑</button>
         </div>
       </div>`;
@@ -490,8 +451,7 @@
     if (isTeacher()) {
       html.push(`
         <div class="notice notice-teacher">
-          <strong>👩‍🏫 선생님 모드</strong> 학생이 올린 작품 그림 위의 <b>⭐</b> 버튼으로 추천하고, <b>🗑</b> 버튼으로 지울 수 있어요.
-          (예시 작품은 저장소의 works.js 에서 지워요.)
+          <strong>👩‍🏫 선생님 모드</strong> 작품 그림 위의 <b>⭐</b> 버튼으로 추천하고, <b>✏️</b> 버튼으로 제목·내용을 고치고, <b>🗑</b> 버튼으로 지울 수 있어요.
         </div>`);
     }
     if (mode === "demo") {
@@ -603,13 +563,94 @@
     button.title = on ? "누르면 선생님 모드에서 나가요" : "선생님 로그인";
   }
 
-  // 추천 켜기·끄기(feature) 또는 삭제(delete). 로그인이 안 돼 있으면 먼저 로그인 창을 띄워요.
+  // 작품 정보를 고치는 창. 저장하면 true 로 끝나요.
+  function openEditor(work) {
+    return new Promise((resolve) => {
+      let dialog = document.getElementById("work-editor");
+      if (!dialog) {
+        dialog = document.createElement("dialog");
+        dialog.id = "work-editor";
+        dialog.className = "login editor";
+        document.body.appendChild(dialog);
+      }
+      const classes = getConfig().classes.slice();
+      if (work.classKey && !classes.some((c) => c.key === work.classKey)) {
+        classes.push({ key: work.classKey, grade: work.grade, klass: work.klass, label: classLabel(work) });
+      }
+      dialog.innerHTML = `
+        <form class="login-form">
+          <h2>✏️ 작품 정보 고치기</h2>
+          <label>작품 제목<input name="title" maxlength="60" value="${esc(work.title)}" /></label>
+          <div class="editor-row">
+            <label>학년·반<select name="cls">${classes
+              .map((c) => `<option value="${esc(c.key)}"${c.key === work.classKey ? " selected" : ""}>${esc(c.label)}</option>`)
+              .join("")}</select></label>
+            <label>번호<input name="number" type="number" min="1" max="60" value="${esc(work.number || "")}" /></label>
+            <label>이름<input name="name" maxlength="20" value="${esc(work.author)}" /></label>
+          </div>
+          <label>분류<select name="category">${CATEGORIES.map(
+            (c) => `<option value="${esc(c.name)}"${c.name === work.category ? " selected" : ""}>${c.emoji} ${esc(c.name)}</option>`,
+          ).join("")}</select></label>
+          <label>작품 내용<textarea name="description" maxlength="1000" rows="6">${esc(work.description)}</textarea></label>
+          <p class="form-error" hidden></p>
+          <div class="login-actions">
+            <button type="button" class="btn btn-line" data-close>취소</button>
+            <button type="submit" class="btn btn-orange">저장</button>
+          </div>
+        </form>`;
+      const form = dialog.querySelector("form");
+      const error = form.querySelector(".form-error");
+      const submit = form.querySelector('button[type="submit"]');
+      let saved = false;
+      form.addEventListener("input", () => (error.hidden = true));
+      form.querySelector("[data-close]").addEventListener("click", () => dialog.close());
+      dialog.addEventListener("close", () => resolve(saved), { once: true });
+      form.addEventListener("submit", async (event) => {
+        event.preventDefault();
+        const f = form.elements;
+        const cls = classes.find((c) => c.key === f.cls.value);
+        const fields = {
+          title: f.title.value.trim(),
+          grade: cls ? cls.grade : null,
+          klass: cls ? cls.klass : null,
+          number: toNumber(f.number.value),
+          name: f.name.value.trim(),
+          category: f.category.value,
+          description: f.description.value.trim(),
+        };
+        const missing = !fields.title ? "작품 제목을" : !fields.number ? "번호를" : !fields.name ? "이름을" : !fields.description ? "작품 내용을" : "";
+        if (missing) {
+          error.textContent = `${missing} 써 주세요.`;
+          error.hidden = false;
+          return;
+        }
+        submit.disabled = true;
+        error.hidden = true;
+        try {
+          await api.updateWork(work.id, fields, teacherPassword());
+          saved = true;
+          dialog.close();
+        } catch (err) {
+          error.textContent = err.message;
+          error.hidden = false;
+          if (/비밀번호/.test(err.message)) setTeacher("");
+        } finally {
+          submit.disabled = false;
+        }
+      });
+      dialog.showModal();
+      form.elements.title.focus();
+    });
+  }
+
+  // 추천 켜기·끄기(feature), 고치기(edit), 삭제(delete). 로그인이 안 돼 있으면 먼저 로그인 창을 띄워요.
   async function manageWork(work, action) {
     if (action === "delete" && !window.confirm(`'${work.title}' 작품을 지울까요? 지우면 되돌릴 수 없어요.`)) return false;
     if (!isTeacher() && !(await openLogin())) return false;
+    if (action === "edit") return openEditor(work);
     try {
       if (action === "delete") await api.remove(work.id, teacherPassword());
-      else await api.setFeatured(work.id, !work.featured, teacherPassword());
+      else await api.updateWork(work.id, { featured: !work.featured }, teacherPassword());
       return true;
     } catch (err) {
       if (/비밀번호/.test(err.message)) setTeacher("");
@@ -636,9 +677,7 @@
     findClass,
     findCategory,
     categoryInfo,
-    fromStatic,
     fromUpload,
-    getStaticWorks,
     loadWorks,
     sortNewest,
     mountWork,

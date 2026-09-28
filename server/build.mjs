@@ -1,7 +1,7 @@
 // 전시관 화면 파일을 dist 폴더로 모아요. Cloudflare Pages 에는 이 폴더만 올라가요.
 import { cpSync, mkdirSync, rmSync } from "node:fs";
 
-const FILES = ["index.html", "play.html", "register.html", "404.html", "config.js", "works.js", "assets", "works"];
+const FILES = ["index.html", "play.html", "register.html", "404.html", "config.js", "assets"];
 const root = new URL("../", import.meta.url);
 const dist = new URL("./dist/", import.meta.url);
 

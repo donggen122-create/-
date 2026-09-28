@@ -11,11 +11,9 @@
   const fullView = params.get("view") === "full";
 
   async function loadWork() {
-    const staticWork = G.getStaticWorks().find((w) => w.id === id);
-    if (staticWork) return { work: staticWork, source: { src: staticWork.file } };
     if (!id) throw new Error("작품을 찾을 수 없어요.");
     const data = await G.api.get(id);
-    return { work: G.fromUpload(data.work), source: { html: String(data.html || "") } };
+    return { work: G.fromUpload(data.work), html: String(data.html || "") };
   }
 
   /* ---------- 새 창: 작품만 화면 가득 ---------- */
@@ -24,10 +22,10 @@
     document.body.className = "fullview";
     document.body.innerHTML = '<div class="stage-loading"><div class="spinner"></div>작품을 불러오는 중이에요…</div>';
     loadWork()
-      .then(({ work, source }) => {
+      .then(({ work, html }) => {
         document.title = `${work.title} · 서호초등학교 바이브코딩 전시관`;
         document.body.innerHTML = "";
-        G.mountWork(document.body, source, work.title).focus();
+        G.mountWork(document.body, html, work.title).focus();
       })
       .catch((err) => {
         document.body.innerHTML = `<div class="stage-loading">😢 ${esc(err.message)}</div>`;
@@ -43,7 +41,7 @@
   let current = null;
 
   function mount() {
-    frame = G.mountWork(screen, current.source, current.work.title);
+    frame = G.mountWork(screen, current.html, current.work.title);
     frame.addEventListener("load", () => frame.focus(), { once: true });
   }
 
@@ -81,11 +79,12 @@
         <a class="btn btn-line" href="${classHref}">← ${cls ? `${esc(cls.label)} 전시실` : "전시관 홈"}</a>
       </div>
       ${
-        work.source === "upload" && G.isTeacher()
+        G.isTeacher()
           ? `<div class="teacher">
               <p class="teacher-title">👩‍🏫 선생님 메뉴</p>
               <div class="info-actions">
                 <button class="btn btn-line" data-admin-play="feature" type="button">${work.featured ? "⭐ 추천 빼기" : "⭐ 추천 작품으로"}</button>
+                <button class="btn btn-line" data-admin-play="edit" type="button">✏️ 수정</button>
                 <button class="btn btn-danger" data-admin-play="delete" type="button">🗑 삭제</button>
               </div>
             </div>`
@@ -105,6 +104,10 @@
           if (action === "delete") {
             window.alert("작품을 지웠어요.");
             location.href = classHref;
+            return;
+          }
+          if (action === "edit") {
+            location.reload();
             return;
           }
           work.featured = !work.featured;

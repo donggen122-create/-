@@ -162,18 +162,42 @@ const int = (value) => {
   return Number.isFinite(n) ? n : 0;
 };
 
+// 작품 정보 칸을 검사해서 저장할 모양으로 돌려줘요.
+// partial 이면 보낸 칸만 검사해요(선생님이 고칠 때). 학년과 반은 늘 함께 보내요.
+function readFields(b, partial) {
+  const has = (key) => !partial || b[key] !== undefined;
+  const out = {};
+  if (has("title")) {
+    out.title = text(b.title, 60);
+    if (!out.title) throw new UserError("작품 제목을 써 주세요.");
+  }
+  if (has("grade") || has("klass")) {
+    out.grade = int(b.grade);
+    out.klass = int(b.klass);
+    if (!(out.grade >= 1 && out.grade <= 6 && out.klass >= 1 && out.klass <= 20)) throw new UserError("학년과 반을 알맞게 골라 주세요.");
+  }
+  if (has("number")) {
+    out.number = int(b.number);
+    if (!(out.number >= 1 && out.number <= 60)) throw new UserError("번호를 알맞게 써 주세요.");
+  }
+  if (has("name")) {
+    out.name = text(b.name, 20);
+    if (!out.name) throw new UserError("이름을 써 주세요.");
+  }
+  if (has("category")) out.category = CATEGORIES.includes(b.category) ? b.category : "기타";
+  if (has("description")) {
+    out.description = text(b.description, 1000);
+    if (!out.description) throw new UserError("작품 내용을 써 주세요.");
+  }
+  return out;
+}
+
 async function createWork(env, b) {
   if ((await hasSecret(env, SECRETS.upload)) && !(await matchesSecret(env, SECRETS.upload, text(b.code, 100)))) {
     throw new UserError("등록 코드가 맞지 않아요. 선생님께 여쭤보세요.", 403);
   }
   const work = {
-    title: text(b.title, 60),
-    grade: int(b.grade),
-    klass: int(b.klass),
-    number: int(b.number),
-    name: text(b.name, 20),
-    category: CATEGORIES.includes(b.category) ? b.category : "기타",
-    description: text(b.description, 1000),
+    ...readFields(b, false),
     emoji: Array.from(text(b.emoji, 32)).slice(0, 8).join(""),
     thumbnail: String(b.thumbnail || ""),
     fileName: text(b.fileName, 120),
@@ -181,11 +205,6 @@ async function createWork(env, b) {
   const html = String(b.html || "");
   const size = new TextEncoder().encode(html).length;
 
-  if (!work.title) throw new UserError("작품 제목을 써 주세요.");
-  if (!(work.grade >= 1 && work.grade <= 6 && work.klass >= 1 && work.klass <= 20)) throw new UserError("학년과 반을 알맞게 골라 주세요.");
-  if (!(work.number >= 1 && work.number <= 60)) throw new UserError("번호를 알맞게 써 주세요.");
-  if (!work.name) throw new UserError("이름을 써 주세요.");
-  if (!work.description) throw new UserError("작품 내용을 써 주세요.");
   if (!html.trim()) throw new UserError("html 작품 파일을 넣어 주세요.");
   if (size > MAX_HTML_BYTES) throw new UserError("작품 파일이 너무 커요. (5MB까지 올릴 수 있어요)", 413);
   if (work.thumbnail && (!/^data:image\/(png|jpeg|webp);base64,[A-Za-z0-9+/=]+$/.test(work.thumbnail) || work.thumbnail.length > MAX_THUMB_CHARS)) {
@@ -204,9 +223,16 @@ async function createWork(env, b) {
   return { ok: true, id };
 }
 
+// 선생님이 추천(featured)을 켜고 끄거나, 제목·반·번호·이름·분류·내용을 고쳐요.
 async function updateWork(env, request, id, b) {
   await checkAdmin(env, request, b.password);
-  const result = await env.DB.prepare("UPDATE works SET featured = ? WHERE id = ?").bind(b.featured ? 1 : 0, id).run();
+  const fields = readFields(b, true);
+  if (b.featured !== undefined) fields.featured = b.featured ? 1 : 0;
+  const columns = Object.keys(fields); // readFields 가 정한 칸 이름만 들어 있어요.
+  if (!columns.length) throw new UserError("바꿀 내용이 없어요.");
+  const result = await env.DB.prepare(`UPDATE works SET ${columns.map((c) => `${c} = ?`).join(", ")} WHERE id = ?`)
+    .bind(...columns.map((c) => fields[c]), id)
+    .run();
   if (!result.meta.changes) throw new UserError("작품을 찾을 수 없어요.", 404);
   return { ok: true };
 }
