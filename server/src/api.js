@@ -1,7 +1,7 @@
-// 서호초등학교 바이브코딩 전시관 — Cloudflare Worker
-// 전시관 화면(정적 파일)은 ASSETS 가, /api/* 는 이 Worker 가 D1(DB)로 처리해요.
+// 서호초등학교 바이브코딩 전시관 — 작품 저장 API (Cloudflare Pages Functions + D1)
+// 전시관 화면은 Pages 가 그대로 보여 주고, /api/* 요청만 여기서 처리해요 (functions/api/[[path]].js).
 //
-// 비밀값(Cloudflare 대시보드 → Worker → Settings → Variables and Secrets, 또는 GitHub 비밀값으로 배포):
+// 비밀값(Cloudflare 대시보드 → Pages → vibe-gallery → Settings → Variables and Secrets, 또는 GitHub 비밀값으로 배포):
 //   ADMIN_PASSWORD  선생님 비밀번호. 작품 삭제·추천에 필요해요. 없으면 삭제·추천을 할 수 없어요.
 //   UPLOAD_CODE     (선택) 등록 코드. 정해 두면 이 코드를 아는 사람만 작품을 올릴 수 있어요.
 
@@ -37,21 +37,18 @@ class UserError extends Error {
   }
 }
 
-export default {
-  async fetch(request, env) {
-    const url = new URL(request.url);
-    if (!url.pathname.startsWith("/api/")) return env.ASSETS.fetch(request);
-    if (request.method === "OPTIONS") return new Response(null, { status: 204, headers: CORS });
-    try {
-      await ensureSchema(env);
-      return await route(request, env, url);
-    } catch (err) {
-      if (err instanceof UserError) return json({ ok: false, error: err.message }, err.status);
-      console.error(err);
-      return json({ ok: false, error: "서버에 문제가 생겼어요. 잠시 뒤에 다시 해 보세요." }, 500);
-    }
-  },
-};
+export async function handleApi(request, env) {
+  const url = new URL(request.url);
+  if (request.method === "OPTIONS") return new Response(null, { status: 204, headers: CORS });
+  try {
+    await ensureSchema(env);
+    return await route(request, env, url);
+  } catch (err) {
+    if (err instanceof UserError) return json({ ok: false, error: err.message }, err.status);
+    console.error(err);
+    return json({ ok: false, error: "서버에 문제가 생겼어요. 잠시 뒤에 다시 해 보세요." }, 500);
+  }
+}
 
 let schemaReady = null;
 function ensureSchema(env) {

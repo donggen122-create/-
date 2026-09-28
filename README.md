@@ -3,8 +3,8 @@
 학생들이 AI와 함께 **바이브코딩**으로 만든 html 작품을 올리고, 반별로 구경하고, 눌러서 바로 실행해 볼 수 있는 전시관이에요.
 (옛 플래시 게임 사이트 '주전자닷컴'처럼 작품 그림을 누르면 바로 실행 화면으로 들어가요.)
 
-- 전시관 주소(배포 후): **https://vibe-gallery.seoho-pangpang-server.workers.dev**
-- 전시관 화면 + 작품 저장 서버: Cloudflare Workers
+- 전시관 주소: **https://vibe-gallery.pages.dev**
+- 전시관 화면 + 작품 저장 서버: Cloudflare Pages (+ Pages Functions)
 - 작품 저장소: Cloudflare D1 데이터베이스 `seoho-vibe-gallery-db` (이미 만들어 두었고 표도 준비돼 있어요)
 
 ## 화면
@@ -20,7 +20,7 @@
 
 ### 1. 배포하기 (Cloudflare 에 올리기)
 
-서호팡팡 배포에 쓰는 GitHub 비밀값 `CLOUDFLARE_API_TOKEN` 을 그대로 써요. 따로 넣을 것은 없어요.
+서호팡팡·명화 퍼즐 배포에 쓰는 GitHub 비밀값 `CLOUDFLARE_API_TOKEN` 을 그대로 써요. 따로 넣을 것은 없어요.
 
 - **자동:** 이 전시관이 `main` 브랜치에 합쳐지면 GitHub Actions(`Gallery deploy`)가 알아서 배포해요.
 - **원할 때:** `gallery-deploy/날짜` 같은 이름의 브랜치를 만들어도 배포돼요(배포가 끝나면 그 브랜치는 지워져요).
@@ -37,7 +37,7 @@ GitHub 저장소 → Settings → Secrets and variables → Actions → **Reposi
 | `GALLERY_UPLOAD_CODE` | (선택) 등록 코드. 넣으면 이 코드를 아는 사람만 작품을 올릴 수 있어요. 전시관 주소가 밖으로 퍼질까 걱정되면 넣어 주세요. |
 
 Cloudflare 대시보드에서 바로 넣어도 돼요: Workers & Pages → `vibe-gallery` → Settings → Variables and Secrets → Add → **Secret**
-(이름은 `ADMIN_PASSWORD`, `UPLOAD_CODE`).
+(이름은 `ADMIN_PASSWORD`, `UPLOAD_CODE`). 넣은 뒤 한 번 다시 배포해야 적용돼요.
 
 ### 3. 작품 관리
 
@@ -73,19 +73,19 @@ html 파일 만드는 법: AI가 만든 코드를 전부 복사 → 메모장에
 index.html        홈 + 반별 전시실
 play.html         작품 실행 화면
 register.html     작품 등록 화면
+404.html          없는 주소로 들어왔을 때 화면
 config.js         반 목록, 서버 주소(보통 비워 둬요)
 works.js          (선택) 저장소에 직접 넣어 두는 기본 작품 · 예시
 assets/           꾸밈(css) · 동작(js) · 교표 그림
 works/            예시 작품 (works/ledger = 예전 가계부)
-server/           Cloudflare Worker(작품 저장 API) + D1 설정
+server/           Cloudflare 설정 · 작품 저장 API(src/api.js, functions/) · 화면 모으기(build.mjs)
 .github/workflows/gallery-deploy.yml   자동 배포
-.assetsignore     Cloudflare 에 화면으로 올리지 않을 파일 목록
 ```
 
 ## 내 컴퓨터에서 해 보기
 
 - **화면만:** `index.html` 을 두 번 누르면 **체험 모드**로 열려요. 체험 모드에서 등록한 작품은 그 컴퓨터(브라우저)에만 저장돼요.
-- **서버까지:** `cd server && npm install && npm run dev` → http://localhost:8787
+- **서버까지:** `cd server && npm install && npm run dev` → http://localhost:8788
   (연습용 데이터는 저장소 바깥 `.seoho-gallery-dev-data` 폴더에 저장돼요)
 
 ## 작품 저장 API (참고)

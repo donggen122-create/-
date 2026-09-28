@@ -1,15 +1,15 @@
 # 바이브코딩 전시관 배포: main 에 올라오거나, gallery-deploy/<아무 이름> 브랜치를 만들면
-# Cloudflare(vibe-gallery Worker)에 배포해요. Actions 탭의 "Run workflow" 버튼으로도 할 수 있어요.
+# Cloudflare Pages(vibe-gallery)에 배포해요. 주소: https://vibe-gallery.pages.dev
+# Actions 탭의 "Run workflow" 버튼으로도 할 수 있어요(main 에 합친 뒤).
 #
 # 필요한 저장소 비밀값(Settings → Secrets and variables → Actions → Repository secrets)
-#   CLOUDFLARE_API_TOKEN      Workers·D1 편집 권한 (서호팡팡 배포에 쓰는 것과 같아요. CLOUDFLARE 이름도 읽어요)
+#   CLOUDFLARE_API_TOKEN      서호팡팡·명화 퍼즐 배포에 쓰는 것과 같아요(CLOUDFLARE 이름도 읽어요). 값은 출력하지 않아요.
 #   GALLERY_ADMIN_PASSWORD    (선택) 선생님 비밀번호. 작품 삭제·추천에 써요.
 #   GALLERY_UPLOAD_CODE       (선택) 등록 코드. 넣으면 이 코드를 아는 사람만 작품을 올릴 수 있어요.
 name: Gallery deploy
 on:
   push:
     branches: [main, 'gallery-deploy/**']
-    paths-ignore: ['**.md']
   workflow_dispatch:
 permissions:
   contents: write
@@ -19,43 +19,61 @@ concurrency:
 jobs:
   deploy:
     runs-on: ubuntu-latest
-    timeout-minutes: 15
+    timeout-minutes: 20
+    defaults:
+      run:
+        working-directory: server
     env:
       CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN || secrets.CLOUDFLARE || secrets.CF_API_TOKEN || secrets.CLOUDFLARE_TOKEN || secrets.CLOUDFLARE_API_KEY }}
       CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+      PROJECT: vibe-gallery
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
           node-version: '22'
+          cache: npm
+          cache-dependency-path: server/package-lock.json
       - name: 배포 열쇠 확인
         run: |
-          if [ -z "$CLOUDFLARE_API_TOKEN" ]; then echo "::error::배포 열쇠가 없어요. GitHub 저장소 Settings → Secrets and variables → Actions → Repository secrets 에 CLOUDFLARE_API_TOKEN 이름으로 넣어 주세요."; exit 1; fi
-      - name: 배포 도구 설치
-        working-directory: server
+          if [ -z "$CLOUDFLARE_API_TOKEN" ]; then
+            echo "::error::배포 열쇠가 없어요. 저장소 Settings → Secrets and variables → Actions → Repository secrets에 CLOUDFLARE_API_TOKEN 이름으로 넣어 주세요."
+            exit 1
+          fi
+      - name: 설치
         run: npm ci --no-audit --no-fund
-      - name: 배포
-        working-directory: server
-        run: |
-          set -o pipefail
-          npx wrangler deploy --message "github ${{ github.ref_name }}" 2>&1 | tee ../deploy-output.txt
+      - name: 전시관 화면 모으기
+        run: node build.mjs
+      - name: Pages 프로젝트 준비
+        # 프로젝트가 없으면 만들어요(있으면 그냥 넘어가요)
+        run: npx wrangler pages project create "$PROJECT" --production-branch=main 2>&1 | tail -3 || true
       - name: 선생님 비밀번호·등록 코드 넣기
-        working-directory: server
+        # 비밀값은 다음 배포부터 적용돼서 배포 전에 넣어요.
         env:
           ADMIN_PASSWORD: ${{ secrets.GALLERY_ADMIN_PASSWORD }}
           UPLOAD_CODE: ${{ secrets.GALLERY_UPLOAD_CODE }}
         run: |
-          if [ -n "$ADMIN_PASSWORD" ]; then printf '%s' "$ADMIN_PASSWORD" | npx wrangler secret put ADMIN_PASSWORD; else echo "GALLERY_ADMIN_PASSWORD 비밀값이 없어서 건너뛰어요."; fi
-          if [ -n "$UPLOAD_CODE" ]; then printf '%s' "$UPLOAD_CODE" | npx wrangler secret put UPLOAD_CODE; else echo "GALLERY_UPLOAD_CODE 비밀값이 없어서 건너뛰어요(누구나 등록 가능)."; fi
-      - name: 실서버 확인
+          if [ -n "$ADMIN_PASSWORD" ]; then printf '%s' "$ADMIN_PASSWORD" | npx wrangler pages secret put ADMIN_PASSWORD --project-name="$PROJECT"; else echo "GALLERY_ADMIN_PASSWORD 비밀값이 없어서 건너뛰어요(삭제·추천 불가)."; fi
+          if [ -n "$UPLOAD_CODE" ]; then printf '%s' "$UPLOAD_CODE" | npx wrangler pages secret put UPLOAD_CODE --project-name="$PROJECT"; else echo "GALLERY_UPLOAD_CODE 비밀값이 없어서 건너뛰어요(누구나 등록 가능)."; fi
+      - name: 배포
+        # git 브랜치 이름 대신 main 으로 올려야 미리보기가 아니라 실제 주소에 반영돼요
         run: |
-          URL=$(grep -oE 'https://[a-z0-9.-]+\.workers\.dev' deploy-output.txt | head -1)
+          set -o pipefail
+          npx wrangler pages deploy --project-name="$PROJECT" --branch=main --commit-dirty=true --commit-message="github ${GITHUB_SHA::7}" 2>&1 | tee deploy-output.txt
+      - name: 전시관 주소 확인
+        run: |
+          DOMAIN=$(npx wrangler pages project list 2>/dev/null | grep -E "(^|[^a-z0-9-])$PROJECT([^a-z0-9-]|$)" | grep -oE "[a-z0-9-]+\.pages\.dev" | head -1)
+          URL="https://${DOMAIN:-$PROJECT.pages.dev}"
           echo "전시관 주소: $URL"
-          for i in 1 2 3 4 5 6; do
-            if curl -fsS "$URL/api/health" && curl -fsS -o /dev/null "$URL/"; then echo; echo "::notice::전시관 주소: $URL"; exit 0; fi
+          echo "### 전시관 주소: $URL" >> "$GITHUB_STEP_SUMMARY"
+          # 새 주소는 열리기까지 조금 걸릴 수 있어서 몇 번 다시 확인해요
+          for i in $(seq 1 18); do
+            if curl -fsS -o /dev/null "$URL/" && curl -fsS "$URL/api/info"; then echo; echo "주소가 열리고 작품 저장 서버도 대답해요"; exit 0; fi
             sleep 10
           done
-          echo "::error::배포는 끝났지만 전시관이 대답하지 않아요: $URL"; exit 1
+          echo "::error::배포 뒤 3분이 지나도 $URL 이 열리지 않아요."
+          exit 1
       - name: 배포 브랜치 정리
         if: startsWith(github.ref_name, 'gallery-deploy/')
+        working-directory: .
         run: git push origin --delete "${{ github.ref_name }}" || true

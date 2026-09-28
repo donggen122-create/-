@@ -3,10 +3,11 @@
   "version": "1.0.0",
   "private": true,
   "type": "module",
-  "description": "서호초등학교 바이브코딩 전시관 — 전시관 화면 + 작품 저장 API (Cloudflare Workers + D1)",
+  "description": "서호초등학교 바이브코딩 전시관 — 전시관 화면 + 작품 저장 API (Cloudflare Pages + D1)",
   "scripts": {
-    "dev": "wrangler dev --local --port 8787 --persist-to ../../.seoho-gallery-dev-data",
-    "deploy": "wrangler deploy",
+    "build": "node build.mjs",
+    "dev": "node build.mjs && wrangler pages dev --port 8788 --persist-to ../../.seoho-gallery-dev-data",
+    "deploy": "node build.mjs && wrangler pages deploy --project-name=vibe-gallery --branch=main",
     "db:init": "wrangler d1 execute seoho-vibe-gallery-db --remote --file=schema.sql",
     "db:init:local": "wrangler d1 execute seoho-vibe-gallery-db --local --file=schema.sql"
   },
