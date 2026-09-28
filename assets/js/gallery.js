@@ -61,7 +61,7 @@
     }
     const recent = works.slice(0, 14);
     $("new-grid").innerHTML = recent.length
-      ? recent.map((w) => G.cardHTML(w)).join("")
+      ? recent.map((w) => G.cardHTML(w, { manage: G.isTeacher() })).join("")
       : emptyHTML("🌱", '아직 전시된 작품이 없어요.<br /><a href="register.html">첫 번째 작품을 등록해 보세요!</a>');
   }
 
@@ -100,7 +100,7 @@
 
     $("class-count").textContent = `${list.length}개`;
     if (list.length) {
-      $("class-grid").innerHTML = list.map((w) => G.cardHTML(w, { withClass: false })).join("");
+      $("class-grid").innerHTML = list.map((w) => G.cardHTML(w, { withClass: false, manage: G.isTeacher() })).join("");
     } else if (!inClass.length) {
       $("class-grid").innerHTML = emptyHTML("🌱", `아직 ${esc(cls.label)} 작품이 없어요.<br /><a href="register.html">첫 번째 작품을 올려 볼까요?</a>`);
     } else {
@@ -219,6 +219,21 @@
   spotlight.addEventListener("focusin", () => (spotPaused = true));
   spotlight.addEventListener("focusout", () => (spotPaused = false));
 
+  // 선생님 모드: 작품 그림 위의 ⭐(추천)·🗑(삭제) 버튼
+  document.addEventListener("click", async (event) => {
+    const button = event.target.closest("button[data-admin]");
+    if (!button) return;
+    event.preventDefault();
+    const work = works.find((w) => w.id === button.dataset.id);
+    if (!work || button.disabled) return;
+    button.disabled = true;
+    const done = await G.manageWork(work, button.dataset.admin);
+    button.disabled = false;
+    if (done) reload();
+  });
+
+  window.addEventListener("teacherchange", render);
+
   window.addEventListener("popstate", () => {
     readUrl();
     render();
@@ -230,11 +245,15 @@
   G.renderNotices();
   render();
 
-  G.loadWorks().then((result) => {
-    works = result.works;
-    loaded = true;
-    G.setCount(works.length);
-    G.renderNotices(result.error);
-    render();
-  });
+  function reload() {
+    return G.loadWorks().then((result) => {
+      works = result.works;
+      loaded = true;
+      G.setCount(works.length);
+      G.renderNotices(result.error);
+      render();
+    });
+  }
+
+  reload();
 })();

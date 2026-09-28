@@ -23,7 +23,13 @@ const SCHEMA = [
   `CREATE TABLE IF NOT EXISTS work_files (
     work_id TEXT NOT NULL, part INTEGER NOT NULL, data TEXT NOT NULL, PRIMARY KEY (work_id, part))`,
   "CREATE TABLE IF NOT EXISTS settings (key TEXT PRIMARY KEY, value TEXT NOT NULL)",
+  "CREATE TABLE IF NOT EXISTS login_failures (ip TEXT NOT NULL, at TEXT NOT NULL)",
+  "CREATE INDEX IF NOT EXISTS login_failures_ip_at ON login_failures (ip, at)",
 ];
+
+// 비밀번호를 이만큼 틀리면 잠시 막아요 (여러 번 찍어 보는 것을 막아요).
+const MAX_FAILURES = 20;
+const FAILURE_WINDOW_MS = 15 * 60 * 1000;
 
 const SECRETS = {
   admin: { env: "ADMIN_PASSWORD", key: "admin_password" },
@@ -72,6 +78,10 @@ async function route(request, env, url) {
 
   if (parts[0] === "health" && method === "GET") return json({ ok: true });
   if (parts[0] === "info" && method === "GET") return json(await info(env));
+  if (parts[0] === "login" && method === "POST") {
+    await checkAdmin(env, request, (await readBody(request)).password);
+    return json({ ok: true });
+  }
 
   if (parts[0] === "works") {
     const id = parts[1] ? decodeURIComponent(parts[1]) : "";
@@ -79,8 +89,8 @@ async function route(request, env, url) {
     if (!id && method === "POST") return json(await createWork(env, await readBody(request)));
     if (id && parts[2] === "thumb" && method === "GET") return thumbnail(env, id);
     if (id && !parts[2] && method === "GET") return json(await getWork(env, url, id));
-    if (id && !parts[2] && method === "PATCH") return json(await updateWork(env, id, await readBody(request)));
-    if (id && !parts[2] && method === "DELETE") return json(await deleteWork(env, id, await readBody(request)));
+    if (id && !parts[2] && method === "PATCH") return json(await updateWork(env, request, id, await readBody(request)));
+    if (id && !parts[2] && method === "DELETE") return json(await deleteWork(env, request, id, await readBody(request)));
   }
   throw new UserError("없는 주소예요.", 404);
 }
@@ -194,15 +204,15 @@ async function createWork(env, b) {
   return { ok: true, id };
 }
 
-async function updateWork(env, id, b) {
-  await checkAdmin(env, b.password);
+async function updateWork(env, request, id, b) {
+  await checkAdmin(env, request, b.password);
   const result = await env.DB.prepare("UPDATE works SET featured = ? WHERE id = ?").bind(b.featured ? 1 : 0, id).run();
   if (!result.meta.changes) throw new UserError("작품을 찾을 수 없어요.", 404);
   return { ok: true };
 }
 
-async function deleteWork(env, id, b) {
-  await checkAdmin(env, b.password);
+async function deleteWork(env, request, id, b) {
+  await checkAdmin(env, request, b.password);
   const [, removed] = await env.DB.batch([
     env.DB.prepare("DELETE FROM work_files WHERE work_id = ?").bind(id),
     env.DB.prepare("DELETE FROM works WHERE id = ?").bind(id),
@@ -213,9 +223,21 @@ async function deleteWork(env, id, b) {
 
 /* ---------- 도우미 ---------- */
 
-async function checkAdmin(env, password) {
+async function checkAdmin(env, request, password) {
   if (!(await hasSecret(env, SECRETS.admin))) throw new UserError("선생님 비밀번호가 아직 서버에 정해지지 않았어요.", 403);
-  if (!(await matchesSecret(env, SECRETS.admin, text(password, 200)))) throw new UserError("선생님 비밀번호가 맞지 않아요.", 403);
+  const ip = request.headers.get("CF-Connecting-IP") || "unknown";
+  const now = Date.now();
+  const recent = await env.DB.prepare("SELECT COUNT(*) AS n FROM login_failures WHERE ip = ? AND at > ?")
+    .bind(ip, new Date(now - FAILURE_WINDOW_MS).toISOString())
+    .first();
+  if (recent.n >= MAX_FAILURES) throw new UserError("비밀번호를 너무 많이 틀렸어요. 15분 뒤에 다시 해 보세요.", 429);
+  if (!(await matchesSecret(env, SECRETS.admin, text(password, 200)))) {
+    await env.DB.batch([
+      env.DB.prepare("INSERT INTO login_failures (ip, at) VALUES (?, ?)").bind(ip, new Date(now).toISOString()),
+      env.DB.prepare("DELETE FROM login_failures WHERE at < ?").bind(new Date(now - 86400000).toISOString()),
+    ]);
+    throw new UserError("선생님 비밀번호가 맞지 않아요.", 403);
+  }
 }
 
 async function storedSecret(env, secret) {

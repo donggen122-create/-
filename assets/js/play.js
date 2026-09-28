@@ -81,67 +81,37 @@
         <a class="btn btn-line" href="${classHref}">← ${cls ? `${esc(cls.label)} 전시실` : "전시관 홈"}</a>
       </div>
       ${
-        work.source === "upload"
-          ? `<details class="teacher">
-              <summary>👩‍🏫 선생님 메뉴</summary>
+        work.source === "upload" && G.isTeacher()
+          ? `<div class="teacher">
+              <p class="teacher-title">👩‍🏫 선생님 메뉴</p>
               <div class="info-actions">
-                <button class="btn btn-line" id="btn-feature" type="button">${work.featured ? "⭐ 추천 빼기" : "⭐ 추천 작품으로"}</button>
-                <button class="btn btn-danger" id="btn-delete" type="button">🗑 삭제</button>
+                <button class="btn btn-line" data-admin-play="feature" type="button">${work.featured ? "⭐ 추천 빼기" : "⭐ 추천 작품으로"}</button>
+                <button class="btn btn-danger" data-admin-play="delete" type="button">🗑 삭제</button>
               </div>
-            </details>`
+            </div>`
           : ""
       }`;
     $("info").hidden = false;
 
-    if (work.source !== "upload") return;
-    $("btn-delete").addEventListener("click", () => {
-      if (!window.confirm(`'${work.title}' 작품을 지울까요? 지우면 되돌릴 수 없어요.`)) return;
-      asTeacher((password) => G.api.remove(work.id, password)).then((ok) => {
-        if (!ok) return;
-        window.alert("작품을 지웠어요.");
-        location.href = classHref;
-      });
-    });
-    $("btn-feature").addEventListener("click", () => {
-      asTeacher((password) => G.api.setFeatured(work.id, !work.featured, password)).then((ok) => {
-        if (!ok) return;
-        work.featured = !work.featured;
-        $("btn-feature").textContent = work.featured ? "⭐ 추천 빼기" : "⭐ 추천 작품으로";
-        window.alert(work.featured ? "추천 작품으로 정했어요. 전시관 왼쪽 '추천 작품'에 나와요." : "추천 작품에서 뺐어요.");
-      });
-    });
-  }
-
-  // 선생님 비밀번호는 이 창을 닫을 때까지만 기억해요.
-  const PASSWORD_KEY = "seoho-gallery-teacher";
-  async function asTeacher(action) {
-    let password = "";
-    if ((await G.api.mode()) === "server") {
-      try {
-        password = sessionStorage.getItem(PASSWORD_KEY) || "";
-      } catch {
-        password = "";
-      }
-      if (!password) password = window.prompt("선생님 비밀번호를 입력해 주세요.") || "";
-      if (!password) return false;
-    }
-    try {
-      await action(password);
-      try {
-        if (password) sessionStorage.setItem(PASSWORD_KEY, password);
-      } catch {
-        /* 기억하지 못해도 괜찮아요 */
-      }
-      return true;
-    } catch (err) {
-      try {
-        sessionStorage.removeItem(PASSWORD_KEY);
-      } catch {
-        /* 괜찮아요 */
-      }
-      window.alert(err.message);
-      return false;
-    }
+    $("info")
+      .querySelectorAll("[data-admin-play]")
+      .forEach((button) =>
+        button.addEventListener("click", async () => {
+          const action = button.dataset.adminPlay;
+          button.disabled = true;
+          const done = await G.manageWork(work, action);
+          button.disabled = false;
+          if (!done) return;
+          if (action === "delete") {
+            window.alert("작품을 지웠어요.");
+            location.href = classHref;
+            return;
+          }
+          work.featured = !work.featured;
+          renderInfo(work);
+          window.alert(work.featured ? "추천 작품으로 정했어요. 전시관 왼쪽 '추천 작품'에 나와요." : "추천 작품에서 뺐어요.");
+        }),
+      );
   }
 
   async function renderMore(work) {
@@ -178,6 +148,7 @@
 
   G.renderNotices();
   G.renderTabs("");
+  window.addEventListener("teacherchange", () => current && renderInfo(current.work));
 
   loadWork()
     .then((result) => {

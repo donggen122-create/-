@@ -97,6 +97,7 @@ button {
 }
 
 .brand {
+  margin-right: auto;
   display: flex;
   align-items: center;
   gap: 16px;
@@ -125,6 +126,7 @@ button {
   font-weight: 400;
   font-size: clamp(26px, 4.4vw, 46px);
   line-height: 1.15;
+  word-break: keep-all;
   color: #fff;
   letter-spacing: 0.5px;
   text-shadow:
@@ -145,6 +147,7 @@ button {
 
 .brand-sub {
   margin: 6px 0 0 2px;
+  word-break: keep-all;
   font-family: var(--font-display);
   font-size: 17px;
   color: #fff;
@@ -231,6 +234,76 @@ button {
   color: var(--brown);
 }
 
+.teacher-btn {
+  flex: none;
+  padding: 8px 14px;
+  border: 0;
+  border-radius: 999px;
+  background: rgba(90, 52, 19, 0.82);
+  color: #fff;
+  font-family: var(--font-display);
+  font-size: 15px;
+  white-space: nowrap;
+}
+
+.teacher-btn:hover {
+  background: var(--brown);
+}
+
+.teacher-btn.is-on {
+  background: #fff;
+  color: var(--orange-deep);
+  box-shadow: 0 0 0 3px #ffe08a;
+}
+
+dialog.login {
+  width: min(360px, calc(100vw - 32px));
+  padding: 24px;
+  border: 0;
+  border-radius: 22px;
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.3);
+}
+
+dialog.login::backdrop {
+  background: rgba(42, 33, 27, 0.55);
+}
+
+.login h2 {
+  margin: 0 0 4px;
+  font-family: var(--font-display);
+  font-weight: 400;
+  font-size: 24px;
+}
+
+.login .hint {
+  margin: 0;
+}
+
+.login input {
+  width: 100%;
+  margin-top: 14px;
+  padding: 12px 14px;
+  border: 2px solid var(--line);
+  border-radius: 12px;
+  font-size: 16px;
+}
+
+.login input:focus {
+  border-color: var(--orange);
+  outline: none;
+}
+
+.login .form-error {
+  margin: 12px 0 0;
+}
+
+.login-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+  margin-top: 16px;
+}
+
 /* ---------- 안내 상자 ---------- */
 
 .notices:empty {
@@ -253,6 +326,12 @@ button {
   background: #fff1f0;
   border: 2px solid #ffb4ad;
   color: #8a1c12;
+}
+
+.notice-teacher {
+  background: #fff8e1;
+  border: 2px solid #ffe08a;
+  color: #6b4e00;
 }
 
 .notice-demo {
@@ -674,6 +753,48 @@ button {
 }
 
 /* ---------- 작품 타일 ---------- */
+
+.card-wrap {
+  position: relative;
+  min-width: 0;
+}
+
+.card-admin {
+  position: absolute;
+  top: 6px;
+  right: 6px;
+  z-index: 5;
+  display: flex;
+  gap: 4px;
+}
+
+.card-admin button {
+  display: grid;
+  place-items: center;
+  width: 32px;
+  height: 32px;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.95);
+  font-size: 15px;
+  line-height: 1;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.25);
+  filter: grayscale(1);
+}
+
+.card-admin button[aria-pressed="true"] {
+  background: #ffd43b;
+  filter: none;
+}
+
+.card-admin button:hover {
+  filter: none;
+}
+
+.card-admin .danger:hover {
+  background: #ffe3e0;
+}
 
 .grid {
   display: grid;
@@ -1103,9 +1224,10 @@ button {
   font-size: 14px;
 }
 
-.teacher summary {
-  color: var(--muted);
-  cursor: pointer;
+.teacher-title {
+  margin: 0;
+  color: var(--brown-soft);
+  font-weight: 700;
 }
 
 .teacher .info-actions {
@@ -1635,6 +1757,11 @@ code {
 @media (max-width: 760px) {
   .header-bubble {
     display: none;
+  }
+
+  .teacher-btn {
+    padding: 6px 10px;
+    font-size: 13px;
   }
 
   .brand-logo {

@@ -343,6 +343,11 @@
       demoWrite(demoRead().filter((w) => w.id !== id));
       return { ok: true };
     },
+
+    async login(password) {
+      if ((await detectMode()) === "server") return serverCall("POST", "/login", { password }, 30000);
+      return { ok: true };
+    },
   };
 
   async function loadWorks() {
@@ -422,10 +427,24 @@
     return `play.html?id=${encodeURIComponent(work.id)}`;
   }
 
-  function cardHTML(work, { link = true, withClass = true } = {}) {
+  // manage: 선생님 모드에서 학생이 올린 작품 위에 추천·삭제 버튼을 붙여요.
+  function cardHTML(work, { link = true, withClass = true, manage = false } = {}) {
     const tag = link ? "a" : "div";
     const href = link ? ` href="${esc(playUrl(work))}"` : "";
     const who = withClass ? [classLabel(work), work.author].filter(Boolean).join(" ") : studentLine(work, { withClass: false });
+    const card = cardInner(work, tag, href, who);
+    if (!manage || work.source !== "upload") return card;
+    return `
+      <div class="card-wrap">
+        ${card}
+        <div class="card-admin">
+          <button type="button" data-admin="feature" data-id="${esc(work.id)}" aria-pressed="${work.featured}" title="${work.featured ? "추천 빼기" : "추천 작품으로"}">⭐</button>
+          <button type="button" class="danger" data-admin="delete" data-id="${esc(work.id)}" title="삭제">🗑</button>
+        </div>
+      </div>`;
+  }
+
+  function cardInner(work, tag, href, who) {
     return `
       <${tag} class="card"${href} title="${esc(work.title)}">
         <div class="card-thumb">
@@ -468,6 +487,13 @@
     if (error) {
       html.push(`<div class="notice notice-error" role="alert"><strong>⚠️ 작품을 불러오지 못했어요.</strong> ${esc(error.message)}</div>`);
     }
+    if (isTeacher()) {
+      html.push(`
+        <div class="notice notice-teacher">
+          <strong>👩‍🏫 선생님 모드</strong> 학생이 올린 작품 그림 위의 <b>⭐</b> 버튼으로 추천하고, <b>🗑</b> 버튼으로 지울 수 있어요.
+          (예시 작품은 저장소의 works.js 에서 지워요.)
+        </div>`);
+    }
     if (mode === "demo") {
       html.push(`
         <div class="notice notice-demo">
@@ -477,6 +503,123 @@
     }
     box.innerHTML = html.join("");
   }
+
+  /* ---------- 선생님 로그인 ---------- */
+
+  // 비밀번호는 이 창(탭)을 닫을 때까지만 기억해요.
+  const TEACHER_KEY = "seoho-gallery-teacher";
+
+  function teacherPassword() {
+    try {
+      return sessionStorage.getItem(TEACHER_KEY) || "";
+    } catch {
+      return "";
+    }
+  }
+
+  function isTeacher() {
+    return !!teacherPassword();
+  }
+
+  function setTeacher(password) {
+    try {
+      if (password) sessionStorage.setItem(TEACHER_KEY, password);
+      else sessionStorage.removeItem(TEACHER_KEY);
+    } catch {
+      /* 기억하지 못해도 괜찮아요 */
+    }
+    renderTeacherButton();
+    window.dispatchEvent(new Event("teacherchange"));
+  }
+
+  // 로그인 창을 띄우고, 로그인하면 true 로 끝나요.
+  function openLogin() {
+    return new Promise((resolve) => {
+      let dialog = document.getElementById("teacher-login");
+      if (!dialog) {
+        dialog = document.createElement("dialog");
+        dialog.id = "teacher-login";
+        dialog.className = "login";
+        document.body.appendChild(dialog);
+      }
+      dialog.innerHTML = `
+        <form class="login-form">
+          <h2>👩‍🏫 선생님 로그인</h2>
+          <p class="hint">로그인하면 학생 작품을 추천하거나 지울 수 있어요.</p>
+          <input type="password" name="password" placeholder="선생님 비밀번호" autocomplete="current-password" aria-label="선생님 비밀번호" />
+          <p class="form-error" hidden></p>
+          <div class="login-actions">
+            <button type="button" class="btn btn-line" data-close>닫기</button>
+            <button type="submit" class="btn btn-orange">로그인</button>
+          </div>
+        </form>`;
+      const form = dialog.querySelector("form");
+      const input = form.elements.password;
+      const error = form.querySelector(".form-error");
+      const submit = form.querySelector('button[type="submit"]');
+      form.querySelector("[data-close]").addEventListener("click", () => dialog.close());
+      dialog.addEventListener("close", () => resolve(isTeacher()), { once: true });
+      form.addEventListener("submit", async (event) => {
+        event.preventDefault();
+        const password = input.value;
+        if (!password) return input.focus();
+        submit.disabled = true;
+        error.hidden = true;
+        try {
+          await api.login(password);
+          setTeacher(password);
+          dialog.close();
+        } catch (err) {
+          error.textContent = err.message;
+          error.hidden = false;
+          input.select();
+        } finally {
+          submit.disabled = false;
+        }
+      });
+      dialog.showModal();
+      input.focus();
+    });
+  }
+
+  function renderTeacherButton() {
+    const top = document.querySelector(".header-top");
+    if (!top) return;
+    let button = document.getElementById("teacher-btn");
+    if (!button) {
+      button = document.createElement("button");
+      button.id = "teacher-btn";
+      button.type = "button";
+      button.className = "teacher-btn";
+      button.addEventListener("click", () => {
+        if (!isTeacher()) openLogin();
+        else if (window.confirm("선생님 모드에서 나갈까요?")) setTeacher("");
+      });
+      top.appendChild(button);
+    }
+    const on = isTeacher();
+    button.classList.toggle("is-on", on);
+    button.textContent = on ? "👩‍🏫 선생님 모드" : "🔒 선생님";
+    button.title = on ? "누르면 선생님 모드에서 나가요" : "선생님 로그인";
+  }
+
+  // 추천 켜기·끄기(feature) 또는 삭제(delete). 로그인이 안 돼 있으면 먼저 로그인 창을 띄워요.
+  async function manageWork(work, action) {
+    if (action === "delete" && !window.confirm(`'${work.title}' 작품을 지울까요? 지우면 되돌릴 수 없어요.`)) return false;
+    if (!isTeacher() && !(await openLogin())) return false;
+    try {
+      if (action === "delete") await api.remove(work.id, teacherPassword());
+      else await api.setFeatured(work.id, !work.featured, teacherPassword());
+      return true;
+    } catch (err) {
+      if (/비밀번호/.test(err.message)) setTeacher("");
+      window.alert(err.message);
+      return false;
+    }
+  }
+
+  document.addEventListener("DOMContentLoaded", renderTeacherButton);
+  window.addEventListener("teacherchange", () => renderNotices());
 
   function setCount(n) {
     const el = document.getElementById("work-count");
@@ -507,5 +650,8 @@
     renderTabs,
     renderNotices,
     setCount,
+    isTeacher,
+    openLogin,
+    manageWork,
   };
 })();

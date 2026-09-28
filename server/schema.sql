@@ -34,3 +34,11 @@ CREATE TABLE IF NOT EXISTS settings (
   key TEXT PRIMARY KEY,
   value TEXT NOT NULL
 );
+
+-- 선생님 비밀번호를 틀린 기록. 15분 안에 20번 틀리면 잠시 막아요. 하루 지난 기록은 지워요.
+CREATE TABLE IF NOT EXISTS login_failures (
+  ip TEXT NOT NULL,
+  at TEXT NOT NULL
+);
+
+CREATE INDEX IF NOT EXISTS login_failures_ip_at ON login_failures (ip, at);
