@@ -529,7 +529,8 @@
 @media(max-width:360px){.sg-gear-bar-supply>.sg-icon{display:none}.sg-gear-bar-supply b{font-size:13px}#guardian-lobby .sg-gear-bar-supply>button{padding:8px 10px!important}}
 
 /* 밸런스 시험 계정 로비(2026-09-29) */
-.sg-test{display:flex;flex-direction:column;gap:14px;max-width:760px;margin:0 auto;width:100%}
+/* .sg-main 자체의 폭은 건드리지 않는다(넓은 화면에서 .sg-main의 좌우 여백이 폭에 비례해 커지므로, 폭을 묶으면 내용이 한 줄로 찌그러짐) — 안쪽 칸만 760px */
+.sg-test{display:flex;flex-direction:column;gap:14px}.sg-test>*{width:100%;max-width:760px;margin-left:auto;margin-right:auto}
 .sg-test-card{display:grid;grid-template-columns:1fr 1fr;gap:14px;background:#fffdf5;border:2px solid #e2c989;border-radius:16px;padding:16px}
 .sg-test-pet{display:flex;align-items:center;gap:12px}.sg-test-pet .sg-pet{width:96px;height:96px;object-fit:contain}
 .sg-test-pet small,.sg-test-grade small{display:block;color:#6b5a3a;font-size:13px}.sg-test-pet h2{margin:2px 0;font-size:26px}
