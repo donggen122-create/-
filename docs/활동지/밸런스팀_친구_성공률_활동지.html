@@ -2,7 +2,7 @@
 <html lang="ko">
 <head>
 <meta charset="utf-8">
-<title>밸런스팀 활동지 — 친구 등급별 성공률 조사</title>
+<title>밸런스팀 활동지 — 친구 등급 실험 25판</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Jua&family=Gowun+Dodum&display=swap" rel="stylesheet">
@@ -10,226 +10,180 @@
   @page { size: A4; margin: 0; }
   * { box-sizing: border-box; }
   :root { --ink: #1d2a30; --soft: #5b6b72; --line: #9fb3bb; --faint: #eef4f6; --accent: #2a6f93;
-          --g0: #ededed; --g1: #ddebf7; --g2: #e4dfec; --g3: #fce4d6; --g4: #fff2cc; --ex: #8a969c; }
+          --g0: #ededed; --g1: #ddebf7; --g2: #e4dfec; --g3: #fce4d6; --g4: #fff2cc; }
   html, body { margin: 0; padding: 0; background: #fff; color: var(--ink); }
-  body { font-family: "Gowun Dodum", "Malgun Gothic", sans-serif; font-size: 10.2pt; line-height: 1.4; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
-  .page { width: 210mm; height: 297mm; padding: 9mm 11mm 8mm; overflow: hidden; break-after: page; display: flex; flex-direction: column; gap: 2.4mm; }
+  body { font-family: "Gowun Dodum", "Malgun Gothic", sans-serif; font-size: 10.8pt; line-height: 1.4; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  .page { width: 210mm; height: 297mm; padding: 10mm 12mm 9mm; overflow: hidden; break-after: page; display: flex; flex-direction: column; gap: 3.4mm; }
   .page:last-child { break-after: auto; }
-  h1, h2, h3, b.j, .j { font-family: "Jua", "Malgun Gothic", sans-serif; font-weight: normal; }
+  h1, h2, b.j, .j { font-family: "Jua", "Malgun Gothic", sans-serif; font-weight: normal; }
   .top { display: flex; justify-content: space-between; align-items: center; font-size: 9pt; color: var(--soft); }
   .tag { border: 1.2px solid var(--accent); color: var(--accent); border-radius: 99px; padding: .2mm 3mm; font-family: "Jua", sans-serif; font-size: 10pt; }
-  h1 { margin: 0; font-size: 21pt; line-height: 1.15; }
-  h1 small { font-size: 11.5pt; color: var(--soft); margin-left: 2mm; }
-  .info { display: flex; gap: 4mm; font-size: 9.8pt; align-items: flex-end; flex-wrap: nowrap; }
+  h1 { margin: 0; font-size: 23pt; line-height: 1.15; }
+  h1 small { font-size: 12pt; color: var(--soft); margin-left: 2mm; }
+  h2 { margin: 0; font-size: 13.5pt; display: flex; align-items: center; gap: 2mm; }
+  .num { flex: none; width: 7mm; height: 7mm; border-radius: 50%; border: 1.6px solid var(--accent); color: var(--accent); display: grid; place-items: center; font-size: 11pt; }
+  .hint { font-family: "Gowun Dodum", sans-serif; font-size: 9.2pt; color: var(--soft); margin-left: 1mm; }
+  .info { display: flex; gap: 6mm; font-size: 11pt; align-items: flex-end; }
   .info span { white-space: nowrap; }
-  .blank { display: inline-block; border-bottom: 1.1px solid var(--ink); height: 4.6mm; vertical-align: bottom; }
-  .box { border: 1.3px solid var(--ink); border-radius: 2.5mm; padding: 1.8mm 3.5mm; background: var(--faint); }
-  h2 { margin: 0; font-size: 12.8pt; display: flex; align-items: center; gap: 2mm; }
-  .num { flex: none; width: 6.6mm; height: 6.6mm; border-radius: 50%; border: 1.5px solid var(--accent); color: var(--accent); display: grid; place-items: center; font-size: 10.5pt; }
-  .hint { font-family: "Gowun Dodum", sans-serif; font-size: 8.8pt; color: var(--soft); margin-left: 1mm; }
-  ol.rules { margin: .6mm 0 0; padding-left: 5mm; font-size: 9.3pt; }
-  ol.rules li { margin: .3mm 0; }
-  ol.rules b { font-family: "Jua", sans-serif; font-weight: normal; color: var(--accent); }
+  .blank { display: inline-block; border-bottom: 1.1px solid var(--ink); height: 5mm; vertical-align: bottom; }
+  .chk { display: inline-block; width: 3.8mm; height: 3.8mm; border: 1.3px solid var(--ink); border-radius: .8mm; vertical-align: -.6mm; margin-right: 1mm; }
+  .pets { display: grid; grid-template-columns: repeat(4, 1fr); gap: 2.5mm; }
+  .pets div { border: 1.3px solid var(--line); border-radius: 2.5mm; padding: 1.6mm 2.5mm; font-size: 10pt; }
+  .pets b { font-family: "Jua", sans-serif; font-weight: normal; font-size: 12pt; }
+  .pets small { display: block; color: var(--soft); font-size: 8.8pt; }
+  .steps { display: grid; grid-template-columns: repeat(4, 1fr); gap: 2.5mm; }
+  .steps div { background: var(--faint); border-radius: 2.5mm; padding: 2mm 2.6mm; font-size: 9.8pt; line-height: 1.35; }
+  .steps b { font-family: "Jua", sans-serif; font-weight: normal; color: var(--accent); font-size: 11.5pt; display: block; }
   table { width: 100%; border-collapse: collapse; table-layout: fixed; }
-  th, td { border: 1px solid var(--line); padding: .8mm 1.6mm; vertical-align: middle; }
-  th { font-family: "Jua", sans-serif; font-weight: normal; background: var(--accent); color: #fff; font-size: 9.6pt; text-align: center; }
-  .pets td { font-size: 8.9pt; }
-  .pets td.n { font-family: "Jua", sans-serif; font-size: 10.3pt; text-align: center; }
-  .grades { display: flex; gap: 1.2mm; font-size: 8.8pt; margin-top: 1mm; align-items: center; flex-wrap: wrap; }
-  .grades span { border-radius: 1.2mm; padding: .2mm 2mm; border: 1px solid var(--line); }
-  .log td { height: 6.1mm; font-size: 9pt; text-align: center; }
-  .log tr.ex td { color: var(--ex); font-style: italic; background: #f7f9fa; }
-  .log td.l { text-align: left; }
-  .fixed { display: flex; flex-wrap: wrap; gap: 1mm 5mm; align-items: center; font-size: 10.2pt; border: 1.6px solid var(--accent); border-radius: 2.5mm; padding: 1.6mm 3.5mm; }
-  .fixed .j { color: var(--accent); font-size: 11pt; } .acc { white-space: nowrap; border: 1px solid var(--line); border-radius: 1.5mm; padding: .2mm 2mm; background: #fff; } .acc b { font-family: "Jua", sans-serif; font-weight: normal; }
-  .chk { display: inline-block; width: 3.4mm; height: 3.4mm; border: 1.2px solid var(--ink); border-radius: .7mm; vertical-align: -.5mm; margin-right: 1mm; }
-  .foot { margin-top: auto; display: flex; justify-content: space-between; font-size: 8.6pt; color: var(--soft); border-top: 1px dashed var(--line); padding-top: 1.2mm; }
-
-  /* 2쪽 */
-  .tally td { height: 16mm; padding: 1mm 1.6mm; vertical-align: top; font-size: 8.8pt; }
-  .tally td.n { font-family: "Jua", sans-serif; font-size: 11pt; text-align: center; vertical-align: middle; }
-  .tally .c { display: grid; grid-template-columns: auto 1fr auto; gap: .4mm 1mm; align-items: end; }
-  .tally .c u { text-decoration: none; border-bottom: 1px solid var(--line); height: 4mm; }
-  .tally .c .r { font-family: "Jua", sans-serif; color: var(--accent); }
-  .calc { font-size: 9.2pt; line-height: 1.8; } .calc > span { margin-right: 3mm; }
+  th, td { border: 1.2px solid var(--line); padding: 1mm; text-align: center; vertical-align: middle; }
+  th { font-family: "Jua", sans-serif; font-weight: normal; background: var(--accent); color: #fff; font-size: 10.5pt; }
+  .rec td { height: 15mm; font-size: 10pt; }
+  .rec td.g { font-family: "Jua", sans-serif; font-size: 13pt; }
+  .rec td.g small { display: block; font-family: "Gowun Dodum", sans-serif; font-size: 8pt; color: var(--soft); }
+  .rec td.box { position: relative; }
+  .rec td.box i { position: absolute; left: 1.2mm; top: .6mm; font-style: normal; font-size: 7.5pt; color: #9aa7ad; }
+  .rec td.sum { font-size: 10pt; }
+  .rec td.sum u, .rec td.rate u { display: inline-block; width: 9mm; border-bottom: 1px solid var(--ink); text-decoration: none; height: 5mm; }
+  .rec tr.ex td { background: #f7f9fa; color: #8a969c; font-style: italic; height: 10mm; }
+  .calc { font-size: 10pt; background: var(--faint); border-radius: 2.5mm; padding: 1.8mm 3mm; }
   .calc code { font-family: "Jua", sans-serif; background: #fff; border: 1px solid var(--line); border-radius: 1.5mm; padding: .2mm 2mm; }
-  .chart { display: grid; grid-template-columns: 11mm repeat(4, 1fr); height: 46mm; position: relative; }
-  .chart .axis { display: flex; flex-direction: column; justify-content: space-between; font-size: 7.6pt; color: var(--soft); text-align: right; padding-right: 1.2mm; height: 40mm; }
-  .chart .col { border-left: 1px solid #e3eaed; display: flex; flex-direction: column; }
-  .chart .area { height: 40mm; background-image: repeating-linear-gradient(to top, #d5dfe3 0 1px, transparent 1px 4mm); border-bottom: 1.4px solid var(--ink); position: relative; }
-  .chart .area::after { content: ""; position: absolute; left: 30%; right: 30%; top: 0; bottom: 0; border: 1px dashed #b9c7cd; }
-  .chart .lab { text-align: center; font-family: "Jua", sans-serif; font-size: 9.6pt; margin-top: .6mm; }
-  .two { display: grid; grid-template-columns: 1fr 1fr; gap: 3mm; }
-  .fill { font-size: 9.2pt; display: flex; flex-direction: column; gap: 1.3mm; }
-  .fill div { display: flex; align-items: flex-end; gap: 1.2mm; flex-wrap: nowrap; white-space: nowrap; }
-  .fill u { text-decoration: none; border-bottom: 1px solid var(--line); height: 4.4mm; display: inline-block; }
-  .prop td { height: 9.6mm; font-size: 9pt; }
-  .prop td.h { height: auto; }
-  .ruler { font-size: 9pt; border-left: 3px solid var(--accent); padding: .6mm 2.5mm; background: #f6fafb; }
-  .self { display: flex; flex-wrap: wrap; gap: .8mm 5mm; font-size: 9pt; }
+  .two { display: grid; grid-template-columns: 1.05fr 1fr; gap: 5mm; }
+  .chart { display: grid; grid-template-columns: 10mm repeat(5, 1fr); }
+  .chart .axis { display: flex; flex-direction: column; justify-content: space-between; font-size: 7.8pt; color: var(--soft); text-align: right; padding-right: 1.2mm; height: 40mm; margin-top: -1.5mm; }
+  .chart .col { display: flex; flex-direction: column; }
+  .chart .area { height: 40mm; border-left: 1px solid #e3eaed; background-image: repeating-linear-gradient(to top, #cfdbe0 0 1px, transparent 1px 8mm); border-bottom: 1.4px solid var(--ink); position: relative; }
+  .chart .area::after { content: ""; position: absolute; left: 25%; right: 25%; top: 0; bottom: 0; border: 1px dashed #b9c7cd; }
+  .chart .lab { text-align: center; font-family: "Jua", sans-serif; font-size: 9.6pt; margin-top: .6mm; border-radius: 1.2mm; }
+  .fill { display: flex; flex-direction: column; gap: 2.4mm; font-size: 10.3pt; }
+  .fill div { display: flex; align-items: flex-end; gap: 1.3mm; flex-wrap: wrap; }
+  .fill u { text-decoration: none; border-bottom: 1px solid var(--ink); height: 5mm; display: inline-block; }
+  .foot { margin-top: auto; display: flex; justify-content: space-between; font-size: 8.8pt; color: var(--soft); border-top: 1px dashed var(--line); padding-top: 1.3mm; }
+  /* 2쪽 */
+  .team td { height: 13mm; font-size: 10pt; }
+  .team td.n { font-family: "Jua", sans-serif; font-size: 12pt; }
+  .team td.n small { display: block; font-family: "Gowun Dodum", sans-serif; font-size: 8pt; color: var(--soft); }
+  .team td u { display: inline-block; width: 11mm; border-bottom: 1px solid var(--ink); text-decoration: none; height: 5mm; }
+  .team tr.best td { background: #f6fafb; }
+  .prop td { height: 13mm; font-size: 10pt; text-align: left; padding: 1mm 2mm; }
+  .prop tr.ex td { background: #f7f9fa; color: #8a969c; font-style: italic; height: 9mm; }
+  .ruler { font-size: 10pt; border-left: 3px solid var(--accent); padding: 1mm 3mm; background: #f6fafb; }
 </style>
 </head>
 <body>
 
-<!-- ─────────── 1쪽: 조사 규칙 · 판 기록 ─────────── -->
+<!-- ─────────── 1쪽: 한 사람 기록지(4장 뽑기) ─────────── -->
 <section class="page">
-  <div class="top"><span>서호팡팡수호대 · 밸런스팀 활동지 ①</span><span class="tag">친구 등급별 성공률 조사</span></div>
-  <h1>친구 등급별 성공률 조사 <small>1-5 어려움 · 어느 친구가 너무 세거나 약할까?</small></h1>
-  <div class="info">
-    <span>날짜 <span class="blank" style="width:22mm"></span></span>
-    <span>플레이어 <span class="blank" style="width:38mm"></span></span>
-    <span>기록원 <span class="blank" style="width:26mm"></span></span>
-    <span>계산원 <span class="blank" style="width:26mm"></span></span>
+  <div class="top"><span>서호팡팡수호대 · 밸런스팀 활동지 ① 내 기록지</span><span class="tag">친구 등급 실험 · 25판</span></div>
+  <h1>친구 등급 실험 <small>1-5 어려움 · 등급마다 5판씩, 모두 25판</small></h1>
+  <div class="info"><span>이름 <span class="blank" style="width:32mm"></span></span><span>날짜 <span class="blank" style="width:26mm"></span></span><span>팀 <span class="blank" style="width:28mm"></span></span></div>
+
+  <div>
+    <h2><span class="num">1</span>내가 맡은 친구 <span class="hint">하나에 ✔ 해요. 친구마다 계정이 정해져 있어요.</span></h2>
+    <div class="pets" style="margin-top:1.4mm">
+      <div><span class="chk"></span><b>꼬북이</b><small>계정 test1 · 생존</small></div>
+      <div><span class="chk"></span><b>야옹이</b><small>계정 test2 · 이동·공격 속도</small></div>
+      <div><span class="chk"></span><b>수달이</b><small>계정 test3 · 공격력·범위</small></div>
+      <div><span class="chk"></span><b>아기사슴</b><small>계정 test4 · 새싹 경험치·코인</small></div>
+    </div>
   </div>
 
-  <div class="box">
-    <b class="j">왜 조사하나요?</b> 느낌 말고 <b class="j">숫자</b>로 밸런스를 정하려고요. 같은 조건에서 <b class="j">친구와 등급만</b> 바꿔 보며 몇 번 중에 몇 번 성공했는지(성공률) 세어요.
-    <ol class="rules">
-      <li><b>조건 고정</b>: <b>1-5(쓰레기 대장 구출) · 어려움</b> 판만 기록해요. 6:00 안에 대왕을 정화하면 성공이에요.</li>
-      <li><b>출동 전 확인</b>: 친구 탭에서 함께 갈 친구를 고르고, 계정·친구·등급을 적어요.</li>
-      <li><b>한 판 = 한 줄</b>: 판이 끝나면 바로 적어요. 성공 <b>O</b>, 실패 <b>X</b>. 중간에 나가면 X.</li>
-      <li><b>5판 규칙</b>: 칸마다 5판 이상 모여야 결론을 내요. 5판이 안 되면 "아직 몰라요".</li>
-      <li><b>조건 지키기</b>: 시험 계정에서는 훈련·보급·파츠·장비를 바꾸지 않아요. 친구만 바꿔요.</li>
-    </ol>
+  <div class="steps">
+    <div><b>① 로그인</b>내 친구의 계정으로 들어가요. 비밀번호는 선생님께.</div>
+    <div><b>② 등급 고르기</b>"등급 바꾸기"를 눌러 아래 표의 등급을 골라요.</div>
+    <div><b>③ 출동</b>1-5 어려움 출동! 6:00 안에 대왕을 정화하면 성공.</div>
+    <div><b>④ 바로 적기</b>한 판이 끝나면 바로 칸에 성공 O, 실패 X.</div>
   </div>
 
-  <div class="fixed">
-    <span class="j">시험 계정</span>
-    <span class="acc"><b>qanormal</b> 노말</span><span class="acc"><b>qarare</b> 레어</span><span class="acc"><b>qaunique</b> 유니크</span><span class="acc"><b>qaepic</b> 에픽</span><span class="acc"><b>qalegend</b> 전설</span>
-    <span class="hint" style="flex-basis:100%;margin:0">계정마다 친구 4마리가 모두 그 등급이에요. 나머지는 모든 계정이 같아요: 훈련 공격·체력 40 · 이동 속도 20, 유니크 파츠 3개(불꽃병 기름통·물풍선 고무줄·번개 피뢰침), 야구복 장비 6칸(노말). 비밀번호는 선생님께 받아요.</span>
+  <div>
+    <h2><span class="num">2</span>기록표 <span class="hint">노말부터 차례로. 한 등급에 5판을 다 하면 다음 등급으로 바꿔요.</span></h2>
+    <table class="rec" style="margin-top:1.4mm">
+      <thead><tr><th style="width:24mm">등급</th><th>1판</th><th>2판</th><th>3판</th><th>4판</th><th>5판</th><th style="width:22mm">성공 수</th><th style="width:24mm">성공률</th></tr></thead>
+      <tbody>
+        <tr class="ex"><td>예시</td><td>O</td><td>X</td><td>X</td><td>O</td><td>X</td><td>2 / 5</td><td>40%</td></tr>
+        <tr><td class="g" style="background:var(--g0)">노말<small>힘 20%</small></td><td class="box"><i>1</i></td><td class="box"><i>2</i></td><td class="box"><i>3</i></td><td class="box"><i>4</i></td><td class="box"><i>5</i></td><td class="sum"><u></u> / 5</td><td class="rate"><u></u> %</td></tr>
+        <tr><td class="g" style="background:var(--g1)">레어<small>힘 40%</small></td><td class="box"><i>6</i></td><td class="box"><i>7</i></td><td class="box"><i>8</i></td><td class="box"><i>9</i></td><td class="box"><i>10</i></td><td class="sum"><u></u> / 5</td><td class="rate"><u></u> %</td></tr>
+        <tr><td class="g" style="background:var(--g2)">유니크<small>힘 60%</small></td><td class="box"><i>11</i></td><td class="box"><i>12</i></td><td class="box"><i>13</i></td><td class="box"><i>14</i></td><td class="box"><i>15</i></td><td class="sum"><u></u> / 5</td><td class="rate"><u></u> %</td></tr>
+        <tr><td class="g" style="background:var(--g3)">에픽<small>힘 80%</small></td><td class="box"><i>16</i></td><td class="box"><i>17</i></td><td class="box"><i>18</i></td><td class="box"><i>19</i></td><td class="box"><i>20</i></td><td class="sum"><u></u> / 5</td><td class="rate"><u></u> %</td></tr>
+        <tr><td class="g" style="background:var(--g4)">전설<small>힘 100%</small></td><td class="box"><i>21</i></td><td class="box"><i>22</i></td><td class="box"><i>23</i></td><td class="box"><i>24</i></td><td class="box"><i>25</i></td><td class="sum"><u></u> / 5</td><td class="rate"><u></u> %</td></tr>
+      </tbody>
+    </table>
   </div>
-
-  <table class="pets">
-    <thead><tr><th style="width:18mm">친구</th><th style="width:26mm">역할</th><th>전설일 때 능력 (최대)</th><th style="width:44mm">특수 능력 (유니크부터)</th></tr></thead>
-    <tbody>
-      <tr><td class="n">꼬북이</td><td>생존</td><td>받는 피해 -30% · 최대 체력 +30% · 1초마다 체력 2% 회복</td><td>등껍질 방패(보호막)</td></tr>
-      <tr><td class="n">야옹이</td><td>이동·공격 속도</td><td>이동 속도 +30% · 공격 속도 +50%</td><td>바람 질주(잠깐 공격 속도 +25%)</td></tr>
-      <tr><td class="n">수달이</td><td>공격력·범위</td><td>모든 스킬 피해 +50% · 스킬 범위 +30%</td><td>물방울 폭탄(주변 적 모두 피해)</td></tr>
-      <tr><td class="n">아기사슴</td><td>새싹 경험치·코인</td><td>새싹 경험치 +50% · 줍기 범위 +150% · 코인 +50%</td><td>새싹 자석(새싹 끌어오기)</td></tr>
-    </tbody>
-  </table>
-  <div class="grades">등급과 힘:
-    <span style="background:var(--g0)">노말 1장 · 전설의 20%</span><span style="background:var(--g1)">레어 20장 · 40%</span><span style="background:var(--g2)">유니크 40장 · 60%</span><span style="background:var(--g3)">에픽 80장 · 80%</span><span style="background:var(--g4)">전설 120장 · 100%</span>
-  </div>
-
-  <h2><span class="num">1</span>판 기록표 <span class="hint">한 판이 끝날 때마다 한 줄. 첫 줄은 예시예요.</span></h2>
-  <table class="log">
-    <thead><tr><th style="width:9mm">판</th><th style="width:22mm">플레이어</th><th style="width:24mm">계정</th><th style="width:20mm">친구</th><th style="width:17mm">등급</th><th style="width:14mm">결과<br>O / X</th><th style="width:18mm">실패 때<br>⏳ 남은 시간</th><th>메모 (무엇 때문에?)</th></tr></thead>
-    <tbody>
-      <tr class="ex"><td>예</td><td>민수</td><td>qarare</td><td>수달이</td><td>레어</td><td>O</td><td>-</td><td class="l">물방울 폭탄으로 적이 빨리 없어짐</td></tr>
-      <tr class="ex"><td>예</td><td>지우</td><td>qanormal</td><td>꼬북이</td><td>노말</td><td>X</td><td>1:20</td><td class="l">대왕 박치기에 3번 맞음</td></tr>
-      <tr><td>1</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
-      <tr><td>2</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
-      <tr><td>3</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
-      <tr><td>4</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
-      <tr><td>5</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
-      <tr><td>6</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
-      <tr><td>7</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
-      <tr><td>8</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
-      <tr><td>9</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
-      <tr><td>10</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
-      <tr><td>11</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
-      <tr><td>12</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
-      <tr><td>13</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
-      <tr><td>14</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
-    </tbody>
-  </table>
-  <div class="foot"><span>칸이 모자라면 뒷면 아래 빈 곳이나 새 종이에 이어서 적어요. 판 번호는 계속 이어 가요.</span><span>뒷면: 집계·분석·제안 →</span></div>
-</section>
-
-<!-- ─────────── 2쪽: 집계 · 그래프 · 분석 · 제안 ─────────── -->
-<section class="page">
-  <div class="top"><span>서호팡팡수호대 · 밸런스팀 활동지 ②</span><span>팀 이름 <span class="blank" style="width:30mm"></span></span></div>
-
-  <h2><span class="num">2</span>집계표: 친구 × 등급 <span class="hint">1쪽 기록표에서 세어 옮겨요. 성공률 = 성공 ÷ 도전 × 100</span></h2>
-  <table class="tally">
-    <thead><tr><th style="width:19mm">친구</th><th style="background:var(--g0);color:var(--ink)">노말</th><th style="background:var(--g1);color:var(--ink)">레어</th><th style="background:var(--g2);color:var(--ink)">유니크</th><th style="background:var(--g3);color:var(--ink)">에픽</th><th style="background:var(--g4);color:var(--ink)">전설</th></tr></thead>
-    <tbody>
-      <tr><td class="n">꼬북이</td>
-        <td><div class="c"><span>도전</span><u></u><span>판</span><span>성공</span><u></u><span>판</span><span class="r">성공률</span><u></u><span>%</span></div></td>
-        <td><div class="c"><span>도전</span><u></u><span>판</span><span>성공</span><u></u><span>판</span><span class="r">성공률</span><u></u><span>%</span></div></td>
-        <td><div class="c"><span>도전</span><u></u><span>판</span><span>성공</span><u></u><span>판</span><span class="r">성공률</span><u></u><span>%</span></div></td>
-        <td><div class="c"><span>도전</span><u></u><span>판</span><span>성공</span><u></u><span>판</span><span class="r">성공률</span><u></u><span>%</span></div></td>
-        <td><div class="c"><span>도전</span><u></u><span>판</span><span>성공</span><u></u><span>판</span><span class="r">성공률</span><u></u><span>%</span></div></td></tr>
-      <tr><td class="n">야옹이</td>
-        <td><div class="c"><span>도전</span><u></u><span>판</span><span>성공</span><u></u><span>판</span><span class="r">성공률</span><u></u><span>%</span></div></td>
-        <td><div class="c"><span>도전</span><u></u><span>판</span><span>성공</span><u></u><span>판</span><span class="r">성공률</span><u></u><span>%</span></div></td>
-        <td><div class="c"><span>도전</span><u></u><span>판</span><span>성공</span><u></u><span>판</span><span class="r">성공률</span><u></u><span>%</span></div></td>
-        <td><div class="c"><span>도전</span><u></u><span>판</span><span>성공</span><u></u><span>판</span><span class="r">성공률</span><u></u><span>%</span></div></td>
-        <td><div class="c"><span>도전</span><u></u><span>판</span><span>성공</span><u></u><span>판</span><span class="r">성공률</span><u></u><span>%</span></div></td></tr>
-      <tr><td class="n">수달이</td>
-        <td><div class="c"><span>도전</span><u></u><span>판</span><span>성공</span><u></u><span>판</span><span class="r">성공률</span><u></u><span>%</span></div></td>
-        <td><div class="c"><span>도전</span><u></u><span>판</span><span>성공</span><u></u><span>판</span><span class="r">성공률</span><u></u><span>%</span></div></td>
-        <td><div class="c"><span>도전</span><u></u><span>판</span><span>성공</span><u></u><span>판</span><span class="r">성공률</span><u></u><span>%</span></div></td>
-        <td><div class="c"><span>도전</span><u></u><span>판</span><span>성공</span><u></u><span>판</span><span class="r">성공률</span><u></u><span>%</span></div></td>
-        <td><div class="c"><span>도전</span><u></u><span>판</span><span>성공</span><u></u><span>판</span><span class="r">성공률</span><u></u><span>%</span></div></td></tr>
-      <tr><td class="n">아기사슴</td>
-        <td><div class="c"><span>도전</span><u></u><span>판</span><span>성공</span><u></u><span>판</span><span class="r">성공률</span><u></u><span>%</span></div></td>
-        <td><div class="c"><span>도전</span><u></u><span>판</span><span>성공</span><u></u><span>판</span><span class="r">성공률</span><u></u><span>%</span></div></td>
-        <td><div class="c"><span>도전</span><u></u><span>판</span><span>성공</span><u></u><span>판</span><span class="r">성공률</span><u></u><span>%</span></div></td>
-        <td><div class="c"><span>도전</span><u></u><span>판</span><span>성공</span><u></u><span>판</span><span class="r">성공률</span><u></u><span>%</span></div></td>
-        <td><div class="c"><span>도전</span><u></u><span>판</span><span>성공</span><u></u><span>판</span><span class="r">성공률</span><u></u><span>%</span></div></td></tr>
-    </tbody>
-  </table>
-  <div class="calc box" style="background:#fff">
-    <span class="j" style="color:var(--accent)">계산 예시</span>
-    <span>수달이 레어: 도전 6판, 성공 4판 → <code>4 ÷ 6 × 100 = 67%</code> (소수점은 반올림)</span>
-    <span>도전이 5판보다 적은 칸은 성공률 옆에 <b class="j">"?"</b>를 붙여요.</span>
-  </div>
+  <div class="calc"><b class="j" style="color:var(--accent)">성공률 구하기</b> 성공 수 ÷ 5 × 100 → 예) <code>2 ÷ 5 × 100 = 40%</code> · 5판이면 성공률은 0, 20, 40, 60, 80, 100% 중 하나예요.</div>
 
   <div class="two">
     <div>
-      <h2><span class="num">3</span>그래프 <span class="hint">같은 등급끼리 비교</span></h2>
-      <div style="font-size:9pt;margin:.8mm 0 1mm">비교한 등급: <span class="chk"></span>노말 <span class="chk"></span>레어 <span class="chk"></span>유니크 <span class="chk"></span>기타 <span class="blank" style="width:12mm"></span></div>
-      <div class="chart">
+      <h2><span class="num">3</span>그래프 <span class="hint">성공률만큼 막대를 칠해요 (한 칸 20%)</span></h2>
+      <div class="chart" style="margin-top:2mm">
         <div class="axis"><span>100%</span><span>80%</span><span>60%</span><span>40%</span><span>20%</span><span>0%</span></div>
-        <div class="col"><div class="area"></div><div class="lab">꼬북이</div></div>
-        <div class="col"><div class="area"></div><div class="lab">야옹이</div></div>
-        <div class="col"><div class="area"></div><div class="lab">수달이</div></div>
-        <div class="col"><div class="area"></div><div class="lab">아기사슴</div></div>
+        <div class="col"><div class="area"></div><div class="lab" style="background:var(--g0)">노말</div></div>
+        <div class="col"><div class="area"></div><div class="lab" style="background:var(--g1)">레어</div></div>
+        <div class="col"><div class="area"></div><div class="lab" style="background:var(--g2)">유니크</div></div>
+        <div class="col"><div class="area"></div><div class="lab" style="background:var(--g3)">에픽</div></div>
+        <div class="col"><div class="area"></div><div class="lab" style="background:var(--g4)">전설</div></div>
       </div>
-      <div class="hint" style="margin:1mm 0 0">점선 안을 성공률 높이만큼 색칠해요. 한 칸 = 10%.</div>
     </div>
     <div>
-      <h2><span class="num">4</span>분석 <span class="hint">빈칸을 숫자로 채워요</span></h2>
-      <div class="fill" style="margin-top:1.4mm">
-        <div>같은 등급(<u style="width:12mm"></u>)에서</div>
-        <div>• 성공률 1등: <u style="width:18mm"></u> <u style="width:10mm"></u>%</div>
-        <div>• 성공률 꼴등: <u style="width:18mm"></u> <u style="width:10mm"></u>%</div>
-        <div>• 두 친구의 차이: <u style="width:10mm"></u>%p (1등 − 꼴등)</div>
-        <div>• 네 친구 평균: <u style="width:10mm"></u>% (네 성공률 더하기 ÷ 4)</div>
-        <div>등급이 오르면 달라질까?</div>
-        <div>• <u style="width:16mm"></u> <u style="width:10mm"></u> <u style="width:8mm"></u>% → <u style="width:10mm"></u> <u style="width:8mm"></u>%</div>
-        <div>다른 이유도 있을까? <span class="chk"></span>스킬 카드 운 <span class="chk"></span>실력 차이</div>
-        <div><span class="chk"></span>판 수가 적음 <span class="chk"></span>없음 <span class="chk"></span>기타 <u style="width:18mm"></u></div>
+      <h2><span class="num">4</span>내가 알게 된 것</h2>
+      <div class="fill" style="margin-top:2mm">
+        <div>등급이 오를수록 성공률이</div>
+        <div><span class="chk"></span>올라갔어요 <span class="chk"></span>비슷했어요 <span class="chk"></span>들쭉날쭉했어요</div>
+        <div>가장 많이 달라진 곳: <u style="width:15mm"></u> → <u style="width:15mm"></u></div>
+        <div>(<u style="width:10mm"></u>% → <u style="width:10mm"></u>%)</div>
+        <div>실패한 이유는 주로 <span class="chk"></span>빨리 쓰러짐</div>
+        <div><span class="chk"></span>대왕을 6분 안에 못 잡음 <span class="chk"></span>기타</div>
       </div>
     </div>
   </div>
 
-  <h2><span class="num">5</span>밸런스 제안 <span class="hint">근거(성공률·판 수)가 없는 제안은 적지 않아요</span></h2>
-  <div class="ruler"><b class="j">판단 기준</b> 같은 등급에서 한 친구의 성공률이 네 친구 평균보다 <b class="j">20%p 넘게 높으면 "너무 셈"</b>, <b class="j">20%p 넘게 낮으면 "너무 약함"</b>, 그 사이면 "알맞음". 도전이 5판보다 적으면 판단하지 않아요.</div>
-  <table class="prop">
-    <thead><tr><th style="width:19mm" class="h">친구</th><th style="width:40mm" class="h">판단</th><th class="h">근거 (등급 · 성공률 · 도전 판 수 · 평균)</th><th style="width:62mm" class="h">바꾸자 (능력 · 지금 → 바꿀 숫자)</th></tr></thead>
-    <tbody>
-      <tr style="color:var(--ex);font-style:italic;background:#f7f9fa"><td style="text-align:center">예) 수달이</td><td>너무 셈</td><td>레어 · 90% · 10판 · 평균 55%</td><td>스킬 피해 +50% → +40%</td></tr>
-      <tr><td></td><td><span class="chk"></span>셈 <span class="chk"></span>알맞음 <span class="chk"></span>약함</td><td></td><td></td></tr>
-      <tr><td></td><td><span class="chk"></span>셈 <span class="chk"></span>알맞음 <span class="chk"></span>약함</td><td></td><td></td></tr>
-      <tr><td></td><td><span class="chk"></span>셈 <span class="chk"></span>알맞음 <span class="chk"></span>약함</td><td></td><td></td></tr>
-    </tbody>
-  </table>
+  <div class="foot"><span>등급을 바꾼 뒤 로비의 "지금 등급"이 기록표 등급과 같은지 꼭 확인해요.</span><span>다 하면 팀 정리(뒷장)로 →</span></div>
+</section>
 
-  <div class="box" style="background:#fff">
-    <b class="j">내기 전 점검</b>
-    <div class="self" style="margin-top:.6mm">
-      <span><span class="chk"></span>모든 판을 1-5 어려움으로만 했어요</span>
-      <span><span class="chk"></span>기록표 줄 수 = 집계표 도전 수 합계</span>
-      <span><span class="chk"></span>성공률을 계산기로 한 번 더 확인했어요</span>
-      <span><span class="chk"></span>5판 미만 칸에 "?"를 붙였어요</span>
-      <span><span class="chk"></span>제안마다 근거 숫자를 적었어요</span>
+<!-- ─────────── 2쪽: 팀 정리(1장) ─────────── -->
+<section class="page">
+  <div class="top"><span>서호팡팡수호대 · 밸런스팀 활동지 ② 팀 정리</span><span>팀 <span class="blank" style="width:30mm"></span></span></div>
+  <h1>팀 정리: 친구 × 등급 성공률 <small>네 사람의 기록표를 모아요</small></h1>
+
+  <div>
+    <h2><span class="num">5</span>성공률 모으기 <span class="hint">각자 기록표의 성공률(%)을 옮겨 적어요</span></h2>
+    <table class="team" style="margin-top:1.4mm">
+      <thead><tr><th style="width:30mm">친구 (맡은 사람)</th><th style="background:var(--g0);color:var(--ink)">노말</th><th style="background:var(--g1);color:var(--ink)">레어</th><th style="background:var(--g2);color:var(--ink)">유니크</th><th style="background:var(--g3);color:var(--ink)">에픽</th><th style="background:var(--g4);color:var(--ink)">전설</th></tr></thead>
+      <tbody>
+        <tr><td class="n">꼬북이<small>(<span class="blank" style="width:14mm;height:3.6mm"></span>)</small></td><td><u></u>%</td><td><u></u>%</td><td><u></u>%</td><td><u></u>%</td><td><u></u>%</td></tr>
+        <tr><td class="n">야옹이<small>(<span class="blank" style="width:14mm;height:3.6mm"></span>)</small></td><td><u></u>%</td><td><u></u>%</td><td><u></u>%</td><td><u></u>%</td><td><u></u>%</td></tr>
+        <tr><td class="n">수달이<small>(<span class="blank" style="width:14mm;height:3.6mm"></span>)</small></td><td><u></u>%</td><td><u></u>%</td><td><u></u>%</td><td><u></u>%</td><td><u></u>%</td></tr>
+        <tr><td class="n">아기사슴<small>(<span class="blank" style="width:14mm;height:3.6mm"></span>)</small></td><td><u></u>%</td><td><u></u>%</td><td><u></u>%</td><td><u></u>%</td><td><u></u>%</td></tr>
+        <tr class="best"><td class="n">1등 친구</td><td></td><td></td><td></td><td></td><td></td></tr>
+        <tr class="best"><td class="n">꼴등 친구</td><td></td><td></td><td></td><td></td><td></td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div>
+    <h2><span class="num">6</span>우리 팀 결론 <span class="hint">표를 보고 빈칸을 채워요</span></h2>
+    <div class="fill" style="margin-top:2mm">
+      <div>• 가장 센 친구: <u style="width:24mm"></u> — 어느 등급에서? <u style="width:20mm"></u> (성공률 <u style="width:12mm"></u>%)</div>
+      <div>• 가장 약한 친구: <u style="width:24mm"></u> — 어느 등급에서? <u style="width:20mm"></u> (성공률 <u style="width:12mm"></u>%)</div>
+      <div>• 전설인데도 성공률이 낮은 친구: <u style="width:24mm"></u> / 노말인데도 높은 친구: <u style="width:24mm"></u></div>
+      <div>• 모든 친구가 0%였던 등급이 있나요? <span class="chk"></span>있어요(<u style="width:18mm"></u>) <span class="chk"></span>없어요</div>
     </div>
   </div>
 
-  <div class="foot"><span>능력 숫자는 밸런스 회의 자료(엑셀) "친구(펫)" 시트에서 확인해요.</span><span>선생님 확인 <span class="chk" style="margin:0 0 0 1mm"></span></span></div>
+  <div class="ruler"><b class="j">판단 기준</b> 같은 등급에서 한 친구만 다른 친구들보다 <b class="j">40%p 넘게 높으면 "너무 셈"</b>, <b class="j">40%p 넘게 낮으면 "너무 약함"</b>이에요. (5판씩이라 한두 판 차이는 운일 수 있어요.)</div>
+
+  <div>
+    <h2><span class="num">7</span>밸런스 제안 <span class="hint">숫자 근거가 있어야 해요</span></h2>
+    <table class="prop" style="margin-top:1.4mm">
+      <thead><tr><th style="width:26mm">친구</th><th style="width:38mm">어떻게?</th><th>근거 (등급 · 성공률)</th></tr></thead>
+      <tbody>
+        <tr class="ex"><td>예) 수달이</td><td>능력을 조금 낮춰요</td><td>에픽 100% · 다른 친구들은 20~40%</td></tr>
+        <tr><td></td><td><span class="chk"></span>높여요 <span class="chk"></span>낮춰요</td><td></td></tr>
+        <tr><td></td><td><span class="chk"></span>높여요 <span class="chk"></span>낮춰요</td><td></td></tr>
+        <tr><td></td><td><span class="chk"></span>높여요 <span class="chk"></span>낮춰요</td><td></td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="foot"><span>친구 능력 숫자는 밸런스 회의 자료(엑셀) "친구(펫)" 시트에서 볼 수 있어요.</span><span>선생님 확인 <span class="chk" style="margin:0 0 0 1mm"></span></span></div>
 </section>
 
 </body>

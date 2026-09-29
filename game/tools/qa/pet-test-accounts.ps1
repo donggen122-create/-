@@ -1,10 +1,10 @@
-# Pet-grade test accounts for the balance team (2026-09-29, 1-5 hard).
-# The teacher signs up these IDs in the game first (any password). This script then sets each one with the admin API:
-#   qanormal=Normal, qarare=Rare, qaunique=Unique, qaepic=Epic, qalegend=Legend pets (all 4 pets at that grade);
-#   everything else identical (hard-ready baseline: training 40/40/20, 3 unique parts Lv1, ranged gear x6 normal, hard mode).
-# Uses ADMIN_KEY from server/.dev.vars (never printed). Re-running resets the accounts to the same baseline.
-# Usage: powershell -File game\tools\qa\pet-test-accounts.ps1 [-Passes 20] [-Base https://...]
-param([string]$Base = "https://seoho-pangpang.seoho-pangpang-server.workers.dev", [int]$Passes = 0)
+# Balance-team test accounts (2026-09-29): the teacher signs up test1..test4 in the game, then this script turns on test mode
+# with the admin API: test1=turtle, test2=cat, test3=otter, test4=deer (one pet each, grade chosen in the lobby by the student),
+# 1-5 hard only, training 20, melee gear x6 rare, no parts, everything else locked. Test accounts also get +40 passes per game day.
+# Re-running resets them to the same baseline (grade back to -Grade). -Training / -GearGrade change the baseline for all four.
+# Uses ADMIN_KEY from server/.dev.vars (never printed).
+# Usage: powershell -File game\tools\qa\pet-test-accounts.ps1 [-Training 20] [-GearGrade 1] [-Grade 0] [-Base https://...]
+param([string]$Base = "https://seoho-pangpang.seoho-pangpang-server.workers.dev", [int]$Training = 20, [int]$GearGrade = 1, [int]$Grade = 0)
 $ErrorActionPreference = "Stop"
 $root = Split-Path (Split-Path (Split-Path $PSScriptRoot -Parent) -Parent) -Parent
 $vars = Join-Path $root "server\.dev.vars"
@@ -17,15 +17,13 @@ function Post($path, $obj) {
   try { $r = Invoke-WebRequest -Uri "$Base/api/admin/$path" -Method Post -Headers $hdr -ContentType "application/json; charset=utf-8" -Body $body -UseBasicParsing -TimeoutSec 30; return @{ status = [int]$r.StatusCode; body = ([Text.Encoding]::UTF8.GetString($r.RawContentStream.ToArray()) | ConvertFrom-Json) } }
   catch { $resp = $_.Exception.Response; if ($resp) { $sr = New-Object IO.StreamReader($resp.GetResponseStream(), [Text.Encoding]::UTF8); return @{ status = [int]$resp.StatusCode; body = $sr.ReadToEnd() } } throw }
 }
-$accounts = @(@('qanormal', 0), @('qarare', 1), @('qaunique', 2), @('qaepic', 3), @('qalegend', 4))
+$accounts = @(@('test1', 'turtle'), @('test2', 'cat'), @('test3', 'otter'), @('test4', 'deer'))
 foreach ($a in $accounts) {
-  $r = Post "test-profile" @{ id = $a[0]; petGrade = $a[1] }
+  $r = Post "test-profile" @{ id = $a[0]; testPet = $a[1]; grade = $Grade; training = $Training; gearGrade = $GearGrade }
   if ($r.status -eq 200) {
-    $pc = $r.body.petCopies; $t = $r.body.training
-    $msg = "{0,-10} OK   petGrade={1} cards={2} training={3}/{4}/{5} parts={6}" -f $a[0], $a[1], $pc.turtle, $t.attack, $t.hp, $t.speed, $r.body.parts
-    if ($Passes -gt 0) { $g = Post "grant-passes" @{ id = $a[0]; passes = $Passes; requestId = [guid]::NewGuid().ToString(); note = "pet balance test" }; $msg += "  passes+" + $(if ($g.status -eq 200) { $Passes } else { "FAIL " + $g.status }) }
-    Write-Host $msg
-  } elseif ($r.status -eq 404) { Write-Host ("{0,-10} NOT SIGNED UP YET" -f $a[0]) }
-  else { Write-Host ("{0,-10} FAIL {1} {2}" -f $a[0], $r.status, $r.body) }
+    $t = $r.body.training
+    Write-Host ("{0,-6} OK  pet={1} cards={2} training={3}/{4}/{5} parts={6} testMode={7}" -f $a[0], $a[1], ($r.body.petCopies.PSObject.Properties | ForEach-Object { $_.Value }), $t.attack, $t.hp, $t.speed, $r.body.parts, ($r.body.testMode | ConvertTo-Json -Compress))
+  } elseif ($r.status -eq 404) { Write-Host ("{0,-6} NOT SIGNED UP YET" -f $a[0]) }
+  else { Write-Host ("{0,-6} FAIL {1} {2}" -f $a[0], $r.status, $r.body) }
 }
 $key = $null; $hdr = $null

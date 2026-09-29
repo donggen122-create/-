@@ -1,4 +1,4 @@
-import { VERSION, SKILLS, COMBOS, SUPPORTS, runParts, action, completeRun, stageUnlocked, difficultyOf, hardGate, hardGateText, durationFor, superTestProfile, petTestProfile, TEST_ACCOUNT_RE, needsPetMigration, migratePets } from '../../game/src/rework-core.js';
+import { VERSION, SKILLS, COMBOS, SUPPORTS, runParts, action, completeRun, stageUnlocked, difficultyOf, hardGate, hardGateText, durationFor, superTestProfile, testModeProfile, PETS, TEST_ACCOUNT_RE, needsPetMigration, migratePets } from '../../game/src/rework-core.js';
 import { migrateLegacy } from './legacy-migration.js';
 import { migrateProfileV2, needsPartsRepair, repairObsoleteParts, PARTS_FIX_SNAPSHOT } from './profile-migration-v2.js';
 
@@ -22,6 +22,13 @@ export async function grantPassEvent(db,id,now=Date.now()){
   const day=dayKey(now);
   await db.prepare('INSERT OR IGNORE INTO play_admin_grants(request_id,user_id,day,passes,gold,note,created_at) VALUES(?,?,?,?,0,?,?)').bind(`event-${ev.id}-${day}`,id,day,ev.bonus,ev.note,now).run();
   return ev;
+}
+// 시험 계정(testMode, 관리자가 켬): 게임 날짜마다 이용권 +40장(밸런스팀이 하루에 20판 넘게 해도 되게). 요청 번호로 하루 한 번만.
+export const TEST_MODE_PASSES=40;
+async function grantTestPasses(db,id,profile,now=Date.now()){
+  if(!profile?.testMode)return;
+  const day=dayKey(now);
+  await db.prepare('INSERT OR IGNORE INTO play_admin_grants(request_id,user_id,day,passes,gold,note,created_at) VALUES(?,?,?,?,0,?,?)').bind(`test-${id}-${day}`,id,day,TEST_MODE_PASSES,'시험 계정 이용권',now).run();
 }
 const reply=(data,status=200)=>Response.json(data,{status,headers:{'Cache-Control':'no-store'}});
 const uuid=s=>typeof s==='string'&&/^[a-zA-Z0-9_-]{12,80}$/.test(s);
@@ -94,6 +101,7 @@ export async function guardianAPI(request,env,user,path,now=Date.now()){
   if(path==='/guardian'&&method==='GET'){
     await expireOldRuns(db,id,now);
     await grantPassEvent(db,id,now);   // 이벤트 날이면 오늘 이벤트 이용권(하루 한 번)
+    await grantTestPasses(db,id,(await getProfile(db,id)).profile,now);   // 시험 계정 이용권
     const active=await db.prepare("SELECT id,stage,started_at FROM play_runs WHERE user_id=? AND status='active'").bind(id).first();
     return reply({...await status(db,id,now),active});
   }
@@ -125,6 +133,8 @@ export async function guardianAPI(request,env,user,path,now=Date.now()){
     if(old)return old.status==='active'?reply({runId:old.id,duration:old.duration,...await status(db,id,now)}):reply({error:'이미 끝난 도전이에요.'},409);
     const {profile}=await getProfile(db,id);
     if(!stageUnlocked(profile,b.stage))return reply({error:'앞 단계를 먼저 성공해 주세요.'},400);
+    if(profile.testMode&&(b.stage!==profile.testMode.stage||difficultyOf(profile)!==profile.testMode.difficulty))return reply({error:'시험 계정은 1-5 어려움만 할 수 있어요.',code:'TEST_MODE'},409);
+    await grantTestPasses(db,id,profile,now);
     if(difficultyOf(profile)==='hard'){const g=hardGate(profile,b.stage);if(!g.open)return reply({error:`어려움은 아직 잠겨 있어요 · ${hardGateText(g)}`,code:'HARD_LOCKED',gate:g},409);}   // 어려움 최소 기준(HARD_MIN)
     await grantPassEvent(db,id,now);
     const duration=durationFor(profile,b.stage),day=dayKey(now);
@@ -179,7 +189,7 @@ export async function guardianAdmin(request,env,sub,method,now=Date.now()){
     const rows=(await db.prepare('SELECT u.id,u.display_id,d.base_used,d.bonus_granted,d.bonus_used FROM users u LEFT JOIN play_days d ON d.user_id=u.id AND d.day=? ORDER BY u.created_at').bind(dayKey(now)).all()).results;
     const users=rows.map(u=>{const baseRemaining=10-(u.base_used||0),bonusRemaining=(u.bonus_granted||0)-(u.bonus_used||0);return {id:u.id,display_id:u.display_id,baseRemaining,bonusRemaining,remaining:baseRemaining+bonusRemaining,resetAt:nextReset(now)};});
     // 이벤트 자동 지급(request_id event-…)은 학생마다 하루 한 줄씩 생기므로 기록 목록에서 뺀다
-    const audit=(await db.prepare("SELECT request_id,user_id,day,passes,gold,note,created_at FROM play_admin_grants WHERE request_id NOT LIKE 'event-%' ORDER BY created_at DESC LIMIT 100").all()).results;
+    const audit=(await db.prepare("SELECT request_id,user_id,day,passes,gold,note,created_at FROM play_admin_grants WHERE request_id NOT LIKE 'event-%' AND request_id NOT LIKE 'test-%' ORDER BY created_at DESC LIMIT 100").all()).results;
     // 보급권 지급 기록을 같은 요청(요청 번호·학생)에 합친다. 보급권만 준 요청은 새 줄
     const gifts=(await db.prepare('SELECT request_id,user_id,gifts,note,created_at FROM play_admin_gift_grants ORDER BY created_at DESC LIMIT 100').all()).results;
     for(const a of audit)a.gifts=0;
@@ -192,15 +202,16 @@ export async function guardianAdmin(request,env,sub,method,now=Date.now()){
   if(sub==='test-profile'&&method==='POST'){
     let b;try{b=await request.json();}catch{return reply({error:'입력 형식을 확인해 주세요.'},400);}
     const id=String(b.id||'').toLowerCase();
-    if(!TEST_ACCOUNT_RE.test(id))return reply({error:"시험 계정(아이디가 'qa'로 시작)만 바꿀 수 있어요."},400);
+    if(!TEST_ACCOUNT_RE.test(id))return reply({error:"시험 계정(아이디가 'qa'로 시작하거나 test+숫자)만 바꿀 수 있어요."},400);
     if(!await db.prepare('SELECT id FROM users WHERE id=?').bind(id).first())return reply({error:'없는 아이디예요.'},404);
     const {profile}=await getProfile(db,id);
-    // petGrade(0 노말~4 전설)가 있으면 친구 등급 시험 계정(친구 등급만 다르고 나머지는 같게), 없으면 슈퍼 계정
-    const petGrade=b.petGrade===undefined||b.petGrade===null?null:Number(b.petGrade);
-    if(petGrade!==null&&!(Number.isInteger(petGrade)&&petGrade>=0&&petGrade<=4))return reply({error:'petGrade는 0(노말)~4(전설)예요.'},400);
-    const next=petGrade!==null?petTestProfile(profile,{...(Number(b.training)?{training:Number(b.training)}:{}),petGrade}):superTestProfile(profile,{training:Number(b.training)||100,copies:Number(b.copies)||80,level:Number(b.level)||10});
+    // testPet(turtle·cat·otter·deer)이 있으면 밸런스 시험 계정(친구 1마리 · 등급 grade 0~4 · 1-5 어려움만 · 다른 조작 막음), 없으면 슈퍼 계정
+    if(b.testPet!==undefined&&!Object.hasOwn(PETS,b.testPet))return reply({error:'testPet은 turtle·cat·otter·deer 중 하나예요.'},400);
+    const grade=b.grade===undefined?0:Number(b.grade);
+    if(!(Number.isInteger(grade)&&grade>=0&&grade<=4))return reply({error:'grade는 0(노말)~4(전설)예요.'},400);
+    const next=b.testPet!==undefined?testModeProfile(profile,{pet:b.testPet,grade,...(Number.isInteger(b.training)&&b.training>=1&&b.training<=100?{training:b.training}:{}),...(Number.isInteger(b.gearGrade)&&b.gearGrade>=0&&b.gearGrade<=4?{gearGrade:b.gearGrade}:{})}):superTestProfile(profile,{training:Number(b.training)||100,copies:Number(b.copies)||80,level:Number(b.level)||10});
     await db.prepare('UPDATE guardian_profiles SET state=?,revision=revision+1 WHERE user_id=?').bind(JSON.stringify(next),id).run();
-    return reply({ok:true,id,training:next.training,parts:Object.keys(next.parts).length,stages:Object.keys(next.stages).filter(k=>next.stages[k].cleared).length,petCopies:next.petCopies});
+    return reply({ok:true,id,training:next.training,parts:Object.keys(next.parts).length,stages:Object.keys(next.stages).filter(k=>next.stages[k].cleared).length,petCopies:next.petCopies,testMode:next.testMode||null});
   }
   // 캐릭터(성별) 바꾸기: 가입 때 고정된 캐릭터를 선생님이 한 번 바꿔 준다 — 장비가 하나도 없을 때만(장비는 성별마다 달라서)
   if(sub==='set-hero'&&method==='POST'){

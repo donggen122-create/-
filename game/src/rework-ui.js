@@ -76,12 +76,34 @@ export class GuardianUI {
   render(){
     const {profile:p,passes,user,error}=this.state();
     if(!p){this.root.innerHTML=`<div class="sg-loading"><h1>수호대 기록을 불러오는 중</h1><p>${esc(error||'잠시만 기다려 주세요.')}</p><button data-do="refresh">다시 확인</button></div>`;return;}
+    if(p.testMode){this.renderTest(p,passes,user);return;}   // 밸런스 시험 계정: 전용 로비(친구 등급 바꾸기 · 1-5 어려움 출동만)
     if(!R.stageUnlocked(p,this.stage))this.stage='CH01';
     const pendingPet=R.pendingPet(p),pendingPart=R.pendingPart(p);
     this.root.innerHTML=`<header class="sg-header"><div class="sg-brand">${icon('element_wind')}<span>서호팡팡<small>수호대</small></span></div><div class="sg-wallet"><button data-do="passes" aria-label="이용권 안내">${icon('pass')}<b>${passes?.remaining??'…'}</b><span>${passes?.event?'추석 2배':'이용권'}</span></button><div>${icon('coin')}<b>${p.coins.toLocaleString()}</b><span>코인</span></div><button data-tab="parts" aria-label="파츠 보급과 보급권">${icon('gift')}<b>${p.gifts}</b><span>보급권</span></button></div><button class="sg-account" data-do="account" aria-label="계정과 캐릭터 선택">${esc(user)} 님</button></header>
     <main class="sg-main" aria-live="polite">${this.nextTask(p)}${this[this.tab](p,passes)}</main>
     <nav class="sg-nav" aria-label="수호대 메뉴">${[['adventure','map','모험'],['training','mode_melee','훈련'],['parts','part_PART_F1','파츠'],['gear','shield','장비'],['friends','heart','친구'],['book','book','도감']].map(([id,im,label])=>`<button data-tab="${id}" class="${this.tab===id?'on':''}" aria-current="${this.tab===id?'page':'false'}">${icon(im)}<span>${label}${id==='parts'&&p.gifts>0?` <b class="sg-count-badge" aria-label="보급권 ${p.gifts}장">${p.gifts}</b>`:''}${id==='gear'&&this.gearAlert(p)?' <b class="sg-count-badge" aria-label="장비 할 일">!</b>':''}${id==='friends'&&pendingPet?' <b class="sg-count-badge" aria-label="친구 고르기">!</b>':''}</span></button>`).join('')}</nav>`;
     if(this.busy)this.root.querySelectorAll('button,select').forEach(b=>b.disabled=true);
+  }
+  // 밸런스 시험 계정 로비(2026-09-29): 친구 1마리의 등급만 바꾸고 1-5 어려움만 출동. 다른 조작은 서버도 막는다(rework-core action).
+  renderTest(p,passes,user){
+    const pet=p.testMode.pet,d=R.PETS[pet],g=R.testGrade(p),rate=R.PET_GRADE_RATE[Math.max(0,g)];this.stage=p.testMode.stage;
+    this.root.innerHTML=`<header class="sg-header"><div class="sg-brand">${icon('element_wind')}<span>서호팡팡<small>시험 계정</small></span></div><div class="sg-wallet"><button data-do="passes" aria-label="이용권 안내">${icon('pass')}<b>${passes?.remaining??'…'}</b><span>이용권</span></button></div><button class="sg-account" data-do="account" aria-label="계정">${esc(user)} 님</button></header>
+    <main class="sg-main sg-test" aria-live="polite">
+      <div class="sg-heading"><div><span class="sg-eyebrow">밸런스팀 시험 계정</span><h1>친구 등급별 성공률 조사</h1><p>1-5 쓰레기 대장 구출 · 어려움만 할 수 있어요. 등급을 고르고 5판씩 해요.</p></div></div>
+      <section class="sg-test-card">
+        <div class="sg-test-pet">${petImage(pet)}<div><small>내가 맡은 친구</small><h2>${esc(d.name)}</h2><span>${esc(d.role)}</span></div></div>
+        <div class="sg-test-grade"><small>지금 등급</small><b class="sg-grade-${g}">${esc(R.GRADE_NAMES[g]??'없음')}</b><span>전설의 ${Math.round(rate*100)}% 힘 · ${esc(R.petBuffText(pet,g))}</span><button class="sg-primary" data-do="test-grade">등급 바꾸기</button></div>
+      </section>
+      <section class="sg-test-rules"><h3>모든 시험 계정이 같은 조건</h3><ul><li>1-5 어려움만 출동 · 6:00 안에 대왕을 정화하면 성공</li><li>훈련 공격·체력·이동 속도 ${p.training.attack}단계</li><li>근거리 장비 6칸 ${esc(R.GRADE_NAMES[R.gearGrade(p,p.equippedGear?.weapon)]??'')} · 파츠 없음</li><li>훈련·보급·장비·파츠는 바꿀 수 없어요. 친구 등급만 바꿔요.</li></ul></section>
+      <select id="sg-difficulty" style="display:none" aria-hidden="true"><option value="hard" selected>어려움</option></select><select id="sg-weapon-mode" style="display:none" aria-hidden="true"><option value="melee" selected>근거리</option></select>
+      <button class="sg-primary sg-start sg-test-start" data-do="start">1-5 어려움 출동 · ${esc(d.name)} ${esc(R.GRADE_NAMES[g]??'')}</button>
+    </main>`;
+    if(this.busy)this.root.querySelectorAll('button,select').forEach(b=>b.disabled=true);
+  }
+  testGradeDialog(){
+    const p=this.state().profile;if(!p?.testMode)return;const pet=p.testMode.pet,now=R.testGrade(p);
+    this.openDialog(`<h2>${esc(R.PETS[pet].name)} 등급 고르기</h2><p>고르면 바로 바뀌어요. 기록표에 적은 등급과 같은지 꼭 확인해요.</p><div class="sg-test-grades">${R.GRADE_NAMES.map((n,i)=>`<button data-test-grade="${i}" class="sg-grade-${i} ${i===now?'on':''}"><b>${esc(n)}</b><small>카드 ${R.CARD_COPIES[i]}장 · 힘 ${Math.round(R.PET_GRADE_RATE[i]*100)}%</small></button>`).join('')}</div><button data-close>닫기</button>`);
+    this.dialog.querySelectorAll('[data-test-grade]').forEach(b=>b.onclick=async()=>{this.dialog.close();await this.perform({kind:'test-pet-grade',grade:Number(b.dataset.testGrade)});});
   }
   nextTask(p){
     const available=R.selectableParts(p).length;
@@ -437,6 +459,7 @@ export class GuardianUI {
     if(b.dataset.gearDetail){this.gearDetail(b.dataset.gearDetail);return;}
     if(b.dataset.gearSlot){this.gearSlotDialog(b.dataset.gearSlot);return;}
     if(b.dataset.gearSet){this.gearSetDialog(b.dataset.gearSet);return;}
+    if(b.dataset.do==='test-grade'){this.testGradeDialog();return;}
     if(b.dataset.do==='gear-bag'){this.gearBagDialog();return;}
     if(b.dataset.do==='hard-ready'){this.hardReadyDialog(this.stage);return;}
     if(b.dataset.do==='hard-gate'){this.hardGateDialog(this.stage);return;}

@@ -18,10 +18,11 @@ const OWNER = { id: 'test-school', pw: 'owner-secret-pw' }, TEACHER = { id: 'tes
 const makeEnv = async (extra = {}) => { const DB = new D1(); await migrate(DB); return envWith(DB, extra); };
 const envWith = (DB, extra) => ({ DB, ADMIN_KEY: 'test-only-admin-key-0123456789', ADMIN_ID: OWNER.id, ADMIN_PW: OWNER.pw, TEACHER_ID: TEACHER.id, TEACHER_PW: TEACHER.pw, ASSETS: { fetch: async () => new Response('', { status: 404 }) }, ...extra });
 let ipSeq = 0;
-async function call(env, path, { body, token, key, method, ip } = {}) {
+async function call(env, path, { body, token, key, method, ip, cookie } = {}) {
   const headers = { 'Content-Type': 'application/json', 'CF-Connecting-IP': ip || `10.0.0.${(ipSeq++ % 200) + 1}` };
   if (token) headers['X-Admin-Token'] = token;
   if (key) headers['X-Admin-Key'] = key;
+  if (cookie) headers.Authorization = 'Bearer ' + cookie;   // cookie = 로그인 토큰(시험 계정 검사)
   const res = await worker.fetch(new Request('http://local/api' + path, { method: method || (body ? 'POST' : 'GET'), headers, body: body ? JSON.stringify(body) : undefined }), env);
   let data = {}; try { data = await res.json(); } catch {}
   return { status: res.status, ...data };
@@ -106,28 +107,37 @@ test('시험용 슈퍼 계정: 관리자만, qa로 시작하는 계정만 모든
   assert.equal(env.DB.sql.prepare("SELECT COUNT(*) c FROM guardian_profiles WHERE user_id='student1' AND state LIKE '%testAccount%'").get().c, 0);
 });
 
-test('친구 등급 시험 계정: petGrade 0~4면 친구 4마리만 그 등급, 훈련·파츠·장비는 모두 같게(어려움 권장치, 1-5 어려움 입장 가능)', async () => {
+test('밸런스 시험 계정: 관리자가 test1~4에 친구 1마리를 주면 등급만 바꿀 수 있고 1-5 어려움만 출동, 이용권 +40', async () => {
   const env = await makeEnv();
-  for (const id of ['qanormal', 'qalegend', 'student2']) assert.equal((await call(env, '/register', { body: { id, pw: 'pw-1234' } })).status, 200);
+  for (const id of ['test1', 'test4', 'student2']) assert.equal((await call(env, '/register', { body: { id, pw: 'pw-1234' } })).status, 200);
   const owner = (await call(env, '/admin/login', { body: OWNER })).token, teacher = (await call(env, '/admin/login', { body: TEACHER })).token;
-  assert.equal((await call(env, '/admin/test-profile', { token: teacher, body: { id: 'qanormal', petGrade: 0 } })).status, 403);
-  assert.equal((await call(env, '/admin/test-profile', { token: owner, body: { id: 'student2', petGrade: 0 } })).status, 400, '학생 계정은 절대 바꾸지 않는다');
-  assert.equal((await call(env, '/admin/test-profile', { token: owner, body: { id: 'qanormal', petGrade: 5 } })).status, 400);
+  assert.equal((await call(env, '/admin/test-profile', { token: teacher, body: { id: 'test1', testPet: 'turtle' } })).status, 403);
+  assert.equal((await call(env, '/admin/test-profile', { token: owner, body: { id: 'student2', testPet: 'turtle' } })).status, 400, '학생 계정은 절대 바꾸지 않는다');
+  assert.equal((await call(env, '/admin/test-profile', { token: owner, body: { id: 'test1', testPet: 'dragon' } })).status, 400);
+  assert.equal((await call(env, '/admin/test-profile', { token: owner, body: { id: 'test1', testPet: 'turtle', grade: 7 } })).status, 400);
   const state = (id) => JSON.parse(env.DB.sql.prepare('SELECT state FROM guardian_profiles WHERE user_id=?').get(id).state);
-  for (const [id, g, n] of [['qanormal', 0, 1], ['qalegend', 4, 120]]) {
-    const r = await call(env, '/admin/test-profile', { token: owner, body: { id, petGrade: g } });
-    assert.equal(r.status, 200); assert.deepEqual(r.training, { attack: 40, hp: 40, speed: 20 }); assert.equal(r.parts, 3);
-    const p = state(id);
-    assert.deepEqual(Object.values(p.petCopies), [n, n, n, n]); assert.equal(p.pets.length, 4);
-    assert.deepEqual(p.equippedParts, ['PART_F1', 'PART_W1', 'PART_L1']); assert.ok(p.equippedParts.every((id) => p.parts[id].copies === 7 && p.parts[id].level === 1));
-    assert.equal(Object.keys(p.equippedGear).length, 6); assert.ok(Object.values(p.equippedGear).every((id) => p.gear[id]?.grade === 0 && /_ranged_/.test(id)));
-    assert.ok(['CH01', 'CH02', 'CH03', 'CH04', 'CH05'].every((s) => p.stages[s].cleared) && !p.stages.CH06?.cleared);
-    assert.equal(p.coins, 0); assert.equal(p.gifts, 0); assert.equal(p.difficulty, 'hard'); assert.ok(p.heroLocked && p.testAccount);
-    assert.ok(hardGate(p, 'CH05').open, '1-5 어려움에 들어갈 수 있다');
-  }
-  const a = state('qanormal'), b = state('qalegend');   // 두 계정의 차이는 친구 카드 수뿐
-  for (const k of ['training', 'parts', 'equippedParts', 'gear', 'equippedGear', 'stages', 'coins', 'gifts', 'difficulty', 'weaponMode']) assert.deepEqual(a[k], b[k], k);
-  assert.equal(env.DB.sql.prepare("SELECT COUNT(*) c FROM guardian_profiles WHERE user_id='student2' AND state LIKE '%testAccount%'").get().c, 0);
+  const r1 = await call(env, '/admin/test-profile', { token: owner, body: { id: 'test1', testPet: 'turtle' } });
+  const r4 = await call(env, '/admin/test-profile', { token: owner, body: { id: 'test4', testPet: 'deer', grade: 2 } });
+  assert.equal(r1.status, 200); assert.equal(r4.status, 200); assert.deepEqual(r1.petCopies, { turtle: 1 }); assert.deepEqual(r4.petCopies, { deer: 40 });
+  const p1 = state('test1'), p4 = state('test4');
+  assert.deepEqual(p1.training, { attack: 20, hp: 20, speed: 20 }); assert.deepEqual(p1.equippedParts, []); assert.equal(p1.weaponMode, 'melee'); assert.equal(p1.difficulty, 'hard');
+  assert.equal(Object.keys(p1.equippedGear).length, 6); assert.ok(Object.values(p1.equippedGear).every((id) => /_melee_/.test(id) && p1.gear[id].grade === 1 && p1.gear[id].copies === 20));
+  assert.deepEqual(p1.pets, ['turtle']); assert.equal(p1.activePet, 'turtle'); assert.deepEqual(p1.testMode, { pet: 'turtle', stage: 'CH05', difficulty: 'hard' });
+  for (const k of ['training', 'parts', 'equippedParts', 'gear', 'equippedGear', 'stages', 'difficulty', 'weaponMode']) assert.deepEqual(p1[k], p4[k], k);
+  // 학생(시험 계정)으로 로그인해서
+  const login = await call(env, '/login', { body: { id: 'test1', pw: 'pw-1234' } }), cookie = login.token;
+  const g = await call(env, '/guardian', { method: 'GET', cookie });
+  assert.equal(g.status, 200); assert.ok(g.passes.remaining >= 50, '시험 계정 이용권 +40');
+  const act = (body) => call(env, '/guardian/action', { cookie, body: { requestId: crypto.randomUUID(), clientVersion: 2, ...body } });
+  assert.equal((await act({ kind: 'train', stat: 'attack' })).status, 400, '훈련 막음');
+  assert.equal((await act({ kind: 'settings', difficulty: 'normal', weaponMode: 'melee', hero: p1.hero })).status, 400, '난이도 바꾸기 막음');
+  assert.equal((await act({ kind: 'draw-pet' })).status, 400, '보급 막음');
+  const ok = await act({ kind: 'test-pet-grade', grade: 4 });
+  assert.equal(ok.status, 200); assert.deepEqual(state('test1').petCopies, { turtle: 120 });
+  const start = (stage) => call(env, '/play/start', { cookie, body: { requestId: crypto.randomUUID(), clientVersion: 2, stage } });
+  assert.equal((await start('CH03')).status, 409, '1-5가 아니면 출동 막음');
+  assert.equal((await start('CH05')).status, 200, '1-5 어려움은 출동');
+  assert.equal(env.DB.sql.prepare("SELECT COUNT(*) c FROM guardian_profiles WHERE user_id='student2' AND state LIKE '%testMode%'").get().c, 0);
 });
 
 test('보급권 지급: 선생님은 학생 한 명씩(보급권·코인·이용권), 모두에게 한 번에는 최고 관리자만 — 같은 요청은 두 번 지급되지 않는다', async () => {

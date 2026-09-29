@@ -328,7 +328,7 @@ export function hardGate(p,stageId){
 export const hardGateText=g=>g.items.filter(it=>!it.ok).map(it=>it.key==='stage'?it.label:`${it.label} ${it.now}/${it.need}${it.unit}`).join(' · ');
 // 시험용 슈퍼 계정(2026-09-24 사용자 "테스트 목적의 슈퍼 계정"): 모든 단계 성공(별 3) · 훈련 · 파츠 10종 · 친구 4마리(파츠와 같은 카드 수) · 코인·보급권 넉넉히.
 // 서버 관리 API(/api/admin/test-profile)가 'qa'로 시작하는 계정에만 쓴다. copies 80 = 전설, 25 = 에픽. 주인공·무기·난이도는 그대로 둔다.
-export const TEST_ACCOUNT_RE=/^qa[a-z0-9_]{0,10}$/;
+export const TEST_ACCOUNT_RE=/^(qa[a-z0-9_]{0,10}|test[0-9]{1,3})$/;   // 관리 API로 바꿀 수 있는 시험 계정: qa… 또는 test+숫자(2026-09-29 사용자가 만든 test1~4)
 export function superTestProfile(base,{training=100,copies=80,level=10}={}){
  const p=clone(base||freshProfile()),t=clampInt(training,1,TRAINING_MAX);
  p.training={attack:t,hp:t,speed:t};p.coins=999999;p.gifts=99;
@@ -342,23 +342,25 @@ export function superTestProfile(base,{training=100,copies=80,level=10}={}){
  p.equippedGear=Object.fromEntries(GEAR_SLOTS.map(s=>[s,`${p.hero}_ranged_${s}`]));p.weaponMode='ranged';
  return p;
 }
-// 친구 등급 시험 계정(2026-09-29 밸런스팀 "친구 등급별 성공률", 사용자 기준 1-5 어려움): 친구 4마리만 같은 등급(petGrade 0 노말 ~ 4 전설)이고
-// 나머지는 모든 계정이 똑같다 — 기본값은 어려움 준비 권장치(HARD_READY 1장): 훈련 공격·체력 40 · 이동 20, 유니크 파츠 3개(Lv1), 원거리 장비 6칸(노말),
-// 1-1~1-5 보통 성공(어려움 입장 조건 충족) · 어려움 난이도 · 코인·보급권 0. 한 계정 안에서는 친구만 바꿔 가며 비교한다. 'qa' 계정에만(관리 API test-profile petGrade).
-export const PET_TEST_PARTS=['PART_F1','PART_W1','PART_L1'];
-export function petTestProfile(base,{training=HARD_READY[1].attack,speed=HARD_READY[1].speed,petGrade=0,partCopies=GOLD_COPIES,gearGrade=0,difficulty='hard'}={}){
- const p=clone(base||freshProfile()),t=clampInt(training,1,TRAINING_MAX),sp=clampInt(speed,1,TRAINING_MAX),g=clampInt(petGrade,0,CARD_COPIES.length-1),n=CARD_COPIES[g];
- const gg=clampInt(gearGrade,0,CARD_COPIES.length-1);
- p.training={attack:t,hp:t,speed:sp};p.coins=0;p.gifts=0;p.difficulty=Object.hasOwn(DIFFICULTIES,difficulty)?difficulty:'hard';
+// 친구 등급 시험 계정(2026-09-29 사용자 "밸런스팀: 학생마다 친구 하나, 등급별 5판씩 1-5 어려움"): 관리자가 켜는 시험 모드.
+//  친구 1마리만(testMode.pet) 가질 수 있고 등급은 학생이 로비 버튼으로 바로 바꾼다(action test-pet-grade). 그 밖의 조건은 모든 시험 계정이 같다:
+//  훈련 공격·체력·이동 20 · 파츠 없음 · 근거리 장비 6칸 레어 · 1-5 어려움만 출동(서버 /play/start도 막음) · 다른 조작(훈련·보급·장비·파츠·난이도) 막음.
+export const TEST_MODE={training:20,gearGrade:1,stage:'CH05',difficulty:'hard'};
+export function testModeProfile(base,{pet='turtle',grade=0,training=TEST_MODE.training,gearGrade=TEST_MODE.gearGrade}={}){
+ if(!own(PETS,pet))throw new Error('없는 친구예요.');
+ const p=clone(base||freshProfile()),g=clampInt(grade,0,CARD_COPIES.length-1),t=clampInt(training,1,TRAINING_MAX),gg=clampInt(gearGrade,0,CARD_COPIES.length-1);
+ p.training={attack:t,hp:t,speed:t};p.coins=0;p.gifts=0;p.difficulty=TEST_MODE.difficulty;
  for(const id of ['CH01','CH02','CH03','CH04','CH05'])p.stages[id]={...(p.stages[id]||{}),cleared:true,stars:Math.max(2,p.stages[id]?.stars||0)};
- p.parts=Object.fromEntries(PET_TEST_PARTS.map(id=>[id,{copies:clampInt(partCopies,1,LEGEND_COPIES),level:1}]));p.equippedParts=[...PET_TEST_PARTS];
- p.petCopies=Object.fromEntries(PET_IDS.map(id=>[id,n]));p.pets=[...PET_IDS];p.petVersion=PET_VERSION;delete p.friendship;p.activePet=own(PETS,p.activePet)?p.activePet:'turtle';
- p.hero=p.hero==='minji'?'minji':'hoya';p.heroLocked=true;p.weaponMode='ranged';
- p.gear=Object.fromEntries([...gearIdsFor(p.hero).filter(id=>GEAR[id].type==='ranged').map(id=>[id,{copies:CARD_COPIES[gg],grade:gg}]),[`${p.hero}_melee_weapon`,{copies:1,grade:0}]]);
- p.equippedGear=Object.fromEntries(GEAR_SLOTS.map(s=>[s,`${p.hero}_ranged_${s}`]));
- p.milestones={...(p.milestones||{}),firstPart:true,firstPet:true,bossPet:true,firstGear:true};p.testAccount=true;p.petTest={grade:g,training:t,speed:sp,partCopies,gearGrade:gg,difficulty:p.difficulty};
+ p.parts={};p.equippedParts=[];
+ p.petCopies={[pet]:CARD_COPIES[g]};p.pets=[pet];p.activePet=pet;p.petVersion=PET_VERSION;delete p.friendship;
+ p.hero=p.hero==='minji'?'minji':'hoya';p.heroLocked=true;p.weaponMode='melee';
+ p.gear=Object.fromEntries(gearIdsFor(p.hero).filter(id=>GEAR[id].type==='melee').map(id=>[id,{copies:CARD_COPIES[gg],grade:gg}]));
+ p.equippedGear=Object.fromEntries(GEAR_SLOTS.map(s=>[s,`${p.hero}_melee_${s}`]));
+ p.milestones={...(p.milestones||{}),firstPart:true,firstPet:true,bossPet:true,firstGear:true};p.testAccount=true;
+ p.testMode={pet,stage:TEST_MODE.stage,difficulty:TEST_MODE.difficulty};
  return p;
 }
+export const testGrade=p=>p?.testMode?cardGrade(petCopies(p,p.testMode.pet)):-1;
 // 개수 상한 없음(2차): 금 뒤에 남는 개수도 그대로 쌓는다. 금 파츠는 고르는 목록·원소 보급에서 빠지므로 "코인 60개" 낭비가 없다.
 export function addPart(p,id,qty=1){
  if(!own(PARTS,id))throw new Error('없는 파츠예요.');
@@ -418,6 +420,16 @@ export function completeRun(profile,{stage,cleared,seconds,litter=0,hpFraction=0
 export function action(profile,a,rng=Math.random,ctx={}){
  const p=migratePets(profile);let message='저장했어요.',draw=null;
  const check=(ok,msg)=>{if(!ok)throw new Error(msg);};
+ // 시험 계정: 친구 등급 바꾸기·그 친구 고르기만. 출동 전 같은 값의 설정 저장(바뀌는 것 없음)은 그대로 둔다.
+ if(p.testMode){
+  const same=a.kind==='settings'&&(a.difficulty??p.difficulty)===p.difficulty&&(a.weaponMode??p.weaponMode)===p.weaponMode&&(a.hero??p.hero)===p.hero;
+  check(a.kind==='test-pet-grade'||(a.kind==='pet'&&a.id===p.testMode.pet)||same,'시험 계정에서는 친구 등급만 바꿀 수 있어요.');
+  if(a.kind==='test-pet-grade'){
+   const g=Number(a.grade);check(Number.isInteger(g)&&g>=0&&g<CARD_COPIES.length,'등급을 골라 주세요.');
+   const pet=p.testMode.pet;p.petCopies={[pet]:CARD_COPIES[g]};p.pets=[pet];p.activePet=pet;
+   return {profile:p,message:`${PETS[pet].name} 등급을 ${GRADE_NAMES[g]}${g===3?'으로':'로'} 바꿨어요.`};
+  }
+ }
  const pickIndex=n=>Math.min(n-1,Math.max(0,Math.floor(rng()*n)));
  // 5번 연속 보급(2026-09-24 밤 사용자 "한번에 5번 연속뽑기"): a.times=5면 보급권 5장으로 5번을 요청 하나에 한꺼번에(한 번에 저장 → 두 번 눌러도 중복 없음).
  // 결과 전 모습·확률은 한 번 보급과 똑같다. 가다가 모두 전설이 되면 거기서 멈추고 남은 보급권은 그대로.
