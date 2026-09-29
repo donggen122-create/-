@@ -1,10 +1,10 @@
 # Balance-team test accounts (2026-09-29): the teacher signs up test1..test4 in the game, then this script turns on test mode
 # with the admin API: test1=turtle, test2=cat, test3=otter, test4=deer (one pet each, grade chosen in the lobby by the student),
-# 1-5 hard only, training 40, melee gear x6 unique, no parts, everything else locked. 25 test passes per account (one per start, never refilled).
+# 1-5 hard only, training 20, melee gear x6 unique, no parts, everything else locked. 25 test passes per account (one per start, never refilled).
 # Re-running resets them to the same baseline (grade back to -Grade) and restarts the 25-pass budget. -Training / -GearGrade change the baseline for all four.
 # Uses ADMIN_KEY from server/.dev.vars (never printed).
-# Usage: powershell -File game\tools\qa\pet-test-accounts.ps1 [-Training 40] [-GearGrade 2] [-Grade 0] [-Base https://...]
-param([string]$Base = "https://seoho-pangpang.seoho-pangpang-server.workers.dev", [int]$Training = 40, [int]$GearGrade = 2, [int]$Grade = 0)
+# Usage: powershell -File game\tools\qa\pet-test-accounts.ps1 [-Training 20] [-GearGrade 2] [-Grade 0] [-Base https://...]
+param([string]$Base = "https://seoho-pangpang.seoho-pangpang-server.workers.dev", [int]$Training = 20, [int]$GearGrade = 2, [int]$Grade = 0)
 $ErrorActionPreference = "Stop"
 $root = Split-Path (Split-Path (Split-Path $PSScriptRoot -Parent) -Parent) -Parent
 $vars = Join-Path $root "server\.dev.vars"

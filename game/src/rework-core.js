@@ -153,7 +153,8 @@ export const DIFFICULTIES = {
   normal: { name: '보통',   stars: 2, desc: '기본 난이도예요. 시간이 갈수록 적이 조금씩 강해져요. 성공하면 별 2개 · 보급권 1장 · 코인 1배.', enemyHp: 1, enemySpd: 1, taken: 1, density: 1.1, hpGrowth: .12, atkGrowth: .06, contactCap: .3, special: 0, bossHp: .85 },
   // 어려움(2026-09-23 저녁 사용자: "유니크 이상 파츠 + 기본 능력치 40 이상이어야 간신히 클리어"): 자동 조종 1-3 어려움 10판씩 — 훈련 40·유니크 3개 4/10,
   // 훈련 20·유니크 1/10, 훈련 40·파츠 없음 수준 1/10, 훈련 1 0/10(docs/28). 체력 ×5.5 · 받는 피해 ×4.8 · 1분마다 새 적 체력 +45%.
-  hard:   { name: '어려움', stars: 3, desc: '아주 어려워요! 기본 능력치(훈련) 40단계 이상과 유니크 이상 파츠가 있어야 겨우 버틸 수 있어요. 적이 아주 튼튼하고 세며 시간이 갈수록 더 강해져요. 원소 방패·단단 갑옷·날쌘이·회복이·쪼개지기 같은 특별한 적도 나와요. 성공하면 별 3개 · 보급권 2장 · 코인 2배.', enemyHp: 5.5, enemySpd: 1.08, taken: 4.8, density: 1.2, hpGrowth: .45, atkGrowth: .1, contactCap: .35, special: .3, bossHp: .4 },
+  // 2026-09-29 사용자 "몬스터 체력·데미지 50% 상향, 본 게임 어려움에도 일괄": 적 체력 5.5 → 8.25, 받는 피해 4.8 → 7.2(대왕 체력도 적 체력 배율을 따라 +50%). 부딪힘 상한 contactCap은 그대로.
+  hard:   { name: '어려움', stars: 3, desc: '아주 어려워요! 기본 능력치(훈련) 40단계 이상과 유니크 이상 파츠가 있어야 겨우 버틸 수 있어요. 적이 아주 튼튼하고 세며 시간이 갈수록 더 강해져요. 원소 방패·단단 갑옷·날쌘이·회복이·쪼개지기 같은 특별한 적도 나와요. 성공하면 별 3개 · 보급권 2장 · 코인 2배.', enemyHp: 8.25, enemySpd: 1.08, taken: 7.2, density: 1.2, hpGrowth: .45, atkGrowth: .1, contactCap: .35, special: .3, bossHp: .4 },
 };
 export const difficultyOf=p=>Object.hasOwn(DIFFICULTIES,p?.difficulty)?p.difficulty:'easy';
 // 어려움에서만 나오는 특별한 적(main.js가 동작·표시). weight: 뽑힐 비율. 엘리트(큰 적)는 늘 '원소 방패'.
@@ -344,9 +345,9 @@ export function superTestProfile(base,{training=100,copies=80,level=10}={}){
 }
 // 친구 등급 시험 계정(2026-09-29 사용자 "밸런스팀: 학생마다 친구 하나, 등급별 5판씩 1-5 어려움"): 관리자가 켜는 시험 모드.
 //  친구 1마리만(testMode.pet) 가질 수 있고 등급은 학생이 로비 버튼으로 바로 바꾼다(action test-pet-grade). 그 밖의 조건은 모든 시험 계정이 같다:
-//  훈련 공격·체력·이동 40 · 파츠 없음 · 근거리 장비 6칸 유니크 · 1-5 어려움만 출동(서버 /play/start도 막음) · 다른 조작(훈련·보급·장비·파츠·난이도) 막음.
+//  훈련 공격·체력·이동 20(2026-09-29 오후 사용자: 40은 너무 쉬움) · 파츠 없음 · 근거리 장비 6칸 유니크 · 1-5 어려움만 출동(서버 /play/start도 막음) · 다른 조작(훈련·보급·장비·파츠·난이도) 막음.
 //  이용권(2026-09-29 사용자): 계정마다 passes장(25)만, 다시 채워지지 않음. 출동할 때마다 1장(성공·실패·중간 종료 모두) — 서버가 since 뒤 시작한 판 수로 센다.
-export const TEST_MODE={training:40,gearGrade:2,stage:'CH05',difficulty:'hard',passes:25};
+export const TEST_MODE={training:20,gearGrade:2,stage:'CH05',difficulty:'hard',passes:25};
 export function testModeProfile(base,{pet='turtle',grade=0,training=TEST_MODE.training,gearGrade=TEST_MODE.gearGrade,passes=TEST_MODE.passes,since=0}={}){
  if(!own(PETS,pet))throw new Error('없는 친구예요.');
  const p=clone(base||freshProfile()),g=clampInt(grade,0,CARD_COPIES.length-1),t=clampInt(training,1,TRAINING_MAX),gg=clampInt(gearGrade,0,CARD_COPIES.length-1);

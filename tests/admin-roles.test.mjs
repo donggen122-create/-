@@ -120,7 +120,7 @@ test('밸런스 시험 계정: 관리자가 test1~4에 친구 1마리를 주면 
   const r4 = await call(env, '/admin/test-profile', { token: owner, body: { id: 'test4', testPet: 'deer', grade: 2 } });
   assert.equal(r1.status, 200); assert.equal(r4.status, 200); assert.deepEqual(r1.petCopies, { turtle: 1 }); assert.deepEqual(r4.petCopies, { deer: 40 });
   const p1 = state('test1'), p4 = state('test4');
-  assert.deepEqual(p1.training, { attack: 40, hp: 40, speed: 40 }); assert.deepEqual(p1.equippedParts, []); assert.equal(p1.weaponMode, 'melee'); assert.equal(p1.difficulty, 'hard');
+  assert.deepEqual(p1.training, { attack: 20, hp: 20, speed: 20 }); assert.deepEqual(p1.equippedParts, []); assert.equal(p1.weaponMode, 'melee'); assert.equal(p1.difficulty, 'hard');
   assert.equal(Object.keys(p1.equippedGear).length, 6); assert.ok(Object.values(p1.equippedGear).every((id) => /_melee_/.test(id) && p1.gear[id].grade === 2 && p1.gear[id].copies === 40));
   assert.deepEqual(p1.pets, ['turtle']); assert.equal(p1.activePet, 'turtle'); assert.deepEqual({ ...p1.testMode, since: 0 }, { pet: 'turtle', stage: 'CH05', difficulty: 'hard', passes: 25, since: 0 }); assert.ok(p1.testMode.since > 0);
   for (const k of ['training', 'parts', 'equippedParts', 'gear', 'equippedGear', 'stages', 'difficulty', 'weaponMode']) assert.deepEqual(p1[k], p4[k], k);
