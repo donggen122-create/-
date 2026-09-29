@@ -87,14 +87,14 @@ export class GuardianUI {
   // 밸런스 시험 계정 로비(2026-09-29): 친구 1마리의 등급만 바꾸고 1-5 어려움만 출동. 다른 조작은 서버도 막는다(rework-core action).
   renderTest(p,passes,user){
     const pet=p.testMode.pet,d=R.PETS[pet],g=R.testGrade(p),rate=R.PET_GRADE_RATE[Math.max(0,g)];this.stage=p.testMode.stage;
-    this.root.innerHTML=`<header class="sg-header"><div class="sg-brand">${icon('element_wind')}<span>서호팡팡<small>시험 계정</small></span></div><div class="sg-wallet"><button data-do="passes" aria-label="이용권 안내">${icon('pass')}<b>${passes?.remaining??'…'}</b><span>이용권</span></button></div><button class="sg-account" data-do="account" aria-label="계정">${esc(user)} 님</button></header>
+    this.root.innerHTML=`<header class="sg-header"><div class="sg-brand">${icon('element_wind')}<span>서호팡팡<small>시험 계정</small></span></div><div class="sg-wallet"><button data-do="passes" aria-label="시험 이용권 안내">${icon('pass')}<b>${passes?.remaining??'…'}</b><span>${passes?.test?`/ ${passes.total} 시험 이용권`:'이용권'}</span></button></div><button class="sg-account" data-do="account" aria-label="계정">${esc(user)} 님</button></header>
     <main class="sg-main sg-test" aria-live="polite">
       <div class="sg-heading"><div><span class="sg-eyebrow">밸런스팀 시험 계정</span><h1>친구 등급별 성공률 조사</h1><p>1-5 쓰레기 대장 구출 · 어려움만 할 수 있어요. 등급을 고르고 5판씩 해요.</p></div></div>
       <section class="sg-test-card">
         <div class="sg-test-pet">${petImage(pet)}<div><small>내가 맡은 친구</small><h2>${esc(d.name)}</h2><span>${esc(d.role)}</span></div></div>
         <div class="sg-test-grade"><small>지금 등급</small><b class="sg-grade-${g}">${esc(R.GRADE_NAMES[g]??'없음')}</b><span>전설의 ${Math.round(rate*100)}% 힘 · ${esc(R.petBuffText(pet,g))}</span><button class="sg-primary" data-do="test-grade">등급 바꾸기</button></div>
       </section>
-      <section class="sg-test-rules"><h3>모든 시험 계정이 같은 조건</h3><ul><li>1-5 어려움만 출동 · 6:00 안에 대왕을 정화하면 성공</li><li>훈련 공격·체력·이동 속도 ${p.training.attack}단계</li><li>근거리 장비 6칸 ${esc(R.GRADE_NAMES[R.gearGrade(p,p.equippedGear?.weapon)]??'')} · 파츠 없음</li><li>훈련·보급·장비·파츠는 바꿀 수 없어요. 친구 등급만 바꿔요.</li></ul></section>
+      <section class="sg-test-rules"><h3>모든 시험 계정이 같은 조건</h3><ul><li>1-5 어려움만 출동 · 6:00 안에 대왕을 정화하면 성공</li><li>시험 이용권 ${passes?.total??25}장 · 출동할 때마다 1장(중간에 끝내도 1장) · 다시 채워지지 않아요</li><li>훈련 공격·체력·이동 속도 ${p.training.attack}단계</li><li>근거리 장비 6칸 ${esc(R.GRADE_NAMES[R.gearGrade(p,p.equippedGear?.weapon)]??'')} · 파츠 없음</li><li>훈련·보급·장비·파츠는 바꿀 수 없어요. 친구 등급만 바꿔요.</li></ul></section>
       <select id="sg-difficulty" style="display:none" aria-hidden="true"><option value="hard" selected>어려움</option></select><select id="sg-weapon-mode" style="display:none" aria-hidden="true"><option value="melee" selected>근거리</option></select>
       <button class="sg-primary sg-start sg-test-start" data-do="start">1-5 어려움 출동 · ${esc(d.name)} ${esc(R.GRADE_NAMES[g]??'')}</button>
     </main>`;
@@ -469,6 +469,7 @@ export class GuardianUI {
     if(b.dataset.do==='draw-gear'){await this.perform({kind:'draw-gear',...(b.dataset.times==='5'?{times:5}:{})});return;}
     if(b.dataset.do==='gear-help'){this.gearHelp();return;}
     if(b.dataset.reset){const id=b.dataset.reset,item=p.parts[id],refund=R.partResetRefund?R.partResetRefund(item.level):60*(item.level-1)+10*(item.level-1)*(item.level-2);this.openDialog(`<h2>레벨 되돌리기</h2><p>${esc(R.PARTS[id].name)}${objJosa(R.PARTS[id].name)} Lv.1로 되돌리고, 레벨 올리기에 쓴 <strong>${refund} 코인</strong>을 모두 돌려받아요. 모은 개수와 메달은 그대로예요.</p><button class="sg-primary" id="sg-confirm-reset">${refund} 코인 돌려받기</button><button data-close>돌아가기</button>`);this.dialog.querySelector('#sg-confirm-reset').onclick=async()=>{this.dialog.close();await this.perform({kind:'reset-part',id});};return;}
+    if(b.dataset.do==='passes'&&passes?.test){this.notify(`시험 이용권 ${passes.remaining}장 남음`,`시험 계정은 모두 ${passes.total}장이에요(지금까지 ${passes.used}장 사용). 출동할 때마다 1장을 써요. 성공·실패·중간에 끝내기 모두 같아요. 다음 날이 되어도 다시 채워지지 않아요.`);return;}
     if(b.dataset.do==='passes'){const ev=passes?.event;this.notify(ev?`${ev.title} · 오늘 이용권 ${ev.dailyTotal}장`:'이용권은 매일 아침 8시에 10장',`${ev?ev.message+'\n':''}${R.PASS_NOTICE} 지금 기본 ${passes?.baseRemaining??0}장, 추가 ${passes?.bonusRemaining??0}장(${ev?`추석 이벤트 ${ev.bonus}장·`:''}선생님 지급)이 남았어요. 추가 이용권도 다음 아침 8시에 사라져요.`);return;}
     if(b.dataset.do==='account'){
       if(!R.heroLocked(p)){this.openDialog(`<h2>계정</h2><p>${esc(this.state().user||'')} 님</p><button class="sg-primary" data-do-hero>캐릭터 고르기</button><button id="sg-logout">로그아웃</button><button data-close>닫기</button>`);this.dialog.querySelector('[data-do-hero]').onclick=()=>this.heroDialog();this.dialog.querySelector('#sg-logout').onclick=()=>{this.dialog.close();this.c.logout();};return;}

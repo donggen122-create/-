@@ -131,3 +131,19 @@ test('Chuseok event: 2026-09-24..26 (8am KST days) give 20 passes a day, granted
   const admin=await guardianAdmin(new Request('http://local/api/admin/passes'),env,'passes','GET',d24);const body=await admin.json();
   assert.ok(body.audit.every(a=>!String(a.request_id).startsWith('event-')),'이벤트 자동 지급은 기록 목록에 없음');assert.equal(body.event.id,'chuseok2026');
 });
+test('시험 계정 이용권: 25장만(출동마다 1장 · 성공·실패·중간 종료 모두), 하루에 10번 넘게 성공해도 막히지 않고, 다음 날에도 다시 채워지지 않는다',async()=>{
+  const env=await setup();const p=R.testModeProfile(R.freshProfile(),{pet:'turtle',since:start-1000});
+  env.DB.sql.prepare('INSERT INTO guardian_profiles(user_id,state,revision) VALUES(?,?,0) ON CONFLICT(user_id) DO UPDATE SET state=excluded.state').run('test',JSON.stringify(p));
+  assert.equal((await api(env,'/guardian')).passes.remaining,25);
+  let now=start;
+  const go=async(cleared,finish=true)=>{const s=await api(env,'/play/start',{requestId:uid(),stage:'CH05'},now);assert.equal(s.status,200,s.error);if(finish){const f=await api(env,'/play/finish',{requestId:uid(),runId:s.runId,cleared,seconds:cleared?240:100},now+(cleared?240000:100000));assert.equal(f.status,200,f.error);assert.equal(f.charged,1);}now+=400000;return s;};
+  for(let i=0;i<12;i++)await go(true);   // 같은 날 12번 성공(일일 10장 규칙에 막히지 않음)
+  for(let i=0;i<5;i++)await go(false);   // 실패도 1장씩
+  const left=await go(false,false);assert.equal(left.passes.remaining,7);   // 중간에 나가기(끝내지 않음)도 1장
+  const q=await api(env,'/play/start',{requestId:uid(),stage:'CH05'},now);assert.equal(q.code,'ACTIVE_RUN');
+  now+=1900000;   // 30분 넘게 멈춘 판은 정리되지만 돌려주지 않는다
+  for(let i=0;i<7;i++)await go(false);
+  const blocked=await api(env,'/play/start',{requestId:uid(),stage:'CH05'},now);assert.equal(blocked.status,409);assert.equal(blocked.code,'TEST_PASSES');assert.equal(blocked.passes.remaining,0);
+  const nextDay=await api(env,'/play/start',{requestId:uid(),stage:'CH05'},now+2*86400000);assert.equal(nextDay.code,'TEST_PASSES','다음 날에도 다시 채워지지 않음');
+  assert.equal(env.DB.sql.prepare("SELECT COUNT(*) c FROM play_runs WHERE user_id='test' AND status='test_won'").get().c,12);
+});

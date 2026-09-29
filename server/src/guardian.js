@@ -23,12 +23,13 @@ export async function grantPassEvent(db,id,now=Date.now()){
   await db.prepare('INSERT OR IGNORE INTO play_admin_grants(request_id,user_id,day,passes,gold,note,created_at) VALUES(?,?,?,?,0,?,?)').bind(`event-${ev.id}-${day}`,id,day,ev.bonus,ev.note,now).run();
   return ev;
 }
-// 시험 계정(testMode, 관리자가 켬): 게임 날짜마다 이용권 +40장(밸런스팀이 하루에 20판 넘게 해도 되게). 요청 번호로 하루 한 번만.
-export const TEST_MODE_PASSES=40;
-async function grantTestPasses(db,id,profile,now=Date.now()){
-  if(!profile?.testMode)return;
-  const day=dayKey(now);
-  await db.prepare('INSERT OR IGNORE INTO play_admin_grants(request_id,user_id,day,passes,gold,note,created_at) VALUES(?,?,?,?,0,?,?)').bind(`test-${id}-${day}`,id,day,TEST_MODE_PASSES,'시험 계정 이용권',now).run();
+// 시험 계정(testMode, 관리자가 켬) 이용권(2026-09-29 사용자 "25장만, 24시간 지나도 초기화 안 됨, 중간 종료도 돌려주지 않음"):
+//  testMode.since 뒤에 시작한 판 수가 쓴 장수(성공·실패·중간 종료·오래 멈춤 모두 1장). 날마다 채워지는 이용권·이벤트·선생님 추가 지급과 따로다.
+async function testPassStatus(db,id,profile,now=Date.now()){
+  const t=profile.testMode,total=Number(t.passes)||0;
+  const used=(await db.prepare('SELECT COUNT(*) c FROM play_runs WHERE user_id=? AND started_at>=?').bind(id,Number(t.since)||0).first())?.c||0;
+  const remaining=Math.max(0,total-used);
+  return {test:true,total,used,remaining,baseRemaining:remaining,bonusRemaining:0,day:dayKey(now),resetAt:null,serverNow:now,dailyLimit:total,event:null};
 }
 const reply=(data,status=200)=>Response.json(data,{status,headers:{'Cache-Control':'no-store'}});
 const uuid=s=>typeof s==='string'&&/^[a-zA-Z0-9_-]{12,80}$/.test(s);
@@ -92,7 +93,7 @@ export async function passStatus(db,id,now=Date.now()){
 export async function expireOldRuns(db,id,now){
   return db.prepare("UPDATE play_runs SET status='expired',settled_at=? WHERE user_id=? AND status='active' AND started_at<?").bind(now,id,now-1800000).run();
 }
-async function status(db,id,now){const p=await getProfile(db,id);return {...p,passes:await passStatus(db,id,now)};}
+async function status(db,id,now){const p=await getProfile(db,id);return {...p,passes:p.profile?.testMode?await testPassStatus(db,id,p.profile,now):await passStatus(db,id,now)};}
 export async function guardianAPI(request,env,user,path,now=Date.now()){
   const db=env.DB,id=user.id,method=request.method;
   const localhost=['localhost','127.0.0.1','[::1]'].includes(new URL(request.url).hostname);
@@ -101,7 +102,6 @@ export async function guardianAPI(request,env,user,path,now=Date.now()){
   if(path==='/guardian'&&method==='GET'){
     await expireOldRuns(db,id,now);
     await grantPassEvent(db,id,now);   // 이벤트 날이면 오늘 이벤트 이용권(하루 한 번)
-    await grantTestPasses(db,id,(await getProfile(db,id)).profile,now);   // 시험 계정 이용권
     const active=await db.prepare("SELECT id,stage,started_at FROM play_runs WHERE user_id=? AND status='active'").bind(id).first();
     return reply({...await status(db,id,now),active});
   }
@@ -134,10 +134,18 @@ export async function guardianAPI(request,env,user,path,now=Date.now()){
     const {profile}=await getProfile(db,id);
     if(!stageUnlocked(profile,b.stage))return reply({error:'앞 단계를 먼저 성공해 주세요.'},400);
     if(profile.testMode&&(b.stage!==profile.testMode.stage||difficultyOf(profile)!==profile.testMode.difficulty))return reply({error:'시험 계정은 1-5 어려움만 할 수 있어요.',code:'TEST_MODE'},409);
-    await grantTestPasses(db,id,profile,now);
     if(difficultyOf(profile)==='hard'){const g=hardGate(profile,b.stage);if(!g.open)return reply({error:`어려움은 아직 잠겨 있어요 · ${hardGateText(g)}`,code:'HARD_LOCKED',gate:g},409);}   // 어려움 최소 기준(HARD_MIN)
     await grantPassEvent(db,id,now);
     const duration=durationFor(profile,b.stage),day=dayKey(now);
+    if(profile.testMode){
+      const t=profile.testMode,loadout=JSON.stringify({loadout:{equippedParts:runParts(profile),pet:profile.activePet??null}});
+      const tr=await db.batch([
+        db.prepare("UPDATE play_runs SET status='expired',settled_at=? WHERE user_id=? AND status='active' AND started_at<?").bind(now,id,now-1800000),
+        db.prepare("INSERT INTO play_runs(id,user_id,stage,started_at,duration,result) SELECT ?,?,?,?,?,? WHERE (SELECT COUNT(*) FROM play_runs WHERE user_id=? AND started_at>=?)<? AND NOT EXISTS(SELECT 1 FROM play_runs WHERE user_id=? AND status='active')").bind(b.requestId,id,b.stage,now,duration,loadout,id,Number(t.since)||0,Number(t.passes)||0,id),
+      ]);
+      if(!tr[1].meta.changes){const active=await db.prepare("SELECT id,stage FROM play_runs WHERE user_id=? AND status='active'").bind(id).first();return reply({error:active?'진행 중인 도전이 있어요. 먼저 마무리해 주세요.':`시험 이용권 ${Number(t.passes)||0}장을 모두 썼어요. 선생님께 말씀해 주세요.`,code:active?'ACTIVE_RUN':'TEST_PASSES',active,passes:await testPassStatus(db,id,profile,now)},409);}
+      return reply({runId:b.requestId,duration,...await status(db,id,now)});
+    }
     const r=await db.batch([
       db.prepare("UPDATE play_runs SET status='expired',settled_at=? WHERE user_id=? AND status='active' AND started_at<?").bind(now,id,now-1800000),
       db.prepare('INSERT OR IGNORE INTO play_days(user_id,day) VALUES(?,?)').bind(id,day),
@@ -166,12 +174,12 @@ export async function guardianAPI(request,env,user,path,now=Date.now()){
       const loadout=run.result?JSON.parse(run.result).loadout:null,equippedPartIds=loadout?.equippedParts??null;
       const pet=loadout&&Object.hasOwn(loadout,'pet')?loadout.pet:undefined;   // 출동할 때의 친구(코인 +%). 배포 전에 시작한 도전은 지금 친구
       const result=completeRun(profile,{day:dayKey(now),equippedPartIds,pet,stage:run.stage,cleared,seconds,litter:Math.max(0,Math.min(99,Math.floor(Number(b.litter)||0))),hpFraction:Math.max(0,Math.min(1,Number(b.hpFraction)||0)),bossSeconds:Number.isFinite(b.bossSeconds)&&b.bossSeconds>=0?b.bossSeconds:Infinity,skillIds,fusionIds,supportIds});
-      const event={reward:result.reward,cleared,stage:run.stage,runId,charged:cleared?1:0};
+      const event={reward:result.reward,cleared,stage:run.stage,runId,charged:profile.testMode?1:cleared?1:0};
       try{
         const r=await db.batch([
           db.prepare('INSERT OR IGNORE INTO play_days(user_id,day) VALUES(?,?)').bind(id,dayKey(now)),
           db.prepare("UPDATE guardian_profiles SET state=?,revision=revision+1 WHERE user_id=? AND revision=? AND EXISTS(SELECT 1 FROM play_runs WHERE id=? AND user_id=? AND status='active')").bind(JSON.stringify(result.profile),id,revision,runId,id),
-          db.prepare("UPDATE play_runs SET status=?,settled_at=?,settlement_day=?,result=? WHERE id=? AND user_id=? AND status='active' AND changes()=1").bind(cleared?'won':'lost',now,dayKey(now),JSON.stringify(event),runId,id),
+          db.prepare("UPDATE play_runs SET status=?,settled_at=?,settlement_day=?,result=? WHERE id=? AND user_id=? AND status='active' AND changes()=1").bind(cleared?(profile.testMode?'test_won':'won'):'lost',now,dayKey(now),JSON.stringify(event),runId,id),
         ]);
         if(r[2].meta.changes)return reply({...event,...await status(db,id,now)});
       }catch(e){if(String(e).includes('NO_PLAY_PASSES'))return reply({error:'오늘 이용권이 없어요.',code:'NO_PASSES'},409);throw e;}
@@ -209,7 +217,7 @@ export async function guardianAdmin(request,env,sub,method,now=Date.now()){
     if(b.testPet!==undefined&&!Object.hasOwn(PETS,b.testPet))return reply({error:'testPet은 turtle·cat·otter·deer 중 하나예요.'},400);
     const grade=b.grade===undefined?0:Number(b.grade);
     if(!(Number.isInteger(grade)&&grade>=0&&grade<=4))return reply({error:'grade는 0(노말)~4(전설)예요.'},400);
-    const next=b.testPet!==undefined?testModeProfile(profile,{pet:b.testPet,grade,...(Number.isInteger(b.training)&&b.training>=1&&b.training<=100?{training:b.training}:{}),...(Number.isInteger(b.gearGrade)&&b.gearGrade>=0&&b.gearGrade<=4?{gearGrade:b.gearGrade}:{})}):superTestProfile(profile,{training:Number(b.training)||100,copies:Number(b.copies)||80,level:Number(b.level)||10});
+    const next=b.testPet!==undefined?testModeProfile(profile,{pet:b.testPet,grade,since:now,...(Number.isInteger(b.passes)&&b.passes>=0&&b.passes<=500?{passes:b.passes}:{}),...(Number.isInteger(b.training)&&b.training>=1&&b.training<=100?{training:b.training}:{}),...(Number.isInteger(b.gearGrade)&&b.gearGrade>=0&&b.gearGrade<=4?{gearGrade:b.gearGrade}:{})}):superTestProfile(profile,{training:Number(b.training)||100,copies:Number(b.copies)||80,level:Number(b.level)||10});
     await db.prepare('UPDATE guardian_profiles SET state=?,revision=revision+1 WHERE user_id=?').bind(JSON.stringify(next),id).run();
     return reply({ok:true,id,training:next.training,parts:Object.keys(next.parts).length,stages:Object.keys(next.stages).filter(k=>next.stages[k].cleared).length,petCopies:next.petCopies,testMode:next.testMode||null});
   }

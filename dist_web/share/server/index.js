@@ -269,8 +269,9 @@ async function admin(request, env, sub, method) {
       ORDER BY u.created_at`).bind(now, dayKey(now)).all()).results;
     // Codex 개편 프로필(guardian_profiles)이 있으면 코인·판·성공·최고 단계는 거기서, 이용권은 play_days에서 계산
     for (const row of rows) {
+      let testMode = null;
       if (row.guardian_state) {
-        const profile = JSON.parse(row.guardian_state);
+        const profile = JSON.parse(row.guardian_state); testMode = profile.testMode || null;
         row.gold = profile.coins; row.gifts = profile.gifts ?? 0; row.runs = profile.runs; row.clears = profile.wins;
         row.hero = profile.hero; row.profile_version = profile.version; row.training = profile.training || null;
         row.parts_owned = Object.keys(profile.parts || {}).length;
@@ -279,6 +280,8 @@ async function admin(request, env, sub, method) {
       }
       const baseRemaining = 10 - (row.base_used || 0), bonusRemaining = (row.bonus_granted || 0) - (row.bonus_used || 0);
       row.passes = { baseRemaining, bonusRemaining, remaining: baseRemaining + bonusRemaining, resetAt: nextReset(now) };
+      // 밸런스 시험 계정(testMode): 날마다 채워지는 이용권 대신 시험 이용권(모두 passes장, since 뒤 출동 수만큼 사용)
+      if (testMode) { const used = (await env.DB.prepare("SELECT COUNT(*) c FROM play_runs WHERE user_id=? AND started_at>=?").bind(row.id, Number(testMode.since) || 0).first())?.c || 0, total = Number(testMode.passes) || 0; row.passes = { test: true, total, used, remaining: Math.max(0, total - used), baseRemaining: Math.max(0, total - used), bonusRemaining: 0, resetAt: null }; }
       row.energy = row.passes.remaining;
       delete row.guardian_state; delete row.base_used; delete row.bonus_granted; delete row.bonus_used;
     }

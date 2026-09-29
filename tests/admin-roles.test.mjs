@@ -107,7 +107,7 @@ test('시험용 슈퍼 계정: 관리자만, qa로 시작하는 계정만 모든
   assert.equal(env.DB.sql.prepare("SELECT COUNT(*) c FROM guardian_profiles WHERE user_id='student1' AND state LIKE '%testAccount%'").get().c, 0);
 });
 
-test('밸런스 시험 계정: 관리자가 test1~4에 친구 1마리를 주면 등급만 바꿀 수 있고 1-5 어려움만 출동, 이용권 +40', async () => {
+test('밸런스 시험 계정: 관리자가 test1~4에 친구 1마리를 주면 등급만 바꿀 수 있고 1-5 어려움만 출동, 시험 이용권 25장', async () => {
   const env = await makeEnv();
   for (const id of ['test1', 'test4', 'student2']) assert.equal((await call(env, '/register', { body: { id, pw: 'pw-1234' } })).status, 200);
   const owner = (await call(env, '/admin/login', { body: OWNER })).token, teacher = (await call(env, '/admin/login', { body: TEACHER })).token;
@@ -120,14 +120,14 @@ test('밸런스 시험 계정: 관리자가 test1~4에 친구 1마리를 주면 
   const r4 = await call(env, '/admin/test-profile', { token: owner, body: { id: 'test4', testPet: 'deer', grade: 2 } });
   assert.equal(r1.status, 200); assert.equal(r4.status, 200); assert.deepEqual(r1.petCopies, { turtle: 1 }); assert.deepEqual(r4.petCopies, { deer: 40 });
   const p1 = state('test1'), p4 = state('test4');
-  assert.deepEqual(p1.training, { attack: 20, hp: 20, speed: 20 }); assert.deepEqual(p1.equippedParts, []); assert.equal(p1.weaponMode, 'melee'); assert.equal(p1.difficulty, 'hard');
-  assert.equal(Object.keys(p1.equippedGear).length, 6); assert.ok(Object.values(p1.equippedGear).every((id) => /_melee_/.test(id) && p1.gear[id].grade === 1 && p1.gear[id].copies === 20));
-  assert.deepEqual(p1.pets, ['turtle']); assert.equal(p1.activePet, 'turtle'); assert.deepEqual(p1.testMode, { pet: 'turtle', stage: 'CH05', difficulty: 'hard' });
+  assert.deepEqual(p1.training, { attack: 40, hp: 40, speed: 40 }); assert.deepEqual(p1.equippedParts, []); assert.equal(p1.weaponMode, 'melee'); assert.equal(p1.difficulty, 'hard');
+  assert.equal(Object.keys(p1.equippedGear).length, 6); assert.ok(Object.values(p1.equippedGear).every((id) => /_melee_/.test(id) && p1.gear[id].grade === 2 && p1.gear[id].copies === 40));
+  assert.deepEqual(p1.pets, ['turtle']); assert.equal(p1.activePet, 'turtle'); assert.deepEqual({ ...p1.testMode, since: 0 }, { pet: 'turtle', stage: 'CH05', difficulty: 'hard', passes: 25, since: 0 }); assert.ok(p1.testMode.since > 0);
   for (const k of ['training', 'parts', 'equippedParts', 'gear', 'equippedGear', 'stages', 'difficulty', 'weaponMode']) assert.deepEqual(p1[k], p4[k], k);
   // 학생(시험 계정)으로 로그인해서
   const login = await call(env, '/login', { body: { id: 'test1', pw: 'pw-1234' } }), cookie = login.token;
   const g = await call(env, '/guardian', { method: 'GET', cookie });
-  assert.equal(g.status, 200); assert.ok(g.passes.remaining >= 50, '시험 계정 이용권 +40');
+  assert.equal(g.status, 200); assert.equal(g.passes.test, true); assert.equal(g.passes.remaining, 25, '시험 이용권 25장');
   const act = (body) => call(env, '/guardian/action', { cookie, body: { requestId: crypto.randomUUID(), clientVersion: 2, ...body } });
   assert.equal((await act({ kind: 'train', stat: 'attack' })).status, 400, '훈련 막음');
   assert.equal((await act({ kind: 'settings', difficulty: 'normal', weaponMode: 'melee', hero: p1.hero })).status, 400, '난이도 바꾸기 막음');
@@ -136,7 +136,7 @@ test('밸런스 시험 계정: 관리자가 test1~4에 친구 1마리를 주면 
   assert.equal(ok.status, 200); assert.deepEqual(state('test1').petCopies, { turtle: 120 });
   const start = (stage) => call(env, '/play/start', { cookie, body: { requestId: crypto.randomUUID(), clientVersion: 2, stage } });
   assert.equal((await start('CH03')).status, 409, '1-5가 아니면 출동 막음');
-  assert.equal((await start('CH05')).status, 200, '1-5 어려움은 출동');
+  const st = await start('CH05'); assert.equal(st.status, 200, '1-5 어려움은 출동'); assert.equal(st.passes.remaining, 24, '출동하면 바로 1장');
   assert.equal(env.DB.sql.prepare("SELECT COUNT(*) c FROM guardian_profiles WHERE user_id='student2' AND state LIKE '%testMode%'").get().c, 0);
 });
 

@@ -344,9 +344,10 @@ export function superTestProfile(base,{training=100,copies=80,level=10}={}){
 }
 // 친구 등급 시험 계정(2026-09-29 사용자 "밸런스팀: 학생마다 친구 하나, 등급별 5판씩 1-5 어려움"): 관리자가 켜는 시험 모드.
 //  친구 1마리만(testMode.pet) 가질 수 있고 등급은 학생이 로비 버튼으로 바로 바꾼다(action test-pet-grade). 그 밖의 조건은 모든 시험 계정이 같다:
-//  훈련 공격·체력·이동 20 · 파츠 없음 · 근거리 장비 6칸 레어 · 1-5 어려움만 출동(서버 /play/start도 막음) · 다른 조작(훈련·보급·장비·파츠·난이도) 막음.
-export const TEST_MODE={training:20,gearGrade:1,stage:'CH05',difficulty:'hard'};
-export function testModeProfile(base,{pet='turtle',grade=0,training=TEST_MODE.training,gearGrade=TEST_MODE.gearGrade}={}){
+//  훈련 공격·체력·이동 40 · 파츠 없음 · 근거리 장비 6칸 유니크 · 1-5 어려움만 출동(서버 /play/start도 막음) · 다른 조작(훈련·보급·장비·파츠·난이도) 막음.
+//  이용권(2026-09-29 사용자): 계정마다 passes장(25)만, 다시 채워지지 않음. 출동할 때마다 1장(성공·실패·중간 종료 모두) — 서버가 since 뒤 시작한 판 수로 센다.
+export const TEST_MODE={training:40,gearGrade:2,stage:'CH05',difficulty:'hard',passes:25};
+export function testModeProfile(base,{pet='turtle',grade=0,training=TEST_MODE.training,gearGrade=TEST_MODE.gearGrade,passes=TEST_MODE.passes,since=0}={}){
  if(!own(PETS,pet))throw new Error('없는 친구예요.');
  const p=clone(base||freshProfile()),g=clampInt(grade,0,CARD_COPIES.length-1),t=clampInt(training,1,TRAINING_MAX),gg=clampInt(gearGrade,0,CARD_COPIES.length-1);
  p.training={attack:t,hp:t,speed:t};p.coins=0;p.gifts=0;p.difficulty=TEST_MODE.difficulty;
@@ -357,7 +358,7 @@ export function testModeProfile(base,{pet='turtle',grade=0,training=TEST_MODE.tr
  p.gear=Object.fromEntries(gearIdsFor(p.hero).filter(id=>GEAR[id].type==='melee').map(id=>[id,{copies:CARD_COPIES[gg],grade:gg}]));
  p.equippedGear=Object.fromEntries(GEAR_SLOTS.map(s=>[s,`${p.hero}_melee_${s}`]));
  p.milestones={...(p.milestones||{}),firstPart:true,firstPet:true,bossPet:true,firstGear:true};p.testAccount=true;
- p.testMode={pet,stage:TEST_MODE.stage,difficulty:TEST_MODE.difficulty};
+ p.testMode={pet,stage:TEST_MODE.stage,difficulty:TEST_MODE.difficulty,passes:clampInt(passes,0,500),since:Math.max(0,Number(since)||0)};
  return p;
 }
 export const testGrade=p=>p?.testMode?cardGrade(petCopies(p,p.testMode.pet)):-1;
