@@ -1,4 +1,4 @@
-import { VERSION, SKILLS, COMBOS, SUPPORTS, runParts, action, completeRun, stageUnlocked, difficultyOf, hardGate, hardGateText, durationFor, superTestProfile, TEST_ACCOUNT_RE, needsPetMigration, migratePets } from '../../game/src/rework-core.js';
+import { VERSION, SKILLS, COMBOS, SUPPORTS, runParts, action, completeRun, stageUnlocked, difficultyOf, hardGate, hardGateText, durationFor, superTestProfile, petTestProfile, TEST_ACCOUNT_RE, needsPetMigration, migratePets } from '../../game/src/rework-core.js';
 import { migrateLegacy } from './legacy-migration.js';
 import { migrateProfileV2, needsPartsRepair, repairObsoleteParts, PARTS_FIX_SNAPSHOT } from './profile-migration-v2.js';
 
@@ -195,9 +195,12 @@ export async function guardianAdmin(request,env,sub,method,now=Date.now()){
     if(!TEST_ACCOUNT_RE.test(id))return reply({error:"시험 계정(아이디가 'qa'로 시작)만 바꿀 수 있어요."},400);
     if(!await db.prepare('SELECT id FROM users WHERE id=?').bind(id).first())return reply({error:'없는 아이디예요.'},404);
     const {profile}=await getProfile(db,id);
-    const next=superTestProfile(profile,{training:Number(b.training)||100,copies:Number(b.copies)||80,level:Number(b.level)||10});
+    // petGrade(0 노말~4 전설)가 있으면 친구 등급 시험 계정(친구 등급만 다르고 나머지는 같게), 없으면 슈퍼 계정
+    const petGrade=b.petGrade===undefined||b.petGrade===null?null:Number(b.petGrade);
+    if(petGrade!==null&&!(Number.isInteger(petGrade)&&petGrade>=0&&petGrade<=4))return reply({error:'petGrade는 0(노말)~4(전설)예요.'},400);
+    const next=petGrade!==null?petTestProfile(profile,{...(Number(b.training)?{training:Number(b.training)}:{}),petGrade}):superTestProfile(profile,{training:Number(b.training)||100,copies:Number(b.copies)||80,level:Number(b.level)||10});
     await db.prepare('UPDATE guardian_profiles SET state=?,revision=revision+1 WHERE user_id=?').bind(JSON.stringify(next),id).run();
-    return reply({ok:true,id,training:next.training,parts:Object.keys(next.parts).length,stages:Object.keys(next.stages).filter(k=>next.stages[k].cleared).length});
+    return reply({ok:true,id,training:next.training,parts:Object.keys(next.parts).length,stages:Object.keys(next.stages).filter(k=>next.stages[k].cleared).length,petCopies:next.petCopies});
   }
   // 캐릭터(성별) 바꾸기: 가입 때 고정된 캐릭터를 선생님이 한 번 바꿔 준다 — 장비가 하나도 없을 때만(장비는 성별마다 달라서)
   if(sub==='set-hero'&&method==='POST'){

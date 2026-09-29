@@ -342,6 +342,23 @@ export function superTestProfile(base,{training=100,copies=80,level=10}={}){
  p.equippedGear=Object.fromEntries(GEAR_SLOTS.map(s=>[s,`${p.hero}_ranged_${s}`]));p.weaponMode='ranged';
  return p;
 }
+// 친구 등급 시험 계정(2026-09-29 밸런스팀 "친구 등급별 성공률", 사용자 기준 1-5 어려움): 친구 4마리만 같은 등급(petGrade 0 노말 ~ 4 전설)이고
+// 나머지는 모든 계정이 똑같다 — 기본값은 어려움 준비 권장치(HARD_READY 1장): 훈련 공격·체력 40 · 이동 20, 유니크 파츠 3개(Lv1), 원거리 장비 6칸(노말),
+// 1-1~1-5 보통 성공(어려움 입장 조건 충족) · 어려움 난이도 · 코인·보급권 0. 한 계정 안에서는 친구만 바꿔 가며 비교한다. 'qa' 계정에만(관리 API test-profile petGrade).
+export const PET_TEST_PARTS=['PART_F1','PART_W1','PART_L1'];
+export function petTestProfile(base,{training=HARD_READY[1].attack,speed=HARD_READY[1].speed,petGrade=0,partCopies=GOLD_COPIES,gearGrade=0,difficulty='hard'}={}){
+ const p=clone(base||freshProfile()),t=clampInt(training,1,TRAINING_MAX),sp=clampInt(speed,1,TRAINING_MAX),g=clampInt(petGrade,0,CARD_COPIES.length-1),n=CARD_COPIES[g];
+ const gg=clampInt(gearGrade,0,CARD_COPIES.length-1);
+ p.training={attack:t,hp:t,speed:sp};p.coins=0;p.gifts=0;p.difficulty=Object.hasOwn(DIFFICULTIES,difficulty)?difficulty:'hard';
+ for(const id of ['CH01','CH02','CH03','CH04','CH05'])p.stages[id]={...(p.stages[id]||{}),cleared:true,stars:Math.max(2,p.stages[id]?.stars||0)};
+ p.parts=Object.fromEntries(PET_TEST_PARTS.map(id=>[id,{copies:clampInt(partCopies,1,LEGEND_COPIES),level:1}]));p.equippedParts=[...PET_TEST_PARTS];
+ p.petCopies=Object.fromEntries(PET_IDS.map(id=>[id,n]));p.pets=[...PET_IDS];p.petVersion=PET_VERSION;delete p.friendship;p.activePet=own(PETS,p.activePet)?p.activePet:'turtle';
+ p.hero=p.hero==='minji'?'minji':'hoya';p.heroLocked=true;p.weaponMode='ranged';
+ p.gear=Object.fromEntries([...gearIdsFor(p.hero).filter(id=>GEAR[id].type==='ranged').map(id=>[id,{copies:CARD_COPIES[gg],grade:gg}]),[`${p.hero}_melee_weapon`,{copies:1,grade:0}]]);
+ p.equippedGear=Object.fromEntries(GEAR_SLOTS.map(s=>[s,`${p.hero}_ranged_${s}`]));
+ p.milestones={...(p.milestones||{}),firstPart:true,firstPet:true,bossPet:true,firstGear:true};p.testAccount=true;p.petTest={grade:g,training:t,speed:sp,partCopies,gearGrade:gg,difficulty:p.difficulty};
+ return p;
+}
 // 개수 상한 없음(2차): 금 뒤에 남는 개수도 그대로 쌓는다. 금 파츠는 고르는 목록·원소 보급에서 빠지므로 "코인 60개" 낭비가 없다.
 export function addPart(p,id,qty=1){
  if(!own(PARTS,id))throw new Error('없는 파츠예요.');

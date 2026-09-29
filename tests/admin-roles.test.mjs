@@ -6,6 +6,7 @@ import { DatabaseSync } from 'node:sqlite';
 import fs from 'node:fs';
 import worker from '../server/src/index.js';
 import { migrate } from '../server/src/guardian.js';
+import { hardGate } from '../game/src/rework-core.js';
 
 class D1 {
   constructor() { this.sql = new DatabaseSync(':memory:'); this.sql.exec(fs.readFileSync(new URL('../server/schema.sql', import.meta.url), 'utf8')); }
@@ -103,6 +104,30 @@ test('시험용 슈퍼 계정: 관리자만, qa로 시작하는 계정만 모든
   const row = env.DB.sql.prepare("SELECT state FROM guardian_profiles WHERE user_id='qasuper'").get(), p = JSON.parse(row.state);
   assert.ok(p.stages.CH10.cleared && p.parts.PART_L2.copies === 80 && p.pets.length === 4 && p.petCopies.otter === 120 && p.gear[`${p.hero}_ranged_weapon`].copies === 120 && p.coins === 999999 && p.testAccount);
   assert.equal(env.DB.sql.prepare("SELECT COUNT(*) c FROM guardian_profiles WHERE user_id='student1' AND state LIKE '%testAccount%'").get().c, 0);
+});
+
+test('친구 등급 시험 계정: petGrade 0~4면 친구 4마리만 그 등급, 훈련·파츠·장비는 모두 같게(어려움 권장치, 1-5 어려움 입장 가능)', async () => {
+  const env = await makeEnv();
+  for (const id of ['qanormal', 'qalegend', 'student2']) assert.equal((await call(env, '/register', { body: { id, pw: 'pw-1234' } })).status, 200);
+  const owner = (await call(env, '/admin/login', { body: OWNER })).token, teacher = (await call(env, '/admin/login', { body: TEACHER })).token;
+  assert.equal((await call(env, '/admin/test-profile', { token: teacher, body: { id: 'qanormal', petGrade: 0 } })).status, 403);
+  assert.equal((await call(env, '/admin/test-profile', { token: owner, body: { id: 'student2', petGrade: 0 } })).status, 400, '학생 계정은 절대 바꾸지 않는다');
+  assert.equal((await call(env, '/admin/test-profile', { token: owner, body: { id: 'qanormal', petGrade: 5 } })).status, 400);
+  const state = (id) => JSON.parse(env.DB.sql.prepare('SELECT state FROM guardian_profiles WHERE user_id=?').get(id).state);
+  for (const [id, g, n] of [['qanormal', 0, 1], ['qalegend', 4, 120]]) {
+    const r = await call(env, '/admin/test-profile', { token: owner, body: { id, petGrade: g } });
+    assert.equal(r.status, 200); assert.deepEqual(r.training, { attack: 40, hp: 40, speed: 20 }); assert.equal(r.parts, 3);
+    const p = state(id);
+    assert.deepEqual(Object.values(p.petCopies), [n, n, n, n]); assert.equal(p.pets.length, 4);
+    assert.deepEqual(p.equippedParts, ['PART_F1', 'PART_W1', 'PART_L1']); assert.ok(p.equippedParts.every((id) => p.parts[id].copies === 7 && p.parts[id].level === 1));
+    assert.equal(Object.keys(p.equippedGear).length, 6); assert.ok(Object.values(p.equippedGear).every((id) => p.gear[id]?.grade === 0 && /_ranged_/.test(id)));
+    assert.ok(['CH01', 'CH02', 'CH03', 'CH04', 'CH05'].every((s) => p.stages[s].cleared) && !p.stages.CH06?.cleared);
+    assert.equal(p.coins, 0); assert.equal(p.gifts, 0); assert.equal(p.difficulty, 'hard'); assert.ok(p.heroLocked && p.testAccount);
+    assert.ok(hardGate(p, 'CH05').open, '1-5 어려움에 들어갈 수 있다');
+  }
+  const a = state('qanormal'), b = state('qalegend');   // 두 계정의 차이는 친구 카드 수뿐
+  for (const k of ['training', 'parts', 'equippedParts', 'gear', 'equippedGear', 'stages', 'coins', 'gifts', 'difficulty', 'weaponMode']) assert.deepEqual(a[k], b[k], k);
+  assert.equal(env.DB.sql.prepare("SELECT COUNT(*) c FROM guardian_profiles WHERE user_id='student2' AND state LIKE '%testAccount%'").get().c, 0);
 });
 
 test('보급권 지급: 선생님은 학생 한 명씩(보급권·코인·이용권), 모두에게 한 번에는 최고 관리자만 — 같은 요청은 두 번 지급되지 않는다', async () => {
