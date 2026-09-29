@@ -33,3 +33,6 @@ game/tools/qa/out/
 Thumbs.db
 desktop.ini
 .DS_Store
+# 홍보 영상 녹화물(크다)
+game/tools/pv/clips/
+홍보영상/

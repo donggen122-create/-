@@ -1,0 +1,19 @@
+<!doctype html><meta charset="utf-8"><title>beat</title><body style="background:#111">
+<script>
+// 배경음 박자 분석(확인용): 10ms 간격 에너지 변화 → BPM·첫 박 위치·센 박 목록
+(async () => {
+  const buf = await (await fetch("../../assets/audio/main-theme.mp3")).arrayBuffer();
+  const ac = new OfflineAudioContext(1, 44100, 44100), au = await ac.decodeAudioData(buf), sr = au.sampleRate;
+  const L = au.getChannelData(0), R = au.numberOfChannels > 1 ? au.getChannelData(1) : L;
+  const hop = Math.round(sr * 0.01), env = [];
+  for (let i = 0; i + hop < L.length; i += hop) { let s = 0; for (let j = i; j < i + hop; j++) { const v = (L[j] + R[j]) / 2; s += v * v; } env.push(Math.log(1e-6 + Math.sqrt(s / hop))); }
+  const on = env.map((v, i) => Math.max(0, v - (env[i - 1] ?? v)));
+  const N = Math.min(on.length, 6000); // 앞 60초
+  const score = []; for (let bpm = 70; bpm <= 190; bpm += 0.25) { const lag = 6000 / bpm; let s = 0, c = 0; for (let i = 0; i + lag < N; i++) { const j = i + lag, a = Math.floor(j), f = j - a; s += on[i] * (on[a] * (1 - f) + (on[a + 1] || 0) * f); c++; } score.push([bpm, s / c]); }
+  score.sort((a, b) => b[1] - a[1]); const bpm = score[0][1] ? score[0][0] : 0, per = 6000 / bpm;
+  let bestPh = 0, bestS = -1; for (let ph = 0; ph < per; ph += 0.5) { let s = 0; for (let k = 0; ph + k * per < N; k++) { const i = Math.round(ph + k * per); s += on[i] + (on[i - 1] || 0) + (on[i + 1] || 0); } if (s > bestS) { bestS = s; bestPh = ph; } }
+  const strong = on.slice(0, N).map((v, i) => [i / 100, v]).sort((a, b) => b[1] - a[1]).slice(0, 40).map((x) => +x[0].toFixed(2)).sort((a, b) => a - b);
+  window.__result = { top: score.slice(0, 6).map((x) => x[0]), bpm, beatSec: +(per / 100).toFixed(4), firstBeat: +(bestPh / 100).toFixed(3), strong };
+  window.__done = true;
+})().catch((e) => { window.__result = { error: String(e) }; window.__done = true; });
+</script>

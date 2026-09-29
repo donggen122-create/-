@@ -1,0 +1,13 @@
+<!doctype html><meta charset="utf-8"><title>bin sheet</title><style>html,body{margin:0;background:#111}canvas{display:block}</style>
+<canvas id="c" width="1920" height="1080"></canvas>
+<script type="module">
+// .bin 장면을 openClip으로 순서대로 풀어 6장 격자(확인용). ?bin=clips/t.bin&n=6&start=0
+import { openClip } from "./enc.js";
+const q=new URLSearchParams(location.search),g=document.getElementById('c').getContext('2d');
+try{const clip=await openClip(q.get('bin')),n=+(q.get('n')||6),st=+(q.get('start')||0),rd=clip.reader(st),dur=+(q.get('end')||clip.duration),times=[];const t0=performance.now();
+for(let i=0;i<n;i++){const t=st+(i+0.5)/n*(dur-st);const f=await rd.frameAt(t);const x=(i%3)*640,y=Math.floor(i/3)*540;if(f){g.drawImage(f,x,y,640,540);times.push([+t.toFixed(2),f.timestamp/1e6]);}g.fillStyle='rgba(0,0,0,.6)';g.fillRect(x,y,160,26);g.fillStyle='#fff';g.font='18px sans-serif';g.fillText(t.toFixed(2)+'s',x+8,y+19);}
+// 전체를 한 장씩 풀어 걸리는 시간
+const rd2=clip.reader(0);const t1=performance.now();let k=0;for(let i=0;i<clip.head.chunks.length;i++){const f=await rd2.frameAt(i/clip.head.fps);if(f)k++;}
+window.__result={dur,times,decodeAllMs:Math.round(performance.now()-t1),frames:k};}catch(e){window.__result={error:String(e.stack||e)};}
+window.__done=true;
+</script>

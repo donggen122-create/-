@@ -1,0 +1,25 @@
+<!doctype html>
+<meta charset="utf-8">
+<title>PV check</title>
+<style>html,body{margin:0;background:#111}canvas{display:block}</style>
+<canvas id="c" width="1920" height="1080"></canvas>
+<script>
+// 완성 영상 검사(확인용): ?v=clips/final.mp4&t=1,5,9 → 그 시각 화면 격자 + 소리(초마다 세기)·길이
+(async () => {
+  const q = new URLSearchParams(location.search), g = document.getElementById("c").getContext("2d");
+  const buf = await (await fetch(q.get("v"))).arrayBuffer();
+  const r = { bytes: buf.byteLength };
+  try {
+    const ac = new OfflineAudioContext(2, 48000, 48000), au = await ac.decodeAudioData(buf.slice(0));
+    const d = au.getChannelData(0), sr = au.sampleRate, per = [];
+    for (let s = 0; s < Math.floor(au.duration); s++) { let m = 0, pk = 0; for (let i = s * sr; i < (s + 1) * sr; i++) { m += d[i] * d[i]; pk = Math.max(pk, Math.abs(d[i])); } per.push(Math.round(Math.sqrt(m / sr) * 100)); }
+    r.audio = { duration: +au.duration.toFixed(2), channels: au.numberOfChannels, rmsPerSec: per.join(",") };
+  } catch (e) { r.audioErr = String(e); }
+  const v = document.createElement("video"); v.muted = true; v.src = URL.createObjectURL(new Blob([buf], { type: "video/mp4" }));
+  await new Promise((res) => v.addEventListener("loadedmetadata", res, { once: true }));
+  r.duration = +v.duration.toFixed(2); r.size = v.videoWidth + "x" + v.videoHeight;
+  const ts = (q.get("t") || "2,10,20,30,40,50").split(",").map(Number), cols = 3, rows = Math.ceil(ts.length / cols), cw = 1920 / cols, ch = 1080 / rows;
+  for (let i = 0; i < ts.length; i++) { v.currentTime = ts[i]; await new Promise((res) => v.addEventListener("seeked", res, { once: true })); await new Promise((res) => setTimeout(res, 60)); const x = (i % cols) * cw, y = Math.floor(i / cols) * ch; g.drawImage(v, x, y, cw, ch); g.fillStyle = "rgba(0,0,0,.6)"; g.fillRect(x, y, 90, 26); g.fillStyle = "#fff"; g.font = "18px sans-serif"; g.fillText(ts[i] + "s", x + 8, y + 19); }
+  window.__result = r; window.__done = true;
+})().catch((e) => { window.__result = { error: String(e) }; window.__done = true; });
+</script>
