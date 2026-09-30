@@ -178,6 +178,13 @@ export const STAGES = [
   { id:'CH08', name:'가스 탱크 공장', goal:'가스가 새는 밸브 5개 잠그기', target:5, enemyHp:1.35, enemyAtk:1.32, density:2.15, tip:'', story:'바닥에 세균몬이 숨어 있어. 가까이 가기 전에 멀리서 공격!', unlock:'' },
   { id:'CH09', name:'매연 도로', goal:'가스가 새는 밸브 6개 잠그기', target:6, enemyHp:1.45, enemyAtk:1.38, density:2.2, tip:'', story:'산성비 구름몬이 빗방울을 떨어뜨려. 표시를 보고 피하자!', unlock:'' },
   { id:'CH10', name:'굴뚝 대왕의 공장', goal:'가스가 새는 밸브 5개 잠그기', target:5, enemyHp:1.5, enemyAtk:1.42, density:2.2, tip:'', story:'파이프로 된 굴뚝 가스 대왕이 나타났어! 밸브를 잠가 대왕을 약하게 만들자.', unlock:'' },
+  // 3장 「오염된 하천」(2026-09-30, themes.js T3_*·학생 하천 몬스터): 목표는 비닐 고리에 걸린 물고기 구하기(물고기 옆에 서면 풀려남). 2-5를 성공하면 열린다.
+  // 적 체력·공격은 2장에 이어 조금씩(모의 전 시안 값 — docs/41).
+  { id:'CH11', name:'징검다리 개울', goal:'비닐에 걸린 물고기 3마리 구하기', target:3, enemyHp:1.6, enemyAtk:1.48, density:2.05, tip:'', story:'개울에 세제 거품이 둥둥! 거품몬을 정화하고 걸린 물고기를 구해 주자.', unlock:'' },
+  { id:'CH12', name:'빨래터', goal:'비닐에 걸린 물고기 4마리 구하기', target:4, enemyHp:1.7, enemyAtk:1.54, density:2.15, tip:'', story:'식용유 통 페트리가 떼로 몰려와! 뚜껑이 들썩이면 옆으로 피하자.', unlock:'' },
+  { id:'CH13', name:'하수구 옆', goal:'비닐에 걸린 물고기 5마리 구하기', target:5, enemyHp:1.8, enemyAtk:1.6, density:2.2, tip:'', story:'버려진 그물이 뭉친 유령그물 대장이 나타났어! 그물에 걸리지 않게 조심해.', unlock:'' },
+  { id:'CH14', name:'갈대 여울', goal:'비닐에 걸린 물고기 6마리 구하기', target:6, enemyHp:1.9, enemyAtk:1.66, density:2.25, tip:'', story:'녹조몬이 번지고 있어! 둘로 나뉘기 전에 빨리 정화하자.', unlock:'' },
+  { id:'CH15', name:'오수 배출구', goal:'비닐에 걸린 물고기 5마리 구하기', target:5, enemyHp:1.95, enemyAtk:1.7, density:2.25, tip:'', story:'오수 배출구에서 구정물 대왕이 솟아올랐어! 물고기를 구해 대왕을 약하게 만들자.', unlock:'' },
 ];
 
 const stageCopy=[
@@ -191,6 +198,11 @@ const stageCopy=[
  ['세균몬은 움직이지 않아요. 멀리서 공격하면 안전하게 없앨 수 있어요.','첫 성공 코인 120개 추가'],
  ['빗방울 표시가 3곳 생기면 곧 산성비가 떨어져요.','첫 성공 코인 120개 추가'],
  ['밸브를 5개 잠그면 대왕도 약해져요!','보급권 1장 추가 + 코인 60개 더'],
+ ['구정물 웅덩이 안에서는 앞이 잘 안 보여요. 갈대숲 곁은 안전해요.','첫 성공 코인 120개 추가'],
+ ['페트리가 지나간 기름 웅덩이를 밟으면 미끌미끌 느려져요.','첫 성공 코인 120개 추가'],
+ ['그물에 걸리면 방향키를 좌우로 흔들거나 손가락을 좌우로 문질러요.','첫 성공 코인 120개 추가'],
+ ['녹조몬 몸이 빵빵해지면 곧 둘로 나뉘어요.','첫 성공 코인 120개 추가'],
+ ['물고기를 5마리 구하면 대왕도 약해져요!','보급권 1장 추가 + 코인 60개 더'],
 ];
 STAGES.forEach((s,i)=>{s.tip=stageCopy[i][0];s.unlock=stageCopy[i][1];});
 const clone=x=>structuredClone(x);
@@ -204,8 +216,8 @@ export function freshProfile(legacy={}) {
 export function maxClear(p){return Math.max(0,...STAGES.filter(s=>p.stages?.[s.id]?.cleared).map(s=>Number(s.id.slice(2))));}
 export function stageUnlocked(p,id){const i=STAGES.findIndex(s=>s.id===id);return i===0||(i>0&&!!p.stages?.[STAGES[i-1].id]?.cleared);}
 export function availableTools(){return Object.keys(SKILLS);}
-// 대왕 단계(각 장의 5번째: 1-5·2-5)는 4분 뒤 대왕 등장
-export const BOSS_STAGES=['CH05','CH10'];
+// 대왕 단계(각 장의 5번째: 1-5·2-5·3-5)는 4분 뒤 대왕 등장
+export const BOSS_STAGES=['CH05','CH10','CH15'];
 export const isBossStage=id=>BOSS_STAGES.includes(id);
 export function durationFor(p,id){return ['CH01','CH02'].includes(id)&&!p.stages?.[id]?.cleared?180:isBossStage(id)?240:300;}
 // 훈련(기본 능력치) 만렙 100(2026-09-23 저녁 사용자). 비용 식은 그대로(100 + 25×(단계-1)), 40단계까지 한 능력치에 22,425코인, 100단계까지 131,175코인.
@@ -291,10 +303,12 @@ export const HARD_READY={
  1:{attack:40,hp:40,speed:20,uniqueParts:3,gearWorn:6,gearSet:4,gearRare:0},
  // 2장: 2026-09-25 사용자 "권장치 낮춰" — 장비 2배 최대치(docs/38)에서 레어 6세트로도 2-3 어려움 4/6, 유니크는 보급권 약 427장이라 너무 멀어 "레어 이상 6개"로
  2:{attack:40,hp:40,speed:20,uniqueParts:3,gearWorn:6,gearSet:6,gearRare:6},
+ // 3장(2026-09-30 시안): 모의 전이라 2장과 같게 둔다. 모의 뒤 사용자와 정한다(docs/41).
+ 3:{attack:40,hp:40,speed:20,uniqueParts:3,gearWorn:6,gearSet:6,gearRare:6},
 };
 export function stageChapter(stageId){const n=Number(String(stageId||'').replace(/\D/g,''))||1;return Math.floor((n-1)/5)+1;}
 export function hardReadiness(p,stageId){
- const ch=Math.min(2,Math.max(1,stageChapter(stageId))),need=HARD_READY[ch],t=p?.training||{},eq=p?.equippedGear||{};
+ const ch=Math.min(3,Math.max(1,stageChapter(stageId))),need=HARD_READY[ch],t=p?.training||{},eq=p?.equippedGear||{};
  const parts=runParts(p).filter(id=>grade(p.parts?.[id]?.copies||0)>=2).length;
  const worn=GEAR_SLOTS.map(s=>eq[s]).filter(id=>GEAR[id]&&GEAR[id].hero===p.hero&&gearGrade(p,id)>=0);
  const sets={};for(const id of worn)sets[GEAR[id].set]=(sets[GEAR[id].set]||0)+1;
@@ -314,10 +328,10 @@ export function hardReadiness(p,stageId){
 // 어려움 최소 기준(2026-09-26 사용자 "어려움 클리어를 위한 최소 기준을 두자" → "15, 20으로 해"): 채워야 그 단계를 어려움으로 시작할 수 있다(서버 /play/start도 막음).
 // ① 그 단계를 보통 이상(별 2개 이상)으로 먼저 성공 ② 훈련 공격력·체력 1장 15 · 2장 20. 실제 기록(9/23 저녁~9/26): 2장 어려움은 공격 훈련 9 이하 15판 0승.
 // 장비·파츠는 보급 운이 섞여 최소 기준에서 뺀다(권장치 HARD_READY는 안내로 그대로).
-export const HARD_MIN={1:{attack:15,hp:15},2:{attack:20,hp:20}};
+export const HARD_MIN={1:{attack:15,hp:15},2:{attack:20,hp:20},3:{attack:20,hp:20}};   // 3장은 시안 — 2장과 같게(모의 뒤 사용자와 정함)
 export const stageLabel=id=>`${stageChapter(id)}-${((Number(String(id||'').replace(/\D/g,''))||1)-1)%5+1}`;
 export function hardGate(p,stageId){
- const ch=Math.min(2,Math.max(1,stageChapter(stageId))),need=HARD_MIN[ch],t=p?.training||{};
+ const ch=Math.min(3,Math.max(1,stageChapter(stageId))),need=HARD_MIN[ch],t=p?.training||{};
  const items=[
   {key:'stage',label:`${stageLabel(stageId)} 보통 이상으로 먼저 성공`,now:(p?.stages?.[stageId]?.stars||0)>=DIFFICULTIES.normal.stars?1:0,need:1,unit:'',tab:'adventure'},
   {key:'attack',label:'공격력 훈련',now:t.attack||1,need:need.attack,unit:'단계',tab:'training'},

@@ -7,14 +7,14 @@ import {T2_ENEMIES,T2_BOSS,T2_STAGES,THEMES} from '../game/src/themes.js';
 import {BOSS_PATTERNS_T2,pickBossPattern} from '../game/src/boss-patterns.js';
 
 test('ten stages: chapter 2 opens after 1-5, 2-5 is a boss stage with the same first-clear bonus',()=>{
- assert.equal(R.STAGES.length,10);assert.deepEqual(R.STAGES.slice(5).map(s=>s.id),['CH06','CH07','CH08','CH09','CH10']);
+ assert.ok(R.STAGES.length>=10);assert.deepEqual(R.STAGES.slice(5,10).map(s=>s.id),['CH06','CH07','CH08','CH09','CH10']);   // 3장(CH11~)이 뒤에 붙는다
  const p=R.freshProfile();for(let i=1;i<=4;i++)p.stages[`CH0${i}`]={cleared:true,stars:1};
  assert.equal(R.stageUnlocked(p,'CH06'),false);p.stages.CH05={cleared:true,stars:1};assert.equal(R.stageUnlocked(p,'CH06'),true);assert.equal(R.stageUnlocked(p,'CH07'),false);
  assert.ok(R.isBossStage('CH10')&&R.isBossStage('CH05')&&!R.isBossStage('CH09'));assert.equal(R.durationFor(p,'CH10'),240);assert.equal(R.durationFor(p,'CH06'),300);
  for(let i=6;i<=9;i++)p.stages[`CH${String(i).padStart(2,'0')}`]={cleared:true,stars:1};
  const r=R.completeRun(p,{stage:'CH10',cleared:true,seconds:300,litter:5,difficulty:'normal'});
  assert.equal(r.reward.gifts,2);assert.ok(r.reward.coins>=210+120+60+30);   // 보급권 1 + 첫 대왕 1, 코인 기본+첫 성공+대왕+목표
- for(const s of R.STAGES.slice(5)){assert.match(s.goal,/밸브/);assert.ok(s.tip&&s.unlock&&s.story,s.id);}
+ for(const s of R.STAGES.slice(5,10)){assert.match(s.goal,/밸브/);assert.ok(s.tip&&s.unlock&&s.story,s.id);}
 });
 
 test('chapter-2 enemies, boss and stage mixes line up',()=>{

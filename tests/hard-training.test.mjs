@@ -39,7 +39,7 @@ test('success coins scale by difficulty (easy 0.8, normal 1, hard 2); failure co
 
 // 어려움 최소 기준(2026-09-26 사용자 "15, 20으로 해"): 그 단계 보통 이상 성공 + 공격력·체력 훈련 1장 15 · 2장 20. 장비·파츠·이동 속도는 기준이 아니다.
 test('hard gate: clear the stage on normal first and train attack/hp to 15 (chapter 1) or 20 (chapter 2)',()=>{
- assert.deepEqual(R.HARD_MIN,{1:{attack:15,hp:15},2:{attack:20,hp:20}});
+ assert.deepEqual(R.HARD_MIN,{1:{attack:15,hp:15},2:{attack:20,hp:20},3:{attack:20,hp:20}});   // 3장은 시안(2장과 같게)
  const p=R.freshProfile();
  let g=R.hardGate(p,'CH04');assert.equal(g.open,false);assert.equal(g.missing,3);assert.equal(R.hardGateText(g),'1-4 보통 이상으로 먼저 성공 · 공격력 훈련 1/15단계 · 체력 훈련 1/15단계');
  p.stages.CH04={cleared:true,stars:1};p.training={attack:15,hp:15,speed:1};

@@ -1,4 +1,4 @@
-// Theme 1 presentation only. No damage, random gameplay calls, saves or timers here.
+// Theme presentation only (1장·2장·3장 모양은 SKINS). No damage, random gameplay calls, saves or timers here.
 // All positions/radii use the same world pixels as main.js. Warnings never shrink the hit area.
 const FX_TAU = Math.PI * 2;
 const fxClamp = (n) => Math.max(0, Math.min(1, n));
@@ -10,7 +10,11 @@ export function createThemeEffects(sprites) {
   const SKINS = {
     1: { bit: "t1_prop_litter", drop: "t1_prop_litter", litter: "t1_prop_litter", minion: "t1_en_baggy", smog: "vfx_smog", boss: "쓰레기 산 대왕" },
     2: { bit: "t2_fx_smog", drop: "t2_fx_bomb", litter: "t2_prop_valve", minion: "t2_en_dust", smog: "t2_fx_smog", boss: "굴뚝 가스 대왕" },
+    // 3장 오염된 하천(2026-09-30): 튀는 조각 = 흙탕물 방울, 떨어지는 것 = 거품 폭탄, 목표 = 비닐 고리에 걸린 물고기, 오염 구역 = 구정물 웅덩이(sludge)
+    3: { bit: "t3_fx_cola", drop: "t3_fx_foam", litter: "t3_prop_fish_caught", minion: "t3_en_bubble", smog: "t3_fx_foam", boss: "구정물 대왕", zone: "sludge" },
   };
+  // 부채꼴 기술 그림(pat.fx): 불꽃 브레스(2장) · 구정물 파도(3장)
+  const CONE_FX = { flame: "t2_fx_flame", wave: "t3_fx_wave" };
   let skin = SKINS[1];
   const marks = [];   // 바닥 자국(대왕 내려찍기·착지 금, 박치기 끌린 자국): 캐릭터 아래에 그린다
   const textures = new Map();
@@ -144,7 +148,45 @@ export function createThemeEffects(sprites) {
     }
     c.restore();
   }
+  // 3장 구정물 웅덩이: 누런 갈색 웅덩이 그림을 한 번만 만들어 두고(그라데이션을 매 화면 만들지 않게) 찍는다
+  let sludgeTex = null;
+  function sludgeTexture() {
+    if (sludgeTex) return sludgeTex;
+    const cv = document.createElement("canvas"); cv.width = cv.height = 256;
+    const g = cv.getContext("2d"), m = 128, R = 122;
+    const edge = (k) => R * (.88 + .1 * Math.sin(k * 2.7 + 1.3) * Math.cos(k * 1.3));
+    g.beginPath();
+    for (let i = 0; i <= 28; i++) { const a = i * FX_TAU / 28, rr = edge(i % 28); g.lineTo(m + Math.cos(a) * rr, m + Math.sin(a) * rr); }
+    g.closePath();
+    const grad = g.createRadialGradient(m - 20, m - 25, 10, m, m, R);
+    grad.addColorStop(0, "rgba(150,120,62,.82)"); grad.addColorStop(.7, "rgba(122,96,48,.8)"); grad.addColorStop(1, "rgba(96,74,38,.86)");
+    g.fillStyle = grad; g.fill(); g.lineWidth = 5; g.strokeStyle = "#5c4424"; g.stroke();
+    g.save(); g.clip();
+    g.strokeStyle = "rgba(210,188,130,.45)"; g.lineWidth = 3; g.lineCap = "round";          // 물결
+    for (const [x, y, w] of [[92, 88, 34], [150, 150, 40], [90, 170, 26], [170, 84, 22]]) { g.beginPath(); g.ellipse(x, y, w, w * .35, -.2, Math.PI * 1.1, Math.PI * 1.9); g.stroke(); }
+    g.fillStyle = "rgba(40,34,30,.55)";                                                     // 기름띠
+    g.beginPath(); g.ellipse(160, 110, 26, 10, .5, 0, FX_TAU); g.fill();
+    g.beginPath(); g.ellipse(84, 140, 18, 7, -.4, 0, FX_TAU); g.fill();
+    g.restore();
+    g.lineWidth = 2; g.strokeStyle = "#6b5530";                                              // 거품
+    for (const [x, y, r] of [[110, 72, 7], [120, 64, 4], [182, 142, 6], [70, 118, 5], [140, 188, 6], [150, 196, 3.5]]) { g.fillStyle = "rgba(245,238,210,.9)"; g.beginPath(); g.arc(x, y, r, 0, FX_TAU); g.fill(); g.stroke(); }
+    sludgeTex = cv;
+    if (typeof createImageBitmap === "function") createImageBitmap(cv).then((bm) => { sludgeTex = bm; }).catch(() => {});
+    return sludgeTex;
+  }
+  function sludge(c, x, y, r, time, remaining = 1, danger = true) {
+    c.save(); c.globalAlpha *= fxClamp(remaining * 3); c.imageSmoothingEnabled = true;
+    c.drawImage(sludgeTexture(), x - r, y - r, r * 2, r * 2);
+    if (!quiet()) for (let i = 0; i < 3; i++) {                                             // 올라오는 거품 몇 개
+      const f = (time * .5 + i * .33) % 1, a = i * 2.1 + 0.6, d = r * (.25 + .18 * i);
+      c.globalAlpha = .8 * Math.sin(f * Math.PI); c.fillStyle = "#efe4c2"; c.strokeStyle = "#6b5530"; c.lineWidth = 1.5;
+      circle(c, x + Math.cos(a) * d, y + Math.sin(a) * d, 3 + 5 * f); c.fill(); c.stroke();
+    }
+    c.restore();
+    if (danger) { c.save(); ring(c, x, y, r, "#8a6424", 2); label(c, "!", x, y - r + 15, "#6b4a1a"); c.restore(); }
+  }
   function smog(c, x, y, r, time, remaining = 1, danger = true) {
+    if (skin.zone === "sludge") { sludge(c, x, y, r, time, remaining, danger); return; }
     c.save(); const alpha = fxClamp(remaining * 3);
     c.globalAlpha *= alpha;
     circle(c, x, y, r); c.save(); c.clip();
@@ -204,7 +246,7 @@ export function createThemeEffects(sprites) {
         const q = toScreen(spot.x, spot.y); warning(c, q.x, q.y, r, t);
         // Flights land exactly when resolveBossPattern applies damage. Shadows stay at target.
         const fall = quiet() ? 20 : 110 * (1 - t);
-        stamp(c, pat.kind === "litter" ? skin.litter : skin.drop, q.x, q.y - fall, 26 + 10 * t, .7, quiet() ? 0 : t * 2);
+        stamp(c, pat.kind === "litter" ? skin.litter : pat.drop || skin.drop, q.x, q.y - fall, 26 + 10 * t, .7, quiet() ? 0 : t * 2);
       }
     } else if (pat.kind === "cone") {
       const r = 4 * U;
@@ -217,7 +259,8 @@ export function createThemeEffects(sprites) {
         c.setLineDash([5, 5]); ring(c, x, y, 2.4 * U, "#927535", 2); c.setLineDash([]);
         label(c, "!", x, y + 4, "#945525");
       }
-      stamp(c, pat.fx === "flame" ? "t2_fx_flame" : skin.smog, s.x + (pat.fx === "flame" ? Math.cos(pat.aimAngle) * 30 : 0), s.y - 25, 38 + 15 * t, pat.fx === "flame" ? .35 + .4 * t : .4, pat.fx === "flame" ? pat.aimAngle : 0);
+      const fxKey = CONE_FX[pat.fx];
+      stamp(c, fxKey || skin.smog, s.x + (fxKey ? Math.cos(pat.aimAngle) * 30 : 0), s.y - 25, 38 + 15 * t, fxKey ? .35 + .4 * t : .4, fxKey ? pat.aimAngle : 0);
     } else if (pat.kind === "vacuum") {
       warning(c, s.x, s.y, 2.5 * U, t);
       for (let i = 0; i < 8; i++) {
@@ -280,9 +323,14 @@ export function createThemeEffects(sprites) {
   function blast(c, b, x, y) {
     const t = fxClamp(1 - b.life / b.maxLife), r = b.radius;
     if (!b.vfxKind) { purify(c, x, y, t, Math.min(180, r * 1.4)); return; }
-    if (b.vfxKind === "flame") {               // 불꽃 브레스: 불길 그림이 부채꼴 방향으로 뻗었다 사라진다
+    if (CONE_FX[b.vfxKind]) {                  // 불꽃 브레스·구정물 파도: 그림이 부채꼴 방향으로 뻗었다 사라진다
       c.save(); c.globalAlpha = 1 - t * t;
-      const ok = stamp(c, "t2_fx_flame", x + Math.cos(b.ang || 0) * r * .55, y + Math.sin(b.ang || 0) * r * .55, r * (1.1 + .3 * fxEase(t)), 1, b.ang || 0);
+      const ok = stamp(c, CONE_FX[b.vfxKind], x + Math.cos(b.ang || 0) * r * .55, y + Math.sin(b.ang || 0) * r * .55, r * (1.1 + .3 * fxEase(t)), 1, b.ang || 0);
+      c.restore(); if (ok) return;
+    }
+    if (b.vfxKind === "foam" || b.vfxKind === "oil") {   // 3장 거품 폭탄 터짐·기름 방울 떨어짐: 그림이 퍼지며 옅어진다
+      c.save(); c.globalAlpha = 1 - t;
+      const ok = stamp(c, b.vfxKind === "foam" ? "t3_fx_foam" : "t3_fx_oil", x, y, r * 2 * (.6 + .5 * fxEase(t)), 1);
       c.restore(); if (ok) return;
     }
     if (b.vfxKind === "splat") {               // 세균 터짐·산성비: 연두색 방울이 튀며 옅어진다

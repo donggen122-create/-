@@ -1,5 +1,5 @@
 import {SKILLS as ELEMENT_SKILLS,COMBOS,STAGES} from './rework-core.js';
-import {BOSS_PATTERNS,BOSS_PATTERNS_T2} from './boss-patterns.js';
+import {BOSS_PATTERNS,BOSS_PATTERNS_T2,BOSS_PATTERNS_T3} from './boss-patterns.js';
 export const BOSS_HP_MULT=1900;
 export function installReworkContent({SKILLS,PASSIVES,EVOLUTIONS,CHAPTERS,BOSSES}){
   // Historical data remains archived; only the live combat catalog is replaced.
@@ -8,7 +8,8 @@ export function installReworkContent({SKILLS,PASSIVES,EVOLUTIONS,CHAPTERS,BOSSES
   for(const id of Object.keys(EVOLUTIONS))delete EVOLUTIONS[id];
   for(const [id,d] of Object.entries({...ELEMENT_SKILLS,...COMBOS}))SKILLS[id]={...d,maxLevel:3,apply:lv=>({dmgMul:[1,1.3,1.6][lv-1]||1,areaMul:1,intervalMul:1})};
   // 2장(CH06~)은 매연 구역이 모든 단계에 조금씩(themes.js T2_STAGES 값보다 개편판 값이 우선)
-  STAGES.forEach((s,i)=>Object.assign(CHAPTERS[i],{name:s.name,enemyMult:1,density:[1.05,1.10,1.20,1.30,1.40,1.12,1.18,1.26,1.34,1.42][i]??1.4,dark:i>=5?.06+.01*(i-5):i>=3?.07:0}));
+  // 3장(CH11~)은 구정물 웅덩이가 모든 단계에 조금씩(2장과 같은 비율)
+  STAGES.forEach((s,i)=>Object.assign(CHAPTERS[i],{name:s.name,enemyMult:1,density:[1.05,1.10,1.20,1.30,1.40,1.12,1.18,1.26,1.34,1.42,1.16,1.22,1.30,1.38,1.44][i]??1.44,dark:i>=10?.06+.01*(i-10):i>=5?.06+.01*(i-5):i>=3?.07:0}));
   // 보스 강화(2026-09-23 저녁 사용자 "보스가 너무 약해"): 전에는 보통에서 4~6초 만에 쓰러졌다(docs/29). 거리별 기술표는 boss-patterns.js.
   const boss=BOSSES.T1_BOSS;boss.hpMult=BOSS_HP_MULT;boss.atkMult=1.25;boss.spdU=1.6;boss.rangePatterns=true;
   boss.patterns=BOSS_PATTERNS.map(p=>({...p}));
@@ -16,4 +17,7 @@ export function installReworkContent({SKILLS,PASSIVES,EVOLUTIONS,CHAPTERS,BOSSES
   const boss2=BOSSES.T2_BOSS;if(boss2){boss2.hpMult=Math.round(BOSS_HP_MULT*1.15);boss2.atkMult=1.35;boss2.spdU=1.5;boss2.rangePatterns=true;boss2.patterns=BOSS_PATTERNS_T2.map(p=>({...p}));
     // 난이도별 체력(DIFFICULTIES.bossHp 대신): 쉬움·보통은 1-5보다 약 2.5배 오래, 어려움은 적 체력이 이미 5.5배라 1-5와 비슷하게(docs/30 모의)
     boss2.diffHp={easy:1.2,normal:2.1,hard:.35};}
+  // 3-5 구정물 대왕(2026-09-30 시안): 2-5보다 조금 더 튼튼하고 세게. 난이도 체력은 2-5와 같은 비율(모의 전 — docs/41)
+  const boss3=BOSSES.T3_BOSS;if(boss3){boss3.hpMult=Math.round(BOSS_HP_MULT*1.25);boss3.atkMult=1.45;boss3.spdU=1.5;boss3.rangePatterns=true;boss3.patterns=BOSS_PATTERNS_T3.map(p=>({...p}));
+    boss3.diffHp={easy:1.2,normal:2.1,hard:.35};}
 }

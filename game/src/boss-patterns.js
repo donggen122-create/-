@@ -38,6 +38,25 @@ export const BOSS_PATTERNS_T2 = [
   { name: '먼지몬 부르기', kind: 'summonOnly', ranges: ['far', 'mid'], telegraphS: .9, dmg: 0, summon: { id: 'T2_DUST', n: 5 }, phase: 2, hint: '먼지몬부터 치워요!' },
   { name: '밸브 터뜨리기', kind: 'litter', ranges: ['any'], telegraphS: 1.2, dmg: .8, count: 5, hint: '새는 밸브를 잠그면 대왕이 약해져요!' },
 ];
+// 3-5 구정물 대왕(2026-09-30, 이미지 에셋/테마3_개울_프롬프트.md 단계 구성): 쓰레기가 비쳐 보이는 구정물 슬라임 왕. 같은 틀(거리 묶음·follow·3번째마다 목표)에 기술만 다르다.
+//  - 근거리: 구정물 파도(부채꼴 물결) · 철퍼덕(원, 화나면 한 번 더 크게) · 기름 웅덩이 뿌리기(떨어진 자리에 5초 기름 웅덩이 — 느려지고 조금씩 닳음)
+//  - 중거리: 구정물 미끄럼(빨간 길 — 대왕이 미끄러져 옴, 화나면 한 번 더) · 기름 웅덩이 뿌리기 · 거품 폭탄
+//  - 원거리: 거품 폭탄(떨어질 자리 표시) · 쓰레기 튀기기(몸속 쓰레기가 부채꼴로 날아옴, 화나면 더 많이) · 철퍼덕 점프 · 거품몬 부르기(화난 뒤)
+//  - 비닐 고리 뿌리기: 3번째 기술마다 비닐 고리에 걸린 물고기를 흩뿌림 → 5마리 구하면 대왕이 약해진다(1장 쓰레기 뿌리기와 같은 규칙)
+// drop: 떨어질 자리 표시 위에 보이는 그림(theme-effects telegraph), field: 떨어진 자리에 남는 웅덩이(main.js resolveBossPattern), fx: 부채꼴 그림
+export const BOSS_PATTERNS_T3 = [
+  { name: '구정물 파도', kind: 'cone', ranges: ['close'], telegraphS: 1.0, dmg: 1.7, fx: 'wave', hint: '대왕 뒤나 옆으로 돌아가요!' },
+  { name: '철퍼덕', kind: 'slam', ranges: ['close'], telegraphS: 1.0, dmg: 1.7, radiusU: 3.2, knockback: 2.2, hint: '원 밖으로 빠져나가요!',
+    follow: { name: '한 번 더 철퍼덕', kind: 'slam', telegraphS: .75, dmg: 1.2, radiusU: 4.6, knockback: 1.5, hint: '한 번 더! 더 멀리!' } },
+  { name: '기름 웅덩이 뿌리기', kind: 'scatter', ranges: ['close', 'mid'], telegraphS: 1.2, dmg: .9, count: 5, spreadU: 3.2, drop: 't3_fx_oil', field: 'oil', hint: '표시 밖으로! 기름 웅덩이는 밟지 않아요' },
+  { name: '구정물 미끄럼', kind: 'dashLine', ranges: ['mid'], telegraphS: 1.1, dmg: 1.6, lengthU: 8, hint: '빨간 길에서 옆으로 비켜요!',
+    follow: { name: '다시 미끄럼', kind: 'dashLine', telegraphS: .8, dmg: 1.6, lengthU: 8, hint: '또 온다! 옆으로!' } },
+  { name: '거품 폭탄', kind: 'scatter', ranges: ['mid', 'far'], telegraphS: 1.3, dmg: 1.2, count: 7, spreadU: 4, drop: 't3_fx_foam', hint: '표시가 없는 곳으로 피해요!' },
+  { name: '쓰레기 튀기기', kind: 'volley', ranges: ['far'], telegraphS: .9, dmg: .6, waves: 3, shots: 5, angryWaves: 4, angryShots: 7, spread: .9, speedU: 5.2, hint: '날아오는 쓰레기를 옆으로 피해요!' },
+  { name: '철퍼덕 점프', kind: 'leap', ranges: ['far'], telegraphS: 1.3, dmg: 1.6, radiusU: 2.6, hint: '그림자에서 벗어나요!' },
+  { name: '거품몬 부르기', kind: 'summonOnly', ranges: ['far', 'mid'], telegraphS: .9, dmg: 0, summon: { id: 'T3_BUBBLE', n: 4 }, phase: 2, hint: '거품몬부터 치워요!' },
+  { name: '비닐 고리 뿌리기', kind: 'litter', ranges: ['any'], telegraphS: 1.2, dmg: .8, count: 5, hint: '걸린 물고기를 구하면 대왕이 약해져요!' },
+];
 // 대왕이 몸으로 부딪히면(0.6초마다) 공격력의 이만큼. 난이도의 1초 접촉 피해 상한(contactCap)을 함께 따른다.
 export const BOSS_CONTACT = .5;
 

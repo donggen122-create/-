@@ -100,6 +100,7 @@
 .sg-grade-row{display:flex;align-items:center;gap:8px;flex-wrap:wrap;font-size:13px!important;margin:5px 0!important}.sg-grade-row .sg-medal{margin-left:0;min-width:52px}
 /* 모험 장(챕터) 이동 막대 + 장마다 색(2026-09-23 밤). 1장 쓰레기 마을 = 새싹 초록·햇살 노랑·흙길, 2장 대기오염 공장 = 매연 회보라·녹 주황·경고 노랑 */
 .sg-adventure{--t-accent:#2f8a5b;--t-accent-dark:#1d6641;--t-soft:#e4f3dc;--t-card:#fffdf3;--t-line:#cfe2bf;--t-path:#d9c79b;--t-ink:#27442f;--t-sun:#f2c14b;--t-board:linear-gradient(180deg,#f3f9e9 0%,#fbf5e3 100%);border-radius:24px;padding:18px 20px 22px;background:var(--t-board);border:1px solid var(--t-line)}
+.sg-adventure.sg-theme-3{--t-accent:#1f8fa8;--t-accent-dark:#136277;--t-soft:#e2f1f0;--t-card:#f8fcfb;--t-line:#b3d6d6;--t-path:#8cc6d2;--t-ink:#1d3a40;--t-sun:#f2c14b;--t-board:linear-gradient(180deg,#e9e3cf 0%,#dcebe2 45%,#cfe6ea 100%)}
 .sg-adventure.sg-theme-2{--t-accent:#d5722a;--t-accent-dark:#984c16;--t-soft:#e9e5ee;--t-card:#f6f4f8;--t-line:#bdb5c9;--t-path:#8e879b;--t-ink:#2e2a3a;--t-sun:#efc233;--t-board:linear-gradient(180deg,#d9d4cf 0%,#c9c4d4 55%,#bdb7c8 100%)}
 .sg-adventure .sg-eyebrow{color:var(--t-accent-dark)}
 .sg-adventure h1{color:var(--t-ink)!important}
@@ -117,6 +118,8 @@
 #guardian-lobby .sg-chip-2{background:#eeebf2!important;border-color:#b7afc4!important}.sg-chip-2>b{background:#6f6782}
 #guardian-lobby .sg-chip-1.on{border-color:#2f8a5b!important;box-shadow:0 4px 0 #b9d9a4!important}
 #guardian-lobby .sg-chip-2.on{border-color:#d5722a!important;box-shadow:0 4px 0 #a79fb4!important}.sg-chip-2.on>b{background:#d5722a}
+#guardian-lobby .sg-chip-3{background:#eaf5f4!important;border-color:#a9cfd2!important}.sg-chip-3>b{background:#4f8f7c}
+#guardian-lobby .sg-chip-3.on{border-color:#1f8fa8!important;box-shadow:0 4px 0 #a9cfd2!important}.sg-chip-3.on>b{background:#1f8fa8}
 .sg-adventure .sg-stage-map{padding:16px 14px;border-radius:20px;background:var(--t-soft);border:1px solid var(--t-line)}
 .sg-adventure .sg-stage-map:before{border-top-color:var(--t-path);left:10%;right:10%}
 .sg-theme-2 .sg-stage-map:before{border-top:10px solid var(--t-path);border-radius:5px;box-shadow:0 3px 0 #6f687d}
@@ -544,3 +547,21 @@
 .sg-dialog .sg-test-grades button.sg-grade-0{background:#ededed}.sg-dialog .sg-test-grades button.sg-grade-1{background:#ddebf7}.sg-dialog .sg-test-grades button.sg-grade-2{background:#e4dfec}.sg-dialog .sg-test-grades button.sg-grade-3{background:#fce4d6}.sg-dialog .sg-test-grades button.sg-grade-4{background:#fff2cc}
 .sg-test-grades button.on{border-color:#2f5597}.sg-test-grades button b{font-size:18px}.sg-test-grades button small{font-size:11px}
 @media (max-width:640px){.sg-test-card{grid-template-columns:1fr}.sg-test-grades{grid-template-columns:repeat(2,1fr)}}
+/* ---- 3장 「오염된 하천」(2026-09-30): 개울 물빛 파랑 · 갈대 초록 · 모래 베이지. 단계 번호는 물방울, 길은 물결 점선, 출동 그림은 사용자 마을 카드(오염된 개울 → 3-5 정화 후 맑은 개울과 수달) ---- */
+#guardian-lobby .sg-chapter-chip.sg-chip-3.on{background:#dcf0f1!important}
+.sg-theme-3 .sg-stage-number{background:#1f8fa8;color:#fff;border:2px solid #bfe6ee;border-radius:50% 50% 50% 8px;text-shadow:0 1px 1px #0005}
+#guardian-lobby .sg-theme-3 .sg-stage.cleared{background:#e6f5f3!important}
+.sg-theme-3 .sg-stage:not(:last-child):after{border-top:8px dotted var(--t-path)}
+.sg-theme-3 .sg-stage>img{filter:drop-shadow(0 2px 0 #0002)}
+.sg-theme-3 .sg-stage-gift.done{background:#136277;color:#e2f1f0;border-radius:8px;padding:2px 8px}
+.sg-theme-3 .sg-chapter-art{background:linear-gradient(180deg,#1d3a4010 0%,#1d3a4066 100%),url('../assets/sprites/t3/card_polluted.jpg') center/cover!important}
+.sg-theme-3 .sg-chapter-art.clean{background:linear-gradient(180deg,#ffffff00,#ffffff33),url('../assets/sprites/t3/card_clean.jpg') center/cover!important}
+.sg-theme-3 .sg-chapter-art>span:last-child{color:#fff!important;text-shadow:0 1px 3px #000c}
+.sg-theme-3 .sg-chapter-art>span:last-child .sg-inline{color:#ffe27a!important;text-shadow:0 1px 3px #000c;text-decoration-color:#ffe27a}
+/* 3장이 생겨 폰에서 장 단추 3개가 한 줄에 들어가면서(2026-09-30) 칸이 좁아 이름이 옆 단추로 넘쳤다 → 폰에서는 "N장" 위, 이름·진행 아래로 세로로 */
+@media(max-width:760px){
+ #guardian-lobby .sg-chapter-chip{grid-template-columns:1fr;grid-template-rows:auto;justify-items:center;text-align:center;row-gap:3px;padding:6px 4px!important}
+ .sg-chapter-chip>b{grid-row:auto}
+ .sg-chapter-chip>span{font-size:12px;line-height:1.2}
+ .sg-chapter-chip>small{font-size:9.5px!important;white-space:nowrap}
+}

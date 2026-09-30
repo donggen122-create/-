@@ -20,10 +20,12 @@ import { createFrameClock, createRenderQuality, setText, setWidth } from "./runt
 import { createThemeEffects } from "./theme-effects.js";
 import { setEffectQuality } from "./element-effects.js";
 const themeFx = createThemeEffects(SPRITES);
-// 장마다 다른 목표 그림·정화 장치·문구(1장 쓰레기 마을 / 2장 대기오염 공장 지대, 2026-09-24)
+// 장마다 다른 목표 그림·정화 장치·문구(1장 쓰레기 마을 / 2장 대기오염 공장 지대, 2026-09-24 / 3장 오염된 하천, 2026-09-30)
 const THEME_SKIN = {
-  1: { litter: "t1_prop_litter", litterH: 30, beacon: "t1_prop_bins", beaconH: 96, shot: "t1_fx_trashball", goal: "쓰레기 줍기", pick: "쓰레기 줍기 🌱+3", bossPick: "정화! 대왕이 약해졌어요", bossDrop: "쓰레기를 주워서 정화하자!" },
-  2: { litter: "t2_prop_valve", litterH: 40, beacon: "t2_prop_tree", beaconH: 104, shot: "t2_fx_bomb", goal: "밸브 잠그기", pick: "밸브 잠금! 🌱+3", bossPick: "밸브 잠금! 대왕이 약해졌어요", bossDrop: "새는 밸브를 잠가서 막자!" },
+  1: { litter: "t1_prop_litter", litterH: 30, beacon: "t1_prop_bins", beaconH: 96, shot: "t1_fx_trashball", goal: "쓰레기 줍기", pick: "쓰레기 줍기 🌱+3", bossPick: "정화! 대왕이 약해졌어요", bossDrop: "쓰레기를 주워서 정화하자!", zone: "악취 구역" },
+  2: { litter: "t2_prop_valve", litterH: 40, beacon: "t2_prop_tree", beaconH: 104, shot: "t2_fx_bomb", goal: "밸브 잠그기", pick: "밸브 잠금! 🌱+3", bossPick: "밸브 잠금! 대왕이 약해졌어요", bossDrop: "새는 밸브를 잠가서 막자!", zone: "매연 구역" },
+  // 3장 오염된 하천(2026-09-30): 목표 = 비닐 고리에 걸린 물고기 구하기, 안전 구역 = 갈대숲, 대왕 연속 던지기 = 몸속 쓰레기
+  3: { litter: "t3_prop_fish_caught", litterH: 40, beacon: "t3_prop_reeds", beaconH: 112, shot: "t1_fx_trashball", goal: "물고기 구하기", pick: "물고기 구출! 🌱+3", bossPick: "물고기 구출! 대왕이 약해졌어요", bossDrop: "비닐에 걸린 물고기를 구하자!", zone: "구정물 웅덩이" },
 };
 const skin = () => THEME_SKIN[chapter?.theme] || THEME_SKIN[1];
 import { RAW_CHARACTERS } from "./content.data.js";
@@ -1023,7 +1025,11 @@ function buildDecor() {
   // 환경 테마 1 소품. h = 화면 높이(px), solid = 장애물 반경(px, 플레이어·적이 지나갈 수 없음), bumper = 부딪힌 적을 튕겨 냄,
   // bin = 곁에 서면 정리(새싹·금화), litter = 밟아서 줍기(새싹), chest = 재활용 봉투(금화)
   const t1 = !!chapter?.theme;
-  const kinds = chapter?.theme === 2 ? [       // 2장: 드럼통·굴뚝·파이프·받침대(장애물) · 교통 콘(적을 튕겨 냄) · 새는 밸브(목표) · 재활용 봉투
+  const kinds = chapter?.theme === 3 ? [       // 3장: 바위(장애물) · 쓰레기 더미(장애물, 폐타이어라 적을 튕겨 냄) · 징검다리(밟고 지나감) · 걸린 물고기(목표) · 재활용 봉투
+    { sprite: "t3_prop_rock", h: 44, solid: 17 }, { sprite: "t3_prop_trash", h: 44, solid: 18, bumper: true }, { sprite: "item_recycle", h: 28, chest: true },
+    { sprite: "t3_prop_stones", h: 50, flat: true }, { sprite: "t3_prop_fish_caught", h: 40, litter: true },
+    { sprite: "t3_prop_rock", h: 34, solid: 13 }, { sprite: "item_recycle", h: 28, chest: true }, { sprite: "t3_prop_fish_caught", h: 40, litter: true },
+  ] : chapter?.theme === 2 ? [       // 2장: 드럼통·굴뚝·파이프·받침대(장애물) · 교통 콘(적을 튕겨 냄) · 새는 밸브(목표) · 재활용 봉투
     { sprite: "t2_prop_drums", h: 44, solid: 16 }, { sprite: "t2_prop_cones", h: 36, solid: 14, bumper: true }, { sprite: "item_recycle", h: 28, chest: true },
     { sprite: "t2_prop_chimney", h: 54, solid: 18 }, { sprite: "t2_prop_pipe", h: 26, solid: 14 }, { sprite: "t2_prop_valve", h: 40, litter: true },
     { sprite: "t2_prop_pedestal", h: 34, solid: 12 }, { sprite: "item_recycle", h: 28, chest: true }, { sprite: "t2_prop_valve", h: 40, litter: true },
@@ -1074,6 +1080,7 @@ function updateDecor(dt) {
         d.opened = true;
         runStats.litter=(runStats.litter||0)+1;
         dropSprouts(d.x, d.y, 3);
+        if (chapter?.theme === 3) sgFishJump(d.x, d.y);   // 3장: 풀려난 물고기가 물 위로 뛰어오른다
         hitFx.push({ x: d.x, y: d.y, life: 0.3, maxLife: 0.3, color: "#9fe07a", vfxKind: "clean" });
         playSfx("gemPickup", 0.5);
         if (d.bossLitter && boss && boss.hp > 0 && ++player.sgBossLitter%5===0) {
@@ -1391,7 +1398,7 @@ function newRun(chapterId, modeId = "M01") {
   floatingTexts = [];
   hitFx = [];
   deathFx = [];
-  themeFx.reset();sgElements.reset();sgWeapon.reset();sgHostileShots=[];sgAcid=[];
+  themeFx.reset();sgElements.reset();sgWeapon.reset();sgHostileShots=[];sgAcid=[];sgPuddles=[];sgNets=[];sgFish=[];
   beams = [];
   strikes = [];
   blasts = [];
@@ -1822,12 +1829,21 @@ function updatePlayer(dt) {
     if (player.stinkT >= 0.5) { player.stinkT -= 0.5; applyBossHit(player.hpMax * 0.015); }
   } else player.stinkT = 0;
 
+  // 3장 유령그물: 걸리면 최대 3초 못 움직인다. 방향을 바꿔 흔들 때마다 0.35초씩 빨리 풀림(최소 1초). 스킬·기본 무기는 그대로 나간다.
+  if (player.t3NetT > 0) {
+    player.t3NetHeld += dt; player.t3NetT -= dt;
+    const key = Math.abs(dx) >= Math.abs(dy) ? (dx > 0.3 ? 1 : dx < -0.3 ? -1 : 0) : (dy > 0.3 ? 2 : dy < -0.3 ? -2 : 0);
+    if (key && key !== player.t3NetShake) { if (player.t3NetShake) player.t3NetT -= 0.35; player.t3NetShake = key; }
+    if (player.t3NetT <= 0 && player.t3NetHeld < 1) player.t3NetT = 1e-3;
+    dx = 0; dy = 0;
+  }
+
   player.moving = dx !== 0 || dy !== 0;
   if (player.moving) {
     const len = Math.hypot(dx, dy);
     dx /= len; dy /= len;
     // 이동 속도: 패시브·특성·수집품 합산 상한 +60% (docs/06 §1), 고유 능력 버프 +30%
-    const spdMul = (1 + Math.min(0.6, stat("speedPct")) + (player.buffKind === "speed" && player.buffT > 0 ? 0.3 : 0) + (sgGear.stealUntil > runTime ? 0.4 : 0) + (sgPet.speedUntil > runTime ? 0.3 : 0)) * stinkSlow;
+    const spdMul = (1 + Math.min(0.6, stat("speedPct")) + (player.buffKind === "speed" && player.buffT > 0 ? 0.3 : 0) + (sgGear.stealUntil > runTime ? 0.4 : 0) + (sgPet.speedUntil > runTime ? 0.3 : 0)) * stinkSlow * (player.t3Slow || 1);   // t3Slow: 3장 거품·기름·녹조 웅덩이
     player.x += dx * player.speedU * spdMul * U * dt * speedScale;
     player.y += dy * player.speedU * spdMul * U * dt * speedScale;
     if (dx > 0.01) player.facing = 1; else if (dx < -0.01) player.facing = -1;
@@ -2227,7 +2243,7 @@ function updateOrbit(dt) {
   }
 }
 
-function updateSkills(dt) { sgWeapon.update(dt); sgElements.update(dt); sgThreatTick(dt); sgT2Tick(dt); sgGearTick(dt); }
+function updateSkills(dt) { sgWeapon.update(dt); sgElements.update(dt); sgThreatTick(dt); sgT2Tick(dt); sgT3Tick(dt); sgGearTick(dt); }
 const ATTACK_ANIM_S = 0.3, JUMP_ANIM_S = 0.7;
 
 // dir: 넉백 방향(정규화 전 벡터), knock: 넉백 세기(u)
@@ -2603,6 +2619,26 @@ function moveEnemy(e, dt, contactRange) {
       return stepToward(player.x, player.y, e.spdU, contactRange);
     }
     case "mine": return false;                 // 세균몬: 움직이지 않는다
+    // 3장(2026-09-30): 예고·공격하는 동안은 멈춘다(sgT3Tick)
+    case "bubbler":                            // 거품몬: 3.5칸 거리까지 다가온다
+      if (e.t3State) { faceTo(e.t3Aim); return false; }
+      return stepToward(player.x, player.y, e.spdU, 3.5 * U);
+    case "oiler": {                            // 페트리: 떼로 둘러싼다
+      if (e.t3State) { faceTo(e.t3Aim); return false; }
+      const ang = Math.atan2(player.y - e.y, player.x - e.x) + Math.sin(runTime + e.orbitOffset) * 0.8;
+      return stepToward(player.x - Math.cos(ang) * contactRange, player.y - Math.sin(ang) * contactRange, e.spdU, 0);
+    }
+    case "shooter": {                          // 콜라 캔: 5칸 거리를 지키고, 너무 가까우면 천천히 물러난다
+      if (e.t3State) { faceTo(e.t3Aim); return false; }
+      if (dToPlayer < 3.5 * U) { const a = Math.atan2(e.y - player.y, e.x - player.x); return stepToward(e.x + Math.cos(a) * U, e.y + Math.sin(a) * U, e.spdU * 0.6, 0); }
+      return stepToward(player.x, player.y, e.spdU, 5 * U);
+    }
+    case "algae":                              // 녹조몬: 나뉘기 직전에는 멈춰 부푼다
+      if (e.t3Split > 0) return false;
+      return stepToward(player.x, player.y, e.spdU, contactRange);
+    case "netter":                             // 유령그물 대장: 느리지만 끝까지 따라온다(그물 던질 때는 멈춤)
+      if (e.t3State) { faceTo(Math.atan2(player.y - e.y, player.x - e.x)); return false; }
+      return stepToward(player.x, player.y, e.spdU, contactRange);
     case "breather":                           // 가스몬: 불 뿜는 동안은 멈춘다, 아니면 다가온다(2칸까지)
       if (e.brState) { faceTo(e.brAim); return false; }
       return stepToward(player.x, player.y, e.spdU, 1.8 * U);
@@ -2638,6 +2674,7 @@ function updateEnemies(dt) {
     }
     // 넉백 속도 감쇠 적용(docs/06 §7.3 — 0.15s 동안 밀려남)
     if (e.kbVx || e.kbVy) {
+      if (ENEMIES[e.typeId].heavy) { e.kbVx = 0; e.kbVy = 0; }   // 3장 유령그물 대장: 덩치가 커서 밀려나지 않는다
       e.x += e.kbVx * dt; e.y += e.kbVy * dt;
       const decay = Math.exp(-dt * 12);
       e.kbVx *= decay; e.kbVy *= decay;
@@ -2717,6 +2754,7 @@ function enemyExplodeAt(x, y, radiusPx, dmg, color) {
 }
 
 function onEnemyDeath(e) {
+  if (e.sgNoReward) return;                     // 3장 녹조몬이 둘로 나뉘며 사라진 것(정화가 아님)
   killCount++;
   runStats.kills++;
   if (e.elite) runStats.eliteKills++;
@@ -2747,6 +2785,10 @@ function onEnemyDeath(e) {
       const a = (Math.PI * 2 * i) / n;
       spawnEnemyAt(id, e.x + Math.cos(a) * 24, e.y + Math.sin(a) * 24);
     }
+  }
+  if (e.behavior === "netter") {                // 3장 유령그물 대장: 그물이 끊어지고 갇혀 있던 물고기들이 풀려난다(학생 원안)
+    sgFishJump(e.x, e.y - 20, 6);
+    floatingTexts.push({ x: e.x, y: e.y - 70, text: "그물이 끊어졌어요! 물고기들이 풀려났어요", life: 1.6, vy: -22, color: "#8fe0d0", scale: 0, big: true });
   }
   if (e.elite) {
     log(`엘리트 처치: ${def.name}`);
@@ -2960,7 +3002,7 @@ function resolveBossPattern(pat) {
       const toPlayer = Math.atan2(player.y - boss.y, player.x - boss.x);
       const diff = Math.abs(normalizeAngle(toPlayer - pat.aimAngle));
       if (diff < Math.PI / 2 && dist(player.x, player.y, boss.x, boss.y) <= 4 * U) applyBossHit(dmg);
-      if (pat.fx === "flame") blasts.push({ x: boss.x, y: boss.y, radius: 4 * U, life: 0.5, maxLife: 0.5, color: "#ff9a3a", vfxKind: "flame", ang: pat.aimAngle });
+      if (pat.fx) blasts.push({ x: boss.x, y: boss.y, radius: 4 * U, life: 0.5, maxLife: 0.5, color: "#ff9a3a", vfxKind: pat.fx, ang: pat.aimAngle });   // 불꽃 브레스(2장)·구정물 파도(3장)
       if (pat.stinkField) {                     // 악취 방귀 구름: 5초 동안 남는 냄새 안개(느려짐 + 지속 피해, updatePlayer)
         fields.push({ x: boss.x + Math.cos(pat.aimAngle) * 2.2 * U, y: boss.y + Math.sin(pat.aimAngle) * 2.2 * U,
           radius: 2.4 * U, life: 5, maxLife: 5, tickT: 0.5, tickS: 0.5, hostile: true, color: "#9aa030", dmgCoef: 0, dmgMul: 0 });
@@ -3066,8 +3108,11 @@ function resolveBossPattern(pat) {
     case "scatter": {
       // 무작위 낙석 여러 곳 — 각 원 안에 있으면 피격
       for (const s of (pat.spots || [])) {
-        blasts.push({ x: s.x, y: s.y, radius: 1.2 * U, life: 0.3, maxLife: 0.3, color: "#c0a080", vfxKind: "debris" });
+        // 3장: 거품 폭탄은 거품이, 기름 뿌리기는 기름이 터진다(그림 — theme-effects blast)
+        blasts.push({ x: s.x, y: s.y, radius: 1.2 * U, life: 0.3, maxLife: 0.3, color: "#c0a080", vfxKind: pat.drop === "t3_fx_foam" ? "foam" : pat.drop === "t3_fx_oil" ? "oil" : "debris" });
         if (dist(player.x, player.y, s.x, s.y) < 1.2 * U) applyBossHit(dmg);
+        if (pat.field === "oil")                 // 기름 웅덩이: 5초 동안 남아 느려지고 조금씩 닳는다(악취 구름과 같은 규칙, updatePlayer)
+          fields.push({ x: s.x, y: s.y, radius: 1.3 * U, life: 5, maxLife: 5, tickT: 0.5, tickS: 0.5, hostile: true, kind: "oil", color: "#3a3040", dmgCoef: 0, dmgMul: 0 });
       }
       addShake(5, 0.3);
       break;
@@ -3855,7 +3900,7 @@ function drawDecorItem(d) {
     }
     ctx.save();
     ctx.globalAlpha = d.opened ? 0.6 : 1;
-    ctx.beginPath(); ctx.ellipse(s.x, s.y + h * 0.42, w * 0.4, h * 0.12, 0, 0, 7); ctx.fillStyle = "rgba(0,0,0,0.18)"; ctx.fill();
+    if (!d.flat) { ctx.beginPath(); ctx.ellipse(s.x, s.y + h * 0.42, w * 0.4, h * 0.12, 0, 0, 7); ctx.fillStyle = "rgba(0,0,0,0.18)"; ctx.fill(); }   // 징검다리처럼 바닥에 붙은 것은 그림자 없음
     ctx.imageSmoothingEnabled = true;
     ctx.drawImage(img, s.x - w / 2, s.y - h * 0.55, w, h);
     ctx.imageSmoothingEnabled = false;
@@ -4047,6 +4092,12 @@ function drawBeacon() {
 }
 
 function drawField(f) {
+  if (f.kind === "oil") {                        // 3장 대왕의 기름 웅덩이: 무지갯빛 기름 그림 + 판정 원
+    const s = worldToScreen(f.x, f.y), a = Math.min(1, (f.life / f.maxLife) * 3);
+    ctx.save(); ctx.globalAlpha = a; themeFx.stamp(ctx, "t3_fx_oil", s.x, s.y, f.radius * 2.3, 0.92);
+    ctx.strokeStyle = "#5b4a6a"; ctx.lineWidth = 2; ctx.beginPath(); ctx.arc(s.x, s.y, f.radius, 0, 7); ctx.stroke(); ctx.restore();
+    return;
+  }
   if (!!chapter?.theme && f.hostile) {
     const s = worldToScreen(f.x, f.y); themeFx.smog(ctx, s.x, s.y, f.radius, runTime, f.life / f.maxLife); return;
   }
@@ -4741,6 +4792,7 @@ function draw() {
   drawBeacon();
   for (const d of decor) if (onScreen(d, Math.max(180, d.h || 0))) drawDecorItem(d);
   for (const f of fields) drawField(f);      // 장판은 바닥에
+  sgDrawT3Ground();                          // 3장 거품·기름·녹조 웅덩이(바닥)
   for (const t of traps) drawTrap(t);
   if (!qaFxOff?.has("skills")) sgElements.drawGround(ctx, worldToScreen);   // 원소 스킬 바닥층(불 웅덩이·용암·지뢰·그림자) — 적·주인공 아래
   for (const g of gems) if (onScreen(g, 48)) drawGem(g);
@@ -4853,9 +4905,10 @@ function draw() {
   }
   ctx.save();ctx.imageSmoothingEnabled=true;ctx.drawImage(vignetteCache.image,0,0,screenW,screenH);ctx.restore();
   }
+  sgDrawT3Screen();
   if (inDark) {
     ctx.fillStyle = themed ? "#f0ff9a" : "#c9a8ff"; ctx.font = "bold 12px sans-serif"; ctx.textAlign = "center";
-    ctx.fillText(themed ? "악취 구역 · 새싹 ×1.5" : "어둠 지대 · 보석 ×1.5", screenW / 2, screenH - 18);
+    ctx.fillText(themed ? `${skin().zone || "악취 구역"} · 새싹 ×1.5` : "어둠 지대 · 보석 ×1.5", screenW / 2, screenH - 18);
   }
 
   if (debugFast) {
@@ -5042,6 +5095,7 @@ window.__debugBossPattern = function (name) {   // 다음 기술을 이름으로
 };
 window.__debugPlayerPos = function () { return { x: player.x, y: player.y }; };
 window.__sgAcidCount = function () { return sgAcid.length; };   // QA: 산성비 표시 수
+window.__sgT3 = function () { return { puddles: sgPuddles.map((q) => q.kind), nets: sgNets.length, netT: player?.t3NetT || 0, slow: player?.t3Slow || 1, foamT: player?.t3FoamT || 0, fish: sgFish.length }; };   // QA: 3장 상태
 window.__debugBossAt = function (dxU, dyU) { if (!boss) return false; boss.x = player.x + dxU * U; boss.y = player.y + dyU * U; return true; };   // QA: 대왕을 내 옆 (dx, dy)칸에
 window.__debugUnlockAll = function () {
   for (const c of CHAPTERS) {
@@ -5225,8 +5279,10 @@ window.__debugPilot=(seconds)=>{
       else{dx=Math.cos(runTime/4);dy=Math.sin(runTime/4);}
       const avoid=window.__pilotAvoid??2;   // 0 = 피하지 않는 서툰 플레이어(난이도 비교용)
       for(const e of enemies){const d=dist(e.x,e.y,player.x,player.y);if(d<90){const a=Math.atan2(player.y-e.y,player.x-e.x),w=avoid*(1-d/90);dx+=Math.cos(a)*w;dy+=Math.sin(a)*w;}
-        if(avoid&&(e.armT||e.brState)&&d<3.4*U){const a=Math.atan2(player.y-e.y,player.x-e.x);dx+=Math.cos(a)*2.5;dy+=Math.sin(a)*2.5;}}
+        if(avoid&&(e.armT||e.brState||(e.behavior==='oiler'&&e.t3State))&&d<3.4*U){const a=Math.atan2(player.y-e.y,player.x-e.x);dx+=Math.cos(a)*2.5;dy+=Math.sin(a)*2.5;}}
       if(avoid)for(const q of sgAcid){const d=dist(q.x,q.y,player.x,player.y);if(d<q.r+.8*U){const a=Math.atan2(player.y-q.y,player.x-q.x);dx+=Math.cos(a)*2;dy+=Math.sin(a)*2;}}
+      if(avoid)for(const q of sgNets){const d=dist(q.x,q.y,player.x,player.y);if(d<q.r+.8*U){const a=Math.atan2(player.y-q.y,player.x-q.x);dx+=Math.cos(a)*2.5;dy+=Math.sin(a)*2.5;}}   // 3장 그물 떨어질 원
+      if(avoid&&player.t3NetT>0)dx=Math.sin(runTime*12);                                   // 그물에 걸리면 좌우로 흔들기
       keys.clear();if(dx>.2)keys.add('d');else if(dx<-.2)keys.add('a');if(dy>.2)keys.add('s');else if(dy<-.2)keys.add('w');
     }
     simTick(FIXED_DT);
@@ -5510,7 +5566,7 @@ function sgThreatTick(dt){
   }
   for(const s of sgHostileShots){
     if(s.life<=0)continue;s.life-=dt;const v=s.speed||4.5*U;s.x+=Math.cos(s.angle)*v*dt;s.y+=Math.sin(s.angle)*v*dt;
-    if(dist(s.x,s.y,player.x,player.y)<(s.r?s.r+.3*U:.6*U)){applyBossHit(s.damage);s.life=0;}
+    if(dist(s.x,s.y,player.x,player.y)<(s.r?s.r+.3*U:.6*U)){applyBossHit(s.damage);if(s.foam)player.t3FoamT=1.6;s.life=0;}   // foam: 3장 거품몬 거품 → 잠깐 앞이 뿌예짐
   }
   sgHostileShots=sgHostileShots.filter(s=>s.life>0);
 }
@@ -5555,6 +5611,12 @@ function sgEnemyFrame(e,def){                  // 상태별 그림: 가스몬 �
   const f=def.frames;if(!f)return def.sprite;
   if(e.behavior==='breather')return e.brState==='fire'?f.fire:e.brState==='windup'?f.windup:def.sprite;
   if(e.behavior==='mine')return e.armT?f.armed:f.idle[Math.floor(runTime*2.5+(e.animT||0))%f.idle.length];
+  // 3장: 거품몬 볼 부풀려 뿜기 · 페트리 뚜껑 들썩·기름 · 콜라 캔 발사 · 녹조몬 부풂 · 유령그물 대장 팔 들기
+  if(e.behavior==='bubbler')return e.t3State?f.atk:def.sprite;
+  if(e.behavior==='oiler')return e.t3State==='fire'?f.fire:e.t3State==='windup'?f.windup:def.sprite;
+  if(e.behavior==='shooter')return e.t3State==='fire'||(e.t3State==='windup'&&e.t3T<.25)?f.fire:def.sprite;
+  if(e.behavior==='algae')return e.t3Split>0&&f.swell?f.swell:def.sprite;
+  if(e.behavior==='netter')return e.t3State?f.windup:def.sprite;
   return def.sprite;
 }
 function sgDrawT2Threats(){
@@ -5578,13 +5640,136 @@ function sgDrawT2Threats(){
   }
   ctx.restore();
 }
+// 3장 적 행동(themes.js T3_ENEMIES, 2026-09-30 학생 하천 몬스터): 거품몬 거품 · 페트리 기름 · 콜라 캔 콜라 · 녹조몬 번식 · 유령그물 대장 그물.
+// 모두 예고(볼 부풂·뚜껑 들썩·조준선·몸 부풂·팔 들기와 떨어질 원) 뒤에 판정. 거품·기름·녹조 웅덩이는 느려지기만 하고 닳지 않는다.
+let sgPuddles=[],sgNets=[],sgFish=[];
+const SG_PUDDLE={foam:{sprite:'t3_fx_foam',slow:.75,alpha:.8,size:2.3,ring:'#5d9cc4',flat:.45},oil:{sprite:'t3_fx_oil',slow:.62,alpha:.85,size:2.4,ring:'#5b4a6a'},algae:{sprite:'t3_fx_algae',slow:.68,alpha:.9,size:2.4,ring:'#2f7f3a'},net:{sprite:'t3_fx_net',slow:1,alpha:.9,size:2.6}};
+function sgPuddle(kind,x,y,r,life){if(sgPuddles.length>=24)sgPuddles.shift();sgPuddles.push({kind,x,y,r,life,max:life,rot:(Math.random()-.5)*.6});}
+function sgFishJump(x,y,n=1){for(let i=0;i<n;i++){if(sgFish.length>=24)sgFish.shift();sgFish.push({x,y,vx:(Math.random()-.5)*(n>1?160:70),t:0,max:.85+Math.random()*.3,h:55+Math.random()*45,spin:(Math.random()-.5)*2});}}
+function sgT3Tick(dt){
+  if(chapter?.theme!==3)return;
+  const n0=enemies.length;
+  for(let i=0;i<n0;i++){
+    const e=enemies[i];if(!e||e.hp<=0)continue;
+    const d=dist(e.x,e.y,player.x,player.y),aim=()=>Math.atan2(player.y-e.y,player.x-e.x);
+    if(e.behavior==='bubbler'){              // 6칸 안이면 멈춰 볼을 부풀리고(0.7초) → 느린 거품 한 발(맞으면 1.6초 앞이 뿌예짐) → 4.5초 쉼. 지나간 자리에 거품 웅덩이
+      e.t3Cd=(e.t3Cd??(1.5+Math.random()*2))-dt;
+      if(!e.t3State){if(e.t3Cd<=0&&d<6*U){e.t3State='windup';e.t3T=.7;e.t3Aim=aim();}}
+      else if(e.t3State==='windup'){e.t3T-=dt;if(e.t3T<=0){e.t3State='fire';e.t3T=.45;
+        if(sgHostileShots.length<24)sgHostileShots.push({x:e.x+Math.cos(e.t3Aim)*.6*U,y:e.y+Math.sin(e.t3Aim)*.6*U,angle:e.t3Aim,hostile:true,boss:false,life:2.4,damage:e.atk*.6,speed:3.4*U,r:.42*U,sprite:'t3_fx_foam',size:1.15*U,foam:true});}}
+      else{e.t3T-=dt;if(e.t3T<=0){e.t3State=null;e.t3Cd=4.5;}}
+      e.t3Trail=(e.t3Trail??1.5)-dt;if(e.t3Trail<=0){e.t3Trail=3.2;sgPuddle('foam',e.x,e.y+.2*U,.7*U,3.5);}
+    }else if(e.behavior==='oiler'){          // 2.2칸 안이면 멈춰 뚜껑이 들썩(0.7초) → 앞으로 기름(2.6칸 부채꼴, 한 번) + 앞에 기름 웅덩이 → 3.5초 쉼
+      e.t3Cd=(e.t3Cd??(1+Math.random()*2))-dt;
+      if(!e.t3State){if(e.t3Cd<=0&&d<2.2*U){e.t3State='windup';e.t3T=.7;e.t3Aim=aim();}}
+      else if(e.t3State==='windup'){e.t3T-=dt;if(e.t3T<=0){e.t3State='fire';e.t3T=.5;
+        if(d<=2.6*U&&Math.abs(normalizeAngle(aim()-e.t3Aim))<.55)sgEnemyHit(e.atk*.8);
+        sgPuddle('oil',e.x+Math.cos(e.t3Aim)*1.5*U,e.y+Math.sin(e.t3Aim)*1.5*U,.8*U,5);}}
+      else{e.t3T-=dt;if(e.t3T<=0){e.t3State=null;e.t3Cd=3.5;}}
+    }else if(e.behavior==='shooter'){        // 8칸 안이면 멈춰 조준(0.8초, 조준선) → 콜라 한 발 → 3.8초 쉼
+      e.t3Cd=(e.t3Cd??(2+Math.random()*2))-dt;
+      if(!e.t3State){if(e.t3Cd<=0&&d<8*U){e.t3State='windup';e.t3T=.8;e.t3Aim=aim();}}
+      else if(e.t3State==='windup'){e.t3T-=dt;if(e.t3T<=0){e.t3State='fire';e.t3T=.45;
+        if(sgHostileShots.length<24)sgHostileShots.push({x:e.x+Math.cos(e.t3Aim)*.5*U,y:e.y+Math.sin(e.t3Aim)*.5*U,angle:e.t3Aim,hostile:true,boss:false,life:2,damage:e.atk*.7,speed:5.5*U,r:.36*U,sprite:'t3_fx_cola',size:1.5*U});}}
+      else{e.t3T-=dt;if(e.t3T<=0){e.t3State=null;e.t3Cd=3.8;}}
+    }else if(e.behavior==='algae'){          // 녹조 웅덩이를 남긴다 · 나타나고 8초 안에 정화 못 하면 부풀어(1초) → 작은 녹조몬 2마리(작은 것은 더 안 나뉨)
+      e.t3Age=(e.t3Age||0)+dt;
+      e.t3Trail=(e.t3Trail??1)-dt;if(e.t3Trail<=0){e.t3Trail=2.8;sgPuddle('algae',e.x,e.y+.25*U,(e.typeId==='T3_ALGAE'?.8:.55)*U,4.5);}
+      const sp=ENEMIES[e.typeId].split;
+      if(sp&&!e.t3Split&&!e.t3NoSplit&&e.t3Age>=sp.afterS){if(enemies.length<150)e.t3Split=1;else e.t3NoSplit=true;}
+      if(e.t3Split>0){e.t3Split-=dt;if(e.t3Split<=0){
+        const a0=aim()+Math.PI/2;for(let k=0;k<sp.n;k++){const a=a0+k*Math.PI;spawnEnemyAt(sp.id,e.x+Math.cos(a)*.7*U,e.y+Math.sin(a)*.7*U,true);sgMaybeTrait(enemies[enemies.length-1]);}
+        blasts.push({x:e.x,y:e.y,radius:1.2*U,life:.4,maxLife:.4,color:'#7fd04a',vfxKind:'splat'});
+        floatingTexts.push({x:e.x,y:e.y-40,text:'녹조가 번졌어요!',life:.9,vy:-30,color:'#9be06a',scale:0});
+        e.hp=0;e.sgNoReward=true;}}
+    }else if(e.behavior==='netter'){         // 졸졸 따라오다 7.5칸 안이면 팔을 들고(1.2초) 내 자리에 원 표시 → 그물. 원 안이면 최대 3초 못 움직임 → 7초 쉼
+      if(!e.t3Told){e.t3Told=true;floatingTexts.push({x:e.x,y:e.y-90,text:'유령그물 대장 등장!',life:1.6,vy:-18,color:'#8fe0d0',scale:0,big:true});}
+      e.t3Cd=(e.t3Cd??3)-dt;
+      if(!e.t3State){if(e.t3Cd<=0&&d<7.5*U){e.t3State='windup';e.t3T=1.2;sgNets.push({x:player.x,y:player.y,r:1.5*U,t:1.2,max:1.2,fromX:e.x,fromY:e.y});}}
+      else{e.t3T-=dt;if(e.t3T<=0){e.t3State=null;e.t3Cd=7;}}
+    }
+  }
+  for(const n of sgNets){n.t-=dt;if(n.t>0||n.done)continue;n.done=true;
+    const caught=dist(n.x,n.y,player.x,player.y)<=n.r&&!(SG_LOCAL&&window.__debugGod)&&!(player.t3NetT>0);
+    if(caught){player.t3NetT=3;player.t3NetHeld=0;player.t3NetShake=null;runStats.netted=(runStats.netted||0)+1;
+      floatingTexts.push({x:player.x,y:player.y-46,text:'그물에 걸렸어요! 좌우로 흔들어요!',life:1.4,vy:-20,color:'#ffd27a',scale:0,big:true});playSfx('hitLight2',.5);}
+    else sgPuddle('net',n.x,n.y,n.r,.9);}
+  sgNets=sgNets.filter(n=>!n.done);
+  let slow=1;for(const q of sgPuddles){q.life-=dt;const k=SG_PUDDLE[q.kind];if(k.slow<1&&dist(q.x,q.y,player.x,player.y)<q.r)slow=Math.min(slow,k.slow);}
+  sgPuddles=sgPuddles.filter(q=>q.life>0);player.t3Slow=slow;
+  if(player.t3FoamT>0)player.t3FoamT-=dt;
+  for(const f of sgFish)f.t+=dt;sgFish=sgFish.filter(f=>f.t<f.max);
+}
+function sgDrawT3Ground(){                     // 웅덩이(바닥, 캐릭터 아래). 사라지기 1초 전부터 옅어진다
+  if(chapter?.theme!==3||!sgPuddles.length)return;
+  ctx.save();ctx.lineWidth=2;
+  for(const q of sgPuddles){if(!onScreen(q,120))continue;const k=SG_PUDDLE[q.kind],p=worldToScreen(q.x,q.y),fade=Math.min(1,q.life);
+    if(k.flat){ctx.save();ctx.translate(p.x,p.y);ctx.scale(1,k.flat);themeFx.stamp(ctx,k.sprite,0,0,q.r*k.size,k.alpha*fade,0);ctx.restore();}   // 거품 웅덩이는 납작하게(거품몬·거품 탄과 헷갈리지 않게)
+    else themeFx.stamp(ctx,k.sprite,p.x,p.y,q.r*k.size,k.alpha*fade,q.rot);
+    if(k.ring){ctx.globalAlpha=.55*fade;ctx.strokeStyle=k.ring;ctx.beginPath();ctx.arc(p.x,p.y,q.r,0,7);ctx.stroke();ctx.globalAlpha=1;}}   // 느려지는 범위(판정 그대로)
+  ctx.restore();
+}
+function sgDrawT3Threats(){
+  if(chapter?.theme!==3)return;
+  ctx.save();
+  for(const e of enemies){
+    if(!e.t3State&&!(e.t3Split>0)&&!(e.behavior==='algae'&&ENEMIES[e.typeId].split&&e.t3Age>5))continue;
+    if(!onScreen(e,220))continue;const q=worldToScreen(e.x,e.y);
+    if(e.behavior==='oiler'&&e.t3State){       // 기름 뿜을 방향(부채꼴): 예고 때는 옅게 차오르고, 뿜을 때는 짙게
+      const r=2.6*U,p=e.t3State==='windup'?1-e.t3T/.7:1;
+      ctx.fillStyle=`rgba(40,32,44,${e.t3State==='windup'?.08+.2*p:.3})`;ctx.strokeStyle='#5b4a6a';ctx.lineWidth=2;
+      ctx.beginPath();ctx.moveTo(q.x,q.y);ctx.arc(q.x,q.y,r,e.t3Aim-.55,e.t3Aim+.55);ctx.closePath();ctx.fill();ctx.stroke();
+    }else if(e.behavior==='shooter'&&e.t3State==='windup'){   // 콜라 조준선: 날아갈 길 + 차오르는 시간
+      const len=8*U,p=1-e.t3T/.8,ca=Math.cos(e.t3Aim),sa=Math.sin(e.t3Aim);
+      ctx.strokeStyle='rgba(139,39,32,.55)';ctx.lineWidth=2;ctx.setLineDash([8,6]);ctx.beginPath();ctx.moveTo(q.x,q.y);ctx.lineTo(q.x+ca*len,q.y+sa*len);ctx.stroke();ctx.setLineDash([]);
+      ctx.strokeStyle='#c0392b';ctx.lineWidth=4;ctx.beginPath();ctx.moveTo(q.x,q.y);ctx.lineTo(q.x+ca*len*p,q.y+sa*len*p);ctx.stroke();
+    }else if(e.behavior==='bubbler'&&e.t3State==='windup'){   // 거품 예고: 볼이 부푸는 동안 하늘색 고리 + 방향
+      const p=1-e.t3T/.7;ctx.strokeStyle=`rgba(90,170,220,${.5+.4*p})`;ctx.lineWidth=3;ctx.beginPath();ctx.arc(q.x,q.y,20+10*p,0,7);ctx.stroke();
+      ctx.beginPath();ctx.moveTo(q.x+Math.cos(e.t3Aim)*30,q.y+Math.sin(e.t3Aim)*30);ctx.lineTo(q.x+Math.cos(e.t3Aim)*(30+40*p),q.y+Math.sin(e.t3Aim)*(30+40*p));ctx.stroke();
+    }else if(e.behavior==='algae'){            // 번식까지 남은 시간(마지막 3초) → 부푸는 동안 깜빡이는 원
+      const sp=ENEMIES[e.typeId].split,r=ENEMIES[e.typeId].radiusU*U+14;
+      if(e.t3Split>0){const k=.5+.5*Math.sin(runTime*20);ctx.strokeStyle=`rgba(120,220,70,${.5+.5*k})`;ctx.lineWidth=4;ctx.beginPath();ctx.arc(q.x,q.y,r+6*k,0,7);ctx.stroke();}
+      else if(sp&&!e.t3NoSplit){const left=Math.max(0,sp.afterS-e.t3Age)/3;ctx.strokeStyle='rgba(20,60,30,.35)';ctx.lineWidth=5;ctx.beginPath();ctx.arc(q.x,q.y,r,0,7);ctx.stroke();
+        ctx.strokeStyle='#7fd04a';ctx.lineWidth=3;ctx.beginPath();ctx.arc(q.x,q.y,r,-Math.PI/2,-Math.PI/2+Math.PI*2*left);ctx.stroke();}
+    }
+  }
+  for(const n of sgNets){                      // 그물 떨어질 자리: 판정 원(그대로) + 차오르는 시간 + 날아오는 그물
+    const q=worldToScreen(n.x,n.y),p=1-Math.max(0,n.t)/n.max,f=worldToScreen(n.fromX,n.fromY);
+    ctx.fillStyle=`rgba(40,60,70,${.1+.18*p})`;ctx.strokeStyle='#fff7d7';ctx.lineWidth=5;ctx.beginPath();ctx.arc(q.x,q.y,n.r,0,7);ctx.fill();ctx.stroke();
+    ctx.strokeStyle='#2f6f78';ctx.lineWidth=2.5;ctx.stroke();
+    ctx.strokeStyle='#2f6f78';ctx.lineWidth=4;ctx.beginPath();ctx.arc(q.x,q.y,Math.max(1,n.r-6),-Math.PI/2,-Math.PI/2+Math.PI*2*p);ctx.stroke();
+    const mx=f.x+(q.x-f.x)*p,my=f.y+(q.y-f.y)*p-Math.sin(p*Math.PI)*90;
+    themeFx.stamp(ctx,'t3_fx_net',mx,my,n.r*(0.9+1.1*p),.35+.55*p,p*1.5);
+  }
+  if(player.t3NetT>0){                         // 그물에 걸린 나: 그물 그림 + 남은 시간 막대 + 흔들기 안내
+    const q=worldToScreen(player.x,player.y);
+    themeFx.stamp(ctx,'t3_fx_net',q.x,q.y+4,2.3*U,.95,Math.sin(runTime*9)*.08);
+    const w=56,left=Math.min(1,player.t3NetT/3);ctx.fillStyle='rgba(0,0,0,.55)';ctx.fillRect(q.x-w/2,q.y-62,w,7);ctx.fillStyle='#ffd27a';ctx.fillRect(q.x-w/2,q.y-62,w*left,7);
+    ctx.font='bold 12px sans-serif';ctx.textAlign='center';ctx.lineWidth=4;ctx.strokeStyle='#1e2a2c';ctx.strokeText('◀ 흔들어요 ▶',q.x,q.y-68);ctx.fillStyle='#fff3c4';ctx.fillText('◀ 흔들어요 ▶',q.x,q.y-68);
+  }
+  for(const f of sgFish){                      // 구한 물고기: 물 위로 뛰어올랐다 사라진다
+    const p=f.t/f.max,q=worldToScreen(f.x+f.vx*f.t,f.y);
+    themeFx.stamp(ctx,'t3_prop_fish_free',q.x,q.y-Math.sin(p*Math.PI)*f.h,40,1-p*p,f.spin*p);
+  }
+  ctx.restore();
+}
+function sgDrawT3Screen(){                     // 거품에 맞은 뒤 잠깐: 화면 가장자리에 거품이 끼어 뿌예진다(가운데는 보이게)
+  if(chapter?.theme!==3||!(player?.t3FoamT>0))return;
+  const a=Math.min(1,player.t3FoamT/.5);
+  ctx.save();ctx.fillStyle=`rgba(235,245,255,${.2*a})`;ctx.fillRect(0,0,screenW,screenH);
+  const m=Math.min(screenW,screenH),size=m*.55;
+  for(const [x,y] of [[0,0],[.5,0],[1,0],[0,.5],[1,.5],[0,1],[.5,1],[1,1]])themeFx.stamp(ctx,'t3_fx_foam',x*screenW,y*screenH,size,.85*a,(x+y)*1.3);
+  ctx.restore();
+}
 function sgDrawThreats(){
-  sgDrawT2Threats();
+  sgDrawT2Threats();sgDrawT3Threats();
   ctx.save();ctx.lineWidth=2;ctx.strokeStyle='#8b2720';ctx.fillStyle='#f6b363';
   for(const e of enemies)if(e.sgThrowWarn>0){const q=worldToScreen(e.x,e.y);ctx.beginPath();ctx.arc(q.x,q.y,18,0,7);ctx.stroke();ctx.beginPath();ctx.moveTo(q.x,q.y);ctx.lineTo(q.x+Math.cos(e.sgThrowAngle)*32,q.y+Math.sin(e.sgThrowAngle)*32);ctx.stroke();}
   for(const s of sgHostileShots){const q=worldToScreen(s.x,s.y);
     // 대왕이 던진 쓰레기: 판정 크기의 빨간 테두리 + 쓰레기 그림(돌며 날아감)
     if(s.boss){if(!themeFx.stamp(ctx,skin().shot,q.x,q.y,s.r*2.3,1,s.spin+runTime*7)){ctx.fillStyle='rgba(246,179,99,.55)';ctx.beginPath();ctx.arc(q.x,q.y,s.r,0,7);ctx.fill();ctx.fillStyle='#f6b363';}ctx.beginPath();ctx.arc(q.x,q.y,s.r*1.1,0,7);ctx.stroke();continue;}
+    // 3장 거품·콜라 탄: 그림 + 판정 크기의 옅은 테두리(콜라 그림은 왼쪽으로 나는 모양이라 반 바퀴 돌림)
+    if(s.sprite){ctx.save();ctx.strokeStyle='rgba(139,39,32,.55)';ctx.beginPath();ctx.arc(q.x,q.y,s.r,0,7);ctx.stroke();ctx.restore();themeFx.stamp(ctx,s.sprite,q.x,q.y,s.size,1,s.foam?Math.sin(runTime*3)*.2:s.angle+Math.PI);continue;}
     ctx.beginPath();ctx.arc(q.x,q.y,6,0,7);ctx.fill();ctx.stroke();}
   ctx.restore();
 }
