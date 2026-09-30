@@ -43,7 +43,8 @@ with sync_playwright() as pw:
         page.locator('.sg-nav [data-tab="parts"]').click();page.wait_for_timeout(300)
         # 2) 고르는 칸 없이 무작위 보급, 등급 사다리 표시
         assert page.locator('.sg-supply[data-mode="random"]').count()==1 and page.locator('#sg-draw-part, #sg-draw-element').count()==0
-        ladder=page.locator('.sg-grade-ladder').inner_text();assert all(x in ladder for x in ['노말','레어','유니크','에픽','전설','80개']),ladder
+        # 2026-09-30 로비 정리: 등급 사다리는 보급 줄의 ? (보급 규칙 창)에
+        page.locator('.sg-supply [data-do="supply-help"]').click();ladder=page.locator('dialog[open] .sg-grade-ladder').inner_text();assert all(x in ladder for x in ['노말','레어','유니크','에픽','전설','80개']),ladder;close(page)
         page.screenshot(path=str(OUT/f'parts-random-{w}.png'),full_page=True)
         before=state(page)['profile']
         page.locator('[data-do="draw-part"]').click();page.locator('dialog[open] .sg-sup').wait_for();page.wait_for_timeout(500);page.screenshot(path=str(OUT/f'card-box-{w}.png'))
@@ -62,7 +63,9 @@ with sync_playwright() as pw:
         # 5) 등급 5단계 표시(보관함·자세히)
         p1=profile(coins=400,gifts=6,stages={'CH01':{'cleared':True,'stars':1}},milestones={'firstPart':True},parts={'PART_F1':{'copies':80,'level':1},'PART_F2':{'copies':25,'level':1},'PART_W1':{'copies':7,'level':3},'PART_L2':{'copies':3,'level':1},'PART_V1':{'copies':1,'level':1}},equippedParts=['PART_F1','PART_L2','PART_W1'])
         seed(page,uid,p1);page.reload(wait_until='networkidle');lobby(page);close(page);page.locator('.sg-nav [data-tab="parts"]').click();page.wait_for_timeout(300)
-        cards=page.locator('.sg-parts-grid').inner_text();assert all(x in cards for x in ['전설','에픽','유니크','레어','노말','최고 등급','유니크 기능','전설 능력','에픽 강화']),cards
+        cards=page.locator('.sg-parts-grid').inner_text();assert all(x in cards for x in ['전설','에픽','유니크','레어','노말','최고 등급']),cards
+        # 2026-09-30 로비 정리: 등급 능력 글은 카드 대신 파츠 이름을 누르면 뜨는 자세히 창에
+        page.locator('.sg-part-head[data-detail="PART_F1"]').click();t=dialog_text(page);assert all(x in t for x in ['유니크 기능','한 번 더 발동']),t;close(page)
         page.locator('.sg-parts-grid').screenshot(path=str(OUT/f'grades-{w}.png'));checks.append('five grades shown')
         # 8) 칸이 가득 찼을 때 바꿔 끼우기(레벨 유지)
         page.locator('.sg-part-card:has-text("부메랑 회수 날개") [data-action="swap-part"]').click();page.locator('dialog[open] .sg-swap-list').wait_for()
