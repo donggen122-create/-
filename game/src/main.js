@@ -1413,7 +1413,7 @@ function newRun(chapterId, modeId = "M01") {
   chestGold = 0;
   boss = null;
   runTime = 0;
-  spawnAcc = {};
+  spawnAcc = {}; sgOpeningDone = false;
   killCount = 0;
   damageDealt = 0;
   chapterCleared = false;
@@ -1619,10 +1619,10 @@ function spawnEnemyAt(typeId, x, y, exact = false) {
   const minutes = runTime / 60;
   // 난이도별 시간 성장(보통·어려움): 1분마다 새 적의 체력·공격력이 더 오른다
   const hpMul = runMods.diffHp ? runMods.stageHp * sgDiffMul(runMods.diffHp) : (runMods.enemyHpMul || 1);
-  const hp = Math.round(enemyHp(def, curMult(), minutes) * hpMul * (1 + (runMods.hpGrowth || 0) * minutes));
+  const hp = Math.round(enemyHp(def, curMult(), minutes) * hpMul * (1 + (runMods.hpGrowth || 0) * minutes) * (runCfg.rework && !def.elite ? R.PACE.hp : 1));
   enemies.push({
     typeId, x, y, hp, hpMax: hp,
-    atk: enemyAtk(def, curMult(), minutes) * (1 + (runMods.atkGrowth || 0) * minutes),
+    atk: enemyAtk(def, curMult(), minutes) * (1 + (runMods.atkGrowth || 0) * minutes) * (runCfg.rework && !def.elite ? R.PACE.atk : 1),
     spdU: def.spdU * (runMods.diffSpd ? sgDiffMul(runMods.diffSpd) : (runMods.enemySpdMul || 1)), radiusU: def.radiusU, elite: !!def.elite, hitMark: player.hitCount || 0,
     behavior: def.behavior, extraDr: def.extraDr || 0,
     contactT: 0, flashT: 0, facing: 1, animT: Math.random() * 10, spawnT: 0,
@@ -1634,7 +1634,11 @@ function spawnEnemyAt(typeId, x, y, exact = false) {
 
 function spawnRingAroundCamera(typeId) {
   const angle = Math.random() * Math.PI * 2;
-  const r = Math.max(viewW, viewH) / 2 + 2 * U;
+  let r = Math.max(viewW, viewH) / 2 + 2 * U;
+  if (runCfg.rework) {   // 개편판: 보이는 네모 바로 밖(R.PACE) — 긴 쪽 끝에서 멀리 걸어오지 않게
+    const c = Math.abs(Math.cos(angle)), s = Math.abs(Math.sin(angle));
+    r = Math.min(c > 1e-3 ? viewW / 2 / c : Infinity, s > 1e-3 ? viewH / 2 / s : Infinity) + 1.5 * U;
+  }
   spawnEnemyAt(typeId, player.x + Math.cos(angle) * r, player.y + Math.sin(angle) * r);
   sgMaybeTrait(enemies[enemies.length - 1]);
 }
@@ -1727,7 +1731,8 @@ function sgDrawTraitBadge(e, x, y) {
 function updateSpawning(dt) {
   // 보스 등장 중엔 일반 웨이브를 멈춘다(보스 점수 모드는 소량 유지 — 광휘·보석용)
   if (boss && !runCfg.bossScore) return;
-  if (runTime < (runCfg.startLevel ? 2 : 8)) return; // "8초 전까지 적 없음"
+  if (runTime < (runCfg.startLevel ? 2 : runCfg.rework ? 0 : 8)) return; // 옛 모드는 "8초 전까지 적 없음", 개편판은 바로(R.PACE)
+  if (runCfg.rework && !sgOpeningDone && runTime >= R.PACE.firstWaveAt) { sgOpeningDone = true; sgOpeningWave(); }
 
   // 챕터의 enemy_mix를 균등 분배하고, 시간이 지날수록 밀도를 올린다.
   const t = runCfg.stages ? stageTime : runTime;
@@ -1735,7 +1740,7 @@ function updateSpawning(dt) {
   const ramp = runCfg.rework ? (t < 90 ? 1.1 : t < 180 ? 1.6 : 2.1) : (t < 120 ? 1 : t < 360 ? 1.5 : 2.0);
   const opening = runCfg.rework ? .85+.15*Math.min(1,t/60) : 1;
   const late = 1 + ((runMods.lateDensity || 1) - 1) * Math.min(1, t / 90);   // 난이도별 적 수 배수(보통 ×1.1·어려움 ×1.2)는 90초에 걸쳐 들어온다
-  const perType = (chapter.density * ramp * opening * late * (runCfg.densityMul || 1)) / chapter.mix.length;
+  const perType = (chapter.density * ramp * opening * late * (runCfg.densityMul || 1) * (runCfg.rework ? R.PACE.density : 1)) / chapter.mix.length;
   for (const id of chapter.mix) {
     spawnAcc[id] = (spawnAcc[id] || 0) + dt * perType;
     while (spawnAcc[id] >= 1) {
@@ -1779,6 +1784,19 @@ function updateSpawning(dt) {
     const ids = Object.keys(BOSSES);
     bossDef = BOSSES[ids[Math.floor(runTime / 450) % ids.length]];
     spawnBoss();
+  }
+}
+// 판 시작 첫 무리(R.PACE): 주인공 둘레 화면 안에 바로 나타나 3초 안에 첫 공격이 시작된다. 움직이는 적만(세균몬 같은 지뢰형 빼고), 단계의 앞 두 종류
+let sgOpeningDone = false;
+function sgOpeningWave() {
+  const pool = chapter.mix.filter((id) => ENEMIES[id].spdU > 0 && ENEMIES[id].behavior !== "mine").slice(0, 2);
+  if (!pool.length) return;
+  const n = R.PACE.firstWave, [d0, d1] = R.PACE.firstWaveDist, a0 = Math.random() * Math.PI * 2;
+  for (let i = 0; i < n; i++) {
+    const a = a0 + (i / n) * Math.PI * 2 + (Math.random() - 0.5) * 0.5, r = (d0 + Math.random() * (d1 - d0)) * U;
+    const x = player.x + Math.cos(a) * r, y = player.y + Math.sin(a) * r;
+    spawnEnemyAt(pool[i % pool.length], x, y); sgMaybeTrait(enemies[enemies.length - 1]);
+    if (chapter?.theme) themeFx.emit("summon", x, y, { radius: 26, life: 0.5 });
   }
 }
 let nextEndlessBossAt = 450;
@@ -2263,6 +2281,7 @@ function dealDamageToTarget(target, dmg, isBoss, dir, knock, resisted = false) {
     + (stat("darkDmgPct") && isInDark(player.x, player.y) ? stat("darkDmgPct") : 0);
   const rolled = dmg * typeMul * (isCrit ? critMultiplier() : 1) * (focus > 1 ? 1.5 : 1);
   const final = Math.max(1, Math.floor(rolled * (1 - dr)));
+  if (runStats.firstHitAt == null) runStats.firstHitAt = runTime;   // 첫 공격이 맞은 시각(시작 템포 확인용, __sgPace)
   // 보스 점수 모드: 보스는 무적(체력이 줄지 않고 피해량만 기록 — docs/10 §1.2)
   if (isBoss && runCfg.bossScore) runStats.bossDamage += final;
   else target.hp -= final;
@@ -2715,8 +2734,8 @@ function takeDamage(raw) {
     return 0;
   }
   const inBeacon = beacon && dist(player.x, player.y, beacon.x, beacon.y) < beacon.r;
-  // 개편판: 처음 1분은 적 공격이 55%→100%로 서서히 세진다(스킬이 아직 없을 때 둘러싸여 바로 쓰러지지 않게, 2026-09-23)
-  const grace = runCfg.rework ? Math.min(1, 0.55 + 0.45 * runTime / 60) : 1;
+  // 개편판: 처음에는 적 공격이 약하다가 서서히 세진다(스킬이 아직 없을 때 둘러싸여 바로 쓰러지지 않게, 2026-09-23). 시작·걸리는 시간은 R.PACE.grace
+  const grace = runCfg.rework ? Math.min(1, R.PACE.grace[0] + (1 - R.PACE.grace[0]) * runTime / R.PACE.grace[1]) : 1;
   const takenMul = runMods.diffTaken ? runMods.stageAtk * sgDiffMul(runMods.diffTaken) : (runMods.takenMul || 1);
   if (sgGearBlock()) return 0;   // 장비 침착: 다음 피해 1번 막기
   let d = raw * grace * (1 - damageReduction()) * takenMul * (inBeacon ? 1 + stat("beaconTakenPct") : 1) * sgGearTakenMul(raw);
@@ -2743,7 +2762,8 @@ function applyContactDamage(rawAtk, enemy = null) {
   contactDamageThisSecond += dmg;
   runStats.hurtContact = (runStats.hurtContact || 0) + takeDamage(dmg);   // 받은 피해 출처 기록(난이도 조정용)
   player.hitFlashT = 0.2;
-  if (rawAtk >= player.hpMax * 0.03) { player.invulnT = sgRunProfile?.difficulty==='easy'?.6:.3; playSfx("hitLight", 0.35); }
+  // 무적 시간 기준도 R.PACE.atk만큼 낮춘다(한 마리 공격이 약해져도 전과 같은 적에게 맞으면 잠깐 무적 — 둘러싸여 계속 깎이지 않게)
+  if (rawAtk >= player.hpMax * 0.03 * (enemy && runCfg.rework && !enemy.elite ? R.PACE.atk : 1)) { player.invulnT = sgRunProfile?.difficulty==='easy'?.6:.3; playSfx("hitLight", 0.35); }
   if (player.hp <= 0) onPlayerDeath();
 }
 
@@ -2769,7 +2789,7 @@ function onEnemyDeath(e) {
   const def = ENEMIES[e.typeId];
   // 보석 값 = 시간 모드 계수 × 도전 규칙 × 어둠 지대(1.5)
   const inDark = isInDark(e.x, e.y);
-  const gv = gemValue(def.xp, runTime / 60) * (runMods.gemMul || 1) * (runCfg.gemMul || 1) * (inDark ? 1.5 : 1);
+  const gv = gemValue(def.xp, runTime / 60) * (runMods.gemMul || 1) * (runCfg.gemMul || 1) * (inDark ? 1.5 : 1) * (runCfg.rework && !e.elite ? R.PACE.xp : 1);
   if((player.sgChoices||0)<runCfg.cardCap)gems.push({ x: e.x, y: e.y, value: gv, vx: 0, vy: 0, spawnT: 0, bob: Math.random() * 10 });
   const deathLife = !!chapter?.theme ? .65 : .35;
   deathFx.push({ x: e.x, y: e.y, life: deathLife, maxLife: deathLife, size: e.elite ? 104 : 62, color: e.elite ? "#ff8a5a" : "#c9a8ff" });
@@ -5182,6 +5202,11 @@ window.__debugSkillState = function () {
   const out = {};
   for (const id in player.skills) out[id] = { lv: player.skills[id].lv, cd: Math.round(player.skills[id].cd * 100) / 100 };
   return out;
+};
+// QA 전용: 시작 템포·적 수(첫 공격 시각, 전체·화면 안 적 수)
+window.__sgPace = function () {
+  const on = enemies.filter((e) => Math.abs(e.x - cam.x) < viewW / 2 && Math.abs(e.y - cam.y) < viewH / 2).length;
+  return { t: runTime, firstHitAt: runStats.firstHitAt ?? null, enemies: enemies.length, onScreen: on, kills: killCount, lvl: player?.lvl, hp: player?.hp, hpMax: player?.hpMax, hurt: { contact: Math.round(runStats.hurtContact || 0), blast: Math.round(runStats.hurtBlast || 0), hit: Math.round(runStats.hurtHit || 0) }, viewU: [Math.round(viewW / U), Math.round(viewH / U)] };
 };
 window.__debugCounts = function () {
   return {

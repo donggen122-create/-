@@ -144,11 +144,19 @@ function missionProgress(p,day,key,n=1){
  return done;
 }
 const missionNote=done=>done.length?` · 미션 완료! 보급권 +${done.reduce((n,m)=>n+m.gifts,0)}`:'';
+// 판 시작 템포·적 수(2026-09-30 사용자 "첫 공격이 3초 안에, 몬스터를 더 많이 — 팡팡 터지는 타격감"). main.js updateSpawning·spawnEnemyAt·onEnemyDeath가 쓴다.
+// 전에는 8초 동안 적이 없고 화면보다 먼 곳에서 걸어와 첫 공격이 10~14초, 화면 안 적은 평균 2~9마리였다.
+// firstWaveAt초에 firstWave마리가 주인공 둘레 firstWaveDist칸(화면 안)에 나타나고, 그 뒤 적은 보이는 화면 바로 밖에서 나온다.
+// density: 일반 적 수 배수. hp·xp: 일반 적 한 마리의 체력·새싹(경험치) 배수 — 마릿수가 늘어난 만큼(1/1.6) 낮춰 적은 더 빨리 터지고 레벨 오르는 빠르기는 전과 비슷하다.
+// atk: 한 마리 공격력 배수. 부딪히면 잠깐 무적이라 둘러싸였을 때 받는 피해는 한 마리 공격력만큼 줄어서 1/1.6이면 너무 쉬워진다 →
+// 자동 조종 모의(3장 쉬움 3-1~3-4)로 전과 비슷하게 맞춤: 전 58% · 0.625 78% · 0.8 70% · 0.9 65%(시작 약하게 0.55·60초일 때). 중간 보스·대왕은 그대로.
+// grace: [처음 적 공격 비율, 100%가 되는 초] — 싸움이 10초쯤 일찍 시작해 30~40초에 쓰러지는 판이 늘어서 0.55·60초 → 0.4·90초(모의 3-1~3-4 57%, 이른 쓰러짐이 줄어듦)
+export const PACE = { firstWaveAt: .4, firstWave: 8, firstWaveDist: [5.5, 7.5], density: 1.6, hp: .625, atk: .9, xp: .625, grace: [.4, 90] };
 // 난이도 3단계(2026-09-23 사용자 요청): 성공하면 쉬움 ★ · 보통 ★★ · 어려움 ★★★. 배수는 main.js sgRunConfig가 쓰고, special은 "특별한 능력을 가진 적" 비율(어려움만).
 export const DIFFICULTIES = {
   // density: 적 수 배수(STAGES.density에 곱함). hpGrowth·atkGrowth: 1분마다 새로 나오는 적의 체력·공격력 추가 증가율(스킬이 커져도 후반이 심심하지 않게)
   // bossHp: 1-5 대왕 체력 배율(적 체력 enemyHp에 더 곱함, docs/29 — 어려움은 적 체력이 이미 5.5배라 대왕만 줄여 2분 안에 잡을 수 있게)
-  // contactCap: 1초에 부딪혀서 잃을 수 있는 최대 체력 비율(둘러싸여도 빠져나올 시간). 모든 난이도: 처음 1분은 적 공격이 55%→100%로 서서히 세진다(main.js takeDamage)
+  // contactCap: 1초에 부딪혀서 잃을 수 있는 최대 체력 비율(둘러싸여도 빠져나올 시간). 모든 난이도: 시작 뒤 적 공격이 약했다가 서서히 세진다(PACE.grace, main.js takeDamage)
   easy:   { name: '쉬움',   stars: 1, desc: '적이 약하고 받는 피해가 적어요. 성공하면 별 1개 · 보급권 1장 · 코인 0.8배.', enemyHp: .9,  enemySpd: .85, taken: .4,  density: 1,   hpGrowth: 0,   atkGrowth: 0,   contactCap: .25, special: 0, bossHp: .5 },
   normal: { name: '보통',   stars: 2, desc: '기본 난이도예요. 시간이 갈수록 적이 조금씩 강해져요. 성공하면 별 2개 · 보급권 1장 · 코인 1배.', enemyHp: 1, enemySpd: 1, taken: 1, density: 1.1, hpGrowth: .12, atkGrowth: .06, contactCap: .3, special: 0, bossHp: .85 },
   // 어려움(2026-09-23 저녁 사용자: "유니크 이상 파츠 + 기본 능력치 40 이상이어야 간신히 클리어"): 자동 조종 1-3 어려움 10판씩 — 훈련 40·유니크 3개 4/10,
