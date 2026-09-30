@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<title>3장 업데이트 포스터</title>
+<!-- 서호팡팡수호대 3장 「오염된 하천」 업데이트 홍보 포스터(A4 세로, 2026-09-30). 그림은 게임 파일을 그대로 쓴다.
+     능력치 이야기는 넣지 않는다(사용자 요청). 인쇄할 때 가장자리가 잘리지 않게 글자·그림은 모두 종이 끝에서 9mm 안쪽(배경색만 끝까지).
+     구역 높이(mm): 머리 0~80 · 몬스터 83~133 · 맵 136~248 · 아래 물결 253~ · 아래 띠 260~297(내용은 262~288). 맵 사진은 원래 비율 그대로(자르지 않음).
+     PDF·PNG 만들기: 헤드리스 Chromium으로 이 파일을 열어 A4로 인쇄(printBackground), 확인은 PDF를 그림으로 바꿔서 본다. -->
+<link href="https://fonts.googleapis.com/css2?family=Gowun+Dodum&display=swap" rel="stylesheet">
+<style>
+  @font-face { font-family: "Jua"; src: url("../../game/assets_src/fonts/Jua-Regular.ttf"); }
+  @page { size: A4; margin: 0; }
+  * { box-sizing: border-box; }
+  :root { --deep: #0f4e5e; --teal: #1f8fa8; --reed: #4f8f5c; --sun: #ffd23f; --ink: #1d3a40; --safe: 9mm; }
+  html, body { margin: 0; padding: 0; background: #fff; }
+  body { font-family: "Gowun Dodum", "Jua", sans-serif; color: var(--ink); word-break: keep-all; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  h1, h2, h3 { font-family: "Jua", sans-serif; font-weight: normal; }
+  .page { position: relative; width: 210mm; height: 297mm; overflow: hidden; background: linear-gradient(180deg, #e8f5f2 0%, #f3f1e2 60%, #f6efd9 100%); }
+  .abs { position: absolute; }
+
+  /* ---------- 머리 0~80mm ---------- */
+  .hero { position: absolute; left: 0; top: 0; width: 210mm; height: 80mm; background: radial-gradient(110mm 70mm at 80% 50%, #3fb3c7 0%, #1f8fa8 45%, #135f73 100%); }
+  .bubble { position: absolute; border-radius: 50%; background: radial-gradient(circle at 35% 30%, #ffffffee 0 18%, #ffffff55 40%, #ffffff18 70%); border: .5mm solid #ffffff88; }
+  .hero .wave { position: absolute; left: 0; bottom: -.3mm; width: 210mm; height: 12mm; }
+  .brand { left: var(--safe); top: 9mm; display: flex; align-items: center; gap: 2.6mm; }
+  .brand img { width: 14mm; height: 14mm; object-fit: contain; }
+  .brand b { font-family: "Jua", sans-serif; font-weight: normal; color: #fff; font-size: 15pt; text-shadow: 0 .5mm 0 #0b3a46; }
+  .brand .new { font-family: "Jua", sans-serif; background: var(--sun); color: #5a3a00; font-size: 11pt; padding: .4mm 3mm; border-radius: 99px; box-shadow: 0 .6mm 0 #b98a00; }
+  .title { left: var(--safe); top: 26mm; width: 122mm; }
+  .title .chap { display: inline-block; font-family: "Jua", sans-serif; font-size: 18pt; color: var(--deep); background: var(--sun); padding: .3mm 3.5mm; border-radius: 3mm; box-shadow: 0 .8mm 0 #b98a00; }
+  .title h1 { margin: 1.5mm 0 0; font-size: 42pt; line-height: 1.05; color: #fff; text-shadow: 0 1mm 0 #0b3a46; }
+  .title p { margin: 2mm 0 0; font-size: 11.5pt; line-height: 1.45; color: #eafcff; }
+  .title p b { color: var(--sun); font-weight: normal; font-family: "Jua", sans-serif; }
+  .boss { right: 10mm; top: 9mm; height: 60mm; width: 55mm; object-fit: contain; object-position: center bottom; filter: drop-shadow(0 1.5mm 1.2mm #0006); }
+  .boss-tag { right: 10mm; top: 58mm; font-family: "Jua", sans-serif; color: #fff; background: #0b3a46e6; border: .5mm solid #ffffff66; border-radius: 3mm; padding: .5mm 3mm .7mm; text-align: center; line-height: 1.15; }
+  .boss-tag small { display: block; font-size: 8pt; color: var(--sun); }
+  .boss-tag span { font-size: 12.5pt; }
+
+  /* ---------- 공통 제목 ---------- */
+  .sec { position: absolute; left: var(--safe); width: calc(210mm - 2 * var(--safe)); }
+  .sec-head { display: flex; align-items: center; gap: 2.4mm; height: 8mm; margin-bottom: 2.2mm; }
+  .sec-head h2 { margin: 0; font-size: 17pt; color: var(--deep); white-space: nowrap; }
+  .pill { font-family: "Jua", sans-serif; font-size: 9.5pt; color: #fff; background: var(--reed); padding: .3mm 2.6mm; border-radius: 99px; white-space: nowrap; }
+  .pill.star { background: #fff4c7; color: #7a4f00; border: .4mm dashed #e0b53c; }
+  .line { flex: 1; height: 1mm; border-radius: 1mm; background: repeating-linear-gradient(90deg, #8cc6d2 0 3mm, transparent 3mm 5mm); }
+
+  /* ---------- 몬스터 83~137mm ---------- */
+  .monsters { top: 83mm; }
+  .mgrid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 2.4mm; }
+  .mcard { position: relative; height: 40mm; background: #fff; border: .5mm solid #b3d6d6; border-radius: 3.5mm; padding: 1.6mm 1.6mm 1.8mm; text-align: center; box-shadow: 0 .8mm 0 #b3d6d6; }
+  .mcard .pic { height: 18mm; display: flex; align-items: flex-end; justify-content: center; }
+  .mcard .pic img { max-height: 18mm; max-width: 28mm; object-fit: contain; }
+  .mcard h3 { margin: 1.2mm 0 .5mm; font-size: 11.5pt; color: var(--deep); line-height: 1.1; white-space: nowrap; }
+  .mcard p { margin: 0; font-size: 8pt; line-height: 1.36; color: #3b5358; }
+  .mcard.mid { border-color: #6a7f86; box-shadow: 0 .8mm 0 #6a7f86; background: linear-gradient(180deg, #eef3f4, #fff 45%); }
+  .mcard .badge { position: absolute; top: -2.2mm; left: 50%; transform: translateX(-50%); font-family: "Jua", sans-serif; font-size: 8pt; white-space: nowrap; background: #2f3c40; color: #ffe27a; padding: .2mm 2.2mm; border-radius: 99px; }
+
+  /* ---------- 맵 140~252mm ---------- */
+  .maps { top: 136mm; }
+  .mapgrid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 3mm; }
+  .map { background: #fff; border-radius: 3.5mm; overflow: hidden; border: .5mm solid #b3d6d6; box-shadow: 0 .8mm 0 #b3d6d6; }
+  .map .shot { position: relative; line-height: 0; }
+  .map .shot img { display: block; width: 100%; height: auto; }          /* 원래 비율 그대로 — 사진을 자르지 않는다 */
+  .map .no { position: absolute; left: 1.6mm; top: 1.6mm; line-height: 1.2; font-family: "Jua", sans-serif; font-size: 10pt; color: #fff; background: var(--teal); border: .5mm solid #bfe6ee; border-radius: 50% 50% 50% 2mm; padding: .3mm 2mm; }
+  .map .cap { height: 8.6mm; padding: 1.3mm 2.2mm 0; line-height: 1.25; white-space: nowrap; }
+  .map .cap b { font-family: "Jua", sans-serif; font-weight: normal; font-size: 11pt; color: var(--deep); margin-right: 1.4mm; }
+  .map .cap span { font-size: 8pt; color: #4a6166; }
+  .map.boss-map { border-color: #c98a3a; box-shadow: 0 .8mm 0 #c98a3a; }
+  .map.boss-map .no { background: #c05a2a; border-color: #ffd9b8; }
+  .mission { border-radius: 3.5mm; padding: 2.4mm 2.6mm; background: linear-gradient(160deg, #fff7d6, #ffe9a8); border: .6mm solid #e0b53c; box-shadow: 0 .8mm 0 #e0b53c; display: flex; flex-direction: column; justify-content: space-between; text-align: center; }
+  .mission small { font-family: "Jua", sans-serif; color: #b36b00; font-size: 9pt; }
+  .mission h3 { margin: .3mm 0 0; font-size: 12pt; line-height: 1.2; color: #6b3a00; }
+  .mission .fish { display: flex; align-items: center; justify-content: center; gap: 1.2mm; }
+  .mission .fish img { height: 13mm; width: auto; }
+  .mission .fish i { font-style: normal; font-family: "Jua", sans-serif; font-size: 14pt; color: #c07a00; }
+  .mission p { margin: 0; font-size: 8pt; line-height: 1.3; color: #6b4a10; }
+
+  /* ---------- 아래 260~297mm(내용은 262~288) ---------- */
+  .foot-wave { position: absolute; left: 0; top: 253mm; width: 210mm; height: 8mm; }
+  .foot { position: absolute; left: 0; top: 260.5mm; width: 210mm; height: 36.5mm; background: linear-gradient(180deg, #1f8fa8, #135f73); }
+  .foot-in { position: absolute; left: var(--safe); right: var(--safe); top: 262mm; height: 26mm; display: flex; align-items: center; gap: 3.5mm; color: #fff; }
+  .foot-in .kids { display: flex; align-items: flex-end; gap: .5mm; height: 24mm; }
+  .foot-in .kids img { height: 23mm; width: auto; }
+  .foot-in .kids img.otter { height: 16mm; }
+  .foot-in .go { flex: 1; min-width: 0; }
+  .foot-in .go small { display: block; font-size: 9pt; color: #cdeff5; }
+  .foot-in .go b { display: block; font-family: "Jua", sans-serif; font-weight: normal; font-size: 19pt; line-height: 1.2; white-space: nowrap; text-shadow: 0 .7mm 0 #0b3a46; }
+  .foot-in .go b em { font-style: normal; color: var(--sun); }
+  .foot-in .go span { display: block; font-size: 8pt; color: #cdeff5; margin-top: .4mm; }
+  .foot-in .qr { background: #fff; border-radius: 2.5mm; padding: 1.3mm 1.3mm 1mm; text-align: center; }
+  .foot-in .qr img { width: 18mm; height: 18mm; display: block; }
+  .foot-in .qr small { display: block; font-family: "Jua", sans-serif; color: var(--deep); font-size: 7.5pt; margin-top: .4mm; line-height: 1.2; }
+</style>
+</head>
+<body>
+<div class="page">
+
+  <section class="hero">
+    <span class="bubble" style="width:8mm;height:8mm;left:128mm;top:12mm"></span>
+    <span class="bubble" style="width:4.5mm;height:4.5mm;left:139mm;top:25mm"></span>
+    <span class="bubble" style="width:11mm;height:11mm;left:122mm;top:50mm"></span>
+    <span class="bubble" style="width:5mm;height:5mm;left:104mm;top:13mm"></span>
+    <div class="abs brand"><img src="../../game/assets/ui/title_emblem.png" alt=""><b>서호팡팡수호대</b><span class="new">NEW 업데이트</span></div>
+    <div class="abs title">
+      <span class="chap">3장 오픈!</span>
+      <h1>오염된 하천</h1>
+      <p>세제 거품, 기름, 버려진 그물로 우리 마을 개울이 아파요.<br><b>물고기를 구하고 맑은 개울을 되찾아요!</b></p>
+    </div>
+    <img class="abs boss" src="../../game/assets/sprites/t3/boss_angry.png" alt="구정물 대왕">
+    <div class="abs boss-tag"><small>3-5 대왕</small><span>구정물 대왕</span></div>
+    <svg class="wave" viewBox="0 0 210 12" preserveAspectRatio="none"><path d="M0 6 C 18 1, 34 1, 52 6 S 88 11, 105 6 S 140 1, 158 6 S 192 11, 210 6 V12 H0 Z" fill="#e8f5f2"/></svg>
+  </section>
+
+  <section class="sec monsters">
+    <div class="sec-head"><h2>새로운 몬스터 등장!</h2><span class="pill">하천 몬스터 5종</span><span class="pill star">✏️ 우리 학교 학생 개발팀이 디자인했어요</span><span class="line"></span></div>
+    <div class="mgrid">
+      <div class="mcard"><div class="pic"><img src="../../game/assets/sprites/t3/en_bubble.png" alt=""></div><h3>거품몬</h3><p>세제 거품이 뭉쳐 생겼어요. 거품에 맞으면 앞이 뿌예져요.</p></div>
+      <div class="mcard"><div class="pic"><img src="../../game/assets/sprites/t3/en_petri.png" alt=""></div><h3>페트리</h3><p>식용유 통 몬스터 떼! 뚜껑이 들썩이면 기름을 뿜어요.</p></div>
+      <div class="mcard"><div class="pic"><img src="../../game/assets/sprites/t3/en_can.png" alt=""></div><h3>콜라 캔 몬스터</h3><p>찌그러진 콜라 캔. 멀리서 콜라를 쏴요.</p></div>
+      <div class="mcard"><div class="pic"><img src="../../game/assets/sprites/t3/en_netmon.png" alt=""></div><h3>그물몬</h3><p>버려진 그물이 뭉쳤어요. 폴짝 덮쳐서 그물로 엉켜요.</p></div>
+      <div class="mcard mid"><span class="badge">중간 보스</span><div class="pic"><img src="../../game/assets/sprites/t3/en_net.png" alt=""></div><h3>유령그물 대장</h3><p>버려진 어망 거인! 그물을 던져 꼼짝 못 하게 해요.</p></div>
+    </div>
+  </section>
+
+  <section class="sec maps">
+    <div class="sec-head"><h2>새로운 맵 5곳</h2><span class="pill">3-1 ~ 3-5</span><span class="line"></span></div>
+    <div class="mapgrid">
+      <div class="map"><div class="shot"><img src="3장_포스터_그림/map_3-1.jpg" alt=""><span class="no">3-1</span></div><div class="cap"><b>징검다리 개울</b><span>거품이 둥둥</span></div></div>
+      <div class="map"><div class="shot"><img src="3장_포스터_그림/map_3-2.jpg" alt=""><span class="no">3-2</span></div><div class="cap"><b>빨래터</b><span>기름 통 몬스터 떼 습격</span></div></div>
+      <div class="map"><div class="shot"><img src="3장_포스터_그림/map_3-3.jpg" alt=""><span class="no">3-3</span></div><div class="cap"><b>하수구 옆</b><span>유령그물 대장 등장</span></div></div>
+      <div class="map"><div class="shot"><img src="3장_포스터_그림/map_3-4.jpg" alt=""><span class="no">3-4</span></div><div class="cap"><b>갈대 여울</b><span>그물몬이 졸졸</span></div></div>
+      <div class="map boss-map"><div class="shot"><img src="3장_포스터_그림/map_3-5.jpg" alt=""><span class="no">3-5</span></div><div class="cap"><b>오수 배출구</b><span>구정물 대왕과 한판 승부</span></div></div>
+      <div class="mission"><small>새 임무</small><h3>비닐 고리에 걸린<br>물고기를 구해 주세요!</h3>
+        <div class="fish"><img src="../../game/assets/sprites/t3/prop_fish_caught.png" alt=""><i>➜</i><img src="../../game/assets/sprites/t3/prop_fish_free.png" alt=""></div>
+        <p>물고기 옆에 서면 풀려나요.<br>갈대숲 곁은 안전해요.</p></div>
+    </div>
+  </section>
+
+  <svg class="foot-wave" viewBox="0 0 210 8" preserveAspectRatio="none"><path d="M0 5 C 20 1, 36 1, 54 5 S 90 9, 106 5 S 142 1, 160 5 S 194 9, 210 5 V8 H0 Z" fill="#1f8fa8"/></svg>
+  <div class="foot"></div>
+  <div class="foot-in">
+    <div class="kids"><img src="../../game/assets/ui/title_hoya.png" alt="호야"><img src="../../game/assets/ui/title_minji.png" alt="민지"><img class="otter" src="../../game/assets/seoho_v1/pets/otter_idle.png" alt="수달이"></div>
+    <div class="go"><small>2장 굴뚝 가스 대왕을 정화하면 3장이 열려요</small><b>맑은 개울을 되찾으러 <em>출동!</em></b><span>서호초등학교 학생 개발팀과 함께 만드는 우리 학교 게임</span></div>
+    <div class="qr"><img src="3장_포스터_그림/qr.png" alt="게임 주소 QR"><small>찍고 바로 출동</small></div>
+  </div>
+</div>
+</body>
+</html>
