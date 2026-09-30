@@ -183,7 +183,7 @@ export const STAGES = [
   { id:'CH11', name:'징검다리 개울', goal:'비닐에 걸린 물고기 3마리 구하기', target:3, enemyHp:1.6, enemyAtk:1.48, density:2.05, tip:'', story:'개울에 세제 거품이 둥둥! 거품몬을 정화하고 걸린 물고기를 구해 주자.', unlock:'' },
   { id:'CH12', name:'빨래터', goal:'비닐에 걸린 물고기 4마리 구하기', target:4, enemyHp:1.7, enemyAtk:1.54, density:2.15, tip:'', story:'식용유 통 페트리가 떼로 몰려와! 뚜껑이 들썩이면 옆으로 피하자.', unlock:'' },
   { id:'CH13', name:'하수구 옆', goal:'비닐에 걸린 물고기 5마리 구하기', target:5, enemyHp:1.8, enemyAtk:1.6, density:2.2, tip:'', story:'버려진 그물이 뭉친 유령그물 대장이 나타났어! 그물에 걸리지 않게 조심해.', unlock:'' },
-  { id:'CH14', name:'갈대 여울', goal:'비닐에 걸린 물고기 6마리 구하기', target:6, enemyHp:1.9, enemyAtk:1.66, density:2.25, tip:'', story:'녹조몬이 번지고 있어! 둘로 나뉘기 전에 빨리 정화하자.', unlock:'' },
+  { id:'CH14', name:'갈대 여울', goal:'비닐에 걸린 물고기 6마리 구하기', target:6, enemyHp:1.9, enemyAtk:1.66, density:2.25, tip:'', story:'버려진 그물이 뭉친 그물몬이 졸졸 따라와! 그물 몸을 펼치면 옆으로 피하자.', unlock:'' },
   { id:'CH15', name:'오수 배출구', goal:'비닐에 걸린 물고기 5마리 구하기', target:5, enemyHp:1.95, enemyAtk:1.7, density:2.25, tip:'', story:'오수 배출구에서 구정물 대왕이 솟아올랐어! 물고기를 구해 대왕을 약하게 만들자.', unlock:'' },
 ];
 
@@ -201,7 +201,7 @@ const stageCopy=[
  ['구정물 웅덩이 안에서는 앞이 잘 안 보여요. 갈대숲 곁은 안전해요.','첫 성공 코인 120개 추가'],
  ['페트리가 지나간 기름 웅덩이를 밟으면 미끌미끌 느려져요.','첫 성공 코인 120개 추가'],
  ['그물에 걸리면 방향키를 좌우로 흔들거나 손가락을 좌우로 문질러요.','첫 성공 코인 120개 추가'],
- ['녹조몬 몸이 빵빵해지면 곧 둘로 나뉘어요.','첫 성공 코인 120개 추가'],
+ ['그물몬에게 걸리면 느려져요. 방향키를 좌우로 흔들면 빨리 풀려요.','첫 성공 코인 120개 추가'],
  ['물고기를 5마리 구하면 대왕도 약해져요!','보급권 1장 추가 + 코인 60개 더'],
 ];
 STAGES.forEach((s,i)=>{s.tip=stageCopy[i][0];s.unlock=stageCopy[i][1];});

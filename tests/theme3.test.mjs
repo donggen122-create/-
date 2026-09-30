@@ -23,15 +23,15 @@ test('fifteen stages: chapter 3 opens after 2-5, 3-5 is a boss stage with the sa
 test('chapter-3 names, student monsters and stage mixes line up',()=>{
  assert.equal(THEMES[2].name,'오염된 하천');assert.equal(T3_BOSS.name,'구정물 대왕');assert.equal(THEMES[2].boss,T3_BOSS.name);
  assert.deepEqual(stageInfo(12),{themeIndex:2,k:2,label:'3-3',themeName:'오염된 하천',name:'하수구 옆',tip:THEMES[2].tips[2],bossName:'구정물 대왕',isBoss:false});
- const names=Object.values(T3_ENEMIES).map(e=>e.name);for(const n of ['거품몬','페트리','콜라 캔 몬스터','녹조몬','유령그물 대장'])assert.ok(names.includes(n),n);
- assert.deepEqual([...new Set(Object.values(T3_ENEMIES).map(e=>e.behavior))].sort(),['algae','bubbler','netter','oiler','shooter']);
+ const names=Object.values(T3_ENEMIES).map(e=>e.name);for(const n of ['거품몬','페트리','콜라 캔 몬스터','그물몬','유령그물 대장'])assert.ok(names.includes(n),n);
+ assert.deepEqual([...new Set(Object.values(T3_ENEMIES).map(e=>e.behavior))].sort(),['bubbler','netter','oiler','pouncer','shooter']);
  for(const s of T3_STAGES)for(const id of [...s.mix,...s.elites.map(e=>e.id)])assert.ok(T3_ENEMIES[id],id);
- // 단계 구성(프롬프트 문서): 3-1 거품몬 · 3-2 페트리 · 3-3 콜라 캔 + 유령그물 대장 · 3-4 녹조몬 · 3-5 대왕
- assert.deepEqual(T3_STAGES.map(s=>s.mix.at(-1)),['T3_BUBBLE','T3_PETRI','T3_CAN','T3_ALGAE','T3_ALGAE']);
+ // 단계 구성(프롬프트 문서): 3-1 거품몬 · 3-2 페트리 · 3-3 콜라 캔 + 유령그물 대장 · 3-4 그물몬(녹조몬 대신, 학생 원안) · 3-5 대왕
+ assert.deepEqual(T3_STAGES.map(s=>s.mix.at(-1)),['T3_BUBBLE','T3_PETRI','T3_CAN','T3_NETMON','T3_NETMON']);
  assert.equal(T3_STAGES[2].elites[0].id,'T3_NET');assert.equal(T3_STAGES[4].boss,'T3_BOSS');
  assert.equal(T3_ENEMIES.T3_NET.type,'elite');assert.ok(T3_ENEMIES.T3_NET.heavy);
- // 녹조몬만 나뉘고(8초 뒤 2마리), 작은 녹조몬은 더 안 나뉜다
- assert.deepEqual(T3_ENEMIES.T3_ALGAE.split,{id:'T3_ALGAE_S',n:2,afterS:8});assert.ok(!T3_ENEMIES.T3_ALGAE_S.split);
+ // 그물몬(2026-09-30 저녁 녹조몬 대신): 덮치기 예고 그림이 있고, 중간 보스와 달리 일반 몬스터·밀려남
+ assert.equal(T3_ENEMIES.T3_NETMON.type,'normal');assert.ok(!T3_ENEMIES.T3_NETMON.heavy);assert.equal(T3_ENEMIES.T3_NETMON.frames.pounce,'t3_en_netmon_pounce');assert.ok(!Object.keys(T3_ENEMIES).some(id=>/ALGAE/.test(id)));
  for(const e of Object.values(T3_ENEMIES))assert.ok(e.cleanse,e.name);
 });
 
@@ -47,7 +47,7 @@ test('3-5 boss has close/mid/far skills, fish rings every third skill, oil and f
 
 test('every chapter-3 sprite referenced by the game exists',()=>{
  const assets=fs.readFileSync(new URL('../game/src/assets.js',import.meta.url),'utf8');
- const keys=[...assets.matchAll(/t3_(\w+): IMG_BASE \+ "t3\/(\w+)\.png"/g)];assert.ok(keys.length>=29);
+ const keys=[...assets.matchAll(/t3_(\w+): IMG_BASE \+ "t3\/(\w+)\.png"/g)];assert.ok(keys.length>=27);
  for(const [,,f] of keys)assert.ok(fs.existsSync(new URL(`../game/assets/sprites/t3/${f}.png`,import.meta.url)),f);
  const patterns=BOSS_PATTERNS_T3.map(p=>p.drop).filter(Boolean);
  const used=[...Object.values(T3_ENEMIES).flatMap(e=>[e.sprite,...Object.values(e.frames||{}).flat()]),T3_BOSS.img.calm,T3_BOSS.img.angry,...T3_STAGES.map(s=>s.floor),...patterns];

@@ -35,7 +35,7 @@ export const THEMES = [
       "세제를 많이 쓰면 거품이 개울까지 흘러가요. 세제는 조금만!",
       "쓰고 남은 식용유는 하수구에 붓지 말고 신문지에 흡수시켜 버려요.",
       "버려진 그물과 낚싯줄은 '유령 그물'이 되어 물고기를 계속 잡아요. 낚시 도구는 꼭 되가져가요.",
-      "비료와 세제를 적게 쓰면 녹조가 줄어요. 녹조가 번지면 물고기가 숨쉬기 힘들어요.",
+      "갈대는 더러운 물을 걸러 주는 자연 정수기예요. 물가 갈대숲을 지켜 주세요.",
       "물이 맑아지면 수달이 돌아와요!",
     ],
   },
@@ -144,9 +144,9 @@ export const T2_STAGES = [
 //  bubbler(거품몬: 거리를 두고 거품 쏘기 → 맞으면 잠깐 화면이 뿌예짐, 지나간 자리에 거품 웅덩이) ·
 //  oiler(페트리: 떼로 둘러싸고, 가까이 오면 뚜껑이 들썩(예고) → 앞으로 기름 뿜기, 기름 웅덩이) ·
 //  shooter(콜라 캔: 멀리서 조준(예고) → 콜라 물줄기 한 발) ·
-//  algae(녹조몬: 녹조 웅덩이를 남김, 8초 안에 정화 못 하면 부풀었다가 작은 녹조몬 2마리로 번식) ·
+//  pouncer(그물몬: 졸졸 따라오다 가까우면 그물 몸을 펼치고(예고) 그 자리로 덮침 → 걸리면 3초 동안 엉켜 느려짐 — 2026-09-30 저녁 녹조몬 대신, 학생 그물 몬스터 원안) ·
 //  netter(유령그물 대장: 졸졸 따라오고 밀려나지 않음, 팔을 들어 그물을 펼치면(예고) 표시된 원에 그물 → 걸리면 최대 3초 못 움직임).
-// cleanse = 정화될 때 바뀌는 모습(학생 원안: 거품몬 → 깨끗한 물통 · 페트리 → 화분 · 콜라 캔 → 생수병 · 녹조몬 → 수련 잎 · 대장 → 풀려나는 물고기).
+// cleanse = 정화될 때 바뀌는 모습(학생 원안: 거품몬 → 깨끗한 물통 · 페트리 → 화분 · 콜라 캔 → 생수병 · 그물몬 → 물고기 · 대장 → 풀려나는 물고기).
 export const T3_ENEMIES = {
   T3_BUBBLE:  { name: "거품몬", type: "normal", behavior: "bubbler", hpMult: 1.3, atkMult: 0.9, spdU: 2.3, radiusU: 0.45, mass: 1, xp: 3, sprite: "t3_en_bubble", drawH: 50,
                 frames: { atk: "t3_en_bubble_atk" }, cleanse: "깨끗한 물통" },
@@ -154,9 +154,8 @@ export const T3_ENEMIES = {
                 frames: { windup: "t3_en_petri_windup", fire: "t3_en_petri_fire" }, cleanse: "화분" },
   T3_CAN:     { name: "콜라 캔 몬스터", type: "normal", behavior: "shooter", hpMult: 1.5, atkMult: 1.0, spdU: 2.2, radiusU: 0.42, mass: 1.2, xp: 3, sprite: "t3_en_can", drawH: 48,
                 frames: { fire: "t3_en_can_fire" }, cleanse: "생수병" },
-  T3_ALGAE:   { name: "녹조몬", type: "normal", behavior: "algae", hpMult: 2.0, atkMult: 1.1, spdU: 1.7, radiusU: 0.5, mass: 1.6, xp: 4, sprite: "t3_en_algae", drawH: 56,
-                frames: { swell: "t3_en_algae_swell" }, split: { id: "T3_ALGAE_S", n: 2, afterS: 8 }, cleanse: "수련 잎" },
-  T3_ALGAE_S: { name: "작은 녹조몬", type: "normal", behavior: "algae", hpMult: 0.8, atkMult: 0.8, spdU: 2.4, radiusU: 0.32, mass: 0.6, xp: 2, sprite: "t3_en_algae_small", drawH: 34, cleanse: "수련 잎" },
+  T3_NETMON:  { name: "그물몬", type: "normal", behavior: "pouncer", hpMult: 1.8, atkMult: 1.0, spdU: 2.4, radiusU: 0.45, mass: 1.2, xp: 3, sprite: "t3_en_netmon", drawH: 54,
+                frames: { pounce: "t3_en_netmon_pounce" }, cleanse: "물고기" },
   T3_NET:     { name: "유령그물 대장", type: "elite", behavior: "netter", hpMult: 16, atkMult: 1.6, spdU: 1.35, radiusU: 0.9, mass: 9, xp: 25, sprite: "t3_en_net", drawH: 112, heavy: true,
                 frames: { windup: "t3_en_net_throw" }, cleanse: "풀려나는 물고기" },
 };
@@ -171,8 +170,8 @@ export const T3_STAGES = [
   { mix: ["T3_BUBBLE"], elites: [], dark: 0.08, floor: "t3_floor_stream", hint: "거품몬이 쏜 거품에 맞으면 잠깐 앞이 뿌예져요 · 걸린 물고기 옆에 서면 풀려나요" },
   { mix: ["T3_BUBBLE", "T3_PETRI"], elites: [], dark: 0.1, floor: "t3_floor_bank", hint: "페트리 뚜껑이 들썩이면 곧 기름을 뿜어요! 옆으로 피해요" },
   { mix: ["T3_BUBBLE", "T3_PETRI", "T3_CAN"], elites: [{ id: "T3_NET", atS: 180 }, { id: "T3_NET", atS: 660 }], dark: 0.12, floor: "t3_floor_stream", hint: "유령그물 대장이 팔을 들면 표시된 원 밖으로! 그물에 걸리면 좌우로 흔들어요" },
-  { mix: ["T3_BUBBLE", "T3_PETRI", "T3_CAN", "T3_ALGAE"], elites: [{ id: "T3_NET", atS: 450 }], dark: 0.15, floor: "t3_floor_bank", hint: "녹조몬은 8초가 지나면 둘로 나뉘어요. 먼저 정화해요!" },
-  { mix: ["T3_BUBBLE", "T3_PETRI", "T3_CAN", "T3_ALGAE"], elites: [{ id: "T3_NET", atS: 300 }], dark: 0.18, floor: "t3_floor_sewer", boss: "T3_BOSS", hint: "구정물 대왕! 대왕이 뿌린 비닐 고리에서 물고기를 구하면 대왕이 약해져요" },
+  { mix: ["T3_BUBBLE", "T3_PETRI", "T3_CAN", "T3_NETMON"], elites: [{ id: "T3_NET", atS: 450 }], dark: 0.15, floor: "t3_floor_bank", hint: "그물몬이 그물 몸을 펼치면 표시된 원 밖으로! 걸리면 좌우로 흔들어요" },
+  { mix: ["T3_BUBBLE", "T3_PETRI", "T3_CAN", "T3_NETMON"], elites: [{ id: "T3_NET", atS: 300 }], dark: 0.18, floor: "t3_floor_sewer", boss: "T3_BOSS", hint: "구정물 대왕! 대왕이 뿌린 비닐 고리에서 물고기를 구하면 대왕이 약해져요" },
 ];
 
 const DEFAULT_TIP = "우리가 매일 하는 작은 선택이 지구를 바꿔요.";

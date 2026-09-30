@@ -259,7 +259,7 @@ for (const [id, r] of Object.entries({ ...T1_ENEMIES, ...T2_ENEMIES, ...T3_ENEMI
     sprite: r.sprite, tint: null, hiRes: true, drawH: r.drawH,          // 고해상도 그림: 색조 없이 부드럽게 축소
     drawScale: (r.type === "elite" ? 2.4 : 1.5) * (0.8 + r.radiusU), bobAmp: r.type === "elite" ? 2.4 : 1.8, extraDr: 0,
     summon: r.summon || null, onDeathSpawn: r.onDeathSpawn || null, frames: r.frames || null,
-    split: r.split || null, heavy: !!r.heavy, cleanse: r.cleanse || null,   // 3장: 녹조몬 번식 · 밀려나지 않는 대장 · 정화되면 바뀌는 모습
+    heavy: !!r.heavy, cleanse: r.cleanse || null,   // 3장: 밀려나지 않는 대장 · 정화되면 바뀌는 모습
   };
 }
 BOSSES[T1_BOSS.id] = { ...T1_BOSS, shape: "tree", palette: paletteFor([130, 150, 60]), palette2: paletteFor([200, 90, 60]) };

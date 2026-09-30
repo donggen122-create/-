@@ -55,7 +55,7 @@ const difficultyHelp=id=>{const d=R.DIFFICULTIES[id]||R.DIFFICULTIES.easy;return
 const CHAPTERS=[
  {n:'1',from:0,eyebrow:'CHAPTER 01',name:'쓰레기 마을',short:'쓰레기 마을',title:'다섯 원소로 지키는 마을',sub:'이동에 집중하세요. 공격은 자동으로, 스킬은 내 선택으로.',art:'t1',pictures:['en_snackbag','en_buttbug','en_bottle','en_baggy','boss_calm']},
  {n:'2',from:5,eyebrow:'CHAPTER 02',name:'대기오염 공장 지대',short:'대기오염 공장',title:'매연을 걷어 내는 공장 지대',sub:'굴뚝마다 시커먼 매연! 먼지몬·가스몬·세균몬을 정화하고 맑은 공기를 되찾아요.',art:'t2',pictures:['en_dust','en_gas','en_germ','en_raincloud','boss_calm']},
- {n:'3',from:10,eyebrow:'CHAPTER 03',name:'오염된 하천',short:'오염된 하천',title:'물고기가 돌아오는 맑은 개울',sub:'세제 거품·기름·녹조로 개울이 아파요! 우리 학교 친구들이 만든 하천 몬스터를 정화하고 걸린 물고기를 구해요.',art:'t3',pictures:['en_bubble','en_petri','en_net','en_algae','boss_calm']},
+ {n:'3',from:10,eyebrow:'CHAPTER 03',name:'오염된 하천',short:'오염된 하천',title:'물고기가 돌아오는 맑은 개울',sub:'세제 거품·기름·버려진 그물로 개울이 아파요! 우리 학교 친구들이 만든 하천 몬스터를 정화하고 걸린 물고기를 구해요.',art:'t3',pictures:['en_bubble','en_petri','en_net','en_netmon','boss_calm']},
 ];
 const chapterStages=c=>R.STAGES.slice(c.from,c.from+5);
 export class GuardianUI {
