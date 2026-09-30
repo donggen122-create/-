@@ -39,7 +39,7 @@ with sync_playwright() as pw:
         seed(page,uid,profile(coins=700,gifts=8,stages={'CH01':{'cleared':True,'stars':1}},milestones={'firstPart':True},parts={'PART_F1':{'copies':1,'level':1}},equippedParts=['PART_F1'],skillUsage={'L2':3},training={'attack':100,'hp':100,'speed':50}))   # 어려움 재조정(docs/28) 뒤 1-1 어려움 성공 확인용 훈련
         lobby(page)
         # 1) 새 규칙 안내가 한 번 뜬다
-        assert '파츠 보급이 바뀌었어요' in dialog_text(page) and '전설(80개)' in dialog_text(page);page.screenshot(path=str(OUT/f'notice-{w}.png'));close(page);checks.append('rules notice')
+        assert '3장 「오염된 하천」' in dialog_text(page)   # 2026-09-30: 예전 보급 규칙 안내 대신 3장 업데이트 알림(한 번);page.screenshot(path=str(OUT/f'notice-{w}.png'));close(page);checks.append('rules notice')
         page.locator('.sg-nav [data-tab="parts"]').click();page.wait_for_timeout(300)
         # 2) 고르는 칸 없이 무작위 보급, 등급 사다리 표시
         assert page.locator('.sg-supply[data-mode="random"]').count()==1 and page.locator('#sg-draw-part, #sg-draw-element').count()==0

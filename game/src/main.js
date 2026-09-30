@@ -5438,14 +5438,21 @@ function sgMaybeGuidance(){
     try{if(localStorage.getItem(key)==='1')return false;localStorage.setItem(key,'1');}catch(e){}
     sgShownGuidance.add(key);return true;
   };
-  if(p.partsRepairNotice&&once('parts-fix-notice')){
-    const items=p.partsRepairNotice.details||[];
-    sgUI.notify('사라졌던 파츠를 돌려드렸어요',items.map(x=>`${R.PARTS[x.id]?.name||'파츠'}로 ${x.copies}개 복구${x.gifts?` · 넘치는 ${x.gifts}개는 보급권 ${x.gifts}장`:''}${x.refund?` · 강화 코인 ${x.refund}개 반환`:''}`).join(' / '));return;
-  }
+  // 업데이트 알림(2026-09-30 사용자 "접속하면 1회 3장이 업데이트 되었다는 메시지, 그 이전에 뜨던 팝업은 지워"): 아이디마다 한 번(이 기기).
+  // 예전 안내(파츠 보급 규칙 supply-v3 · 사라진 파츠 복구)는 뺐다. 캐릭터 고르기·첫 파츠·첫 장비 안내는 그대로.
+  if(once('ch3-update-notice')){sgChapter3Notice(p);return;}
   if(R.pendingPart(p)&&R.selectableParts(p).length&&once('first-part-guide')){sgUI.firstPartDialog();return;}
   if(!p.milestones?.firstGear&&once('first-gear-guide')){sgUI.firstGearDialog();return;}   // 장비가 생겼어요 · 첫 무기 무료(한 번 안내, 장비 탭에도 남음)
-  // 보급 규칙 안내(한 번, 2026-09-23 저녁 무작위·5등급 판): 1-1을 깬 학생만. 전 판 안내(supply-v2)는 대신한다.
-  if(p.stages?.CH01?.cleared&&once('supply-v3-notice'))sgUI.notify('파츠 보급이 바뀌었어요','이제 보급은 고르는 것 없이 10종 중 무작위! 운이 좋으면 한 번에 3개(18%)나 7개(2%)가 나와요. 같은 파츠를 모으면 노말(1개) → 레어(3개) → 유니크(7개) → 에픽(25개) → 전설(80개)로 올라가요. 등급이 오를수록 그 스킬이 훨씬 강해지고, 전설은 피해 +80%에 30% 확률로 한 번 더 발동해요. 전설은 아주 오래 모아야 해요. 성공 보급권은 쉬움·보통 1장, 어려움 2장이고 같은 단계는 하루 2번 성공까지 받아요. 코인 300개로 보급권 1장(하루 1번)도 바꿀 수 있어요.');
+}
+function sgChapter3Notice(p){
+  const open=R.stageUnlocked(p,'CH11'),img=n=>`<img src="./assets/sprites/t3/${n}.png" alt="">`;
+  sgUI.openDialog(`<div class="sg-update"><span class="sg-update-tag">NEW 업데이트</span><h2>3장 「오염된 하천」</h2>
+    <div class="sg-update-foes">${['en_bubble','en_petri','en_can','en_netmon','en_net','boss_calm'].map(img).join('')}</div>
+    <p>새로운 몬스터 5종과 새로운 맵 5곳이 생겼어요!<br>비닐에 걸린 물고기를 구하고 구정물 대왕을 정화해요.</p>
+    <p class="sg-update-open">${open?'지금 바로 3장에 도전할 수 있어요!':'2-5 굴뚝 가스 대왕을 정화하면 3장이 열려요.'}</p></div>
+    <div class="sg-event-btns"><button class="sg-primary" id="sg-update-go">${open?'3장 보러 가기':'모험 보러 가기'}</button><button data-close>닫기</button></div>`);
+  const go=document.getElementById('sg-update-go');
+  if(go)go.onclick=()=>{sgUI.dialog.close();sgUI.tab='adventure';if(open){sgUI.chapter='3';sgUI.chapterPicked=true;}sgUI.render();};
 }
 const sgStorageKey=kind=>`seoho_v1_${kind}_${cloud.user||'guest'}`;
 function sgReadPending(kind){try{return JSON.parse(localStorage.getItem(sgStorageKey(kind))||'null');}catch{return null;}}

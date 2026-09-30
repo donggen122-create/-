@@ -565,3 +565,13 @@
  .sg-chapter-chip>span{font-size:12px;line-height:1.2}
  .sg-chapter-chip>small{font-size:9.5px!important;white-space:nowrap}
 }
+/* 3장 업데이트 알림(2026-09-30, 접속하면 아이디마다 한 번 — main.js sgChapter3Notice) */
+.sg-dialog .sg-update{text-align:center;background:linear-gradient(180deg,#135f73 0%,#1f8fa8 55%,#bfe7ef 100%);color:#fff;border-radius:18px;padding:18px 14px 16px;margin-bottom:14px}
+.sg-update-tag{display:inline-block;padding:2px 12px;border-radius:999px;background:#ffd23f;color:#5a3a00;font-size:13px;font-weight:800;box-shadow:0 2px 0 #b98a00}
+.sg-dialog .sg-update h2{color:#fff;font-size:26px;margin:8px 0 6px;text-shadow:0 2px 0 #0b3a46}
+.sg-update-foes{display:flex;justify-content:center;align-items:flex-end;gap:4px;margin:4px 0 8px;flex-wrap:nowrap}
+.sg-update-foes img{height:46px;width:auto;max-width:52px;object-fit:contain;filter:drop-shadow(0 2px 0 #0003)}
+.sg-update-foes img:last-child{height:58px;max-width:60px}
+.sg-dialog .sg-update p{color:#fff;margin:6px 0;font-size:14px;line-height:1.5;text-shadow:0 1px 1px #0b3a4666}
+.sg-dialog .sg-update .sg-update-open{display:inline-block;margin-top:4px;padding:4px 12px;border-radius:10px;background:#0b3a46b3;color:#ffe27a;font-weight:800;font-size:14px}
+@media(max-width:400px){.sg-update-foes img{height:36px;max-width:42px}.sg-update-foes img:last-child{height:46px;max-width:48px}.sg-dialog .sg-update h2{font-size:22px}}
