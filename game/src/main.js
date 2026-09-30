@@ -5605,7 +5605,7 @@ function sgThreatTick(dt){
   }
   for(const s of sgHostileShots){
     if(s.life<=0)continue;s.life-=dt;const v=s.speed||4.5*U;s.x+=Math.cos(s.angle)*v*dt;s.y+=Math.sin(s.angle)*v*dt;
-    if(dist(s.x,s.y,player.x,player.y)<(s.r?s.r+.3*U:.6*U)){applyBossHit(s.damage);if(s.foam)player.t3FoamT=1.6;s.life=0;}   // foam: 3장 거품몬 거품 → 잠깐 앞이 뿌예짐
+    if(dist(s.x,s.y,player.x,player.y)<(s.r?s.r+.3*U:.6*U)){applyBossHit(s.damage);if(s.foam&&!(player.t3FoamT>0)&&runTime>=(player.t3FoamFree||0))player.t3FoamT=SG_FOAM.blur;s.life=0;}   // foam: 3장 거품몬 거품 → 잠깐 앞이 뿌예짐(SG_FOAM)
   }
   sgHostileShots=sgHostileShots.filter(s=>s.life>0);
 }
@@ -5682,6 +5682,8 @@ function sgDrawT2Threats(){
 // 3장 적 행동(themes.js T3_ENEMIES, 2026-09-30 학생 하천 몬스터): 거품몬 거품 · 페트리 기름 · 콜라 캔 콜라 · 그물몬 덮치기 · 유령그물 대장 그물.
 // 모두 예고(볼 부풂·뚜껑 들썩·조준선·그물 몸 펼치기·팔 들기와 떨어질 원) 뒤에 판정. 거품·기름 웅덩이는 느려지기만 하고 닳지 않는다.
 let sgPuddles=[],sgNets=[],sgFish=[];
+// 거품 뿌예짐(2026-09-30 사용자 "한 번 걷히면 잠깐 다시 안 뿌예지게"): blur초 동안 뿌예지고(그동안 또 맞아도 늘어나지 않음), 걷힌 뒤 free초는 맞아도 다시 뿌예지지 않는다. 피해는 그대로
+const SG_FOAM={blur:1.6,free:3};
 const SG_PUDDLE={foam:{sprite:'t3_fx_foam',slow:.75,alpha:.8,size:2.3,ring:'#5d9cc4',flat:.45},oil:{sprite:'t3_fx_oil',slow:.62,alpha:.85,size:2.4,ring:'#5b4a6a'},net:{sprite:'t3_fx_net',slow:1,alpha:.9,size:2.6}};
 function sgPuddle(kind,x,y,r,life){if(sgPuddles.length>=24)sgPuddles.shift();sgPuddles.push({kind,x,y,r,life,max:life,rot:(Math.random()-.5)*.6});}
 function sgFishJump(x,y,n=1){for(let i=0;i<n;i++){if(sgFish.length>=24)sgFish.shift();sgFish.push({x,y,vx:(Math.random()-.5)*(n>1?160:70),t:0,max:.85+Math.random()*.3,h:55+Math.random()*45,spin:(Math.random()-.5)*2});}}
@@ -5735,7 +5737,7 @@ function sgT3Tick(dt){
   sgNets=sgNets.filter(n=>!n.done);
   let slow=1;for(const q of sgPuddles){q.life-=dt;const k=SG_PUDDLE[q.kind];if(k.slow<1&&dist(q.x,q.y,player.x,player.y)<q.r)slow=Math.min(slow,k.slow);}
   sgPuddles=sgPuddles.filter(q=>q.life>0);player.t3Slow=slow;
-  if(player.t3FoamT>0)player.t3FoamT-=dt;
+  if(player.t3FoamT>0){player.t3FoamT-=dt;if(player.t3FoamT<=0)player.t3FoamFree=runTime+SG_FOAM.free;}
   for(const f of sgFish)f.t+=dt;sgFish=sgFish.filter(f=>f.t<f.max);
 }
 function sgDrawT3Ground(){                     // 웅덩이(바닥, 캐릭터 아래). 사라지기 1초 전부터 옅어진다

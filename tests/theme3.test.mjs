@@ -54,6 +54,8 @@ test('every chapter-3 sprite referenced by the game exists',()=>{
  for(const k of used)assert.match(assets,new RegExp(`\\b${k}:`),k);
  const main=fs.readFileSync(new URL('../game/src/main.js',import.meta.url),'utf8');
  for(const k of new Set([...main.matchAll(/["'](t3_\w+)["']/g)].map(m=>m[1])))assert.match(assets,new RegExp(`\\b${k}:`),k);
+ // 거품 뿌예짐(2026-09-30): 한 번 걷힌 뒤 잠깐은 다시 뿌예지지 않는다
+ const foam=main.match(/const SG_FOAM=\{blur:([\d.]+),free:([\d.]+)\}/);assert.ok(foam&&+foam[1]>0&&+foam[2]>=2,'foam blur has a no-reblur window');
  for(const f of ['card_polluted.jpg','card_clean.jpg'])assert.ok(fs.existsSync(new URL(`../game/assets/sprites/t3/${f}`,import.meta.url)),f);
 });
 
