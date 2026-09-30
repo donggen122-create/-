@@ -86,7 +86,7 @@
 .sg-exchange>span{display:flex;align-items:center;gap:6px;flex-wrap:wrap;flex:1;min-width:0}.sg-exchange .sg-icon{width:20px;height:20px}
 .sg-exchange small{display:block;width:100%;font-size:11px;color:var(--sg-sub)}
 .sg-draw-panel .sg-exchange>button{flex-shrink:0;width:auto;min-width:104px;margin-top:0}
-.sg-rules p{font-size:14px;line-height:1.6;margin:8px 0}.sg-rules b{display:inline-block;min-width:78px;color:#24546d}
+.sg-rules p{font-size:14px;line-height:1.6;margin:8px 0}.sg-rules b{margin-right:5px;color:#24546d}
 .sg-next-effect{border:1px solid #d5e0e7;background:#f5f9fc;border-radius:12px;padding:8px 14px;margin:10px 0}.sg-next-effect p{font-size:13px;margin:6px 0;display:flex;align-items:center;gap:6px;flex-wrap:wrap}.sg-next-effect .sg-medal{margin-left:0}
 .sg-swap-list{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin:14px 0}
 .sg-swap-list>button{display:grid;justify-items:center;gap:4px;padding:10px 6px;white-space:normal;text-align:center}.sg-swap-list .sg-icon{width:42px;height:42px}.sg-swap-list small{font-size:11px}
@@ -670,3 +670,36 @@
  .sg-part-supply>.sg-gear-bar-supply>span{flex:1 1 calc(100% - 90px)}
  #guardian-lobby .sg-part-supply .sg-supply-go{flex:1 1 auto}
 }
+/* 2026-09-30 줄바꿈·간격 정리: 짧은 이름·단추 글이 두 줄로 꺾이지 않게, 문단 끝에 한두 글자만 남지 않게 */
+#guardian-lobby p,.sg-dialog p,.sg-dialog li,.sg-book-card em,.sg-story{text-wrap:pretty}
+#guardian-lobby h1,#guardian-lobby h2,#guardian-lobby h3,.sg-dialog h2,.sg-dialog h3{text-wrap:balance}
+.sg-nw{white-space:nowrap}
+.sg-pet-buff,.sg-sup-card b,.sg-grade-row>span{text-wrap:pretty}
+.sg-dialog .sg-grade-row.on{background:#eef7f3;border-radius:8px;font-weight:700}
+.sg-titlebar-side .sg-progress,.sg-diff-btn,.sg-segment>button,.sg-chapter-chip b,.sg-chapter-chip .sg-short,.sg-stage strong,.sg-gear-setname b,.sg-weapon-chip b,.sg-part-head b,.sg-gear-bar-supply b,.sg-mission-btn b{white-space:nowrap}
+/* 장비 보관함 창: 칸 이름 한 줄 */
+.sg-dialog .sg-bag-cell>small{white-space:nowrap;overflow-wrap:normal;font-size:10.5px!important;letter-spacing:-.4px;max-width:100%}
+@media(max-width:760px){
+ .sg-book-tabs{gap:6px}
+ #guardian-lobby .sg-book-tabs>button{flex:1 1 auto;padding:9px 6px!important;font-size:12.5px!important}
+ /* 보급 줄(파츠·장비·친구): 제목은 한 줄, 단추는 아랫줄 */
+ .sg-gear-bar-supply{flex-wrap:wrap}
+ .sg-gear-bar-supply>span{flex:1 1 calc(100% - 90px)}
+ #guardian-lobby .sg-gear-bar-supply>.sg-primary{flex:1 1 auto}
+ /* 장비 칸: 그림 위 · 이름 아래(이름이 두 줄로 꺾이지 않게) */
+ #guardian-lobby .sg-gear-slot{flex-direction:column;align-items:flex-start;gap:3px;min-height:0}
+ .sg-gear-slot>span:nth-child(2){width:100%}
+ .sg-gear-slot b{white-space:nowrap;overflow-wrap:normal;font-size:12px;letter-spacing:-.3px}
+ .sg-gear-slot small{white-space:nowrap}
+ .sg-dialog h2{font-size:21px}
+}
+/* 태블릿(761~1100px): 장비 인형 가운데 칸을 줄여 장비 이름이 한 줄에 */
+@media(min-width:761px) and (max-width:1100px){
+ .sg-gear-doll{grid-template-columns:minmax(0,1fr) 110px minmax(0,1fr)}.sg-gear-slot b{overflow-wrap:normal}
+ .sg-gear-top{grid-template-columns:1fr}   /* 세로 태블릿: 인형 → 세트 순서로 쌓아 칸을 넓게 */
+ .sg-parts-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+}
+/* 좁은 태블릿(761~920px): 장 단추는 짧은 이름, 훈련 카드 이름은 한 줄 */
+@media(min-width:761px) and (max-width:920px){.sg-chapter-chip .sg-long{display:none}.sg-chapter-chip .sg-short{display:inline;white-space:nowrap}}
+.sg-training .sg-panel-title .sg-eyebrow{white-space:nowrap}
+.sg-nav>button>span{white-space:nowrap}   /* 아래 메뉴: '파츠 2'의 숫자가 아랫줄로 떨어지지 않게 */
