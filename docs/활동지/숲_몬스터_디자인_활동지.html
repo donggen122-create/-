@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<title>숲 몬스터 디자인 활동지</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Jua&family=Gowun+Dodum&display=swap" rel="stylesheet">
+<style>
+  @page { size: A4; margin: 0; }
+  * { box-sizing: border-box; }
+  :root { --ink: #1f2a1e; --soft: #5e6b5a; --line: #a8bca3; --faint: #eef5ea; --accent: #3a7a34; }
+  html, body { margin: 0; padding: 0; background: #fff; color: var(--ink); }
+  body { font-family: "Gowun Dodum", "Malgun Gothic", sans-serif; font-size: 11.2pt; line-height: 1.45; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  .page { width: 210mm; height: 297mm; padding: 10mm 12mm 9mm; overflow: hidden; page-break-after: always; break-after: page; display: flex; flex-direction: column; gap: 3.2mm; }
+  .page:last-child { page-break-after: auto; break-after: auto; }
+  h1, h2, .jua { font-family: "Jua", "Malgun Gothic", sans-serif; font-weight: normal; }
+
+  /* 머리글 */
+  .top { display: flex; justify-content: space-between; align-items: center; font-size: 9.5pt; color: var(--soft); }
+  .tag { border: 1.2px solid var(--accent); color: var(--accent); border-radius: 99px; padding: .3mm 3mm; font-family: "Jua", sans-serif; font-size: 10.5pt; }
+  h1 { margin: 0; font-size: 25pt; line-height: 1.15; letter-spacing: -.3px; }
+  h1 small { font-size: 13pt; color: var(--soft); margin-left: 2mm; }
+  .wave { display: block; width: 100%; height: 4.5mm; margin-top: -.5mm; }
+  .note { font-size: 9pt; color: var(--soft); margin-top: -.4mm; }
+  .info { display: flex; gap: 4mm; font-size: 11pt; align-items: flex-end; flex-wrap: nowrap; }
+  .info span { white-space: nowrap; }
+  .blank { display: inline-block; border-bottom: 1.2px solid var(--ink); height: 5mm; vertical-align: bottom; }
+  .assign { margin-left: auto; border: 1.2px dashed var(--line); border-radius: 2mm; padding: 1mm 3mm; font-size: 10pt; }
+
+  /* 이야기 상자 */
+  .story { border: 1.4px solid var(--ink); border-radius: 3mm; padding: 2.6mm 4mm; background: var(--faint); font-size: 10.8pt; word-break: keep-all; }
+  .story b { font-family: "Jua", sans-serif; font-weight: normal; font-size: 12pt; }
+
+  /* 단계 */
+  .step { display: flex; flex-direction: column; gap: 1.6mm; }
+  .step h2 { margin: 0; font-size: 14.5pt; display: flex; align-items: center; gap: 2.2mm; }
+  .num { flex: none; width: 7.5mm; height: 7.5mm; border-radius: 50%; border: 1.6px solid var(--accent); color: var(--accent); display: grid; place-items: center; font-size: 11.5pt; }
+  .hint { font-family: "Gowun Dodum", sans-serif; font-size: 9.6pt; color: var(--soft); margin-left: 1mm; }
+  .box { border: 1.3px solid var(--ink); border-radius: 2.5mm; }
+  .chk { display: inline-block; width: 4mm; height: 4mm; border: 1.3px solid var(--ink); border-radius: .8mm; vertical-align: -.6mm; margin-right: 1.6mm; flex: none; }
+  .grid { display: grid; gap: 1.6mm 3mm; }
+  .chip { display: flex; align-items: center; border: 1px solid var(--line); border-radius: 2mm; padding: 1.3mm 2.2mm; font-size: 10.4pt; white-space: nowrap; }
+  .line { border-bottom: 1px solid var(--line); height: 7.5mm; }
+
+  /* 1쪽: 이름 */
+  .namebox { display: grid; grid-template-columns: 58mm 1fr; gap: 3mm; }
+  .field { border: 1.3px solid var(--ink); border-radius: 2.5mm; padding: 1.2mm 3mm; min-height: 14mm; }
+  .field .lab { font-family: "Jua", sans-serif; font-size: 10.5pt; color: var(--accent); }
+  .field .eg { font-family: "Gowun Dodum", sans-serif; font-size: 9pt; color: var(--soft); }
+
+  /* 1쪽: 그리기 */
+  .tips { display: flex; flex-wrap: wrap; gap: 1.2mm 2mm; font-size: 9.6pt; }
+  .tips span { background: var(--faint); border-radius: 99px; padding: .5mm 2.6mm; white-space: nowrap; }
+  .draw { flex: 1; position: relative; border: 1.6px solid var(--ink); border-radius: 3mm;
+          background-image: radial-gradient(circle, #c9d6db 0.55px, transparent 0.7px); background-size: 6mm 6mm; background-position: 3mm 3mm; }
+  .draw .corner { position: absolute; left: 3mm; bottom: 2mm; font-size: 8.8pt; color: var(--soft); background: #fff; padding: 0 1.5mm; }
+
+  /* 2쪽 */
+  .moves { grid-template-columns: 1fr 1fr; }
+  .moves .chip { white-space: normal; line-height: 1.3; min-height: 8.6mm; }
+  .moves .chip b { font-family: "Jua", sans-serif; font-weight: normal; margin-right: 1mm; }
+  .row { display: grid; gap: 4mm; }
+  .sizes { display: flex; flex-direction: column; gap: 1.4mm; }
+  .colors { display: flex; gap: 3mm; justify-content: space-between; }
+  .sw { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 1mm; font-size: 9pt; color: var(--soft); }
+  .sw i { width: 13mm; height: 13mm; border-radius: 50%; border: 1.3px solid var(--ink); display: block; }
+  .sw u { text-decoration: none; border-bottom: 1px solid var(--line); width: 100%; height: 4.5mm; display: block; }
+  .mini { display: flex; gap: 4mm; align-items: flex-end; }
+  .mini .b { border: 1.3px solid var(--ink); border-radius: 1.5mm; }
+  .cap { font-size: 8.8pt; color: var(--soft); text-align: center; margin-top: .8mm; }
+  .purify { flex: 1; min-height: 47mm; position: relative; }
+  .card { border: 1.6px solid var(--accent); border-radius: 3mm; padding: 2.5mm 4mm 1mm; position: relative; margin-top: 2.5mm; }
+  .card .line, .step .line { height: 8.6mm; }
+  .card .badge { position: absolute; top: -3.2mm; left: 4mm; background: #fff; color: var(--accent); font-family: "Jua", sans-serif; padding: 0 2mm; font-size: 11pt; }
+  .checks { grid-template-columns: 1fr 1fr; font-size: 10.2pt; }
+  .checks div { display: flex; align-items: center; }
+  .foot { margin-top: auto; display: flex; justify-content: space-between; align-items: center; font-size: 9.2pt; color: var(--soft); border-top: 1px dashed var(--line); padding-top: 1.6mm; }
+</style>
+</head>
+<body>
+
+<!-- ─────────── 1쪽 ─────────── -->
+<section class="page">
+  <div class="top"><span>서호팡팡수호대 · 게임 디자이너 활동지</span><span class="tag">4장 · 불타는 숲</span></div>
+  <div>
+    <h1>불타는 숲 몬스터를 디자인해요 <small>한 사람이 한 마리!</small></h1>
+    <svg class="wave" viewBox="0 0 400 9" preserveAspectRatio="none" aria-hidden="true">
+      <path d="M3.5 8.4 L6.0 2.4 L8.5 8.4 Z M16.8 8.4 L19.0 3.2 L21.2 8.4 Z M31.9 8.4 L35.0 1.0 L38.1 8.4 Z M43.8 8.4 L46.0 3.2 L48.2 8.4 Z M52.8 8.4 L55.0 3.2 L57.2 8.4 Z M68.1 8.4 L71.0 1.6 L73.9 8.4 Z M79.8 8.4 L82.0 3.2 L84.2 8.4 Z M90.5 8.4 L93.0 2.4 L95.5 8.4 Z M103.1 8.4 L106.0 1.6 L108.9 8.4 Z M114.8 8.4 L117.0 3.2 L119.2 8.4 Z M127.5 8.4 L130.0 2.4 L132.5 8.4 Z M136.1 8.4 L139.0 1.6 L141.9 8.4 Z M149.5 8.4 L152.0 2.4 L154.5 8.4 Z M160.1 8.4 L163.0 1.6 L165.9 8.4 Z M173.1 8.4 L176.0 1.6 L178.9 8.4 Z M182.1 8.4 L185.0 1.6 L187.9 8.4 Z M198.5 8.4 L201.0 2.4 L203.5 8.4 Z M209.5 8.4 L212.0 2.4 L214.5 8.4 Z M219.9 8.4 L223.0 1.0 L226.1 8.4 Z M233.8 8.4 L236.0 3.2 L238.2 8.4 Z M246.8 8.4 L249.0 3.2 L251.2 8.4 Z M259.1 8.4 L262.0 1.6 L264.9 8.4 Z M269.9 8.4 L273.0 1.0 L276.1 8.4 Z M286.1 8.4 L289.0 1.6 L291.9 8.4 Z M296.9 8.4 L300.0 1.0 L303.1 8.4 Z M313.5 8.4 L316.0 2.4 L318.5 8.4 Z M324.1 8.4 L327.0 1.6 L329.9 8.4 Z M337.8 8.4 L340.0 3.2 L342.2 8.4 Z M346.8 8.4 L349.0 3.2 L351.2 8.4 Z M362.1 8.4 L365.0 1.6 L367.9 8.4 Z M378.1 8.4 L381.0 1.6 L383.9 8.4 Z M389.5 8.4 L392.0 2.4 L394.5 8.4 Z" fill="#3a7a34"/>
+      <path d="M76.5 8.4 C74.2 8.4 74.3 5.6 76.5 3.6 C78.7 5.6 78.8 8.4 76.5 8.4 Z M87.5 8.4 C85.2 8.4 85.3 5.6 87.5 3.6 C89.7 5.6 89.8 8.4 87.5 8.4 Z M206.5 8.4 C204.2 8.4 204.3 5.6 206.5 3.6 C208.7 5.6 208.8 8.4 206.5 8.4 Z M294.5 8.4 C292.2 8.4 292.3 5.6 294.5 3.6 C296.7 5.6 296.8 8.4 294.5 8.4 Z" fill="#d0661f"/>
+      <path d="M0 8.4 H400" stroke="#3a7a34" stroke-width="1.2"/>
+    </svg>
+  </div>
+  <div class="info">
+    <span><span class="blank" style="width:10mm"></span>학년</span>
+    <span><span class="blank" style="width:10mm"></span>반</span>
+    <span><span class="blank" style="width:10mm"></span>번</span>
+    <span>이름 <span class="blank" style="width:34mm"></span></span>
+    <span class="assign">맡은 몬스터 <span class="blank" style="width:8mm"></span>번 · 주제 <span class="blank" style="width:24mm"></span></span>
+  </div>
+
+  <div class="story">
+    <b>🌲 서호 마을 뒷산에 무슨 일이?</b><br>
+    등산객이 두고 간 캠핑 쓰레기, 제대로 끄지 않은 불씨, 마구 베어 낸 나무, 사람이 함부로 풀어놓은 외래종 때문에 숲이 아파요.
+    숲을 해치는 것들이 뭉쳐 <b>몬스터</b>가 되었어요! 여러분은 오늘 <b>게임 디자이너</b>예요. 수호대가 정화할 숲 몬스터를 <b>한 마리</b> 만들어 주세요.
+    여러분의 초안은 실제 게임 몬스터 그림을 만들 때 참고해요. 3장 하천 몬스터들도 친구들의 활동지로 만들었어요!
+  </div>
+
+  <div class="step">
+    <h2><span class="num">1</span>무엇이 뭉쳐서 생겼나요? <span class="hint">1~2개에 ✔ 해요</span></h2>
+    <div class="grid" style="grid-template-columns: repeat(5, 1fr);">
+      <div class="chip"><span class="chk"></span>캠핑 쓰레기</div>
+      <div class="chip"><span class="chk"></span>불씨·담배꽁초</div>
+      <div class="chip"><span class="chk"></span>부탄가스·버너</div>
+      <div class="chip"><span class="chk"></span>쓰레기 태우기</div>
+      <div class="chip"><span class="chk"></span>종이 낭비</div>
+      <div class="chip"><span class="chk"></span>잘린 나무·톱</div>
+      <div class="chip"><span class="chk"></span>불도저·중장비</div>
+      <div class="chip"><span class="chk"></span>외래종 동물</div>
+      <div class="chip"><span class="chk"></span>외래종 식물</div>
+      <div class="chip"><span class="chk"></span>기타 (<span class="blank" style="width:12mm;height:4mm"></span>)</div>
+    </div>
+    <div class="note">외래종: 다른 나라에서 들여왔다가 사람이 숲·강에 함부로 풀어놓은 동식물이에요. 예) 황소개구리, 붉은귀거북, 가시박 넝쿨</div>
+  </div>
+
+  <div class="step">
+    <h2><span class="num">2</span>이름과 한 줄 소개</h2>
+    <div class="namebox">
+      <div class="field"><div class="lab">몬스터 이름</div></div>
+      <div class="field"><div class="lab">한 줄 소개 <span class="eg">예) 꺼진 척하다가 바람이 불면 다시 살아나는 불씨 장난꾸러기</span></div></div>
+    </div>
+  </div>
+
+  <div class="step" style="flex:1">
+    <h2><span class="num">3</span>몬스터를 그려요 <span class="hint">연필로 먼저, 다 그리면 색칠해요</span></h2>
+    <div class="tips">
+      <span>✔ 크고 단순한 모양</span><span>✔ 눈은 꼭 그려요</span><span>✔ 특징 하나를 크게 (동그라미에 눈만 붙이면 ✘)</span>
+      <span>✔ 테두리는 진하게</span><span>✔ 몸 전체가 다 보이게</span><span>✔ 진짜 동물 그대로 말고, 숲을 해치는 것이 괴물로!</span>
+    </div>
+    <div class="draw"><span class="corner">앞이나 옆에서 본 모습을 크게 그려요</span></div>
+  </div>
+</section>
+
+<!-- ─────────── 2쪽 ─────────── -->
+<section class="page">
+  <div class="top"><span>서호팡팡수호대 · 게임 디자이너 활동지 (뒤쪽)</span><span>이름 <span class="blank" style="width:30mm"></span></span></div>
+
+  <div class="step">
+    <h2><span class="num">4</span>어떻게 움직이나요? <span class="hint">가장 잘 어울리는 것 1~2개에 ✔ 해요</span></h2>
+    <div class="grid moves">
+      <div class="chip"><span class="chk"></span><span><b>졸졸</b> 끝까지 따라와요</span></div>
+      <div class="chip"><span class="chk"></span><span><b>우르르</b> 작은 친구들이 떼로 몰려와 둘러싸요</span></div>
+      <div class="chip"><span class="chk"></span><span><b>쌩!</b> 멈췄다가 갑자기 돌진해요</span></div>
+      <div class="chip"><span class="chk"></span><span><b>폴짝</b> 높이 뛰어올라 쿵! 내려앉아요</span></div>
+      <div class="chip"><span class="chk"></span><span><b>휙휙</b> 멀리 떨어져서 불똥·가시를 던져요</span></div>
+      <div class="chip"><span class="chk"></span><span><b>펑!</b> 가까이 오면 터져요</span></div>
+      <div class="chip"><span class="chk"></span><span><b>딱딱</b> 단단한 껍질로 앞쪽 공격을 막아요</span></div>
+      <div class="chip"><span class="chk"></span><span><b>뿅!</b> 연기 속에 숨었다가 등 뒤에서 나타나요</span></div>
+      <div class="chip"><span class="chk"></span><span><b>쑥쑥</b> 넝쿨처럼 번지며 부하를 불러내요</span></div>
+      <div class="chip"><span class="chk"></span><span><b>화르르</b> 지나간 자리에 불길을 남겨요</span></div>
+    </div>
+  </div>
+
+  <div class="step">
+    <h2><span class="num">5</span>이 몬스터만의 비밀 능력은? <span class="hint">예) 바람이 불면 몸의 불꽃이 두 배로 커져요</span></h2>
+    <div class="line"></div>
+    <div class="line"></div>
+  </div>
+
+  <div class="row" style="grid-template-columns: 58mm 1fr;">
+    <div class="step">
+      <h2><span class="num">6</span>크기</h2>
+      <div class="sizes">
+        <div class="chip"><span class="chk"></span>작아요 (떼로 다녀요)</div>
+        <div class="chip"><span class="chk"></span>보통이에요</div>
+        <div class="chip"><span class="chk"></span>커요 (대장! 묵직하게)</div>
+      </div>
+    </div>
+    <div class="step">
+      <h2><span class="num">7</span>대표 색 3~4가지 <span class="hint">동그라미를 칠하고 색 이름을 써요</span></h2>
+      <div class="colors">
+        <div class="sw"><i></i><u></u>몸 색</div>
+        <div class="sw"><i></i><u></u>무늬·특징</div>
+        <div class="sw"><i></i><u></u>눈·입</div>
+        <div class="sw"><i></i><u></u>더 쓰고 싶은 색</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="row" style="grid-template-columns: auto 1fr;">
+    <div class="step">
+      <h2><span class="num">8</span>작게 그려 보기</h2>
+      <div class="mini">
+        <div><div class="b" style="width:30mm;height:30mm"></div><div class="cap">조금 작게</div></div>
+        <div><div class="b" style="width:15mm;height:15mm"></div><div class="cap">게임 속 크기</div></div>
+      </div>
+      <div class="cap" style="text-align:left;max-width:58mm">게임에서는 이만큼 작게 보여요.<br>작게 그려도 알아볼 수 있나요?</div>
+    </div>
+    <div class="step">
+      <h2><span class="num">9</span>반짝! 정화되면 무엇으로 변할까요?</h2>
+      <div class="box purify"><span class="cap" style="position:absolute;left:3mm;bottom:1.5mm">예) 새싹, 도토리, 다람쥐, 맑은 계곡물, 새 둥지 … 그림과 한 단어로!</span></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <span class="badge">🌱 환경 지식 카드</span>
+    <div style="font-size:10.4pt;margin-top:1mm">이 몬스터가 생기지 않게 하려면 우리는 무엇을 할 수 있을까요?</div>
+    <div class="line"></div>
+    <div class="line"></div>
+    <div class="cap" style="text-align:right">좋은 문장은 게임 속 지식 카드가 될 수도 있어요!</div>
+  </div>
+
+  <div class="step">
+    <h2><span class="num">✔</span>마지막 점검</h2>
+    <div class="grid checks">
+      <div><span class="chk"></span>작게 그려도 무슨 몬스터인지 알 수 있어요</div>
+      <div><span class="chk"></span>무엇이 뭉쳐서 생겼는지 모양에 보여요</div>
+      <div><span class="chk"></span>이름만 들어도 모습이 떠올라요</div>
+      <div><span class="chk"></span>색을 3~4가지로 정했어요</div>
+      <div><span class="chk"></span>진짜 동물 그대로가 아니라 숲을 해치는 괴물이에요</div>
+      <div><span class="chk"></span>너무 무섭지 않고 개성 있어요</div>
+    </div>
+  </div>
+
+  <div class="foot"><span>다 했으면 선생님께 내요. 수고했어요, 게임 디자이너!</span><span>선생님 확인 <span class="chk" style="margin:0 0 0 1.5mm"></span></span></div>
+</section>
+
+</body>
+</html>
