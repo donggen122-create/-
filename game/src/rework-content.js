@@ -17,7 +17,7 @@ export function installReworkContent({SKILLS,PASSIVES,EVOLUTIONS,CHAPTERS,BOSSES
   const boss2=BOSSES.T2_BOSS;if(boss2){boss2.hpMult=Math.round(BOSS_HP_MULT*1.15);boss2.atkMult=1.35;boss2.spdU=1.5;boss2.rangePatterns=true;boss2.patterns=BOSS_PATTERNS_T2.map(p=>({...p}));
     // 난이도별 체력(DIFFICULTIES.bossHp 대신): 쉬움·보통은 1-5보다 약 2.5배 오래, 어려움은 적 체력이 이미 5.5배라 1-5와 비슷하게(docs/30 모의)
     boss2.diffHp={easy:1.2,normal:2.1,hard:.35};}
-  // 3-5 구정물 대왕(2026-09-30 시안): 2-5보다 조금 더 튼튼하고 세게. 난이도 체력은 2-5와 같은 비율(모의 전 — docs/41)
-  const boss3=BOSSES.T3_BOSS;if(boss3){boss3.hpMult=Math.round(BOSS_HP_MULT*1.25);boss3.atkMult=1.45;boss3.spdU=1.5;boss3.rangePatterns=true;boss3.patterns=BOSS_PATTERNS_T3.map(p=>({...p}));
+  // 3-5 구정물 대왕: 기본 체력·공격은 2-5와 같게 두고, 3-5 단계 배율(2-5의 1.5배, rework-core STAGES)로 체력·피해 모두 2-5 대왕의 1.5배(2026-09-30 사용자 "3장 50% 상향")
+  const boss3=BOSSES.T3_BOSS;if(boss3){boss3.hpMult=Math.round(BOSS_HP_MULT*1.15);boss3.atkMult=1.35;boss3.spdU=1.5;boss3.rangePatterns=true;boss3.patterns=BOSS_PATTERNS_T3.map(p=>({...p}));
     boss3.diffHp={easy:1.2,normal:2.1,hard:.35};}
 }

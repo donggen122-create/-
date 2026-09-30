@@ -15,8 +15,8 @@ test('fifteen stages: chapter 3 opens after 2-5, 3-5 is a boss stage with the sa
  const r=R.completeRun(p,{stage:'CH15',cleared:true,seconds:300,litter:5,difficulty:'normal'});
  assert.equal(r.reward.gifts,2);assert.ok(r.reward.coins>=260+120+60+30);   // 보급권 1 + 첫 대왕 1, 코인 기본+첫 성공+대왕+목표
  for(const s of R.STAGES.slice(10)){assert.match(s.goal,/물고기/);assert.ok(s.tip&&s.unlock&&s.story,s.id);}
- // 적은 2장보다 조금씩 더 튼튼하게
- const hp=R.STAGES.map(s=>s.enemyHp);for(let i=10;i<15;i++)assert.ok(hp[i]>hp[9]&&hp[i]>=hp[i-1],R.STAGES[i].id);
+ // 3장 적은 같은 자리 2장 단계보다 체력·공격 모두 1.5배(2026-09-30 사용자 "50% 상향")
+ for(let i=0;i<5;i++){const a=R.STAGES[5+i],b=R.STAGES[10+i];assert.ok(Math.abs(b.enemyHp-a.enemyHp*1.5)<1e-9&&Math.abs(b.enemyAtk-a.enemyAtk*1.5)<1e-9,b.id);}
  assert.equal(R.stageLabel('CH13'),'3-3');assert.equal(R.hardGate(p,'CH13').chapter,3);assert.equal(R.hardReadiness(p,'CH13').chapter,3);
 });
 
@@ -55,4 +55,12 @@ test('every chapter-3 sprite referenced by the game exists',()=>{
  const main=fs.readFileSync(new URL('../game/src/main.js',import.meta.url),'utf8');
  for(const k of new Set([...main.matchAll(/["'](t3_\w+)["']/g)].map(m=>m[1])))assert.match(assets,new RegExp(`\\b${k}:`),k);
  for(const f of ['card_polluted.jpg','card_clean.jpg'])assert.ok(fs.existsSync(new URL(`../game/assets/sprites/t3/${f}`,import.meta.url)),f);
+});
+
+test('3-5 boss keeps the 2-5 base values so the stage multiplier makes it exactly 1.5x the 2-5 boss', async()=>{
+ const {BOSSES,CHAPTERS,SKILLS,PASSIVES,EVOLUTIONS}=await import('../game/src/content.js');
+ const {installReworkContent}=await import('../game/src/rework-content.js');
+ installReworkContent({SKILLS,PASSIVES,EVOLUTIONS,CHAPTERS,BOSSES});
+ assert.equal(BOSSES.T3_BOSS.hpMult,BOSSES.T2_BOSS.hpMult);assert.equal(BOSSES.T3_BOSS.atkMult,BOSSES.T2_BOSS.atkMult);
+ assert.deepEqual(BOSSES.T3_BOSS.diffHp,BOSSES.T2_BOSS.diffHp);
 });

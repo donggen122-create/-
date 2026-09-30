@@ -179,12 +179,13 @@ export const STAGES = [
   { id:'CH09', name:'매연 도로', goal:'가스가 새는 밸브 6개 잠그기', target:6, enemyHp:1.45, enemyAtk:1.38, density:2.2, tip:'', story:'산성비 구름몬이 빗방울을 떨어뜨려. 표시를 보고 피하자!', unlock:'' },
   { id:'CH10', name:'굴뚝 대왕의 공장', goal:'가스가 새는 밸브 5개 잠그기', target:5, enemyHp:1.5, enemyAtk:1.42, density:2.2, tip:'', story:'파이프로 된 굴뚝 가스 대왕이 나타났어! 밸브를 잠가 대왕을 약하게 만들자.', unlock:'' },
   // 3장 「오염된 하천」(2026-09-30, themes.js T3_*·학생 하천 몬스터): 목표는 비닐 고리에 걸린 물고기 구하기(물고기 옆에 서면 풀려남). 2-5를 성공하면 열린다.
-  // 적 체력·공격은 2장에 이어 조금씩(모의 전 시안 값 — docs/41).
-  { id:'CH11', name:'징검다리 개울', goal:'비닐에 걸린 물고기 3마리 구하기', target:3, enemyHp:1.6, enemyAtk:1.48, density:2.05, tip:'', story:'개울에 세제 거품이 둥둥! 거품몬을 정화하고 걸린 물고기를 구해 주자.', unlock:'' },
-  { id:'CH12', name:'빨래터', goal:'비닐에 걸린 물고기 4마리 구하기', target:4, enemyHp:1.7, enemyAtk:1.54, density:2.15, tip:'', story:'식용유 통 페트리가 떼로 몰려와! 뚜껑이 들썩이면 옆으로 피하자.', unlock:'' },
-  { id:'CH13', name:'하수구 옆', goal:'비닐에 걸린 물고기 5마리 구하기', target:5, enemyHp:1.8, enemyAtk:1.6, density:2.2, tip:'', story:'버려진 그물이 뭉친 유령그물 대장이 나타났어! 그물에 걸리지 않게 조심해.', unlock:'' },
-  { id:'CH14', name:'갈대 여울', goal:'비닐에 걸린 물고기 6마리 구하기', target:6, enemyHp:1.9, enemyAtk:1.66, density:2.25, tip:'', story:'버려진 그물이 뭉친 그물몬이 졸졸 따라와! 그물 몸을 펼치면 옆으로 피하자.', unlock:'' },
-  { id:'CH15', name:'오수 배출구', goal:'비닐에 걸린 물고기 5마리 구하기', target:5, enemyHp:1.95, enemyAtk:1.7, density:2.25, tip:'', story:'오수 배출구에서 구정물 대왕이 솟아올랐어! 물고기를 구해 대왕을 약하게 만들자.', unlock:'' },
+  // 적 체력·공격(2026-09-30 사용자 "챕터 3는 기존 1,2 챕터보다 모든 적들의 능력치를 전부 50% 상향"): 같은 자리 2장 단계의 1.5배(3-1 = 2-1 × 1.5 …).
+  // 단계 배율이 그 판의 모든 적(중간 보스·대왕 포함) 체력과 내가 받는 모든 피해에 곱해진다(main.js spawnEnemyAt·spawnBoss·takeDamage). 이동 속도·마릿수는 그대로.
+  { id:'CH11', name:'징검다리 개울', goal:'비닐에 걸린 물고기 3마리 구하기', target:3, enemyHp:1.725, enemyAtk:1.8, density:2.05, tip:'', story:'개울에 세제 거품이 둥둥! 거품몬을 정화하고 걸린 물고기를 구해 주자.', unlock:'' },
+  { id:'CH12', name:'빨래터', goal:'비닐에 걸린 물고기 4마리 구하기', target:4, enemyHp:1.875, enemyAtk:1.89, density:2.15, tip:'', story:'식용유 통 페트리가 떼로 몰려와! 뚜껑이 들썩이면 옆으로 피하자.', unlock:'' },
+  { id:'CH13', name:'하수구 옆', goal:'비닐에 걸린 물고기 5마리 구하기', target:5, enemyHp:2.025, enemyAtk:1.98, density:2.2, tip:'', story:'버려진 그물이 뭉친 유령그물 대장이 나타났어! 그물에 걸리지 않게 조심해.', unlock:'' },
+  { id:'CH14', name:'갈대 여울', goal:'비닐에 걸린 물고기 6마리 구하기', target:6, enemyHp:2.175, enemyAtk:2.07, density:2.25, tip:'', story:'버려진 그물이 뭉친 그물몬이 졸졸 따라와! 그물 몸을 펼치면 옆으로 피하자.', unlock:'' },
+  { id:'CH15', name:'오수 배출구', goal:'비닐에 걸린 물고기 5마리 구하기', target:5, enemyHp:2.25, enemyAtk:2.13, density:2.25, tip:'', story:'오수 배출구에서 구정물 대왕이 솟아올랐어! 물고기를 구해 대왕을 약하게 만들자.', unlock:'' },
 ];
 
 const stageCopy=[
