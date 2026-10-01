@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<title>스토리팀 1장 대본 활동지</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Jua&family=Gowun+Dodum&display=swap" rel="stylesheet">
+<style>
+  @page { size: A4; margin: 0; }
+  * { box-sizing: border-box; }
+  :root { --ink: #1f2330; --soft: #5f6475; --line: #b8aedb; --faint: #f2eefb; --accent: #6f52b8; --water: #b0651c; }
+  html, body { margin: 0; padding: 0; background: #fff; color: var(--ink); }
+  body { font-family: "Gowun Dodum", "Malgun Gothic", sans-serif; font-size: 11.2pt; line-height: 1.45; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  .page { width: 210mm; height: 297mm; padding: 10mm 12mm 9mm; overflow: hidden; page-break-after: always; break-after: page; display: flex; flex-direction: column; gap: 3mm; }
+  .page:last-child { page-break-after: auto; break-after: auto; }
+  h1, h2, .jua { font-family: "Jua", "Malgun Gothic", sans-serif; font-weight: normal; }
+
+  .top { display: flex; justify-content: space-between; align-items: center; font-size: 9.5pt; color: var(--soft); }
+  .tag { border: 1.2px solid var(--water); color: var(--water); border-radius: 99px; padding: .3mm 3mm; font-family: "Jua", sans-serif; font-size: 10.5pt; }
+  h1 { margin: 0; font-size: 25pt; line-height: 1.15; letter-spacing: -.3px; }
+  h1 small { font-size: 13pt; color: var(--accent); margin-left: 2mm; }
+  .wave { display: block; width: 100%; height: 4mm; margin-top: -1mm; }
+  .info { display: flex; gap: 4mm; font-size: 11pt; align-items: flex-end; flex-wrap: nowrap; }
+  .info span { white-space: nowrap; }
+  .blank { display: inline-block; border-bottom: 1.2px solid var(--ink); height: 5mm; vertical-align: bottom; }
+  .assign { margin-left: auto; border: 1.2px dashed var(--line); border-radius: 2mm; padding: 1mm 3mm; font-size: 10pt; display: flex; align-items: center; gap: 2mm; }
+  .chk { display: inline-block; width: 4mm; height: 4mm; border: 1.3px solid var(--ink); border-radius: .8mm; vertical-align: -.6mm; margin-right: 1.2mm; flex: none; }
+
+  .story { border: 1.4px solid var(--ink); border-radius: 3mm; padding: 2.6mm 4mm; background: var(--faint); font-size: 10.8pt; word-break: keep-all; }
+  .story b { font-family: "Jua", sans-serif; font-weight: normal; font-size: 12pt; }
+
+  .step { display: flex; flex-direction: column; gap: 1.6mm; }
+  .step h2 { margin: 0; font-size: 14.5pt; display: flex; align-items: center; gap: 2.2mm; }
+  .num { flex: none; width: 7.5mm; height: 7.5mm; border-radius: 50%; border: 1.6px solid var(--accent); color: var(--accent); display: grid; place-items: center; font-size: 11.5pt; }
+  .hint { font-family: "Gowun Dodum", sans-serif; font-size: 9.6pt; color: var(--soft); margin-left: 1mm; }
+  .line { border-bottom: 1px solid var(--line); height: 8.2mm; }
+
+  /* 무대 5곳 */
+  .stages { display: grid; grid-template-columns: repeat(5, 1fr); gap: 2mm; }
+  .stg { border: 1.2px solid var(--water); border-radius: 2.5mm; padding: 1.4mm 2mm; text-align: center; }
+  .stg .n { font-family: "Jua", sans-serif; color: var(--water); font-size: 10pt; }
+  .stg .p { font-family: "Jua", sans-serif; font-size: 11.5pt; white-space: nowrap; }
+  .stg .w { font-size: 9pt; color: var(--soft); white-space: nowrap; }
+  .stg.boss { border-width: 1.8px; border-color: #b0472f; }
+  .stg.boss .n, .stg.boss .p { color: #b0472f; }
+
+  /* 이야기 뼈대 */
+  .frame { display: grid; grid-template-columns: 1fr 1fr; gap: 3mm; }
+  .fbox { border: 1.3px solid var(--ink); border-radius: 3mm; padding: 1.8mm 3mm 1mm; display: flex; flex-direction: column; }
+  .fbox .k { font-family: "Jua", sans-serif; font-size: 12pt; color: var(--accent); display: flex; align-items: baseline; gap: 2mm; }
+  .fbox .k em { font-style: normal; background: var(--accent); color: #fff; border-radius: 99px; padding: 0 2.4mm; font-size: 10pt; }
+  .fbox .q { font-size: 10.4pt; }
+  .fbox .h { font-size: 9pt; color: var(--soft); }
+  .fbox .line { height: 8.3mm; }
+
+  /* 등장인물 표 */
+  table.cast { width: 100%; border-collapse: collapse; font-size: 10.4pt; }
+  table.cast th { font-family: "Jua", sans-serif; font-weight: normal; font-size: 10.5pt; color: var(--accent); text-align: left; padding: 0 2mm 1mm; border-bottom: 1.3px solid var(--ink); }
+  table.cast td { border-bottom: 1px solid var(--line); height: 10.5mm; padding: 0 2mm; vertical-align: middle; }
+  table.cast td.who { font-family: "Jua", sans-serif; font-size: 11.5pt; white-space: nowrap; width: 38mm; }
+  table.cast td.who small { display: block; font-family: "Gowun Dodum", sans-serif; font-size: 8.4pt; color: var(--soft); line-height: 1.15; }
+  table.cast td.mid { width: 42mm; }
+  .note { font-size: 9.4pt; color: var(--soft); }
+
+  .titlebox { border: 1.6px solid var(--accent); border-radius: 3mm; padding: 2.2mm 4mm; display: flex; align-items: center; gap: 3mm; }
+  .titlebox .jua { font-size: 13pt; color: var(--accent); white-space: nowrap; }
+  .titlebox .fill { flex: 1; border-bottom: 1.2px solid var(--ink); height: 7mm; position: relative; }
+  .titlebox .fill::before { content: "「"; position: absolute; left: -3mm; bottom: 0; font-size: 13pt; }
+  .titlebox .fill::after { content: "」"; position: absolute; right: -3mm; bottom: 0; font-size: 13pt; }
+
+  /* 2쪽: 대본 */
+  .howto { border: 1.4px solid var(--ink); border-radius: 3mm; padding: 2.2mm 4mm; background: var(--faint); display: grid; grid-template-columns: 1.25fr 1fr; gap: 4mm; }
+  .howto .eg { font-size: 10.4pt; line-height: 1.6; }
+  .howto .eg b { font-family: "Jua", sans-serif; font-weight: normal; color: var(--accent); display: inline-block; width: 13mm; }
+  .howto .eg i { font-style: normal; color: var(--soft); }
+  .howto .jua { font-size: 12pt; }
+  .rules { font-size: 9.8pt; display: flex; flex-direction: column; gap: .6mm; }
+  .rules div::before { content: "✔ "; color: var(--accent); }
+  .scene { border: 1.4px solid var(--ink); border-radius: 3mm; padding: 1.8mm 3.5mm 1.2mm; }
+  .scene .head { display: flex; align-items: baseline; gap: 2.5mm; }
+  .scene .head .jua { font-size: 13.5pt; }
+  .scene .head .when { font-size: 9.4pt; color: var(--soft); }
+  .scene .badge { font-family: "Jua", sans-serif; background: var(--accent); color: #fff; border-radius: 99px; padding: 0 2.6mm; font-size: 10.5pt; }
+  .say { display: grid; grid-template-columns: 22mm 3mm 1fr; align-items: end; height: 7.7mm; }
+  .say .nm { border-bottom: 1.2px solid var(--ink); height: 6mm; }
+  .say .colon { text-align: center; font-family: "Jua", sans-serif; padding-bottom: .5mm; }
+  .say .tx { border-bottom: 1px solid var(--line); height: 6mm; }
+  .oneline { display: grid; grid-template-columns: 42mm 22mm 3mm 1fr; align-items: end; height: 7.9mm; font-size: 10.2pt; }
+  .oneline .st { font-family: "Jua", sans-serif; color: var(--water); padding-bottom: .6mm; white-space: nowrap; }
+  .checks { display: grid; grid-template-columns: 1fr 1fr; gap: 1.1mm 3mm; font-size: 10pt; }
+  .checks div { display: flex; align-items: center; }
+  .foot { margin-top: auto; display: flex; justify-content: space-between; align-items: center; font-size: 9.2pt; color: var(--soft); border-top: 1px dashed var(--line); padding-top: 1.6mm; }
+</style>
+</head>
+<body>
+
+<!-- ─────────── 1쪽: 이야기 설계 ─────────── -->
+<section class="page">
+  <div class="top"><span>서호팡팡수호대 · 스토리팀 활동지</span><span class="tag">1장 · 쓰레기 마을</span></div>
+  <div>
+    <h1>1장 이야기를 만들어요 <small>나는 대본 작가!</small></h1>
+    <svg class="wave" viewBox="0 0 400 8" preserveAspectRatio="none" aria-hidden="true"><path d="M0 6 L5 2 L10 6 L15 2 L20 6 L25 2 L30 6 L35 2 L40 6 L45 2 L50 6 L55 2 L60 6 L65 2 L70 6 L75 2 L80 6 L85 2 L90 6 L95 2 L100 6 L105 2 L110 6 L115 2 L120 6 L125 2 L130 6 L135 2 L140 6 L145 2 L150 6 L155 2 L160 6 L165 2 L170 6 L175 2 L180 6 L185 2 L190 6 L195 2 L200 6 L205 2 L210 6 L215 2 L220 6 L225 2 L230 6 L235 2 L240 6 L245 2 L250 6 L255 2 L260 6 L265 2 L270 6 L275 2 L280 6 L285 2 L290 6 L295 2 L300 6 L305 2 L310 6 L315 2 L320 6 L325 2 L330 6 L335 2 L340 6 L345 2 L350 6 L355 2 L360 6 L365 2 L370 6 L375 2 L380 6 L385 2 L390 6 L395 2 L400 6" fill="none" stroke="#6f52b8" stroke-width="1.2" stroke-linejoin="round"/></svg>
+  </div>
+  <div class="info">
+    <span><span class="blank" style="width:10mm"></span>학년</span>
+    <span><span class="blank" style="width:10mm"></span>반</span>
+    <span><span class="blank" style="width:10mm"></span>번</span>
+    <span>이름 <span class="blank" style="width:32mm"></span></span>
+    <span class="assign">맡은 장면 <span><span class="chk"></span>①</span><span><span class="chk"></span>②</span><span><span class="chk"></span>③</span></span>
+  </div>
+
+  <div class="story">
+    <b>📖 이야기의 시작</b><br>
+    여기는 서호초등학교가 있는 <b>서호 마을</b>. 어느 날, 아무렇게나 버린 과자 봉지·꽁초·페트병·비닐봉지가 뭉쳐 <b>쓰레기 몬스터</b>가 되었어요!
+    마을을 지킬 사람은 호야와 민지, <b>서호 수호대</b>! 1장 「쓰레기 마을」의 이야기를 만들어 주세요. 좋은 대본은 게임 속 대사로 쓰일 수도 있어요.
+  </div>
+
+  <div class="step">
+    <h2><span class="num">1</span>1장의 무대 5곳 <span class="hint">게임에 이미 있는 장소와 몬스터예요. 읽어 보기만 해요</span></h2>
+    <div class="stages">
+      <div class="stg"><div class="n">1-1</div><div class="p">학교 운동장</div><div class="w">👻 과자봉지 유령</div></div>
+      <div class="stg"><div class="n">1-2</div><div class="p">학교 앞 골목</div><div class="w">🐛 꽁초 벌레</div></div>
+      <div class="stg"><div class="n">1-3</div><div class="p">놀이터</div><div class="w">🧴 페트병 병정</div></div>
+      <div class="stg"><div class="n">1-4</div><div class="p">재활용 센터 앞</div><div class="w">🛍️ 비닐봉지 유령</div></div>
+      <div class="stg boss"><div class="n">1-5 대왕</div><div class="p">쓰레기 산</div><div class="w">👑 쓰레기 산 대왕</div></div>
+    </div>
+  </div>
+
+  <div class="step">
+    <h2><span class="num">2</span>이야기 뼈대 세우기 <span class="hint">짧게, 한두 줄이면 충분해요</span></h2>
+    <div class="frame">
+      <div class="fbox"><div class="k"><em>처음</em>수호대 출동!</div><div class="q">호야와 민지는 어떻게 수호대가 되었나요?</div><div class="h">무엇을 보고 결심했나요? 누가 도와 달라고 했나요?</div><div class="line"></div><div class="line"></div></div>
+      <div class="fbox"><div class="k"><em>사건</em>왜 쓰레기 몬스터가?</div><div class="q">마을에 왜 쓰레기 몬스터가 생겼을까요?</div><div class="h">누가? 어디에? 무엇을 버려서?</div><div class="line"></div><div class="line"></div></div>
+      <div class="fbox"><div class="k"><em>위기</em>대왕의 사연</div><div class="q">쓰레기 산 대왕은 왜 화가 났을까요?</div><div class="h">대왕도 처음부터 나빴을까요?</div><div class="line"></div><div class="line"></div></div>
+      <div class="fbox"><div class="k"><em>끝</em>깨끗해진 마을</div><div class="q">마을이 깨끗해지면 무엇이 달라지나요?</div><div class="h">누가 웃나요? 무엇을 약속하나요?</div><div class="line"></div><div class="line"></div></div>
+    </div>
+  </div>
+
+  <div class="step">
+    <h2><span class="num">3</span>등장인물 정하기 <span class="hint">성격과 말버릇이 있으면 대사가 쉬워져요</span></h2>
+    <table class="cast">
+      <tr><th>인물</th><th>성격 한 단어</th><th>말버릇 · 자주 하는 말</th></tr>
+      <tr><td class="who">호야<small>수호대</small></td><td class="mid"></td><td></td></tr>
+      <tr><td class="who">민지<small>수호대</small></td><td class="mid"></td><td></td></tr>
+      <tr><td class="who">우리 친구 <span style="display:inline-block;width:14mm;border-bottom:1.2px solid var(--ink);height:3.6mm"></span><small style="margin-top:1mm">꼬북이·야옹이·수달이·아기사슴 중 하나</small></td><td class="mid"></td><td></td></tr>
+      <tr><td class="who">쓰레기 산 대왕<small>1장 대왕</small></td><td class="mid"></td><td></td></tr>
+      <tr><td class="who">새 친구 <span style="font-family:'Gowun Dodum',sans-serif;font-size:9pt;color:var(--soft)">이름</span> <span style="display:inline-block;width:15mm;border-bottom:1.2px solid var(--ink);height:3.6mm"></span><small style="margin-top:1mm">마을에 사는 사람·동물 (경비 아저씨·참새 …)</small></td><td class="mid"></td><td></td></tr>
+    </table>
+    <div class="note">예) 호야 — 성격: 용감함 · 말버릇: "가자, 수호대!" &nbsp;/&nbsp; 새 친구가 필요 없으면 비워도 돼요.</div>
+  </div>
+
+  <div class="titlebox"><span class="jua">📝 1장 이야기 제목</span><span class="fill"></span><span style="width:3mm"></span></div>
+</section>
+
+<!-- ─────────── 2쪽: 대본 쓰기 ─────────── -->
+<section class="page">
+  <div class="top"><span>서호팡팡수호대 · 스토리팀 활동지 (뒤쪽)</span><span>이름 <span class="blank" style="width:30mm"></span></span></div>
+
+  <div class="howto">
+    <div>
+      <div class="jua" style="margin-bottom:.8mm">✏️ 대본은 이렇게 써요</div>
+      <div class="eg"><b>호야</b>: <i>(운동장을 둘러보며)</i> 쓰레기가 왜 이렇게 많지?</div>
+      <div class="eg"><b>민지</b>: <i>(깜짝 놀라며)</i> 저 과자 봉지가 움직였어!</div>
+      <div class="eg"><b>야옹이</b>: <i>(털을 세우며)</i> 냐아앙!</div>
+    </div>
+    <div class="rules">
+      <div><b class="jua" style="font-size:10.5pt">이름 : (표정·행동) 할 말</b></div>
+      <div>한 줄은 <b>20글자 안쪽</b> (게임 말풍선)</div>
+      <div>한 장면은 4~5줄이면 충분해요</div>
+      <div>환경 지식을 1가지 꼭 넣어요</div>
+      <div>놀리는 말·무서운 말은 빼요</div>
+    </div>
+  </div>
+
+  <div class="scene">
+    <div class="head"><span class="badge">장면 ①</span><span class="jua">1장 시작 — 서호 수호대 출동!</span><span class="when">1-1 학교 운동장에 들어가기 전</span></div>
+    <div class="say"><span class="nm"></span><span class="colon">:</span><span class="tx"></span></div>
+    <div class="say"><span class="nm"></span><span class="colon">:</span><span class="tx"></span></div>
+    <div class="say"><span class="nm"></span><span class="colon">:</span><span class="tx"></span></div>
+    <div class="say"><span class="nm"></span><span class="colon">:</span><span class="tx"></span></div>
+    <div class="say"><span class="nm"></span><span class="colon">:</span><span class="tx"></span></div>
+  </div>
+
+  <div class="scene">
+    <div class="head"><span class="badge">장면 ②</span><span class="jua">대왕 등장 — 쓰레기 산 대왕이 나타났어요</span><span class="when">1-5 쓰레기 산</span></div>
+    <div class="say"><span class="nm"></span><span class="colon">:</span><span class="tx"></span></div>
+    <div class="say"><span class="nm"></span><span class="colon">:</span><span class="tx"></span></div>
+    <div class="say"><span class="nm"></span><span class="colon">:</span><span class="tx"></span></div>
+    <div class="say"><span class="nm"></span><span class="colon">:</span><span class="tx"></span></div>
+    <div class="say"><span class="nm"></span><span class="colon">:</span><span class="tx"></span></div>
+  </div>
+
+  <div class="scene">
+    <div class="head"><span class="badge">장면 ③</span><span class="jua">1장 끝 — 마을이 다시 깨끗해졌어요</span><span class="when">대왕을 물리친 뒤 · 2장 공장 지대로 이어지면 더 좋아요</span></div>
+    <div class="say"><span class="nm"></span><span class="colon">:</span><span class="tx"></span></div>
+    <div class="say"><span class="nm"></span><span class="colon">:</span><span class="tx"></span></div>
+    <div class="say"><span class="nm"></span><span class="colon">:</span><span class="tx"></span></div>
+    <div class="say"><span class="nm"></span><span class="colon">:</span><span class="tx"></span></div>
+    <div class="say"><span class="nm"></span><span class="colon">:</span><span class="tx"></span></div>
+  </div>
+
+  <div class="step">
+    <h2><span class="num">+</span>단계마다 한마디 <span class="hint">그 단계를 시작할 때 한 사람이 하는 짧은 말</span></h2>
+    <div class="oneline"><span class="st">1-2 학교 앞 골목</span><span class="nm" style="border-bottom:1.2px solid var(--ink);height:6mm"></span><span class="colon" style="text-align:center">:</span><span class="tx" style="border-bottom:1px solid var(--line);height:6mm"></span></div>
+    <div class="oneline"><span class="st">1-3 놀이터</span><span class="nm" style="border-bottom:1.2px solid var(--ink);height:6mm"></span><span class="colon" style="text-align:center">:</span><span class="tx" style="border-bottom:1px solid var(--line);height:6mm"></span></div>
+    <div class="oneline"><span class="st">1-4 재활용 센터 앞</span><span class="nm" style="border-bottom:1.2px solid var(--ink);height:6mm"></span><span class="colon" style="text-align:center">:</span><span class="tx" style="border-bottom:1px solid var(--line);height:6mm"></span></div>
+  </div>
+
+  <div class="step">
+    <h2><span class="num">✔</span>팀원과 역할을 나눠 소리 내어 읽고 점검해요</h2>
+    <div class="checks">
+      <div><span class="chk"></span>읽었을 때 말이 자연스러워요</div>
+      <div><span class="chk"></span>한 줄이 너무 길지 않아요 (20글자 안쪽)</div>
+      <div><span class="chk"></span>마을에 쓰레기가 쌓인 까닭이 나와요</div>
+      <div><span class="chk"></span>우리가 할 수 있는 일이 1가지 이상 나와요</div>
+      <div><span class="chk"></span>대왕에게도 사연이 있어요</div>
+      <div><span class="chk"></span>끝이 희망차요</div>
+    </div>
+  </div>
+
+  <div class="foot"><span>다 했으면 선생님께 내요. 수고했어요, 대본 작가!</span><span>선생님 확인 <span class="chk" style="margin:0 0 0 1.5mm"></span></span></div>
+</section>
+
+</body>
+</html>
