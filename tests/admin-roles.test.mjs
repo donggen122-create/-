@@ -140,6 +140,41 @@ test('밸런스 시험 계정: 관리자가 test1~4에 친구 1마리를 주면 
   assert.equal(env.DB.sql.prepare("SELECT COUNT(*) c FROM guardian_profiles WHERE user_id='student2' AND state LIKE '%testMode%'").get().c, 0);
 });
 
+test('장비 시험 계정: 관리자가 test1~4에 등급을 하나씩 주면 친구 없이 근거리·원거리만 바꾸고, 관리 목록에 세트별 성공/판이 보인다', async () => {
+  const env = await makeEnv();
+  for (const id of ['test1', 'test4', 'student2']) assert.equal((await call(env, '/register', { body: { id, pw: 'pw-1234' } })).status, 200);
+  const owner = (await call(env, '/admin/login', { body: OWNER })).token, teacher = (await call(env, '/admin/login', { body: TEACHER })).token;
+  assert.equal((await call(env, '/admin/test-profile', { token: teacher, body: { id: 'test1', testGear: 'melee', grade: 1 } })).status, 403);
+  assert.equal((await call(env, '/admin/test-profile', { token: owner, body: { id: 'student2', testGear: 'melee', grade: 1 } })).status, 400, '학생 계정은 절대 바꾸지 않는다');
+  assert.equal((await call(env, '/admin/test-profile', { token: owner, body: { id: 'test1', testGear: 'sword' } })).status, 400);
+  assert.equal((await call(env, '/admin/test-profile', { token: owner, body: { id: 'test1', testGear: 'melee', hero: 'robot' } })).status, 400);
+  assert.equal((await call(env, '/admin/test-profile', { token: owner, body: { id: 'test1', testGear: 'melee', stage: 'CH99' } })).status, 400);
+  const state = (id) => JSON.parse(env.DB.sql.prepare('SELECT state FROM guardian_profiles WHERE user_id=?').get(id).state);
+  const r1 = await call(env, '/admin/test-profile', { token: owner, body: { id: 'test1', testGear: 'melee', grade: 1 } });
+  const r4 = await call(env, '/admin/test-profile', { token: owner, body: { id: 'test4', testGear: 'melee', grade: 4 } });
+  assert.equal(r1.status, 200); assert.equal(r4.status, 200); assert.equal(r1.gearGrade, 1); assert.equal(r4.gearGrade, 4); assert.deepEqual(r1.petCopies, {});
+  const p1 = state('test1'), p4 = state('test4');
+  assert.deepEqual(p1.pets, []); assert.equal(p1.activePet, null); assert.deepEqual(p1.training, { attack: 80, hp: 80, speed: 80 }); assert.equal(p1.difficulty, 'hard');
+  assert.equal(Object.keys(p1.gear).length, 12); assert.ok(Object.values(p1.gear).every((x) => x.grade === 1 && x.copies === 20)); assert.ok(Object.values(p4.gear).every((x) => x.grade === 4 && x.copies === 120));
+  assert.deepEqual({ ...p1.testMode, since: 0 }, { kind: 'gear', grade: 1, stage: 'CH10', difficulty: 'hard', passes: 20, perType: 10, since: 0 });
+  for (const k of ['training', 'parts', 'equippedParts', 'pets', 'stages', 'difficulty', 'weaponMode']) assert.deepEqual(p1[k], p4[k], k);   // 등급 말고는 같은 조건
+  const cookie = (await call(env, '/login', { body: { id: 'test1', pw: 'pw-1234' } })).token;
+  const g = await call(env, '/guardian', { method: 'GET', cookie });
+  assert.equal(g.passes.remaining, 20); assert.equal(g.passes.perType, 10);
+  const act = (body) => call(env, '/guardian/action', { cookie, body: { requestId: crypto.randomUUID(), clientVersion: 2, ...body } });
+  assert.equal((await act({ kind: 'draw-gear' })).status, 400, '보급 막음');
+  assert.equal((await act({ kind: 'settings', difficulty: 'hard', weaponMode: 'ranged', hero: p1.hero })).status, 400, '설정으로 무기 종류 바꾸기 막음(전용 단추만)');
+  assert.equal((await act({ kind: 'settings', difficulty: 'hard', weaponMode: 'melee', hero: p1.hero })).status, 200, '같은 값 저장(출동 전)은 통과');
+  assert.equal((await act({ kind: 'test-gear-type', type: 'ranged' })).status, 200);
+  assert.ok(Object.values(state('test1').equippedGear).every((id) => /_ranged_/.test(id)));
+  const start = (stage) => call(env, '/play/start', { cookie, body: { requestId: crypto.randomUUID(), clientVersion: 2, stage } });
+  assert.equal((await start('CH05')).status, 409, '2-5가 아니면 출동 막음');
+  const st = await start('CH10'); assert.equal(st.status, 200, '2-5 어려움은 출동'); assert.equal(st.passes.remaining, 19); assert.deepEqual(st.passes.byType.ranged, { n: 1, won: 0 });
+  const list = await call(env, '/admin/stats', { method: 'GET', token: owner });
+  const row = list.users.find((u) => u.id === 'test1');
+  assert.equal(row.passes.test, true); assert.equal(row.test.kind, 'gear'); assert.equal(row.test.grade, 1); assert.deepEqual(row.test.byType, { melee: { n: 0, won: 0 }, ranged: { n: 1, won: 0 } });
+});
+
 test('보급권 지급: 선생님은 학생 한 명씩(보급권·코인·이용권), 모두에게 한 번에는 최고 관리자만 — 같은 요청은 두 번 지급되지 않는다', async () => {
   const env = await makeEnv();
   for (const id of ['학생가', '학생나']) assert.equal((await call(env, '/register', { body: { id, pw: '1234' } })).status, 200);

@@ -89,6 +89,7 @@ export class GuardianUI {
   }
   // 밸런스 시험 계정 로비(2026-09-29): 친구 1마리의 등급만 바꾸고 1-5 어려움만 출동. 다른 조작은 서버도 막는다(rework-core action).
   renderTest(p,passes,user){
+    if(p.testMode.kind==='gear'){this.renderGearTest(p,passes,user);return;}
     const pet=p.testMode.pet,d=R.PETS[pet],g=R.testGrade(p),rate=R.PET_GRADE_RATE[Math.max(0,g)];this.stage=p.testMode.stage;
     this.root.innerHTML=`<header class="sg-header"><div class="sg-brand">${icon('element_wind')}<span>서호팡팡<small>시험 계정</small></span></div><div class="sg-wallet"><button data-do="passes" aria-label="시험 이용권 안내">${icon('pass')}<b>${passes?.remaining??'…'}</b><span>${passes?.test?`/ ${passes.total} 시험 이용권`:'이용권'}</span></button></div><button class="sg-account" data-do="account" aria-label="계정">${esc(user)} 님</button></header>
     <main class="sg-main sg-test" aria-live="polite">
@@ -100,6 +101,25 @@ export class GuardianUI {
       <section class="sg-test-rules"><h3>모든 시험 계정이 같은 조건</h3><ul><li>1-5 어려움만 출동 · 6:00 안에 대왕을 정화하면 성공</li><li>시험 이용권 ${passes?.total??25}장 · 출동할 때마다 1장(중간에 끝내도 1장) · 다시 채워지지 않아요</li><li>훈련 공격·체력·이동 속도 ${p.training.attack}단계</li><li>근거리 장비 6칸 ${esc(R.GRADE_NAMES[R.gearGrade(p,p.equippedGear?.weapon)]??'')} · 파츠 없음</li><li>훈련·보급·장비·파츠는 바꿀 수 없어요. 친구 등급만 바꿔요.</li></ul></section>
       <select id="sg-difficulty" style="display:none" aria-hidden="true"><option value="hard" selected>어려움</option></select><select id="sg-weapon-mode" style="display:none" aria-hidden="true"><option value="melee" selected>근거리</option></select>
       <button class="sg-primary sg-start sg-test-start" data-do="start">1-5 어려움 출동 · ${esc(d.name)} ${esc(R.GRADE_NAMES[g]??'')}</button>
+    </main>`;
+    if(this.busy)this.root.querySelectorAll('button,select').forEach(b=>b.disabled=true);
+  }
+  // 장비 시험 계정 로비(2026-10-02 사용자 "친구 없이 장비만 · 근거리 10판 + 원거리 10판 · 등급은 계정마다 고정"): 세트(근거리/원거리)만 바꾸고 정해진 단계만 출동. 세트마다 10판(서버가 셈).
+  renderGearTest(p,passes,user){
+    const t=p.testMode,type=p.weaponMode==='ranged'?'ranged':'melee',g=Math.max(0,R.testGrade(p)),per=passes?.perType??t.perType??10,by=passes?.byType||{},done=by[type]?.n||0,left=Math.max(0,per-done);this.stage=t.stage;
+    const names={melee:'근거리',ranged:'원거리'},other=type==='melee'?'ranged':'melee',heroName=p.hero==='minji'?'민지':'호야',diffName=({easy:'쉬움',normal:'보통',hard:'어려움'})[t.difficulty]||'어려움';
+    const label=R.stageLabel(t.stage),stageName=R.STAGES.find(s=>s.id===t.stage)?.name||'',allDone=['melee','ranged'].every(k=>(by[k]?.n||0)>=per),set=R.GEAR_SETS[`${p.hero}_${type}`];
+    this.root.innerHTML=`<header class="sg-header"><div class="sg-brand">${icon('element_wind')}<span>서호팡팡<small>시험 계정</small></span></div><div class="sg-wallet"><button data-do="passes" aria-label="시험 이용권 안내">${icon('pass')}<b>${passes?.remaining??'…'}</b><span>${passes?.test?`/ ${passes.total} 시험 이용권`:'이용권'}</span></button></div><button class="sg-account" data-do="account" aria-label="계정">${esc(user)} 님</button></header>
+    <main class="sg-main sg-test" aria-live="polite">
+      <div class="sg-heading"><div><span class="sg-eyebrow">밸런스팀 시험 계정</span><h1>장비 성공률 조사</h1><p>친구 없이 장비만! ${label} ${esc(stageName)} · ${diffName}만 할 수 있어요. 근거리 ${per}판, 원거리 ${per}판을 해요.</p></div></div>
+      <section class="sg-test-card">
+        <div class="sg-test-grade"><small>내가 맡은 장비 등급</small><b class="sg-grade-${g}">${esc(R.GRADE_NAMES[g])}</b><span>전설의 ${Math.round(R.GEAR_GRADE_RATE[g]*100)}% 힘 · 등급은 바꿀 수 없어요</span></div>
+        <div class="sg-test-gear"><small>지금 낀 장비</small><h2>${esc(heroName)} · ${esc(set?.name??'')}</h2><span>${names[type]} 6칸 · 친구 없음</span><div class="sg-test-gear-icons">${R.GEAR_SLOTS.map(s=>gearIcon(p.equippedGear?.[s])).join('')}</div></div>
+      </section>
+      <section class="sg-test-types" aria-label="장비 종류 고르기">${['melee','ranged'].map(k=>{const b=by[k]||{n:0,won:0};return `<button data-test-type="${k}" class="${k===type?'on':''} ${b.n>=per?'done':''}" ${k===type?'aria-pressed="true"':''}><b>${names[k]}</b><span>${b.n} / ${per}판</span><small>성공 ${b.won}</small></button>`;}).join('')}</section>
+      <section class="sg-test-rules"><h3>모든 시험 계정이 같은 조건(장비 등급만 달라요)</h3><ul><li>${label} ${diffName}만 출동 · 6:00 안에 대왕을 정화하면 성공</li><li>근거리 ${per}판 + 원거리 ${per}판 · 시험 이용권 ${passes?.total??20}장(출동할 때마다 1장, 중간에 끝내도 1장) · 다시 채워지지 않아요</li><li>훈련 공격·체력·이동 속도 ${p.training.attack}단계 · 친구 없음 · 파츠 없음</li><li>근거리·원거리만 바꿀 수 있어요. 위 단추를 눌러 바꿔요.</li></ul></section>
+      <select id="sg-difficulty" style="display:none" aria-hidden="true"><option value="${esc(t.difficulty)}" selected>${diffName}</option></select><select id="sg-weapon-mode" style="display:none" aria-hidden="true"><option value="${type}" selected>${names[type]}</option></select>
+      ${left>0?`<button class="sg-primary sg-start sg-test-start" data-do="start">${label} ${diffName} 출동 · ${names[type]} (${done+1} / ${per}판째)</button>`:allDone?`<button class="sg-primary sg-start sg-test-start" data-do="passes">${per*2}판을 모두 했어요. 수고했어요!</button>`:`<button class="sg-primary sg-start sg-test-start" data-test-type="${other}">${names[type]} ${per}판 끝! ${names[other]}로 바꿔요</button>`}
     </main>`;
     if(this.busy)this.root.querySelectorAll('button,select').forEach(b=>b.disabled=true);
   }
@@ -515,6 +535,7 @@ export class GuardianUI {
     if(b.dataset.gearSlot){this.gearSlotDialog(b.dataset.gearSlot);return;}
     if(b.dataset.gearSet){this.gearSetDialog(b.dataset.gearSet);return;}
     if(b.dataset.do==='test-grade'){this.testGradeDialog();return;}
+    if(b.dataset.testType){if(b.dataset.testType!==this.state().profile?.weaponMode)await this.perform({kind:'test-gear-type',type:b.dataset.testType});return;}
     if(b.dataset.do==='gear-bag'){this.gearBagDialog();return;}
     if(b.dataset.do==='hard-ready'){this.hardReadyDialog(this.stage);return;}
     if(b.dataset.do==='hard-gate'){this.hardGateDialog(this.stage);return;}

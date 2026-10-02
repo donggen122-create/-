@@ -5465,6 +5465,7 @@ function sgMaybeGuidance(){
   };
   // 업데이트 알림(2026-09-30 사용자 "접속하면 1회 3장이 업데이트 되었다는 메시지, 그 이전에 뜨던 팝업은 지워"): 아이디마다 한 번(이 기기).
   // 예전 안내(파츠 보급 규칙 supply-v3 · 사라진 파츠 복구)는 뺐다. 캐릭터 고르기·첫 파츠·첫 장비 안내는 그대로.
+  if(p.testMode)return;   // 밸런스 시험 계정: 업데이트 알림·첫 안내를 띄우지 않는다(전용 로비만)
   if(once('ch3-update-notice')){sgChapter3Notice(p);return;}
   if(R.pendingPart(p)&&R.selectableParts(p).length&&once('first-part-guide')){sgUI.firstPartDialog();return;}
   if(!p.milestones?.firstGear&&once('first-gear-guide')){sgUI.firstGearDialog();return;}   // 장비가 생겼어요 · 첫 무기 무료(한 번 안내, 장비 탭에도 남음)

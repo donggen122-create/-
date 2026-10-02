@@ -131,6 +131,36 @@ test('Chuseok event: 2026-09-24..26 (8am KST days) give 20 passes a day, granted
   const admin=await guardianAdmin(new Request('http://local/api/admin/passes'),env,'passes','GET',d24);const body=await admin.json();
   assert.ok(body.audit.every(a=>!String(a.request_id).startsWith('event-')),'이벤트 자동 지급은 기록 목록에 없음');assert.equal(body.event.id,'chuseok2026');
 });
+test('장비 시험 계정: 친구 없음 · 등급 고정 · 근거리 10판 + 원거리 10판(이용권 20장) · 판마다 세트·등급 기록 · 세트만 바꿀 수 있다',async()=>{
+  const env=await setup();const p=R.gearTestProfile(R.freshProfile(),{grade:3,hero:'minji',since:start-1000});
+  assert.deepEqual(p.pets,[]);assert.equal(p.activePet,null);assert.deepEqual(p.petCopies,{});assert.deepEqual(p.equippedParts,[]);
+  assert.equal(p.hero,'minji');assert.equal(p.weaponMode,'melee');assert.equal(Object.keys(p.gear).length,12,'근거리·원거리 두 세트');
+  assert.ok(Object.values(p.gear).every(x=>x.grade===3&&x.copies===80));
+  for(const slot of R.GEAR_SLOTS)assert.equal(p.equippedGear[slot],'minji_melee_'+slot);
+  assert.equal(R.testGrade(p),3);assert.deepEqual(R.testInfo(p),{kind:'gear',type:'melee',grade:3});
+  assert.deepEqual(p.training,{attack:80,hp:80,speed:80});assert.equal(p.difficulty,'hard');
+  assert.deepEqual(p.testMode,{kind:'gear',grade:3,stage:'CH10',difficulty:'hard',passes:20,perType:10,since:start-1000});
+  assert.ok(R.hardGate(p,'CH10').open,'2-5 어려움 출동 조건을 채움');
+  env.DB.sql.prepare('INSERT INTO guardian_profiles(user_id,state,revision) VALUES(?,?,0) ON CONFLICT(user_id) DO UPDATE SET state=excluded.state').run('test',JSON.stringify(p));
+  const first=await api(env,'/guardian');assert.equal(first.passes.remaining,20);assert.equal(first.passes.perType,10);assert.deepEqual(first.passes.byType,{melee:{n:0,won:0},ranged:{n:0,won:0}});
+  let now=start;
+  const go=async(cleared)=>{const st=await api(env,'/play/start',{requestId:uid(),stage:'CH10'},now);assert.equal(st.status,200,st.error);const f=await api(env,'/play/finish',{requestId:uid(),runId:st.runId,cleared,seconds:cleared?250:100},now+(cleared?250000:100000));assert.equal(f.status,200,f.error);now+=400000;return f;};
+  // 다른 조작(훈련·보급·등급 바꾸기·친구·난이도)은 막힌다
+  for(const a of [{kind:'train',stat:'attack'},{kind:'draw-gear'},{kind:'test-gear-grade',grade:4},{kind:'test-pet-grade',grade:2},{kind:'pet',id:'turtle'},{kind:'settings',difficulty:'easy'},{kind:'test-gear-type',type:'bow'}]){const r=await api(env,'/guardian/action',{requestId:uid(),...a},now);assert.equal(r.status,400,JSON.stringify(a));}
+  assert.equal((await api(env,'/play/start',{requestId:uid(),stage:'CH05'},now)).code,'TEST_MODE','2-5 어려움만');
+  // 근거리 10판(성공 4 · 실패 6) → 11번째는 막힘
+  for(let i=0;i<10;i++)await go(i<4);
+  const blocked=await api(env,'/play/start',{requestId:uid(),stage:'CH10'},now);assert.equal(blocked.status,409);assert.equal(blocked.code,'TEST_TYPE_DONE');assert.deepEqual(blocked.passes.byType.melee,{n:10,won:4});
+  // 원거리로 바꾸면 다시 출동(등급은 그대로)
+  const sw=await api(env,'/guardian/action',{requestId:uid(),kind:'test-gear-type',type:'ranged'},now);assert.equal(sw.status,200,sw.error);
+  assert.equal(sw.profile.weaponMode,'ranged');for(const slot of R.GEAR_SLOTS)assert.equal(sw.profile.equippedGear[slot],'minji_ranged_'+slot);
+  assert.equal(R.testGrade(sw.profile),3);assert.equal(sw.profile.activePet,null,'친구는 계속 없음');
+  const f=await go(true);assert.deepEqual(f.test,{kind:'gear',type:'ranged',grade:3});assert.deepEqual(f.passes.byType.ranged,{n:1,won:1});assert.equal(f.passes.remaining,9);
+  for(let i=0;i<9;i++)await go(false);
+  const end=await api(env,'/play/start',{requestId:uid(),stage:'CH10'},now);assert.equal(end.status,409);assert.equal(end.passes.remaining,0);
+  const rows=env.DB.sql.prepare("SELECT json_extract(result,'$.test.type') ty,json_extract(result,'$.test.grade') g,COUNT(*) n,SUM(status='test_won') won FROM play_runs WHERE user_id='test' GROUP BY ty ORDER BY ty").all();
+  assert.deepEqual(rows.map(r=>[r.ty,r.g,r.n,r.won]),[['melee',3,10,4],['ranged',3,10,1]],'판 기록에 세트·등급이 남는다');
+});
 test('시험 계정 이용권: 25장만(출동마다 1장 · 성공·실패·중간 종료 모두), 하루에 10번 넘게 성공해도 막히지 않고, 다음 날에도 다시 채워지지 않는다',async()=>{
   const env=await setup();const p=R.testModeProfile(R.freshProfile(),{pet:'turtle',since:start-1000});
   env.DB.sql.prepare('INSERT INTO guardian_profiles(user_id,state,revision) VALUES(?,?,0) ON CONFLICT(user_id) DO UPDATE SET state=excluded.state').run('test',JSON.stringify(p));

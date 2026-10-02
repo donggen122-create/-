@@ -1,4 +1,4 @@
-import { VERSION, SKILLS, COMBOS, SUPPORTS, runParts, action, completeRun, stageUnlocked, difficultyOf, hardGate, hardGateText, durationFor, superTestProfile, testModeProfile, PETS, TEST_ACCOUNT_RE, needsPetMigration, migratePets } from '../../game/src/rework-core.js';
+import { VERSION, SKILLS, COMBOS, SUPPORTS, runParts, action, completeRun, stageUnlocked, difficultyOf, hardGate, hardGateText, durationFor, superTestProfile, testModeProfile, gearTestProfile, testGrade, testInfo, stageLabel, STAGES, PETS, TEST_ACCOUNT_RE, needsPetMigration, migratePets } from '../../game/src/rework-core.js';
 import { migrateLegacy } from './legacy-migration.js';
 import { migrateProfileV2, needsPartsRepair, repairObsoleteParts, PARTS_FIX_SNAPSHOT } from './profile-migration-v2.js';
 
@@ -29,7 +29,13 @@ async function testPassStatus(db,id,profile,now=Date.now()){
   const t=profile.testMode,total=Number(t.passes)||0;
   const used=(await db.prepare('SELECT COUNT(*) c FROM play_runs WHERE user_id=? AND started_at>=?').bind(id,Number(t.since)||0).first())?.c||0;
   const remaining=Math.max(0,total-used);
-  return {test:true,total,used,remaining,baseRemaining:remaining,bonusRemaining:0,day:dayKey(now),resetAt:null,serverNow:now,dailyLimit:total,event:null};
+  // 세트(근거리·원거리)마다 perType판(장비 시험): 판 기록의 test.type으로 세트별 판 수·성공 수를 센다
+  let byType=null;
+  if(t.perType){
+    byType={melee:{n:0,won:0},ranged:{n:0,won:0}};
+    for(const r of (await db.prepare("SELECT json_extract(result,'$.test.type') ty,COUNT(*) n,SUM(status='test_won') won FROM play_runs WHERE user_id=? AND started_at>=? GROUP BY ty").bind(id,Number(t.since)||0).all()).results)if(byType[r.ty])byType[r.ty]={n:r.n,won:r.won||0};
+  }
+  return {test:true,total,used,remaining,baseRemaining:remaining,bonusRemaining:0,day:dayKey(now),resetAt:null,serverNow:now,dailyLimit:total,event:null,...(byType?{perType:Number(t.perType),byType}:{})};
 }
 const reply=(data,status=200)=>Response.json(data,{status,headers:{'Cache-Control':'no-store'}});
 const uuid=s=>typeof s==='string'&&/^[a-zA-Z0-9_-]{12,80}$/.test(s);
@@ -133,12 +139,16 @@ export async function guardianAPI(request,env,user,path,now=Date.now()){
     if(old)return old.status==='active'?reply({runId:old.id,duration:old.duration,...await status(db,id,now)}):reply({error:'이미 끝난 도전이에요.'},409);
     const {profile}=await getProfile(db,id);
     if(!stageUnlocked(profile,b.stage))return reply({error:'앞 단계를 먼저 성공해 주세요.'},400);
-    if(profile.testMode&&(b.stage!==profile.testMode.stage||difficultyOf(profile)!==profile.testMode.difficulty))return reply({error:'시험 계정은 1-5 어려움만 할 수 있어요.',code:'TEST_MODE'},409);
+    if(profile.testMode&&(b.stage!==profile.testMode.stage||difficultyOf(profile)!==profile.testMode.difficulty))return reply({error:`시험 계정은 ${stageLabel(profile.testMode.stage)} ${({easy:'쉬움',normal:'보통',hard:'어려움'})[profile.testMode.difficulty]||''}만 할 수 있어요.`,code:'TEST_MODE'},409);
     if(difficultyOf(profile)==='hard'){const g=hardGate(profile,b.stage);if(!g.open)return reply({error:`어려움은 아직 잠겨 있어요 · ${hardGateText(g)}`,code:'HARD_LOCKED',gate:g},409);}   // 어려움 최소 기준(HARD_MIN)
     await grantPassEvent(db,id,now);
     const duration=durationFor(profile,b.stage),day=dayKey(now);
     if(profile.testMode){
-      const t=profile.testMode,loadout=JSON.stringify({loadout:{equippedParts:runParts(profile),pet:profile.activePet??null}});
+      const t=profile.testMode,info=testInfo(profile),loadout=JSON.stringify({loadout:{equippedParts:runParts(profile),pet:profile.activePet??null},test:info});
+      if(t.perType){   // 세트마다 정해진 판 수까지만(근거리 10판 · 원거리 10판) — 기록이 한쪽에 몰리지 않게
+        const ps=await testPassStatus(db,id,profile,now),name=info.type==='melee'?'근거리':'원거리';
+        if((ps.byType?.[info.type]?.n||0)>=Number(t.perType))return reply({error:`${name} ${Number(t.perType)}판을 모두 했어요. 다른 장비로 바꿔 주세요.`,code:'TEST_TYPE_DONE',passes:ps},409);
+      }
       const tr=await db.batch([
         db.prepare("UPDATE play_runs SET status='expired',settled_at=? WHERE user_id=? AND status='active' AND started_at<?").bind(now,id,now-1800000),
         db.prepare("INSERT INTO play_runs(id,user_id,stage,started_at,duration,result) SELECT ?,?,?,?,?,? WHERE (SELECT COUNT(*) FROM play_runs WHERE user_id=? AND started_at>=?)<? AND NOT EXISTS(SELECT 1 FROM play_runs WHERE user_id=? AND status='active')").bind(b.requestId,id,b.stage,now,duration,loadout,id,Number(t.since)||0,Number(t.passes)||0,id),
@@ -174,7 +184,8 @@ export async function guardianAPI(request,env,user,path,now=Date.now()){
       const loadout=run.result?JSON.parse(run.result).loadout:null,equippedPartIds=loadout?.equippedParts??null;
       const pet=loadout&&Object.hasOwn(loadout,'pet')?loadout.pet:undefined;   // 출동할 때의 친구(코인 +%). 배포 전에 시작한 도전은 지금 친구
       const result=completeRun(profile,{day:dayKey(now),equippedPartIds,pet,stage:run.stage,cleared,seconds,litter:Math.max(0,Math.min(99,Math.floor(Number(b.litter)||0))),hpFraction:Math.max(0,Math.min(1,Number(b.hpFraction)||0)),bossSeconds:Number.isFinite(b.bossSeconds)&&b.bossSeconds>=0?b.bossSeconds:Infinity,skillIds,fusionIds,supportIds});
-      const event={reward:result.reward,cleared,stage:run.stage,runId,charged:profile.testMode?1:cleared?1:0};
+      const started=run.result?JSON.parse(run.result):null;
+      const event={reward:result.reward,cleared,stage:run.stage,runId,charged:profile.testMode?1:cleared?1:0,...(started?.test?{test:started.test}:{})};   // test = 출동할 때의 시험 조건(등급)
       try{
         const r=await db.batch([
           db.prepare('INSERT OR IGNORE INTO play_days(user_id,day) VALUES(?,?)').bind(id,dayKey(now)),
@@ -213,13 +224,17 @@ export async function guardianAdmin(request,env,sub,method,now=Date.now()){
     if(!TEST_ACCOUNT_RE.test(id))return reply({error:"시험 계정(아이디가 'qa'로 시작하거나 test+숫자)만 바꿀 수 있어요."},400);
     if(!await db.prepare('SELECT id FROM users WHERE id=?').bind(id).first())return reply({error:'없는 아이디예요.'},404);
     const {profile}=await getProfile(db,id);
-    // testPet(turtle·cat·otter·deer)이 있으면 밸런스 시험 계정(친구 1마리 · 등급 grade 0~4 · 1-5 어려움만 · 다른 조작 막음), 없으면 슈퍼 계정
+    // testGear(처음 낄 세트 melee·ranged)가 있으면 장비 시험 계정(친구 없음 · 등급 grade 고정 · 세트마다 perType판), testPet(turtle·cat·otter·deer)이 있으면 친구 등급 시험 계정, 둘 다 없으면 슈퍼 계정
+    if(b.testGear!==undefined&&b.testGear!=='melee'&&b.testGear!=='ranged')return reply({error:'testGear는 melee(근거리)·ranged(원거리) 중 하나예요.'},400);
+    if(b.hero!==undefined&&b.hero!=='hoya'&&b.hero!=='minji')return reply({error:'hero는 hoya·minji 중 하나예요.'},400);
+    if(b.difficulty!==undefined&&!['easy','normal','hard'].includes(b.difficulty))return reply({error:'difficulty는 easy·normal·hard 중 하나예요.'},400);
+    if(b.stage!==undefined&&!STAGES.some(s=>s.id===b.stage))return reply({error:'stage는 CH01 같은 단계 아이디예요.'},400);
     if(b.testPet!==undefined&&!Object.hasOwn(PETS,b.testPet))return reply({error:'testPet은 turtle·cat·otter·deer 중 하나예요.'},400);
     const grade=b.grade===undefined?0:Number(b.grade);
     if(!(Number.isInteger(grade)&&grade>=0&&grade<=4))return reply({error:'grade는 0(노말)~4(전설)예요.'},400);
-    const next=b.testPet!==undefined?testModeProfile(profile,{pet:b.testPet,grade,since:now,...(Number.isInteger(b.passes)&&b.passes>=0&&b.passes<=500?{passes:b.passes}:{}),...(Number.isInteger(b.training)&&b.training>=1&&b.training<=100?{training:b.training}:{}),...(Number.isInteger(b.gearGrade)&&b.gearGrade>=0&&b.gearGrade<=4?{gearGrade:b.gearGrade}:{})}):superTestProfile(profile,{training:Number(b.training)||100,copies:Number(b.copies)||80,level:Number(b.level)||10});
+    const next=b.testGear!==undefined?gearTestProfile(profile,{gearType:b.testGear,hero:b.hero,grade,since:now,...(b.difficulty!==undefined?{difficulty:b.difficulty}:{}),...(b.stage!==undefined?{stage:b.stage}:{}),...(Number.isInteger(b.passes)&&b.passes>=0&&b.passes<=500?{passes:b.passes}:{}),...(Number.isInteger(b.perType)&&b.perType>=1&&b.perType<=250?{perType:b.perType}:{}),...(Number.isInteger(b.training)&&b.training>=1&&b.training<=100?{training:b.training}:{})}):b.testPet!==undefined?testModeProfile(profile,{pet:b.testPet,grade,since:now,...(Number.isInteger(b.passes)&&b.passes>=0&&b.passes<=500?{passes:b.passes}:{}),...(Number.isInteger(b.training)&&b.training>=1&&b.training<=100?{training:b.training}:{}),...(Number.isInteger(b.gearGrade)&&b.gearGrade>=0&&b.gearGrade<=4?{gearGrade:b.gearGrade}:{})}):superTestProfile(profile,{training:Number(b.training)||100,copies:Number(b.copies)||80,level:Number(b.level)||10});
     await db.prepare('UPDATE guardian_profiles SET state=?,revision=revision+1 WHERE user_id=?').bind(JSON.stringify(next),id).run();
-    return reply({ok:true,id,training:next.training,parts:Object.keys(next.parts).length,stages:Object.keys(next.stages).filter(k=>next.stages[k].cleared).length,petCopies:next.petCopies,testMode:next.testMode||null});
+    return reply({ok:true,id,training:next.training,parts:Object.keys(next.parts).length,stages:Object.keys(next.stages).filter(k=>next.stages[k].cleared).length,petCopies:next.petCopies,hero:next.hero,gearGrade:testGrade(next),testMode:next.testMode||null});
   }
   // 캐릭터(성별) 바꾸기: 가입 때 고정된 캐릭터를 선생님이 한 번 바꿔 준다 — 장비가 하나도 없을 때만(장비는 성별마다 달라서)
   if(sub==='set-hero'&&method==='POST'){

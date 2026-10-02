@@ -387,7 +387,30 @@ export function testModeProfile(base,{pet='turtle',grade=0,training=TEST_MODE.tr
  p.testMode={pet,stage:TEST_MODE.stage,difficulty:TEST_MODE.difficulty,passes:clampInt(passes,0,500),since:Math.max(0,Number(since)||0)};
  return p;
 }
-export const testGrade=p=>p?.testMode?cardGrade(petCopies(p,p.testMode.pet)):-1;
+// 장비 시험 계정(2026-10-02 사용자 최종: "친구 없이 장비만 · 훈련 80 · 2-5 어려움 · 근거리 10판 + 원거리 10판 = 20판 · 레어·유니크·에픽·전설 — 밸런스팀 4명이 등급 하나씩"):
+//  친구 없음 · 파츠 없음 · 등급은 계정마다 고정(testMode.grade). 내 캐릭터의 근거리·원거리 세트 12개를 모두 그 등급으로 갖고,
+//  학생은 로비에서 세트(근거리/원거리)만 바꾼다(action test-gear-type). 세트마다 perType판(10)까지만 출동(서버 /play/start가 막음), 이용권 passes장(20).
+//  판마다 세트·등급이 기록에 남는다(testInfo → play_runs.result.test).
+export const GEAR_TEST={training:80,stage:'CH10',difficulty:'hard',perType:10,passes:20};
+export function gearTestProfile(base,{grade=1,gearType='melee',hero,training=GEAR_TEST.training,stage=GEAR_TEST.stage,difficulty=GEAR_TEST.difficulty,passes=GEAR_TEST.passes,perType=GEAR_TEST.perType,since=0}={}){
+ if(gearType!=='melee'&&gearType!=='ranged')throw new Error('장비 종류는 melee(근거리)·ranged(원거리)예요.');
+ if(!own(DIFFICULTIES,difficulty))throw new Error('난이도는 easy·normal·hard예요.');
+ const at=STAGES.findIndex(s=>s.id===stage);if(at<0)throw new Error('없는 단계예요.');
+ const p=clone(base||freshProfile()),g=clampInt(grade,0,CARD_COPIES.length-1),t=clampInt(training,1,TRAINING_MAX);
+ p.training={attack:t,hp:t,speed:t};p.coins=0;p.gifts=0;p.difficulty=difficulty;
+ for(const s of STAGES.slice(0,at+1))p.stages[s.id]={...(p.stages[s.id]||{}),cleared:true,stars:Math.max(2,p.stages[s.id]?.stars||0)};   // 어려움 최소 기준: 그 단계 보통 이상 성공
+ p.parts={};p.equippedParts=[];
+ p.petCopies={};p.pets=[];p.activePet=null;p.petVersion=PET_VERSION;delete p.friendship;
+ p.hero=hero==='minji'||hero==='hoya'?hero:p.hero==='minji'?'minji':'hoya';p.heroLocked=true;p.weaponMode=gearType;
+ p.gear=Object.fromEntries(gearIdsFor(p.hero).map(id=>[id,{copies:CARD_COPIES[g],grade:g}]));
+ p.equippedGear=Object.fromEntries(GEAR_SLOTS.map(s=>[s,`${p.hero}_${gearType}_${s}`]));
+ p.milestones={...(p.milestones||{}),firstPart:true,firstPet:true,bossPet:true,firstGear:true};p.testAccount=true;
+ p.testMode={kind:'gear',grade:g,stage,difficulty,passes:clampInt(passes,0,500),perType:clampInt(perType,1,250),since:Math.max(0,Number(since)||0)};
+ return p;
+}
+export const testGrade=p=>!p?.testMode?-1:p.testMode.kind==='gear'?gearGrade(p,p.equippedGear?.weapon):cardGrade(petCopies(p,p.testMode.pet));
+// 출동할 때 판 기록에 같이 남기는 시험 조건(등급별 성공률을 서버 기록으로 다시 볼 수 있게)
+export const testInfo=p=>p?.testMode?{kind:p.testMode.kind||'pet',...(p.testMode.kind==='gear'?{type:p.weaponMode==='ranged'?'ranged':'melee'}:{pet:p.testMode.pet}),grade:testGrade(p)}:null;
 // 개수 상한 없음(2차): 금 뒤에 남는 개수도 그대로 쌓는다. 금 파츠는 고르는 목록·원소 보급에서 빠지므로 "코인 60개" 낭비가 없다.
 export function addPart(p,id,qty=1){
  if(!own(PARTS,id))throw new Error('없는 파츠예요.');
@@ -450,7 +473,13 @@ export function action(profile,a,rng=Math.random,ctx={}){
  // 시험 계정: 친구 등급 바꾸기·그 친구 고르기만. 출동 전 같은 값의 설정 저장(바뀌는 것 없음)은 그대로 둔다.
  if(p.testMode){
   const same=a.kind==='settings'&&(a.difficulty??p.difficulty)===p.difficulty&&(a.weaponMode??p.weaponMode)===p.weaponMode&&(a.hero??p.hero)===p.hero;
-  check(a.kind==='test-pet-grade'||(a.kind==='pet'&&a.id===p.testMode.pet)||same,'시험 계정에서는 친구 등급만 바꿀 수 있어요.');
+  const gearTest=p.testMode.kind==='gear';
+  check(gearTest?(a.kind==='test-gear-type'||same):(a.kind==='test-pet-grade'||(a.kind==='pet'&&a.id===p.testMode.pet)||same),gearTest?'시험 계정에서는 장비 종류(근거리·원거리)만 바꿀 수 있어요.':'시험 계정에서는 친구 등급만 바꿀 수 있어요.');
+  if(a.kind==='test-gear-type'){
+   check(a.type==='melee'||a.type==='ranged','근거리·원거리 중에서 골라 주세요.');
+   p.weaponMode=a.type;p.equippedGear=Object.fromEntries(GEAR_SLOTS.map(s=>[s,`${p.hero}_${a.type}_${s}`]));
+   return {profile:p,message:`${a.type==='melee'?'근거리':'원거리'} 장비로 바꿨어요.`};
+  }
   if(a.kind==='test-pet-grade'){
    const g=Number(a.grade);check(Number.isInteger(g)&&g>=0&&g<CARD_COPIES.length,'등급을 골라 주세요.');
    const pet=p.testMode.pet;p.petCopies={[pet]:CARD_COPIES[g]};p.pets=[pet];p.activePet=pet;

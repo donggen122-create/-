@@ -252,7 +252,7 @@ function render() {
       <td class="id"><span class="dot" ${ONLINE.has(u.id) ? "" : "hidden"}></span>${esc(u.display_id)}</td>
       <td>${fmt(u.created_at)}</td><td>${fmt(lastSeen(u))}</td><td>${fmt(u.saved_at)}</td>
       <td>${num(u.runs)}</td><td>${num(u.clears)}</td><td><b>${stageLabel(u.best_stage)}</b></td><td>${num(u.acc_level) || "-"}</td>
-      <td>${num(u.gold).toLocaleString()}</td><td>${u.gifts == null ? '-' : num(u.gifts)}</td><td>${num(u.dust)}</td><td>${u.passes?.test ? `시험 ${num(u.passes.remaining)} / ${num(u.passes.total)}` : `${num(u.passes?.baseRemaining)} + ${num(u.passes?.bonusRemaining)} 추가`}</td>
+      <td>${num(u.gold).toLocaleString()}</td><td>${u.gifts == null ? '-' : num(u.gifts)}</td><td>${num(u.dust)}</td><td>${u.passes?.test ? `시험 ${num(u.passes.remaining)} / ${num(u.passes.total)}${u.test?.kind === 'gear' ? `<br><small title="성공/판">근거리 ${num(u.test.byType?.melee?.won)}/${num(u.test.byType?.melee?.n)} · 원거리 ${num(u.test.byType?.ranged?.won)}/${num(u.test.byType?.ranged?.n)}</small>` : ''}` : `${num(u.passes?.baseRemaining)} + ${num(u.passes?.bonusRemaining)} 추가`}</td>
       <td>${num(u.pending_grants) ? `<b style="color:var(--blue)">${u.pending_grants}</b>` : ""}</td>
       <td>${u.hero === "hoya" ? "호야" : u.hero === "minji" ? "민지" : "-"}</td>
       <td class="acts">

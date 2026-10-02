@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<title>밸런스팀 활동지 — 장비 실험 20판(근거리 10 · 원거리 10)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Jua&family=Gowun+Dodum&display=swap" rel="stylesheet">
+<style>
+  @page { size: A4; margin: 0; }
+  * { box-sizing: border-box; }
+  :root { --ink: #1d2a30; --soft: #5b6b72; --line: #9fb3bb; --faint: #eef4f6; --accent: #2a6f93;
+          --g1: #ddebf7; --g2: #e4dfec; --g3: #fce4d6; --g4: #fff2cc; --melee: #dfeaf3; --ranged: #fdebd8; }
+  html, body { margin: 0; padding: 0; background: #fff; color: var(--ink); }
+  body { font-family: "Gowun Dodum", "Malgun Gothic", sans-serif; font-size: 10.8pt; line-height: 1.4; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  .page { width: 210mm; height: 297mm; padding: 10mm 12mm 9mm; overflow: hidden; break-after: page; display: flex; flex-direction: column; gap: 3.4mm; }
+  .page:last-child { break-after: auto; }
+  h1, h2, b.j, .j { font-family: "Jua", "Malgun Gothic", sans-serif; font-weight: normal; }
+  .top { display: flex; justify-content: space-between; align-items: center; font-size: 9pt; color: var(--soft); }
+  .tag { border: 1.2px solid var(--accent); color: var(--accent); border-radius: 99px; padding: .2mm 3mm; font-family: "Jua", sans-serif; font-size: 10pt; }
+  h1 { margin: 0; font-size: 23pt; line-height: 1.15; }
+  h1 small { font-size: 11.5pt; color: var(--soft); margin-left: 2mm; white-space: nowrap; }
+  h2 { margin: 0; font-size: 13.5pt; display: flex; align-items: center; gap: 2mm; }
+  .num { flex: none; width: 7mm; height: 7mm; border-radius: 50%; border: 1.6px solid var(--accent); color: var(--accent); display: grid; place-items: center; font-size: 11pt; }
+  .hint { font-family: "Gowun Dodum", sans-serif; font-size: 9.2pt; color: var(--soft); margin-left: 1mm; }
+  .info { display: flex; gap: 6mm; font-size: 11pt; align-items: flex-end; }
+  .info span { white-space: nowrap; }
+  .blank { display: inline-block; border-bottom: 1.1px solid var(--ink); height: 5mm; vertical-align: bottom; }
+  .chk { display: inline-block; width: 3.8mm; height: 3.8mm; border: 1.3px solid var(--ink); border-radius: .8mm; vertical-align: -.6mm; margin-right: 1mm; }
+  .pets { display: grid; grid-template-columns: repeat(4, 1fr); gap: 2.5mm; }
+  .pets div { border: 1.3px solid var(--line); border-radius: 2.5mm; padding: 1.6mm 2.5mm; font-size: 10pt; }
+  .pets b { font-family: "Jua", sans-serif; font-weight: normal; font-size: 12.5pt; white-space: nowrap; }
+  .pets small { display: block; color: var(--soft); font-size: 8.8pt; white-space: nowrap; }
+  .steps { display: grid; grid-template-columns: repeat(4, 1fr); gap: 2.5mm; }
+  .steps div { background: var(--faint); border-radius: 2.5mm; padding: 2mm 2.6mm; font-size: 9.8pt; line-height: 1.35; }
+  .steps b { font-family: "Jua", sans-serif; font-weight: normal; color: var(--accent); font-size: 11.5pt; display: block; }
+  table { width: 100%; border-collapse: collapse; table-layout: fixed; }
+  th, td { border: 1.2px solid var(--line); padding: 1mm; text-align: center; vertical-align: middle; }
+  th { font-family: "Jua", sans-serif; font-weight: normal; background: var(--accent); color: #fff; font-size: 10.5pt; }
+  .rec td { height: 19mm; font-size: 10pt; }
+  .rec td.g { font-family: "Jua", sans-serif; font-size: 13.5pt; }
+  .rec td.g small { display: block; font-family: "Gowun Dodum", sans-serif; font-size: 8pt; color: var(--soft); }
+  .rec td.box { position: relative; }
+  .rec td.box i { position: absolute; left: 1mm; top: .5mm; font-style: normal; font-size: 7.5pt; color: #9aa7ad; }
+  .rec td.sum { font-size: 10pt; white-space: nowrap; }
+  .rec td.sum u, .rec td.rate u { display: inline-block; width: 8mm; border-bottom: 1px solid var(--ink); text-decoration: none; height: 5mm; }
+  .rec tr.ex td { background: #f7f9fa; color: #8a969c; font-style: italic; height: 9mm; }
+  .calc { font-size: 10pt; background: var(--faint); border-radius: 2.5mm; padding: 1.8mm 3mm; }
+  .calc code { font-family: "Jua", sans-serif; background: #fff; border: 1px solid var(--line); border-radius: 1.5mm; padding: .2mm 2mm; }
+  .two { display: grid; grid-template-columns: .8fr 1.2fr; gap: 6mm; }
+  .chart { display: grid; grid-template-columns: 10mm repeat(2, 1fr); }
+  .chart .axis { display: flex; flex-direction: column; justify-content: space-between; font-size: 7.8pt; color: var(--soft); text-align: right; padding-right: 1.2mm; height: 50mm; margin-top: -1.5mm; }
+  .chart .col { display: flex; flex-direction: column; }
+  .chart .area { height: 50mm; border-left: 1px solid #e3eaed; background-image: repeating-linear-gradient(to top, #cfdbe0 0 1px, transparent 1px 5mm); border-bottom: 1.4px solid var(--ink); position: relative; }
+  .chart .area::after { content: ""; position: absolute; left: 28%; right: 28%; top: 0; bottom: 0; border: 1px dashed #b9c7cd; }
+  .chart .lab { text-align: center; font-family: "Jua", sans-serif; font-size: 10pt; margin-top: .6mm; border-radius: 1.2mm; }
+  .fill { display: flex; flex-direction: column; gap: 2.6mm; font-size: 10.3pt; }
+  .fill div { display: flex; align-items: flex-end; gap: 1.3mm; flex-wrap: wrap; }
+  .fill u { text-decoration: none; border-bottom: 1px solid var(--ink); height: 5mm; display: inline-block; }
+  .foot { margin-top: auto; display: flex; justify-content: space-between; font-size: 8.8pt; color: var(--soft); border-top: 1px dashed var(--line); padding-top: 1.3mm; }
+  /* 2쪽 */
+  .team td { height: 12.5mm; font-size: 10pt; }
+  .team td.n { font-family: "Jua", sans-serif; font-size: 12.5pt; white-space: nowrap; }
+  .team td.n small { display: block; font-family: "Gowun Dodum", sans-serif; font-size: 8pt; color: var(--soft); }
+  .team td u { display: inline-block; width: 11mm; border-bottom: 1px solid var(--ink); text-decoration: none; height: 5mm; }
+  .line { display: grid; grid-template-columns: 10mm repeat(4, 1fr); }
+  .line .axis { display: flex; flex-direction: column; justify-content: space-between; font-size: 7.8pt; color: var(--soft); text-align: right; padding-right: 1.2mm; height: 50mm; margin-top: -1.5mm; }
+  .line .area { height: 50mm; background-image: repeating-linear-gradient(to top, #cfdbe0 0 1px, transparent 1px 5mm); border-bottom: 1.4px solid var(--ink); position: relative; }
+  .line .area::after { content: ""; position: absolute; left: 50%; top: 0; bottom: 0; border-left: 1px dashed #b9c7cd; }
+  .line .col:nth-child(2) .area { border-left: 1.4px solid var(--ink); }
+  .line .lab { text-align: center; font-family: "Jua", sans-serif; font-size: 10pt; margin-top: .6mm; border-radius: 1.2mm; }
+  .legend { font-size: 9.6pt; display: flex; gap: 5mm; align-items: center; }
+  .prop td { height: 12mm; font-size: 10pt; text-align: left; padding: 1mm 2mm; }
+  .prop tr.ex td { background: #f7f9fa; color: #8a969c; font-style: italic; height: 9mm; }
+  .ruler { font-size: 10pt; border-left: 3px solid var(--accent); padding: 1mm 3mm; background: #f6fafb; }
+</style>
+</head>
+<body>
+
+<!-- ─────────── 1쪽: 한 사람 기록지(4장 뽑기) ─────────── -->
+<section class="page">
+  <div class="top"><span>서호팡팡수호대 · 밸런스팀 활동지 ① 내 기록지</span><span class="tag">장비 실험 · 20판</span></div>
+  <h1>장비 실험 <small>친구 없이 장비만! 2-5 어려움 · 근거리 10판 + 원거리 10판</small></h1>
+  <div class="info"><span>이름 <span class="blank" style="width:32mm"></span></span><span>날짜 <span class="blank" style="width:26mm"></span></span><span>팀 <span class="blank" style="width:28mm"></span></span></div>
+
+  <div>
+    <h2><span class="num">1</span>내가 맡은 장비 등급 <span class="hint">하나에 ✔ 해요. 등급마다 계정이 정해져 있어요(등급은 바꿀 수 없어요).</span></h2>
+    <div class="pets" style="margin-top:1.4mm">
+      <div style="background:var(--g1)"><span class="chk"></span><b>레어</b><small>계정 test1 · 힘 40%</small></div>
+      <div style="background:var(--g2)"><span class="chk"></span><b>유니크</b><small>계정 test2 · 힘 60% · 특수 효과</small></div>
+      <div style="background:var(--g3)"><span class="chk"></span><b>에픽</b><small>계정 test3 · 힘 80%</small></div>
+      <div style="background:var(--g4)"><span class="chk"></span><b>전설</b><small>계정 test4 · 힘 100%</small></div>
+    </div>
+  </div>
+
+  <div class="steps">
+    <div><b>① 로그인</b>내 등급의 계정으로 들어가요. 비밀번호는 선생님께.</div>
+    <div><b>② 근거리 10판</b>"근거리" 단추를 누르고 2-5 어려움 출동! 한 판 끝날 때마다 O, X.</div>
+    <div><b>③ 원거리 10판</b>"원거리" 단추로 바꾸고 10판 더. 로비에 "3 / 10판"처럼 보여요.</div>
+    <div><b>④ 성공이란?</b>6:00 안에 굴뚝 가스 대왕을 정화하면 성공 O, 아니면 X.</div>
+  </div>
+
+  <div>
+    <h2><span class="num">2</span>기록표 <span class="hint">한 판이 끝나면 바로 적어요. 중간에 끝낸 판도 1판(X)으로 세요.</span></h2>
+    <table class="rec" style="margin-top:1.4mm">
+      <thead><tr><th style="width:22mm">장비</th><th>1</th><th>2</th><th>3</th><th>4</th><th>5</th><th>6</th><th>7</th><th>8</th><th>9</th><th>10</th><th style="width:20mm">성공 수</th><th style="width:20mm">성공률</th></tr></thead>
+      <tbody>
+        <tr class="ex"><td>예시</td><td>O</td><td>X</td><td>X</td><td>O</td><td>X</td><td>O</td><td>X</td><td>X</td><td>O</td><td>X</td><td>4 / 10</td><td>40%</td></tr>
+        <tr><td class="g" style="background:var(--melee)">근거리<small>가까이 휘둘러요</small></td><td class="box"><i>1</i></td><td class="box"><i>2</i></td><td class="box"><i>3</i></td><td class="box"><i>4</i></td><td class="box"><i>5</i></td><td class="box"><i>6</i></td><td class="box"><i>7</i></td><td class="box"><i>8</i></td><td class="box"><i>9</i></td><td class="box"><i>10</i></td><td class="sum"><u></u> / 10</td><td class="rate"><u></u> %</td></tr>
+        <tr><td class="g" style="background:var(--ranged)">원거리<small>멀리서 던져요</small></td><td class="box"><i>11</i></td><td class="box"><i>12</i></td><td class="box"><i>13</i></td><td class="box"><i>14</i></td><td class="box"><i>15</i></td><td class="box"><i>16</i></td><td class="box"><i>17</i></td><td class="box"><i>18</i></td><td class="box"><i>19</i></td><td class="box"><i>20</i></td><td class="sum"><u></u> / 10</td><td class="rate"><u></u> %</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="calc"><b class="j" style="color:var(--accent)">성공률 구하기</b> 성공 수 ÷ 10 × 100 → 예) <code>4 ÷ 10 × 100 = 40%</code> · 10판이면 성공 수에 0 하나만 붙이면 돼요.</div>
+
+  <div class="two">
+    <div>
+      <h2><span class="num">3</span>그래프 <span class="hint">한 칸 10%</span></h2>
+      <div class="chart" style="margin-top:2mm">
+        <div class="axis"><span>100%</span><span>80%</span><span>60%</span><span>40%</span><span>20%</span><span>0%</span></div>
+        <div class="col"><div class="area"></div><div class="lab" style="background:var(--melee)">근거리</div></div>
+        <div class="col"><div class="area"></div><div class="lab" style="background:var(--ranged)">원거리</div></div>
+      </div>
+    </div>
+    <div>
+      <h2><span class="num">4</span>내가 알게 된 것</h2>
+      <div class="fill" style="margin-top:2mm">
+        <div>내 등급( <u style="width:16mm"></u> )에서 더 잘 된 쪽: <span class="chk"></span>근거리 <span class="chk"></span>원거리 <span class="chk"></span>비슷</div>
+        <div>성공률 차이: <u style="width:10mm"></u>% − <u style="width:10mm"></u>% = <u style="width:10mm"></u>%p</div>
+        <div>근거리로 실패한 이유는 주로 <span class="chk"></span>빨리 쓰러짐 <span class="chk"></span>대왕을 6분 안에 못 잡음</div>
+        <div>원거리로 실패한 이유는 주로 <span class="chk"></span>빨리 쓰러짐 <span class="chk"></span>대왕을 6분 안에 못 잡음</div>
+        <div>근거리의 좋은 점: <u style="flex:1"></u></div>
+        <div>원거리의 좋은 점: <u style="flex:1"></u></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="foot"><span>출동하기 전에 로비에서 "근거리 / 원거리"가 기록표와 같은지 꼭 확인해요.</span><span>다 하면 팀 정리(뒷장)로 →</span></div>
+</section>
+
+<!-- ─────────── 2쪽: 팀 정리(1장) ─────────── -->
+<section class="page">
+  <div class="top"><span>서호팡팡수호대 · 밸런스팀 활동지 ② 팀 정리</span><span>팀 <span class="blank" style="width:30mm"></span></span></div>
+  <h1>팀 정리: 등급 × 근거리·원거리 <small>네 사람의 기록표를 모아요</small></h1>
+
+  <div>
+    <h2><span class="num">5</span>성공률 모으기 <span class="hint">각자 기록표의 성공률(%)을 옮겨 적어요. 차이 = 큰 쪽 − 작은 쪽</span></h2>
+    <table class="team" style="margin-top:1.4mm">
+      <thead><tr><th style="width:36mm">등급 (맡은 사람)</th><th style="background:var(--melee);color:var(--ink)">근거리 성공률</th><th style="background:var(--ranged);color:var(--ink)">원거리 성공률</th><th style="width:30mm">차이</th><th style="width:46mm">더 높은 쪽</th></tr></thead>
+      <tbody>
+        <tr><td class="n" style="background:var(--g1)">레어<small>(<span class="blank" style="width:16mm;height:3.6mm"></span>)</small></td><td><u></u>%</td><td><u></u>%</td><td><u></u>%p</td><td><span class="chk"></span>근거리 <span class="chk"></span>원거리 <span class="chk"></span>같음</td></tr>
+        <tr><td class="n" style="background:var(--g2)">유니크<small>(<span class="blank" style="width:16mm;height:3.6mm"></span>)</small></td><td><u></u>%</td><td><u></u>%</td><td><u></u>%p</td><td><span class="chk"></span>근거리 <span class="chk"></span>원거리 <span class="chk"></span>같음</td></tr>
+        <tr><td class="n" style="background:var(--g3)">에픽<small>(<span class="blank" style="width:16mm;height:3.6mm"></span>)</small></td><td><u></u>%</td><td><u></u>%</td><td><u></u>%p</td><td><span class="chk"></span>근거리 <span class="chk"></span>원거리 <span class="chk"></span>같음</td></tr>
+        <tr><td class="n" style="background:var(--g4)">전설<small>(<span class="blank" style="width:16mm;height:3.6mm"></span>)</small></td><td><u></u>%</td><td><u></u>%</td><td><u></u>%p</td><td><span class="chk"></span>근거리 <span class="chk"></span>원거리 <span class="chk"></span>같음</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="two" style="grid-template-columns: 1.1fr 1fr;">
+    <div>
+      <h2><span class="num">6</span>꺾은선그래프 <span class="hint">점을 찍고 선으로 이어요</span></h2>
+      <div class="legend" style="margin:1mm 0 2mm"><span>● 근거리(실선 ——)</span><span>▲ 원거리(점선 - - -)</span></div>
+      <div class="line">
+        <div class="axis"><span>100%</span><span>80%</span><span>60%</span><span>40%</span><span>20%</span><span>0%</span></div>
+        <div class="col"><div class="area"></div><div class="lab" style="background:var(--g1)">레어</div></div>
+        <div class="col"><div class="area"></div><div class="lab" style="background:var(--g2)">유니크</div></div>
+        <div class="col"><div class="area"></div><div class="lab" style="background:var(--g3)">에픽</div></div>
+        <div class="col"><div class="area"></div><div class="lab" style="background:var(--g4)">전설</div></div>
+      </div>
+    </div>
+    <div>
+      <h2><span class="num">7</span>우리 팀 결론</h2>
+      <div class="fill" style="margin-top:2mm">
+        <div>• 등급이 오를수록 성공률이 올라갔나요?</div>
+        <div>&nbsp;&nbsp;근거리 <span class="chk"></span>네 <span class="chk"></span>아니요 / 원거리 <span class="chk"></span>네 <span class="chk"></span>아니요</div>
+        <div>• 차이가 가장 큰 등급: <u style="width:18mm"></u> ( <u style="width:10mm"></u>%p )</div>
+        <div>• 성공률이 처음 50%를 넘은 등급:</div>
+        <div>&nbsp;&nbsp;근거리 <u style="width:16mm"></u> / 원거리 <u style="width:16mm"></u></div>
+        <div>• 둘 다 0%이거나 둘 다 100%인 등급: <u style="width:18mm"></u></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="ruler"><b class="j">판단 기준</b> 같은 등급에서 근거리와 원거리가 <b class="j">30%p 넘게 차이 나면 "한쪽이 너무 셈"</b>, 등급을 올렸는데 성공률이 <b class="j">그대로면 "등급 효과가 약함"</b>이에요. (10판씩이라 한두 판 차이는 운일 수 있어요.)</div>
+
+  <div>
+    <h2><span class="num">8</span>밸런스 제안 <span class="hint">숫자 근거가 있어야 해요</span></h2>
+    <table class="prop" style="margin-top:1.4mm">
+      <thead><tr><th style="width:34mm">무엇을 (종류 · 등급)</th><th style="width:38mm">어떻게?</th><th>근거 (등급 · 성공률)</th></tr></thead>
+      <tbody>
+        <tr class="ex"><td>예) 원거리 장비</td><td>능력을 조금 높여요</td><td>에픽에서 근거리 70% · 원거리 20% (50%p 차이)</td></tr>
+        <tr><td></td><td><span class="chk"></span>높여요 <span class="chk"></span>낮춰요</td><td></td></tr>
+        <tr><td></td><td><span class="chk"></span>높여요 <span class="chk"></span>낮춰요</td><td></td></tr>
+        <tr><td></td><td><span class="chk"></span>높여요 <span class="chk"></span>낮춰요</td><td></td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="foot"><span>모든 계정이 같은 조건: 훈련 80단계 · 친구 없음 · 파츠 없음 · 2-5 어려움. 장비 등급만 달라요.</span><span>선생님 확인 <span class="chk" style="margin:0 0 0 1mm"></span></span></div>
+</section>
+
+</body>
+</html>

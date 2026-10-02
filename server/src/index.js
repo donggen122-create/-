@@ -281,7 +281,11 @@ async function admin(request, env, sub, method) {
       const baseRemaining = 10 - (row.base_used || 0), bonusRemaining = (row.bonus_granted || 0) - (row.bonus_used || 0);
       row.passes = { baseRemaining, bonusRemaining, remaining: baseRemaining + bonusRemaining, resetAt: nextReset(now) };
       // 밸런스 시험 계정(testMode): 날마다 채워지는 이용권 대신 시험 이용권(모두 passes장, since 뒤 출동 수만큼 사용)
-      if (testMode) { const used = (await env.DB.prepare("SELECT COUNT(*) c FROM play_runs WHERE user_id=? AND started_at>=?").bind(row.id, Number(testMode.since) || 0).first())?.c || 0, total = Number(testMode.passes) || 0; row.passes = { test: true, total, used, remaining: Math.max(0, total - used), baseRemaining: Math.max(0, total - used), bonusRemaining: 0, resetAt: null }; }
+      if (testMode) { const used = (await env.DB.prepare("SELECT COUNT(*) c FROM play_runs WHERE user_id=? AND started_at>=?").bind(row.id, Number(testMode.since) || 0).first())?.c || 0, total = Number(testMode.passes) || 0; row.passes = { test: true, total, used, remaining: Math.max(0, total - used), baseRemaining: Math.max(0, total - used), bonusRemaining: 0, resetAt: null };
+        // 장비 시험: 세트(근거리·원거리)별 판 수·성공 수(판 기록의 test.type)
+        const byType = { melee: { n: 0, won: 0 }, ranged: { n: 0, won: 0 } };
+        for (const r of (await env.DB.prepare("SELECT json_extract(result,'$.test.type') ty, COUNT(*) n, SUM(status='test_won') won FROM play_runs WHERE user_id=? AND started_at>=? GROUP BY ty").bind(row.id, Number(testMode.since) || 0).all()).results) if (byType[r.ty]) byType[r.ty] = { n: r.n, won: r.won || 0 };
+        row.test = { kind: testMode.kind || "pet", pet: testMode.pet || null, grade: testMode.grade ?? null, byType }; }
       row.energy = row.passes.remaining;
       delete row.guardian_state; delete row.base_used; delete row.bonus_granted; delete row.bonus_used;
     }
