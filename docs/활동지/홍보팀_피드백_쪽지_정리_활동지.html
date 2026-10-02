@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<title>홍보팀 활동지 — 피드백 쪽지 정리</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Jua&family=Gowun+Dodum&display=swap" rel="stylesheet">
+<style>
+  @font-face { font-family: "Jua"; src: local("Jua"), url("../../game/assets_src/fonts/Jua-Regular.ttf") format("truetype"); font-display: swap; }
+  @page { size: A4; margin: 0; }
+  * { box-sizing: border-box; }
+  :root { --ink: #1d2a30; --soft: #5b6b72; --line: #9fb3bb; --faint: #eef4f6; --accent: #c2417a;
+          --b1: #fff2cc; --b2: #ddebf7; --b3: #e2f0d9; --bq: #f2f2f2;
+          --t1: #2a6f93; --t2: #d9742b; --t3: #7b4fa3; --t4: #3a8f5c;
+          --t1f: #e3eef5; --t2f: #fbeadb; --t3f: #ece4f4; --t4f: #e1f1e7; }
+  html, body { margin: 0; padding: 0; background: #fff; color: var(--ink); }
+  body { font-family: "Gowun Dodum", "Malgun Gothic", sans-serif; font-size: 10.8pt; line-height: 1.4; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  .page { width: 210mm; height: 297mm; padding: 10mm 12mm 9mm; overflow: hidden; break-after: page; display: flex; flex-direction: column; gap: 3.6mm; }
+  .page:last-child { break-after: auto; }
+  h1, h2, b.j, .j { font-family: "Jua", "Malgun Gothic", sans-serif; font-weight: normal; }
+  .top { display: flex; justify-content: space-between; align-items: center; font-size: 9pt; color: var(--soft); }
+  .tag { border: 1.2px solid var(--accent); color: var(--accent); border-radius: 99px; padding: .2mm 3mm; font-family: "Jua", sans-serif; font-size: 10pt; }
+  h1 { margin: 0; font-size: 23pt; line-height: 1.15; }
+  h1 small { font-size: 12pt; color: var(--soft); margin-left: 2mm; }
+  h2 { margin: 0; font-size: 13.5pt; display: flex; align-items: center; gap: 2mm; }
+  .num { flex: none; width: 7mm; height: 7mm; border-radius: 50%; border: 1.6px solid var(--accent); color: var(--accent); display: grid; place-items: center; font-size: 11pt; }
+  .hint { font-family: "Gowun Dodum", sans-serif; font-size: 9.2pt; color: var(--soft); margin-left: 1mm; }
+  .info { display: flex; gap: 6mm; font-size: 11pt; align-items: flex-end; }
+  .info span { white-space: nowrap; }
+  .blank { display: inline-block; border-bottom: 1.1px solid var(--ink); height: 5mm; vertical-align: bottom; }
+  .chk { display: inline-block; width: 3.8mm; height: 3.8mm; border: 1.3px solid var(--ink); border-radius: .8mm; vertical-align: -.6mm; margin-right: 1mm; }
+  .steps { display: grid; grid-template-columns: repeat(4, 1fr); gap: 2.5mm; }
+  .steps div { background: var(--faint); border-radius: 2.5mm; padding: 2mm 2.6mm; font-size: 9.8pt; line-height: 1.35; }
+  .steps b { font-family: "Jua", sans-serif; font-weight: normal; color: var(--accent); font-size: 11.5pt; display: block; }
+  /* 바구니 */
+  .baskets { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 3mm; margin-top: 1.6mm; }
+  .bk { border: 1.4px solid var(--line); border-radius: 3mm; overflow: hidden; display: flex; flex-direction: column; }
+  .bk .hd { padding: 1.4mm 2.6mm; font-family: "Jua", sans-serif; font-size: 13.5pt; line-height: 1.15; white-space: nowrap; }
+  .bk .hd span { display: block; font-family: "Gowun Dodum", sans-serif; font-size: 8.8pt; color: var(--soft); white-space: nowrap; }
+  .bk .ex { padding: 1.4mm 2.6mm; font-size: 9.4pt; color: var(--soft); line-height: 1.35; border-top: 1px dashed var(--line); }
+  .bk .ex b { font-family: "Jua", sans-serif; font-weight: normal; color: var(--ink); display: block; font-size: 10pt; }
+  .bk .cnt { border-top: 1.2px solid var(--line); padding: 1.6mm 2.6mm; display: flex; flex-direction: column; gap: 1.2mm; }
+  .bk .cnt small { font-size: 8.6pt; color: var(--soft); }
+  .tally { height: 20mm; border: 1.1px solid var(--line); border-radius: 2mm; background: repeating-linear-gradient(to right, transparent 0 7.5mm, #e4ebee 7.5mm calc(7.5mm + 1px)); }
+  .bk .sum { font-family: "Jua", sans-serif; font-size: 12pt; display: flex; align-items: flex-end; gap: 1.5mm; }
+  .bk .sum u { text-decoration: none; display: inline-block; width: 16mm; border-bottom: 1.2px solid var(--ink); height: 6mm; }
+  .qrow { display: flex; align-items: center; gap: 3mm; font-size: 10pt; background: var(--bq); border-radius: 2.5mm; padding: 1.6mm 3mm; }
+  .qrow b { font-family: "Jua", sans-serif; font-weight: normal; font-size: 12pt; }
+  .qrow.txt { display: block; }
+  .qrow.txt b { font-size: 11pt; }
+  .qrow u { text-decoration: none; display: inline-block; width: 14mm; border-bottom: 1.2px solid var(--ink); height: 5.5mm; }
+  /* 팀 */
+  .teams { display: grid; grid-template-columns: 1fr 1fr; gap: 2.6mm; margin-top: 1.6mm; }
+  .tm { border-radius: 3mm; padding: 2mm 3mm; display: grid; grid-template-columns: 27mm 1fr; column-gap: 2.5mm; row-gap: .6mm; align-items: start; font-size: 9.6pt; }
+  .tm b { font-family: "Jua", sans-serif; font-weight: normal; font-size: 14pt; grid-row: span 2; line-height: 1.1; }
+  .tm b small { display: block; font-family: "Gowun Dodum", sans-serif; font-size: 8.6pt; color: var(--soft); }
+  .tm .kw { font-family: "Jua", sans-serif; font-size: 10pt; }
+  .tm .eg { color: var(--soft); font-size: 9.2pt; }
+  .t1 { background: var(--t1f); } .t1 b, .t1 .kw { color: var(--t1); }
+  .t2 { background: var(--t2f); } .t2 b, .t2 .kw { color: var(--t2); }
+  .t3 { background: var(--t3f); } .t3 b, .t3 .kw { color: var(--t3); }
+  .t4 { background: var(--t4f); } .t4 b, .t4 .kw { color: var(--t4); }
+  .ruler { font-size: 10pt; border-left: 3px solid var(--accent); padding: 1mm 3mm; background: #fbf3f7; }
+  .total { display: flex; align-items: flex-end; flex-wrap: wrap; gap: 1.5mm 2mm; font-size: 11.5pt; font-family: "Jua", sans-serif; }
+  .total u { text-decoration: none; display: inline-block; width: 14mm; border-bottom: 1.2px solid var(--ink); height: 6mm; }
+  .total i { font-style: normal; font-family: "Gowun Dodum", sans-serif; font-size: 9pt; color: var(--soft); }
+  .foot { margin-top: auto; display: flex; justify-content: space-between; font-size: 8.8pt; color: var(--soft); border-top: 1px dashed var(--line); padding-top: 1.3mm; }
+  /* 2쪽 */
+  table { width: 100%; border-collapse: collapse; table-layout: fixed; }
+  th, td { border: 1.2px solid var(--line); padding: 1mm 1.6mm; text-align: center; vertical-align: middle; }
+  th { font-family: "Jua", sans-serif; font-weight: normal; color: #fff; font-size: 10.3pt; }
+  .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 3.5mm 4mm; margin-top: 1.6mm; }
+  .tt caption { text-align: left; font-family: "Jua", sans-serif; font-size: 12.5pt; padding: 0 0 1mm 1mm; }
+  .tt td { height: 9.6mm; font-size: 10pt; }
+  .tt td:first-child { text-align: left; }
+  .tt tr.ex td { background: #f7f9fa; color: #8a969c; font-style: italic; height: 7.5mm; font-size: 9.2pt; }
+  .tt.t1 th { background: var(--t1); } .tt.t2 th { background: var(--t2); } .tt.t3 th { background: var(--t3); } .tt.t4 th { background: var(--t4); }
+  .tt.t1 caption { color: var(--t1); } .tt.t2 caption { color: var(--t2); } .tt.t3 caption { color: var(--t3); } .tt.t4 caption { color: var(--t4); }
+  .tt { background: #fff; }
+  .rank { display: grid; grid-template-columns: repeat(3, 1fr); gap: 3mm; margin-top: 1.6mm; }
+  .rank div { border: 1.3px solid var(--line); border-radius: 2.5mm; padding: 1.6mm 2.6mm; display: flex; flex-direction: column; gap: 1.2mm; font-size: 9.6pt; }
+  .rank b { font-family: "Jua", sans-serif; font-weight: normal; font-size: 13pt; color: var(--accent); }
+  .rank .box { height: 11mm; border-bottom: 1.1px solid var(--ink); }
+  .rank .sub { display: flex; justify-content: space-between; color: var(--soft); font-size: 9pt; }
+  .rank .sub u { text-decoration: none; display: inline-block; width: 10mm; border-bottom: 1px solid var(--ink); height: 4.5mm; }
+  .fill { display: flex; flex-direction: column; gap: 2.4mm; font-size: 10.3pt; margin-top: 1.6mm; }
+  .fill div { display: flex; align-items: flex-end; gap: 1.3mm; flex-wrap: wrap; }
+  .fill u { text-decoration: none; border-bottom: 1px solid var(--ink); height: 5mm; display: inline-block; }
+  .bigbox { border: 1.3px solid var(--line); border-radius: 2.5mm; height: 17mm; margin-top: 1.6mm; }
+</style>
+</head>
+<body>
+
+<!-- ─────────── 1쪽: 쪽지 나누기 ─────────── -->
+<section class="page">
+  <div class="top"><span>서호팡팡수호대 · 홍보팀 활동지 ① 쪽지 나누기</span><span class="tag">피드백 게시판 정리</span></div>
+  <h1>피드백 쪽지 정리 <small>게시판 쪽지를 모아 네 팀에 전해요</small></h1>
+  <div class="info"><span>이름 <span class="blank" style="width:32mm"></span></span><span>날짜 <span class="blank" style="width:26mm"></span></span><span>모둠 <span class="blank" style="width:24mm"></span></span></div>
+
+  <div class="steps">
+    <div><b>① 떼기</b>게시판 쪽지를 조심히 떼서 책상 위에 모아요.</div>
+    <div><b>② 나누기</b>한 장씩 읽고 아래 세 바구니 중 하나에 놓아요.</div>
+    <div><b>③ 세기</b>놓을 때마다 바구니 칸에 바를 정(正) 한 획!</div>
+    <div><b>④ 팀 정하기</b>게임 의견 쪽지만 뒷장에서 네 팀으로 나눠요.</div>
+  </div>
+
+  <div>
+    <h2><span class="num">1</span>세 바구니로 나누기 <span class="hint">쪽지 한 장은 바구니 하나에만 들어가요</span></h2>
+    <div class="baskets">
+      <div class="bk" style="border-color:#d6b64a">
+        <div class="hd" style="background:var(--b1)">① 게임 의견 <span>게임을 바꿔 달라는 말</span></div>
+        <div class="ex"><b>이런 쪽지</b>「캐릭터 더 만들어 주세요」<br>「비닐봉투 너무 세요」<br>「닉네임 바꾸게 해 주세요」</div>
+        <div class="cnt"><small>바를 정(正)으로 세기</small><div class="tally"></div><div class="sum">모두 <u></u> 장</div></div>
+      </div>
+      <div class="bk" style="border-color:#7ea6cf">
+        <div class="hd" style="background:var(--b2)">② 재밌어요 <span>칭찬·응원하는 말</span></div>
+        <div class="ex"><b>이런 쪽지</b>「재밌어요」<br>「화이팅!」<br>「잘 만들었어요」</div>
+        <div class="cnt"><small>바를 정(正)으로 세기</small><div class="tally"></div><div class="sum">모두 <u></u> 장</div></div>
+      </div>
+      <div class="bk" style="border-color:#7fb67f">
+        <div class="hd" style="background:var(--b3)">③ 지구 구호 <span>환경을 지키자는 말·그림</span></div>
+        <div class="ex"><b>이런 쪽지</b>「지구를 지켜요」<br>「분리수거 잘하자」<br>하트·지구 그림만 있는 쪽지</div>
+        <div class="cnt"><small>바를 정(正)으로 세기</small><div class="tally"></div><div class="sum">모두 <u></u> 장</div></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="qrow"><b>?</b> 글씨를 못 읽겠거나 어디에도 안 맞는 쪽지는 따로 모아요 → <u></u> 장 &nbsp; (선생님과 같이 봐요)</div>
+
+  <div class="ruler"><b class="j">약속</b> 이름이 적힌 쪽지는 이름을 <b class="j">적지 않아요</b>. 학년·반만 적어요. 한 쪽지에 「재밌어요」와 「캐릭터 더 주세요」가 같이 있으면 <b class="j">① 게임 의견</b>에 넣어요.</div>
+
+  <div>
+    <h2><span class="num">2</span>게임 의견 쪽지는 어느 팀? <span class="hint">① 바구니 쪽지만 다시 읽고, 맞는 팀 글자를 쪽지 구석에 작게 써요</span></h2>
+    <div class="teams">
+      <div class="tm t1"><b>기획팀<small>새로 넣을 것 · 규칙</small></b><div class="kw">「만들어 주세요」「있으면 좋겠어요」</div><div class="eg">예) 캐릭터 추가, 아이템 추가, 닉네임 바꾸기, 반 대항전, 게임 더 하고 싶어요</div></div>
+      <div class="tm t2"><b>밸런스팀<small>세기 · 속도 · 어려움</small></b><div class="kw">「너무 세요」「약해요」「빠르게」「렉」</div><div class="eg">예) 비닐봉투 너무 세요, 무기를 더 좋게, 움직임을 빠르게, 렉이 걸려요</div></div>
+      <div class="tm t3"><b>디자인팀<small>그림 · 모양 · 색</small></b><div class="kw">「귀엽게」「예쁘게」「그림」</div><div class="eg">예) 캐릭터를 더 귀엽게, 동물 친구 그림, 배경을 예쁘게</div></div>
+      <div class="tm t4"><b>스토리팀<small>이야기 · 보스 · 스테이지</small></b><div class="kw">「보스」「스테이지」「이야기」</div><div class="eg">예) 보스가 더 나왔으면, 스테이지를 늘려 주세요, 괴물 이름이 재밌어요</div></div>
+    </div>
+  </div>
+
+  <div class="qrow txt" style="background:var(--faint)"><b>두 팀에 다 맞으면?</b> 먼저 정해야 하는 팀에 넣어요. 예) 「귀여운 캐릭터를 더 만들어 주세요」 → 캐릭터를 넣을지는 <b>기획팀</b>이 먼저, 그림은 나중에 디자인팀.</div>
+
+  <div>
+    <h2><span class="num">3</span>합계 <span class="hint">세 바구니와 ?를 더하면 전체 쪽지 수와 같아야 해요</span></h2>
+    <div class="total" style="margin-top:1.6mm">전체 <u></u> 장 <i>=</i> ① 게임 의견 <u></u> <i>+</i> ② 재밌어요 <u></u> <i>+</i> ③ 지구 구호 <u></u> <i>+</i> ? <u></u></div>
+  </div>
+
+  <div class="foot"><span>쪽지는 바구니별로 집게로 묶어 두면 뒷장을 쓸 때 편해요.</span><span>다 하면 팀별 적기(뒷장)로 →</span></div>
+</section>
+
+<!-- ─────────── 2쪽: 팀별 적기 ─────────── -->
+<section class="page">
+  <div class="top"><span>서호팡팡수호대 · 홍보팀 활동지 ② 팀별 적기</span><span>모둠 <span class="blank" style="width:30mm"></span></span></div>
+  <h1>팀에 전할 의견 <small>① 게임 의견 쪽지를 팀별로 옮겨 적어요</small></h1>
+
+  <div>
+    <h2><span class="num">4</span>팀별로 적기 <span class="hint">같은 말은 한 줄에 모으고 「몇 장」에 수를 써요. 쪽지의 말을 짧게 그대로 옮겨요.</span></h2>
+    <div class="grid2">
+      <table class="tt t1"><caption>기획팀 → 새로 넣을 것 · 규칙</caption>
+        <thead><tr><th>쪽지에 적힌 말</th><th style="width:14mm">몇 장</th><th style="width:16mm">학년</th></tr></thead>
+        <tbody><tr class="ex"><td>예) 캐릭터 더 만들어 주세요</td><td>5</td><td>3~5</td></tr><tr><td></td><td></td><td></td></tr><tr><td></td><td></td><td></td></tr><tr><td></td><td></td><td></td></tr><tr><td></td><td></td><td></td></tr><tr><td></td><td></td><td></td></tr></tbody></table>
+      <table class="tt t2"><caption>밸런스팀 → 세기 · 속도 · 어려움</caption>
+        <thead><tr><th>쪽지에 적힌 말</th><th style="width:14mm">몇 장</th><th style="width:16mm">학년</th></tr></thead>
+        <tbody><tr class="ex"><td>예) 비닐봉투 너무 세요 (1-3단계)</td><td>1</td><td>3</td></tr><tr><td></td><td></td><td></td></tr><tr><td></td><td></td><td></td></tr><tr><td></td><td></td><td></td></tr><tr><td></td><td></td><td></td></tr><tr><td></td><td></td><td></td></tr></tbody></table>
+      <table class="tt t3"><caption>디자인팀 → 그림 · 모양 · 색</caption>
+        <thead><tr><th>쪽지에 적힌 말</th><th style="width:14mm">몇 장</th><th style="width:16mm">학년</th></tr></thead>
+        <tbody><tr class="ex"><td>예) 캐릭터를 더 귀엽게 해 주세요</td><td>2</td><td>4</td></tr><tr><td></td><td></td><td></td></tr><tr><td></td><td></td><td></td></tr><tr><td></td><td></td><td></td></tr><tr><td></td><td></td><td></td></tr><tr><td></td><td></td><td></td></tr></tbody></table>
+      <table class="tt t4"><caption>스토리팀 → 이야기 · 보스 · 스테이지</caption>
+        <thead><tr><th>쪽지에 적힌 말</th><th style="width:14mm">몇 장</th><th style="width:16mm">학년</th></tr></thead>
+        <tbody><tr class="ex"><td>예) 보스가 더 나왔으면 좋겠어요</td><td>3</td><td>4~5</td></tr><tr><td></td><td></td><td></td></tr><tr><td></td><td></td><td></td></tr><tr><td></td><td></td><td></td></tr><tr><td></td><td></td><td></td></tr><tr><td></td><td></td><td></td></tr></tbody></table>
+    </div>
+  </div>
+
+  <div>
+    <h2><span class="num">5</span>가장 많이 나온 의견 3가지 <span class="hint">위 네 표에서 「몇 장」이 큰 것부터</span></h2>
+    <div class="rank">
+      <div><b>1위</b><div class="box"></div><div class="sub"><span><u></u> 장</span><span>팀 <u style="width:16mm"></u></span></div></div>
+      <div><b>2위</b><div class="box"></div><div class="sub"><span><u></u> 장</span><span>팀 <u style="width:16mm"></u></span></div></div>
+      <div><b>3위</b><div class="box"></div><div class="sub"><span><u></u> 장</span><span>팀 <u style="width:16mm"></u></span></div></div>
+    </div>
+  </div>
+
+  <div>
+    <h2><span class="num">6</span>홍보팀이 쓸 것 <span class="hint">② ③ 바구니에서 골라요</span></h2>
+    <div class="fill">
+      <div>• 다음 포스터에 넣고 싶은 구호 한 개: <u style="width:80mm"></u></div>
+      <div>• 가장 마음에 든 응원 쪽지: <u style="width:92mm"></u></div>
+      <div>• 쪽지를 가장 많이 붙인 학년: <u style="width:14mm"></u> 학년 &nbsp; 가장 적게 붙인 학년: <u style="width:14mm"></u> 학년</div>
+    </div>
+  </div>
+
+  <div>
+    <h2><span class="num">7</span>선생님께 한마디 <span class="hint">정리하면서 알게 된 것, 어려웠던 것</span></h2>
+    <div class="bigbox"></div>
+  </div>
+
+  <div class="foot"><span>다 하면 이 활동지와 팀별로 묶은 ① 쪽지를 함께 선생님께 내요.</span><span>선생님 확인 <span class="chk" style="margin:0 0 0 1mm"></span></span></div>
+</section>
+
+</body>
+</html>
