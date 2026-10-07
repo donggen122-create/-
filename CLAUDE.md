@@ -6,7 +6,7 @@
 - Codex 그림 지시 `docs/codex/2026-10-07_작업지시_UI_아이콘.md` → 오면 `이미지 에셋/UI/` → `game/tools/cut_ui.py`(새로 만들 것)로 잘라 임시 SVG 아이콘 교체.
 
 ## 2026-10-07 18:2x KST. 4장 「불타는 숲」(CH16~CH20) 실서버 배포 완료 a9797e04, 공지 그림 58e47ab7 — `docs/45`
-- 그림 11장(사용자 Codex) → `cut_theme4.py` → `t4/`. 적 `themes.js T4_*`, 행동 `main.js sgT4Tick`, 거인 `BOSS_PATTERNS_T4`. 단계 배율·어려움 기준은 시안(모의 뒤 사용자와). 로비 공지는 4장 오픈 공지(`sgChapter4Notice`, 다시 보지 않기·닫기, 그림 `assets/ui/notice_ch4.jpg`). 좁은 화면(920px 이하)은 장 단추 2개씩, ‹ › 로 다음 묶음(`chapterBar` sg-page-off).
+- 그림 11장(사용자 Codex) → `cut_theme4.py` → `t4/`. 적 `themes.js T4_*`, 행동 `main.js sgT4Tick`, 거인 `BOSS_PATTERNS_T4`. 단계 배율·어려움 기준은 시안대로 확정(사용자 10-07). 기본 무기 소리 `playSfx('attack')` 수리는 보류(사용자). 로비 공지는 4장 오픈 공지(`sgChapter4Notice`, 다시 보지 않기·닫기, 그림 `assets/ui/notice_ch4.jpg`). 좁은 화면(920px 이하)은 장 단추 2개씩, ‹ › 로 다음 묶음(`chapterBar` sg-page-off).
 
 ## 2026-10-06. 4장 그림 프롬프트 — `이미지 에셋/테마4_숲_프롬프트.md`
 - 4장 몬스터 5종은 docs/44 다듬기안(버너몬·톱니몬(4-2, 영수몬 대신)·뉴트몬·중간 보스 와르르 불도저(4-3)·불키). 대왕은 하데스 원안을 버리고 원래 기획 **산불 거인**(불타는 바위 거인, docs/21 T4-B). 그림 도착 → cut_theme4.py → CH16~CH20.
