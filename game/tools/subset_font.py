@@ -1,6 +1,7 @@
 # 제목 글꼴(Jua, OFL) 부분 추출: index.html의 모든 표시 글자 + JS에서 제목 화면에 넣는 문구 → game/assets/ui/jua-title.woff2
 # 시작 화면·로비 제목 문구를 바꾼 뒤에는 이 스크립트를 다시 실행해야 새 글자가 시스템 글꼴로 빠지지 않는다.
-# 사용: python game/tools/subset_font.py
+# UI v2(2026-10-07): 로비·창·전투 화면 전체에 쓰는 글꼴 jua-ui.woff2 = 자주 쓰는 한글 2,350자(KS X 1001) + 소스에 나오는 한글 + 기호(약 180KB).
+# 사용: python game/tools/subset_font.py  (UI 글꼴만: --ui-only — 제목 글꼴은 그대로 둔다)
 import re, subprocess, sys
 from pathlib import Path
 
@@ -27,7 +28,34 @@ JS_STRINGS = [
 ]
 BASIC = "0123456789.!,~·:%+-/()[]?…ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz"
 
+UI_OUT = ROOT / "game" / "assets" / "ui" / "jua-ui.woff2"
+UI_CHARS_FILE = ROOT / "game" / "assets_src" / "fonts" / "jua-ui-chars.txt"
+UI_BASIC = "".join(chr(i) for i in range(32, 127)) + "·…★☆♥→←↑↓×÷°%『』「」《》〈〉“”‘’—–♪✓✔"
+
+
+def ui_font():
+    chars = set()
+    for b1 in range(0xB0, 0xC9):                       # KS X 1001 한글 2,350자
+        for b2 in range(0xA1, 0xFF):
+            try:
+                c = bytes([b1, b2]).decode("euc-kr")
+            except UnicodeDecodeError:
+                continue
+            if "\uac00" <= c <= "\ud7a3": chars.add(c)
+    srcs = list((ROOT / "game" / "src").glob("*.js")) + [ROOT / "game" / "index.html"] + list((ROOT / "server" / "src").glob("*.js"))
+    for f in srcs:
+        if f.name == "content.data.js": continue
+        chars.update(c for c in f.read_text(encoding="utf-8") if "\uac00" <= c <= "\ud7a3")
+    text = "".join(sorted(chars)) + UI_BASIC
+    UI_CHARS_FILE.write_text(text, encoding="utf-8")
+    subprocess.run([sys.executable, "-m", "fontTools.subset", str(SRC_FONT), f"--text-file={UI_CHARS_FILE}",
+                    "--flavor=woff2", f"--output-file={UI_OUT}", "--layout-features=*", "--no-hinting"], check=True)
+    print(f"ui glyphs {len(text)} → {UI_OUT.name} {UI_OUT.stat().st_size // 1024} KB")
+
+
 def main():
+    if "--ui-only" in sys.argv:
+        ui_font(); return
     html = (ROOT / "game" / "index.html").read_text(encoding="utf-8")
     body = re.sub(r"<style>.*?</style>", "", html, flags=re.S)
     body = re.sub(r"<script.*?</script>", "", body, flags=re.S)
@@ -41,6 +69,7 @@ def main():
     subprocess.run([sys.executable, "-m", "fontTools.subset", str(SRC_FONT), f"--text-file={CHARS_FILE}",
                     "--flavor=woff2", f"--output-file={OUT}", "--layout-features=*", "--no-hinting"], check=True)
     print(f"glyphs {len(text)} → {OUT.name} {OUT.stat().st_size // 1024} KB")
+    ui_font()
 
 if __name__ == "__main__":
     main()

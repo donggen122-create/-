@@ -57,6 +57,7 @@ const CHAPTERS=[
  {n:'4',from:15,eyebrow:'CHAPTER 04',name:'불타는 숲',short:'불타는 숲',title:'새싹이 다시 돋는 초록 숲',sub:'버려진 캠핑 쓰레기·벌목·외래종·산불로 숲이 아파요! 우리 학교 친구들이 만든 숲 몬스터를 정화하고 타는 불씨를 꺼요.',art:'t4',pictures:['en_burner_m','en_saw','en_dozer','en_bulki','boss_calm']},
 ];
 const chapterStages=c=>R.STAGES.slice(c.from,c.from+5);
+const ui2=()=>typeof document!=='undefined'&&document.documentElement.classList.contains('ui2');   // UI v2 미리 보기(index.html ?ui=2)
 export class GuardianUI {
   constructor(menu,callbacks){
     this.c=callbacks;this.tab='adventure';this.stage='CH01';this.chapter='1';this.element='fire';this.partFilter='all';this.bookFilter='all';this.bookTab='skills';this.busy=false;
@@ -70,6 +71,8 @@ export class GuardianUI {
     });
   }
   state(){return this.c.getState();}
+  // UI v2(ui-v2.css): 지금 탭·장을 root에 적어 두면 화면 뒤 장 그림을 CSS가 고른다(장 5단계를 정화했으면 맑은 그림)
+  markRoot(p){const ch=CHAPTERS.find(c=>c.n===String(this.chapter))||CHAPTERS[0];this.root.dataset.tab=this.tab;this.root.dataset.chapter=ch.n;this.root.dataset.cleared=p?.stages?.[chapterStages(ch)[4].id]?.cleared?'1':'0';}
   setDifficulty(id){
     if(!R.DIFFICULTIES[id])return;this.diffPick=id;
     this.root.querySelectorAll('.sg-diff-btn').forEach(x=>{const on=x.dataset.diff===id;x.classList.toggle('on',on);x.setAttribute('aria-pressed',String(on));});
@@ -84,7 +87,8 @@ export class GuardianUI {
     if(p.testMode){this.renderTest(p,passes,user);return;}   // 밸런스 시험 계정: 전용 로비(친구 등급 바꾸기 · 1-5 어려움 출동만)
     if(!R.stageUnlocked(p,this.stage))this.stage='CH01';
     const pendingPet=R.pendingPet(p),pendingPart=R.pendingPart(p);
-    this.root.innerHTML=`<header class="sg-header"><div class="sg-brand">${icon('element_wind')}<span>서호팡팡<small>수호대</small></span></div><div class="sg-wallet"><button data-do="passes" aria-label="이용권 안내">${icon('pass')}<b>${passes?.remaining??'…'}</b><span>${passes?.event?'추석 2배':'이용권'}</span></button><div>${icon('coin')}<b>${p.coins.toLocaleString()}</b><span>코인</span></div><button data-tab="parts" aria-label="파츠 보급과 보급권">${icon('gift')}<b>${p.gifts}</b><span>보급권</span></button></div><button class="sg-account" data-do="account" aria-label="계정과 캐릭터 선택">${esc(user)} 님</button></header>
+    this.markRoot(p);
+    this.root.innerHTML=`<header class="sg-header"><div class="sg-brand">${ui2()?'<img class="sg-ui2-emblem" src="./assets/ui/title_emblem.png" alt=""/>':icon('element_wind')}<span>서호팡팡<small>수호대</small></span></div><div class="sg-wallet"><button data-do="passes" aria-label="이용권 안내">${icon('pass')}<b>${passes?.remaining??'…'}</b><span>${passes?.event?'추석 2배':'이용권'}</span></button><div>${icon('coin')}<b>${p.coins.toLocaleString()}</b><span>코인</span></div><button data-tab="parts" aria-label="파츠 보급과 보급권">${icon('gift')}<b>${p.gifts}</b><span>보급권</span></button></div><button class="sg-account" data-do="account" aria-label="계정과 캐릭터 선택">${ui2()?`<img class="sg-ui2-avatar" src="./assets/ui/title_${p.hero==='minji'?'minji':'hoya'}.png" alt=""/><span>${p.hero==='minji'?'민지':'호야'}<small>${esc(user)}</small></span>`:`${esc(user)} 님`}</button></header>
     <main class="sg-main" aria-live="polite">${this.nextTask(p)}${this[this.tab](p,passes)}</main>
     <nav class="sg-nav" aria-label="수호대 메뉴">${[['adventure','map','모험'],['training','mode_melee','훈련'],['parts','part_PART_F1','파츠'],['gear','shield','장비'],['friends','heart','친구'],['book','book','도감']].map(([id,im,label])=>`<button data-tab="${id}" class="${this.tab===id?'on':''}" aria-current="${this.tab===id?'page':'false'}">${icon(im)}<span>${label}${id==='parts'&&p.gifts>0?` <b class="sg-count-badge" aria-label="보급권 ${p.gifts}장">${p.gifts}</b>`:''}${id==='gear'&&this.gearAlert(p)?' <b class="sg-count-badge" aria-label="장비 할 일">!</b>':''}${id==='friends'&&pendingPet?' <b class="sg-count-badge" aria-label="친구 고르기">!</b>':''}</span></button>`).join('')}</nav>`;
     if(this.busy)this.root.querySelectorAll('button,select').forEach(b=>b.disabled=true);

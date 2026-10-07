@@ -16,6 +16,8 @@ ap.add_argument('--out', default=str(ROOT / 'game/tools/qa/out/responsive'))
 ap.add_argument('--sizes', default='320x568,360x640,375x667,390x844,412x915,667x375,844x390,768x1024,1024x768,820x1180,1180x820,1280x720,1366x768,1920x1080')
 ap.add_argument('--shots', default='adventure,levelup,battle,result')
 args = ap.parse_args()
+from urllib.parse import urlsplit
+BASE = '{0.scheme}://{0.netloc}'.format(urlsplit(args.url))   # --url에 ?ui=2 같은 주소 뒤 글자가 있어도 시험 API는 서버 주소로
 OUT = Path(args.out); OUT.mkdir(parents=True, exist_ok=True)
 EXE = os.environ.get('CHROME_PATH') or ('/opt/pw-browsers/chromium-1194/chrome-linux/chrome' if Path('/opt/pw-browsers/chromium-1194/chrome-linux/chrome').exists() else None)
 fresh = json.loads(subprocess.check_output(['node', '--input-type=module', '-e', "import {freshProfile} from './game/src/rework-core.js';console.log(JSON.stringify(freshProfile()));"], cwd=ROOT))
@@ -88,11 +90,12 @@ def audit_size(b, W, H, report):
         rec[kind] = page.evaluate(AUDIT_JS, kind)
         if shot and shot in args.shots.split(','): page.screenshot(path=str(OUT / f'{W}x{H}-{shot}.png'))
     uid = f'qarsp{W}{random.randint(10, 99)}'[:12]
-    page.request.post(args.url + '/_qa/reset-attempts')   # 격리 서버 가입 제한 비우기(여러 크기를 연달아 가입)
+    page.request.post(BASE + '/_qa/reset-attempts')   # 격리 서버 가입 제한 비우기(여러 크기를 연달아 가입)
     page.goto(args.url, wait_until='networkidle'); check('title')
     page.locator('#login-id').fill(uid); page.locator('#login-pw').fill('qa_local_1234'); page.locator('#btn-register').click()
     page.locator('#btn-title-start').wait_for(state='visible')
-    assert page.request.post(args.url + '/_qa/profile', data={'id': uid, 'profile': super_profile()}).ok
+    assert page.request.post(BASE + '/_qa/profile', data={'id': uid, 'profile': super_profile()}).ok
+    page.reload(wait_until='networkidle')   # 바꾼 시험 프로필을 다시 읽는다(안 하면 새 가입 프로필 그대로 — 캐릭터 고르기 창·1장만 열림)
     page.wait_for_function("!document.querySelector('#btn-title-start').disabled")
     page.evaluate("document.getElementById('btn-title-start').click()"); page.locator('#guardian-lobby .sg-nav').wait_for(); quiet(page)
     for tab in ['adventure', 'training', 'parts', 'gear', 'friends', 'book']:
@@ -106,6 +109,8 @@ def audit_size(b, W, H, report):
     page.locator('dialog[open] [data-bag-id]').first.click(); page.wait_for_timeout(300); check('dialog-gear-detail', 'dialog'); quiet(page)
     page.locator('[data-gear-set]').first.click(); page.wait_for_timeout(300); check('dialog-gear-set', 'dialog'); quiet(page)
     page.locator('.sg-nav [data-tab="adventure"]').click(); page.wait_for_timeout(200); quiet(page)
+    # 3장부터 로비는 가장 최근 장을 연다 — 2장으로 넘긴 뒤 2-5 대왕(CH10)을 고른다(좁은 화면은 장 단추가 2개씩이라 보이는 단추로)
+    page.locator('[data-chapter="2"]:visible').first.click(); page.wait_for_timeout(200)
     page.locator('[data-stage="CH10"]').click(); page.wait_for_timeout(200); page.locator('#sg-start').click(); page.locator('#levelup:not(.hidden)').wait_for()
     page.wait_for_timeout(300); check('levelup', 'levelup')
     page.evaluate("window.__sgCombatLoad(['F1','W1','E1','L2'])"); page.evaluate("window.__debugGod=true;window.__debugForceBoss()")

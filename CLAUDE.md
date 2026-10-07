@@ -1,5 +1,10 @@
 # 서호팡팡수호대 — Claude 작업 안내 (모든 PC 공통)
 
+## 2026-10-07 저녁. UI v2 「수호대 작전본부」 시안(배포 전, `?ui=2`로만 켜짐) — `docs/46`
+- 모든 규칙은 `game/src/ui-v2.css`의 `html.ui2` 아래라 끄면 예전 화면 그대로. 켜기 `?ui=2`·끄기 `?ui=1`(기기에 기억). 학생 기본값으로 바꾸는 것은 사용자 확인 뒤.
+- rework.css가 `!important`를 많이 써서 v2 규칙은 선택자 세기를 맞춰야 한다(예: `.sg-adventure .sg-stage-map .sg-stage`). 확인은 `responsive-audit.py --url http://localhost:8797/?ui=2`(6크기). 글을 크게 바꾸면 `subset_font.py --ui-only`.
+- Codex 그림 지시 `docs/codex/2026-10-07_작업지시_UI_아이콘.md` → 오면 `이미지 에셋/UI/` → `game/tools/cut_ui.py`(새로 만들 것)로 잘라 임시 SVG 아이콘 교체.
+
 ## 2026-10-07 18:2x KST. 4장 「불타는 숲」(CH16~CH20) 실서버 배포 완료 a9797e04, 공지 그림 58e47ab7 — `docs/45`
 - 그림 11장(사용자 Codex) → `cut_theme4.py` → `t4/`. 적 `themes.js T4_*`, 행동 `main.js sgT4Tick`, 거인 `BOSS_PATTERNS_T4`. 단계 배율·어려움 기준은 시안(모의 뒤 사용자와). 로비 공지는 4장 오픈 공지(`sgChapter4Notice`, 다시 보지 않기·닫기, 그림 `assets/ui/notice_ch4.jpg`). 좁은 화면(920px 이하)은 장 단추 2개씩, ‹ › 로 다음 묶음(`chapterBar` sg-page-off).
 

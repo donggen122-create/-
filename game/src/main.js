@@ -5612,7 +5612,7 @@ function sgChooseCards(reroll=false){
   mode='levelup';keys.clear();touchJoy.active=false;
   currentCards=R.cardChoices(sgRunProfile,player.skills,player.sgRun,player.hp/player.hpMax);
   elCardRow.innerHTML='';
-  for(const c of currentCards){const b=document.createElement('button');b.className='card';b.innerHTML=sgCardHTML(c);b.onclick=()=>{if(mode!=='levelup')return;playSfx('cardSelect',.45);sgApplyCard(c);closeLevelUp();};elCardRow.append(b);}
+  for(const c of currentCards){const b=document.createElement('button');b.className='card';b.innerHTML=sgCardHTML(c);b.dataset.kind=c.kind;{const el=c.kind==='evolve'?'#ffb81e':c.kind==='support-new'||c.kind==='support-up'?'#d9a23a':c.kind==='heal'?'#ff6b75':c.kind==='shield'?'#66c3ff':R.ELEMENTS[R.SKILLS[c.id]?.element]?.color;if(el)b.style.setProperty('--el',el);}/* UI v2: 카드 머리 색(원소·진화·지원품) */b.onclick=()=>{if(mode!=='levelup')return;playSfx('cardSelect',.45);sgApplyCard(c);closeLevelUp();};elCardRow.append(b);}
   document.getElementById('lv-ops').innerHTML=`<button class="op big-op" id="op-reroll" ${player.rerolls>0?'':'disabled'}>다시 고르기 · ${player.rerolls}번 남음</button><span class="lv-pending">지금은 시간이 멈춰 있어요.</span>`;
   document.getElementById('op-reroll').onclick=()=>{if(player.rerolls<=0)return;player.rerolls--;sgChooseCards(true);};
   elLevelup.classList.remove('hidden');if(!reroll)playSfx('levelupOpen',.4);
@@ -6069,6 +6069,11 @@ async function sgSettle(pending,leaving=false){
     sgHardLoss=!r.cleared&&r.reward?.difficulty==='hard'?(r.stage||null):null;   // 어려움 실패 → 로비로 돌아가면 준비 권장치 안내
     const w=r.reward,dn=R.DIFFICULTIES[w.difficulty]?.name;elResultTitle.textContent=r.cleared?'우리 마을이 반짝반짝!':'멋진 도전이었어요!';
     elResultTable.innerHTML=`<tr><td colspan="2" style="text-align:center;font-size:28px;color:#ffd16e">${'★'.repeat(w.stars)}${'☆'.repeat(3-w.stars)}${dn?`<div style="font-size:13px;color:#cfe3ee">${dn} 난이도${r.cleared?` 성공 → 별 ${w.stars}개`:''}</div>`:''}</td></tr><tr><td>코인</td><td>+${w.coins}${w.goal?' (환경 목표 +30 포함)':''}${w.petCoinPct>0?` · 친구 코인 +${Math.round(w.petCoinPct*1000)/10}%`:''}</td></tr><tr><td>보급권</td><td>+${w.gifts}${w.stageGift?.capped?' · 오늘 이 단계는 2번 다 받았어요. 다른 단계에 도전해 봐요!':w.stageGift?(w.stageGift.left?` · 오늘 이 단계 ${w.stageGift.left}번 더`:' · 오늘 이 단계 보급권은 여기까지! 다른 단계는 또 받아요'):''}</td></tr><tr><td>미션</td><td>${w.missions?.length?`완료! 보급권 +${w.missions.reduce((n,m)=>n+m.gifts,0)} · ${w.missions.map(m=>m.name).join(', ')}`:'오늘의 미션은 모험 화면에서 확인해요'}</td></tr><tr><td>이용권</td><td>${r.charged?'1장 사용':'그대로!'} · ${r.passes.remaining}장 남음</td></tr><tr><td colspan="2"><div class="sg-settlement">${r.cleared?(w.notes.join('<br/>')||'코인으로 훈련하고 파츠 레벨을 올려 보세요.'):'실패해도 이용권은 줄지 않아요. 조금 쉬었다가 다시 도전해요.'}<br/>${R.STAGES.find(s=>s.id===r.stage).tip}</div></td></tr>`;
+    if(document.documentElement.classList.contains('ui2')){   // UI v2(docs/46): 별 줄을 큰 별 + 보상 타일로, 제목은 성공·실패 색 리본
+      const top=elResultTable.querySelector('tr:first-child>td');elResult.dataset.win=r.cleared?'1':'0';
+      if(top){top.className='ui2-res-top';top.removeAttribute('style');
+        top.innerHTML=`<div class="ui2-stars">${[0,1,2].map(i=>`<i class="${i<w.stars?'on':''}">★</i>`).join('')}</div>${dn?`<div class="ui2-res-sub">${dn} 난이도${r.cleared?' 성공':' 도전'}</div>`:''}<div class="ui2-res-tiles"><span><img src="./assets/seoho_v1/icons/coin.svg" alt=""/><b>+${w.coins}</b><small>코인</small></span><span><img src="./assets/seoho_v1/icons/gift.svg" alt=""/><b>+${w.gifts}</b><small>보급권</small></span><span><img src="./assets/seoho_v1/icons/pass.svg" alt=""/><b>${r.passes.remaining}</b><small>이용권 남음</small></span></div>`;}
+    }
     for(const activity of w.partActivity||[]){
       const d=R.PARTS[activity.id];if(!d)continue;
       const times=Object.entries(pending.partEffects||{}).filter(([id])=>(R.COMBOS[id]?.skill||id)===d.skill).reduce((n,[,v])=>n+(Number.isFinite(v)?Math.max(0,Math.floor(v)):0),0);

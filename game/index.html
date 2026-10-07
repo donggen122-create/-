@@ -713,6 +713,12 @@
   }
 </style>
 <link rel="stylesheet" href="./src/rework.css" />
+<link rel="stylesheet" href="./src/ui-v2.css" />
+<script>
+  // UI v2 「수호대 작전본부」 미리 보기(2026-10-07, docs/46): 주소에 ?ui=2 켜기 · ?ui=1 끄기 — 이 기기에 기억한다
+  (function () { try { var q = new URLSearchParams(location.search).get('ui'); if (q === '2' || q === '1') localStorage.setItem('seoho_ui', q);
+    if ((q || localStorage.getItem('seoho_ui')) === '2') document.documentElement.classList.add('ui2'); } catch (e) {} })();
+</script>
 </head>
 <body>
 <div id="app">
