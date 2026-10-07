@@ -591,6 +591,13 @@
 .sg-update-foes img:last-child{height:58px;max-width:60px}
 .sg-dialog .sg-update p{color:#fff;margin:6px 0;font-size:14px;line-height:1.5;text-shadow:0 1px 1px #0b3a4666}
 .sg-dialog .sg-update .sg-update-open{display:inline-block;margin-top:4px;padding:4px 12px;border-radius:10px;background:#0b3a46b3;color:#ffe27a;font-weight:800;font-size:14px}
+/* 4장 공지(2026-10-07): 숲·불씨 색, 공지 그림이 있으면 몬스터 줄 대신 그림 */
+.sg-dialog .sg-update.sg-update-ch4{background:linear-gradient(180deg,#5a2a12 0%,#a8441a 50%,#4f6b2a 100%)}
+.sg-dialog .sg-update.sg-update-ch4 h2{text-shadow:0 2px 0 #4a1f0a}
+.sg-dialog .sg-update.sg-update-ch4 .sg-update-open{background:#3a1a08b3}
+.sg-update-art{display:none;width:100%;max-height:200px;object-fit:cover;border-radius:12px;margin:4px 0 8px;box-shadow:0 2px 0 #0003}
+.sg-update.has-art .sg-update-art{display:block}.sg-update.has-art .sg-update-foes{display:none}
+.sg-update-hide{margin-top:8px}.sg-update-hide button{font-size:14px!important;min-height:40px}
 @media(max-width:400px){.sg-update-foes img{height:36px;max-width:42px}.sg-update-foes img:last-child{height:46px;max-width:48px}.sg-dialog .sg-update h2{font-size:22px}}
 /* 2026-09-30 로비 정리(사용자 "텍스트 뭉텅이가 너무 많아, 버튼을 누르면 필요한 정보가 뜨게"): 탭 제목 한 줄 + ? 도움말, 설명 글은 창으로 */
 .sg-titlebar{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin:0 0 16px}

@@ -5515,17 +5515,26 @@ function sgMaybeGuidance(){
   // 업데이트 알림(2026-09-30 사용자 "접속하면 1회 3장이 업데이트 되었다는 메시지, 그 이전에 뜨던 팝업은 지워"): 아이디마다 한 번(이 기기).
   // 예전 안내(파츠 보급 규칙 supply-v3 · 사라진 파츠 복구)는 뺐다. 캐릭터 고르기·첫 파츠·첫 장비 안내는 그대로.
   if(p.testMode)return;   // 밸런스 시험 계정: 업데이트 알림·첫 안내를 띄우지 않는다(전용 로비만)
-  if(once('ch4-update-notice')){sgChapter4Notice(p);return;}
+  // 4장 공지(2026-10-07 사용자 "다시 보지 않기·닫기 버튼"): 닫기 = 다음 접속에 또 뜸(같은 화면에서는 한 번), 다시 보지 않기 = 이 기기에서 그 아이디는 그만
+  const ch4Key=sgStorageKey('ch4-notice-hide');let ch4Hidden=false;try{ch4Hidden=localStorage.getItem(ch4Key)==='1';}catch(e){}
+  if(!ch4Hidden&&!sgShownGuidance.has(ch4Key)){sgShownGuidance.add(ch4Key);sgChapter4Notice(p,ch4Key);return;}
   if(R.pendingPart(p)&&R.selectableParts(p).length&&once('first-part-guide')){sgUI.firstPartDialog();return;}
   if(!p.milestones?.firstGear&&once('first-gear-guide')){sgUI.firstGearDialog();return;}   // 장비가 생겼어요 · 첫 무기 무료(한 번 안내, 장비 탭에도 남음)
 }
-function sgChapter4Notice(p){   // 2026-10-07: 3장 알림 자리를 4장 알림으로(로비 알림은 업데이트 알림 하나, 아이디·기기마다 한 번)
+// 4장 업데이트 공지(2026-10-07): 공지 그림(assets/ui/notice_ch4.jpg, 사용자 Codex)이 있으면 그림을, 없으면 몬스터 6마리를 보여 준다.
+function sgChapter4Notice(p,hideKey){
   const open=R.stageUnlocked(p,'CH16'),img=n=>`<img src="./assets/sprites/t4/${n}.png" alt="">`;
-  sgUI.openDialog(`<div class="sg-update"><span class="sg-update-tag">NEW 업데이트</span><h2>4장 「불타는 숲」</h2>
+  sgUI.openDialog(`<div class="sg-update sg-update-ch4"><span class="sg-update-tag">NEW 업데이트</span><h2>4장 「불타는 숲」 오픈!</h2>
+    <img class="sg-update-art" src="./assets/ui/notice_ch4.jpg" alt="4장 불타는 숲">
     <div class="sg-update-foes">${['en_burner_m','en_saw','en_nutria','en_dozer','en_bulki','boss_calm'].map(img).join('')}</div>
-    <p>새로운 몬스터 5종과 새로운 맵 5곳이 생겼어요!<br>타는 불씨를 끄고 산불 거인을 정화해요.</p>
+    <p>4장 「불타는 숲」이 열렸어요!<br>친구들이 만든 숲 몬스터 5종 · 새 맵 5곳<br>불씨를 끄고 산불 거인을 정화해요.</p>
     <p class="sg-update-open">${open?'지금 바로 4장에 도전할 수 있어요!':'3-5 구정물 대왕을 정화하면 4장이 열려요.'}</p></div>
-    <div class="sg-event-btns"><button class="sg-primary" id="sg-update-go">${open?'4장 보러 가기':'모험 보러 가기'}</button><button data-close>닫기</button></div>`);
+    <div class="sg-event-btns"><button class="sg-primary" id="sg-update-go">${open?'4장 보러 가기':'모험 보러 가기'}</button></div>
+    <div class="sg-event-btns sg-update-hide"><button id="sg-update-never">다시 보지 않기</button><button data-close>닫기</button></div>`);
+  const art=sgUI.dialog.querySelector('.sg-update-art');
+  if(art){art.onload=()=>art.closest('.sg-update')?.classList.add('has-art');art.onerror=()=>art.remove();if(art.complete&&art.naturalWidth)art.onload();}
+  const never=document.getElementById('sg-update-never');
+  if(never)never.onclick=()=>{try{localStorage.setItem(hideKey,'1');}catch(e){}sgUI.dialog.close();};
   const go=document.getElementById('sg-update-go');
   if(go)go.onclick=()=>{sgUI.dialog.close();sgUI.tab='adventure';if(open){sgUI.chapter='4';sgUI.chapterPicked=true;}sgUI.render();};
 }
