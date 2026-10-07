@@ -6,6 +6,7 @@ import argparse, json, os, random, subprocess, time
 from collections import defaultdict
 from pathlib import Path
 from playwright.sync_api import sync_playwright
+from browser import chrome_path, local_url
 
 ROOT = Path(__file__).resolve().parents[3]
 ap = argparse.ArgumentParser()
@@ -22,7 +23,8 @@ ap.add_argument('--out', default=str(ROOT / 'game/tools/qa/out/perf'))
 ap.add_argument('--gpu', action='store_true', help='그림을 GPU 길(소프트웨어 SwiftShader)로 — 캔버스 그리기가 게임 스레드 밖으로 가서 실제 기기에 더 가깝다')
 args = ap.parse_args()
 OUT = Path(args.out); OUT.mkdir(parents=True, exist_ok=True)
-EXE = os.environ.get('CHROME_PATH') or '/opt/pw-browsers/chromium-1194/chrome-linux/chrome'
+EXE = chrome_path()
+local_url(args.url)
 DEVICES = {'tablet': (1180, 820, 2, True), 'phone': (375, 812, 3, True), 'pc': (1280, 720, 1, False)}
 fresh = json.loads(subprocess.check_output(['node', '--input-type=module', '-e', "import {freshProfile} from './game/src/rework-core.js';console.log(JSON.stringify(freshProfile()));"], cwd=ROOT))
 

@@ -8,6 +8,7 @@
 import argparse, json, os, random, subprocess, sys
 from pathlib import Path
 from playwright.sync_api import sync_playwright
+from browser import chrome_path, local_url
 
 ROOT = Path(__file__).resolve().parents[3]
 ap = argparse.ArgumentParser()
@@ -17,9 +18,9 @@ ap.add_argument('--sizes', default='320x568,360x640,375x667,390x844,412x915,667x
 ap.add_argument('--shots', default='adventure,levelup,battle,result')
 args = ap.parse_args()
 from urllib.parse import urlsplit
-BASE = '{0.scheme}://{0.netloc}'.format(urlsplit(args.url))   # --url에 ?ui=2 같은 주소 뒤 글자가 있어도 시험 API는 서버 주소로
+BASE = local_url(args.url)   # Reject production; query strings belong only to the page URL.
 OUT = Path(args.out); OUT.mkdir(parents=True, exist_ok=True)
-EXE = os.environ.get('CHROME_PATH') or ('/opt/pw-browsers/chromium-1194/chrome-linux/chrome' if Path('/opt/pw-browsers/chromium-1194/chrome-linux/chrome').exists() else None)
+EXE = chrome_path()
 fresh = json.loads(subprocess.check_output(['node', '--input-type=module', '-e', "import {freshProfile} from './game/src/rework-core.js';console.log(JSON.stringify(freshProfile()));"], cwd=ROOT))
 
 def super_profile():
@@ -160,6 +161,8 @@ def main():
         if rec.get('_pageErrors'): print('   pageErrors', rec['_pageErrors'][:2])
         for screen, kind, v in issues: print(f'   {screen} {kind}: ' + ' | '.join(v[:4]) + (f' (+{len(v)-4})' if len(v) > 4 else ''))
     print('total issues', total)
+    if total or any(rec.get('_error') or rec.get('_pageErrors') for rec in report.values()):
+        sys.exit(1)
 
 if __name__ == '__main__':
     main()

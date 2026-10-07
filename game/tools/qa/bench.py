@@ -5,6 +5,7 @@
 import argparse, json, random, statistics, subprocess
 from pathlib import Path
 from playwright.sync_api import sync_playwright
+from browser import chrome_path, local_url
 
 ROOT = Path(__file__).resolve().parents[3]
 ap = argparse.ArgumentParser()
@@ -15,7 +16,8 @@ ap.add_argument('--stage', default='CH08')
 ap.add_argument('--label', default='run')
 ap.add_argument('--gear', default='none', choices=['none', 'ranged', 'melee'])
 args = ap.parse_args()
-EXE = '/opt/pw-browsers/chromium-1194/chrome-linux/chrome'
+EXE = chrome_path()
+local_url(args.url)
 DEVICES = {'tablet': (1180, 820, 2, True), 'phone': (375, 812, 3, True), 'pc': (1280, 720, 1, False)}
 fresh = json.loads(subprocess.check_output(['node', '--input-type=module', '-e', "import {freshProfile} from './game/src/rework-core.js';console.log(JSON.stringify(freshProfile()));"], cwd=ROOT))
 

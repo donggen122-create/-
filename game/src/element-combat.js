@@ -340,5 +340,5 @@ export function createElementCombat({ U = 32, getPlayer, getEnemies, getBoss = (
   function draw(ctx, worldToScreen) { drawElementScene(ctx, scene(), worldToScreen, 'air'); }
   function drawGround(ctx, worldToScreen) { drawElementScene(ctx, scene(), worldToScreen, 'ground'); }
   function snapshot() { return { time: clock, shots: shots.length, scheduled: scheduled.length, shotDetails: shots.map(s=>({kind:s.kind,bounces:s.bounces,small:!!s.small,partSplitDone:!!s.partSplitDone})), fieldDetails: fields.map(f=>({kind:f.kind,life:f.life,age:f.age,maxTicks:f.maxTicks,ticks:f.ticks})), fields: fields.length, orbits: orbits.length, mines: mines.length, bees: bees.length, beams: beams.length, effects: effects.length, kinds: [...new Set([...shots, ...fields, ...effects, ...orbits, ...mines, ...bees, ...beams].map(e => e.kind))], shotAngles: shots.map(s => Number(s.angle.toFixed(2))), fieldSpots: fields.map(f => ({ x: Math.round(f.x), y: Math.round(f.y), r: Math.round(f.r) })), ...JSON.parse(JSON.stringify(stats)) }; }
-  return { reset, update, draw, drawGround, snapshot };
+  return { reset, update, draw, drawGround, snapshot, counts: () => ({ shots: shots.length, effects: effects.length, fields: fields.length, scheduled: scheduled.length }) };
 }

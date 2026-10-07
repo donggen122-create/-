@@ -5098,7 +5098,14 @@ function loop(now) {
   const t2 = qaPerf && performance.now();
   updateHud();
   sgHud();
-  if (qaPerf) { const t3 = performance.now(); qaPerf.draw += t2 - t1; qaPerf.hud += t3 - t2; qaPerf.frames++; qaPerf.dts.push(rawMs); qaPerf.ratio = renderQuality.ratio; qaPerf.fx = renderQuality.fx; }
+  if (qaPerf) {
+    const t3 = performance.now(); qaPerf.draw += t2 - t1; qaPerf.hud += t3 - t2; qaPerf.frames++; qaPerf.dts.push(rawMs);
+    qaPerf.ratio = renderQuality.ratio; qaPerf.fx = renderQuality.fx;
+    const ec = sgElements.counts(), counts = { enemies: enemies.length, projectiles: projectiles.length + sgHostileShots.length + sgT4Balls.length + ec.shots,
+      effects: hitFx.length + deathFx.length + blasts.length + ec.effects, texts: floatingTexts.length, fires: sgFires.length, tracks: sgT4Marks.length, fields: ec.fields };
+    for (const [k,v] of Object.entries(counts)) qaPerf.max[k] = Math.max(qaPerf.max[k] || 0, v);
+    if (qaPerf.quality.at(-1)?.level !== renderQuality.level) qaPerf.quality.push({ frame: qaPerf.frames, level: renderQuality.level, ratio: renderQuality.ratio, fx: renderQuality.fx });
+  }
   elPauseBtn.classList.toggle("hidden", !(mode === "playing" || mode === "paused"));
   if (mode === "playing" && (hudLayoutTick = (hudLayoutTick + 1) % 45) === 0) layoutHud();   // 글자 폭이 바뀌어도(성장 24/24 등) 0.75초 안에 다시 맞춘다
   requestAnimationFrame(loop);
@@ -5160,6 +5167,7 @@ window.__debugSim = function (seconds) {
 // QA 전용: 보스 즉시 소환 / 모든 챕터 해금
 window.__debugForceBoss = function () { if (!boss) spawnBoss(); return bossDef.id; };
 window.__debugBossHp = function (pct) { if (boss) boss.hp = boss.hpMax * pct; return boss && boss.hp; };   // 보스 체력 비율 강제(2페이즈 확인용)
+window.__debugTankBoss = function () { if (boss) { boss.hpMax = 2e9; boss.hp = 1e9; } return !!boss; };   // QA only: hold phase 2 for a comparable profiling window.
 window.__debugDecor = function () { return decor.map((d) => ({ x: Math.round(d.x - player.x), y: Math.round(d.y - player.y), sprite: d.sprite, solid: d.solid || 0, opened: d.opened, boss: !!d.bossLitter })); };
 window.__debugBossPattern = function (name) {   // 다음 기술을 이름으로 지정(예: "쓰레기 뿌리기")
   const pat = bossDef.patterns.find((p) => p.name === name);
@@ -5199,13 +5207,18 @@ window.__debugBench = function (simSeconds = 5, drawN = 60, tank = false, ratio 
 };
 // QA 전용: 성능 측정 시작(on=true)·끝(on=false, 결과 돌려줌) — 한 프레임의 계산(sim)·그리기(draw)·HUD 시간(ms)과 프레임 간격
 window.__debugPerf = function (on) {
-  if (on) { qaPerf = { sim: 0, draw: 0, hud: 0, frames: 0, steps: 0, dts: [], ratio: renderQuality.ratio }; return true; }
+  if (on) { qaPerf = { sim: 0, draw: 0, hud: 0, frames: 0, steps: 0, dts: [], max: {}, quality: [], startTime: runTime, ratio: renderQuality.ratio }; return true; }
   const r = qaPerf; qaPerf = null; if (!r) return null;
   const d = [...r.dts].sort((a, b) => a - b), q = (x) => d[Math.min(d.length - 1, Math.floor(d.length * x))] || 0;
   return { frames: r.frames, steps: r.steps, simMs: r.sim / Math.max(1, r.frames), drawMs: r.draw / Math.max(1, r.frames), hudMs: r.hud / Math.max(1, r.frames),
     fps: 1000 / (d.reduce((a, b) => a + b, 0) / Math.max(1, d.length)), p50: q(.5), p95: q(.95), long50: d.filter((x) => x > 50).length, ratio: r.ratio, fx: r.fx,
-    enemies: enemies.length, texts: floatingTexts.length, hitFx: hitFx.length, deathFx: deathFx.length, gems: gems.length };
+    low1: 1000 / (d.slice(Math.floor(d.length * .99)).reduce((a,b)=>a+b,0) / Math.max(1,d.length-Math.floor(d.length*.99))),
+    p99: q(.99), long33: d.filter(x=>x>33).length, max: r.max, quality: r.quality, canvas: { width: ctx.canvas.width, height: ctx.canvas.height, pixels: ctx.canvas.width * ctx.canvas.height },
+    gameSeconds: runTime-r.startTime, mode, enemies: enemies.length, texts: floatingTexts.length, hitFx: hitFx.length, deathFx: deathFx.length, gems: gems.length };
 };
+// Deterministic fixed-tick QA compares gameplay and settlement inputs separately from rendering costs.
+window.__debugOutcome = () => ({ seconds: runTime, kills: killCount, hp: player.hp, hpMax: player.hpMax, litter: runStats.litter, choices: player.sgChoices,
+  bossHp: boss?.hp ?? null, stats: JSON.parse(JSON.stringify(runStats)), elements: sgElements.snapshot(), mode });
 window.__debugFxAudit = function (layers = ["skills", "weapon", "blasts", "hit", "death", "themefx", "text"], nearU = 3, split = ["skills"], step = 3) {
   const cv = ctx.canvas, W = cv.width, H = cv.height, k = W / viewW, keepShake = shake.t;
   shake.t = 0;
