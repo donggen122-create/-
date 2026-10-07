@@ -187,15 +187,15 @@ export function createThemeEffects(sprites) {
     c.restore();
     if (danger) { c.save(); ring(c, x, y, r, "#8a6424", 2); label(c, "!", x, y - r + 15, "#6b4a1a"); c.restore(); }
   }
-  // 4장 번지는 불길: 그을린 재 바닥 위에 불꽃 그림 몇 개가 일렁인다(판정 원·! 표시는 다른 장과 같게)
+  // 4장 번지는 불길: 그을린 재 바닥 위에 불꽃 그림 몇 개가 일렁인다(판정 원·! 표시는 다른 장과 같게). 구역이 커서 불꽃은 옅게(안의 몬스터가 보이게)
   function burn(c, x, y, r, time, remaining = 1, danger = true) {
     c.save(); c.globalAlpha *= fxClamp(remaining * 3);
     c.fillStyle = "rgba(60,40,30,.32)"; circle(c, x, y, r); c.fill();
     for (let i = 0; i < 4; i++) {
       const a = i * FX_TAU / 4 + .4, d = r * (i % 2 ? .45 : .3), k = quiet() ? 1 : .92 + .08 * Math.sin(time * 5 + i * 1.7);
-      stamp(c, "t4_fx_flames", x + Math.cos(a) * d, y + Math.sin(a) * d, r * 1.05 * k, .8);
+      stamp(c, "t4_fx_flames", x + Math.cos(a) * d, y + Math.sin(a) * d, r * .95 * k, .55);
     }
-    stamp(c, "t4_fx_flames", x, y, r * 1.2 * (quiet() ? 1 : .95 + .05 * Math.sin(time * 4)), .85);
+    stamp(c, "t4_fx_flames", x, y, r * 1.1 * (quiet() ? 1 : .95 + .05 * Math.sin(time * 4)), .6);
     c.restore();
     if (danger) { c.save(); ring(c, x, y, r, "#c0502a", 2); label(c, "!", x, y - r + 15, "#9a3a16"); c.restore(); }
   }
