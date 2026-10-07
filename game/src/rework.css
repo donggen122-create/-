@@ -101,6 +101,7 @@
 /* 모험 장(챕터) 이동 막대 + 장마다 색(2026-09-23 밤). 1장 쓰레기 마을 = 새싹 초록·햇살 노랑·흙길, 2장 대기오염 공장 = 매연 회보라·녹 주황·경고 노랑 */
 .sg-adventure{--t-accent:#2f8a5b;--t-accent-dark:#1d6641;--t-soft:#e4f3dc;--t-card:#fffdf3;--t-line:#cfe2bf;--t-path:#d9c79b;--t-ink:#27442f;--t-sun:#f2c14b;--t-board:linear-gradient(180deg,#f3f9e9 0%,#fbf5e3 100%);border-radius:24px;padding:18px 20px 22px;background:var(--t-board);border:1px solid var(--t-line)}
 .sg-adventure.sg-theme-3{--t-accent:#1f8fa8;--t-accent-dark:#136277;--t-soft:#e2f1f0;--t-card:#f8fcfb;--t-line:#b3d6d6;--t-path:#8cc6d2;--t-ink:#1d3a40;--t-sun:#f2c14b;--t-board:linear-gradient(180deg,#e9e3cf 0%,#dcebe2 45%,#cfe6ea 100%)}
+.sg-adventure.sg-theme-4{--t-accent:#3f8a3a;--t-accent-dark:#2a5f27;--t-soft:#eef2e2;--t-card:#fbfaf1;--t-line:#c8d4b0;--t-path:#c79a62;--t-ink:#2e3a22;--t-sun:#f08a3a;--t-board:linear-gradient(180deg,#f3e6d4 0%,#e6eed6 50%,#dbe9cf 100%)}
 .sg-adventure.sg-theme-2{--t-accent:#d5722a;--t-accent-dark:#984c16;--t-soft:#e9e5ee;--t-card:#f6f4f8;--t-line:#bdb5c9;--t-path:#8e879b;--t-ink:#2e2a3a;--t-sun:#efc233;--t-board:linear-gradient(180deg,#d9d4cf 0%,#c9c4d4 55%,#bdb7c8 100%)}
 .sg-adventure .sg-eyebrow{color:var(--t-accent-dark)}
 .sg-adventure h1{color:var(--t-ink)!important}
@@ -561,6 +562,19 @@
 .sg-theme-3 .sg-chapter-art.clean{background:linear-gradient(180deg,#ffffff00,#ffffff33),url('../assets/sprites/t3/card_clean.jpg') center/cover!important}
 .sg-theme-3 .sg-chapter-art>span:last-child{color:#fff!important;text-shadow:0 1px 3px #000c}
 .sg-theme-3 .sg-chapter-art>span:last-child .sg-inline{color:#ffe27a!important;text-shadow:0 1px 3px #000c;text-decoration-color:#ffe27a}
+/* 4장 불타는 숲(2026-10-07): 숲 초록 · 불씨 주황 · 흙길 */
+#guardian-lobby .sg-chip-4{background:#f1f4e6!important;border-color:#c3d2a6!important}.sg-chip-4>b{background:#6b7f3a}
+#guardian-lobby .sg-chip-4.on{border-color:#e0702a!important;box-shadow:0 4px 0 #c3d2a6!important}.sg-chip-4.on>b{background:#e0702a}
+#guardian-lobby .sg-chapter-chip.sg-chip-4.on{background:#f6ead8!important}
+.sg-theme-4 .sg-stage-number{background:#3f8a3a;color:#fff;border:2px solid #f3c27a;border-radius:10px 10px 10px 2px;text-shadow:0 1px 1px #0005}
+#guardian-lobby .sg-theme-4 .sg-stage.cleared{background:#ecf4e1!important}
+.sg-theme-4 .sg-stage:not(:last-child):after{border-top:8px dashed var(--t-path)}
+.sg-theme-4 .sg-stage>img{filter:drop-shadow(0 2px 0 #0002)}
+.sg-theme-4 .sg-stage-gift.done{background:#2a5f27;color:#f3e6d4;border-radius:8px;padding:2px 8px}
+.sg-theme-4 .sg-chapter-art{background:linear-gradient(180deg,#2e3a2210 0%,#2e3a2266 100%),url('../assets/sprites/t4/card_polluted.jpg') center/cover!important}
+.sg-theme-4 .sg-chapter-art.clean{background:linear-gradient(180deg,#ffffff00,#ffffff33),url('../assets/sprites/t4/card_clean.jpg') center/cover!important}
+.sg-theme-4 .sg-chapter-art>span:last-child{color:#fff!important;text-shadow:0 1px 3px #000c}
+.sg-theme-4 .sg-chapter-art>span:last-child .sg-inline{color:#ffe27a!important;text-shadow:0 1px 3px #000c;text-decoration-color:#ffe27a}
 /* 3장이 생겨 폰에서 장 단추 3개가 한 줄에 들어가면서(2026-09-30) 칸이 좁아 이름이 옆 단추로 넘쳤다 → 폰에서는 "N장" 위, 이름·진행 아래로 세로로 */
 @media(max-width:760px){
  #guardian-lobby .sg-chapter-chip{grid-template-columns:1fr;grid-template-rows:auto;justify-items:center;text-align:center;row-gap:3px;padding:6px 4px!important}
@@ -704,5 +718,6 @@
 }
 /* 좁은 태블릿(761~920px): 장 단추는 짧은 이름, 훈련 카드 이름은 한 줄 */
 @media(min-width:761px) and (max-width:920px){.sg-chapter-chip .sg-long{display:none}.sg-chapter-chip .sg-short{display:inline;white-space:nowrap}}
+@media(min-width:761px) and (max-width:920px){#guardian-lobby .sg-chapter-chip{flex:1 1 0;min-width:0;padding:8px 10px!important}.sg-chapter-chip>small{white-space:nowrap}}   /* 2026-10-07: 장 4개가 세로 태블릿(768·820)에서 한 줄에 다 보이게 */
 .sg-training .sg-panel-title .sg-eyebrow{white-space:nowrap}
 .sg-nav>button>span{white-space:nowrap}   /* 아래 메뉴: '파츠 2'의 숫자가 아랫줄로 떨어지지 않게 */

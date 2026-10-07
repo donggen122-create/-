@@ -57,6 +57,23 @@ export const BOSS_PATTERNS_T3 = [
   { name: '거품몬 부르기', kind: 'summonOnly', ranges: ['far', 'mid'], telegraphS: .9, dmg: 0, summon: { id: 'T3_BUBBLE', n: 4 }, phase: 2, hint: '거품몬부터 치워요!' },
   { name: '비닐 고리 뿌리기', kind: 'litter', ranges: ['any'], telegraphS: 1.2, dmg: .8, count: 5, hint: '걸린 물고기를 구하면 대왕이 약해져요!' },
 ];
+// 4-5 산불 거인(2026-10-07, 이미지 에셋/테마4_숲_프롬프트.md · docs/20 4-5): 산불에 탄 바위·숯이 뭉친 거인. 같은 틀(거리 묶음·follow·3번째마다 목표)에 기술만 다르다.
+//  - 근거리: 화염 내려찍기(원, 화나면 한 번 더 크게) · 불길 확산(거인에게서 퍼지는 고리 — 4칸 밖으로)
+//  - 중거리: 바위 몸통 돌진(빨간 길, 화나면 한 번 더) · 불꽃 낙하(떨어질 자리 표시, 떨어진 자리에 4초 불길) · 불길 확산
+//  - 원거리: 불꽃 낙하 · 불 쓰레기 던지기(부채꼴로 날아옴) · 거인 점프(그림자) · 버너몬 부르기(화난 뒤)
+//  - 불씨 뿌리기: 3번째 기술마다 불씨를 흩뿌림 → 5개 끄면 거인이 약해진다(1장 쓰레기 뿌리기와 같은 규칙)
+export const BOSS_PATTERNS_T4 = [
+  { name: '화염 내려찍기', kind: 'slam', ranges: ['close'], telegraphS: 1.0, dmg: 1.8, radiusU: 3.2, knockback: 2.2, hint: '원 밖으로 빠져나가요!',
+    follow: { name: '한 번 더 내려찍기', kind: 'slam', telegraphS: .75, dmg: 1.2, radiusU: 4.6, knockback: 1.5, hint: '한 번 더! 더 멀리!' } },
+  { name: '불길 확산', kind: 'ringOut', ranges: ['close', 'mid'], telegraphS: 1.3, dmg: 1.3, knockback: 2, hint: '거인에게서 멀리 떨어져요!' },
+  { name: '바위 몸통 돌진', kind: 'dashLine', ranges: ['mid'], telegraphS: 1.1, dmg: 1.6, lengthU: 8, hint: '빨간 길에서 옆으로 비켜요!',
+    follow: { name: '다시 돌진', kind: 'dashLine', telegraphS: .8, dmg: 1.6, lengthU: 8, hint: '또 온다! 옆으로!' } },
+  { name: '불꽃 낙하', kind: 'scatter', ranges: ['mid', 'far'], telegraphS: 1.3, dmg: 1.2, count: 7, spreadU: 4, drop: 't4_fx_trashball', field: 'fire', hint: '표시 밖으로! 불길은 밟지 않아요' },
+  { name: '불 쓰레기 던지기', kind: 'volley', ranges: ['far'], telegraphS: .9, dmg: .6, waves: 3, shots: 5, angryWaves: 4, angryShots: 7, spread: .9, speedU: 5.2, hint: '날아오는 불 쓰레기를 옆으로 피해요!' },
+  { name: '거인 점프', kind: 'leap', ranges: ['far'], telegraphS: 1.3, dmg: 1.6, radiusU: 2.6, hint: '그림자에서 벗어나요!' },
+  { name: '버너몬 부르기', kind: 'summonOnly', ranges: ['far', 'mid'], telegraphS: .9, dmg: 0, summon: { id: 'T4_BURNER', n: 4 }, phase: 2, hint: '버너몬부터 치워요!' },
+  { name: '불씨 뿌리기', kind: 'litter', ranges: ['any'], telegraphS: 1.2, dmg: .8, count: 5, hint: '불씨를 끄면 거인이 약해져요!' },
+];
 // 대왕이 몸으로 부딪히면(0.6초마다) 공격력의 이만큼. 난이도의 1초 접촉 피해 상한(contactCap)을 함께 따른다.
 export const BOSS_CONTACT = .5;
 

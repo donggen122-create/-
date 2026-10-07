@@ -1,5 +1,5 @@
 import {SKILLS as ELEMENT_SKILLS,COMBOS,STAGES} from './rework-core.js';
-import {BOSS_PATTERNS,BOSS_PATTERNS_T2,BOSS_PATTERNS_T3} from './boss-patterns.js';
+import {BOSS_PATTERNS,BOSS_PATTERNS_T2,BOSS_PATTERNS_T3,BOSS_PATTERNS_T4} from './boss-patterns.js';
 export const BOSS_HP_MULT=1900;
 export function installReworkContent({SKILLS,PASSIVES,EVOLUTIONS,CHAPTERS,BOSSES}){
   // Historical data remains archived; only the live combat catalog is replaced.
@@ -8,8 +8,8 @@ export function installReworkContent({SKILLS,PASSIVES,EVOLUTIONS,CHAPTERS,BOSSES
   for(const id of Object.keys(EVOLUTIONS))delete EVOLUTIONS[id];
   for(const [id,d] of Object.entries({...ELEMENT_SKILLS,...COMBOS}))SKILLS[id]={...d,maxLevel:3,apply:lv=>({dmgMul:[1,1.3,1.6][lv-1]||1,areaMul:1,intervalMul:1})};
   // 2장(CH06~)은 매연 구역이 모든 단계에 조금씩(themes.js T2_STAGES 값보다 개편판 값이 우선)
-  // 3장(CH11~)은 구정물 웅덩이가 모든 단계에 조금씩(2장과 같은 비율)
-  STAGES.forEach((s,i)=>Object.assign(CHAPTERS[i],{name:s.name,enemyMult:1,density:[1.05,1.10,1.20,1.30,1.40,1.12,1.18,1.26,1.34,1.42,1.16,1.22,1.30,1.38,1.44][i]??1.44,dark:i>=10?.06+.01*(i-10):i>=5?.06+.01*(i-5):i>=3?.07:0}));
+  // 3장(CH11~)은 구정물 웅덩이가 모든 단계에 조금씩(2장과 같은 비율), 4장(CH16~)은 번지는 불길이 조금 더
+  STAGES.forEach((s,i)=>Object.assign(CHAPTERS[i],{name:s.name,enemyMult:1,density:[1.05,1.10,1.20,1.30,1.40,1.12,1.18,1.26,1.34,1.42,1.16,1.22,1.30,1.38,1.44,1.18,1.24,1.32,1.40,1.46][i]??1.46,dark:i>=15?.07+.01*(i-15):i>=10?.06+.01*(i-10):i>=5?.06+.01*(i-5):i>=3?.07:0}));
   // 보스 강화(2026-09-23 저녁 사용자 "보스가 너무 약해"): 전에는 보통에서 4~6초 만에 쓰러졌다(docs/29). 거리별 기술표는 boss-patterns.js.
   const boss=BOSSES.T1_BOSS;boss.hpMult=BOSS_HP_MULT;boss.atkMult=1.25;boss.spdU=1.6;boss.rangePatterns=true;
   boss.patterns=BOSS_PATTERNS.map(p=>({...p}));
@@ -20,4 +20,7 @@ export function installReworkContent({SKILLS,PASSIVES,EVOLUTIONS,CHAPTERS,BOSSES
   // 3-5 구정물 대왕: 기본 체력·공격은 2-5와 같게 두고, 3-5 단계 배율(2-5의 1.5배, rework-core STAGES)로 체력·피해 모두 2-5 대왕의 1.5배(2026-09-30 사용자 "3장 50% 상향")
   const boss3=BOSSES.T3_BOSS;if(boss3){boss3.hpMult=Math.round(BOSS_HP_MULT*1.15);boss3.atkMult=1.35;boss3.spdU=1.5;boss3.rangePatterns=true;boss3.patterns=BOSS_PATTERNS_T3.map(p=>({...p}));
     boss3.diffHp={easy:1.2,normal:2.1,hard:.35};}
+  // 4-5 산불 거인(2026-10-07 시안): 기본 체력·공격은 3-5와 같게 두고 4-5 단계 배율(rework-core STAGES)로 조금 더 세게. 모의 뒤 사용자와 정한다.
+  const boss4=BOSSES.T4_BOSS;if(boss4){boss4.hpMult=Math.round(BOSS_HP_MULT*1.15);boss4.atkMult=1.35;boss4.spdU=1.5;boss4.rangePatterns=true;boss4.patterns=BOSS_PATTERNS_T4.map(p=>({...p}));
+    boss4.diffHp={easy:1.2,normal:2.1,hard:.35};}
 }

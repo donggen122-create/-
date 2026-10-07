@@ -1,4 +1,4 @@
-// Theme presentation only (1장·2장·3장 모양은 SKINS). No damage, random gameplay calls, saves or timers here.
+// Theme presentation only (1장~4장 모양은 SKINS). No damage, random gameplay calls, saves or timers here.
 // All positions/radii use the same world pixels as main.js. Warnings never shrink the hit area.
 const FX_TAU = Math.PI * 2;
 const fxClamp = (n) => Math.max(0, Math.min(1, n));
@@ -12,6 +12,8 @@ export function createThemeEffects(sprites) {
     2: { bit: "t2_fx_smog", drop: "t2_fx_bomb", litter: "t2_prop_valve", minion: "t2_en_dust", smog: "t2_fx_smog", boss: "굴뚝 가스 대왕" },
     // 3장 오염된 하천(2026-09-30): 튀는 조각 = 흙탕물 방울, 떨어지는 것 = 거품 폭탄, 목표 = 비닐 고리에 걸린 물고기, 오염 구역 = 구정물 웅덩이(sludge)
     3: { bit: "t3_fx_cola", drop: "t3_fx_foam", litter: "t3_prop_fish_caught", minion: "t3_en_bubble", smog: "t3_fx_foam", boss: "구정물 대왕", zone: "sludge" },
+    // 4장 불타는 숲(2026-10-07): 튀는 조각 = 불씨, 떨어지는 것 = 불붙은 쓰레기 공, 목표 = 타는 불씨, 오염 구역 = 번지는 불길(burn)
+    4: { bit: "t4_prop_ember", drop: "t4_fx_trashball", litter: "t4_prop_ember", minion: "t4_en_burner_m", smog: "t4_fx_dust", boss: "산불 거인", zone: "burn" },
   };
   // 부채꼴 기술 그림(pat.fx): 불꽃 브레스(2장) · 구정물 파도(3장)
   const CONE_FX = { flame: "t2_fx_flame", wave: "t3_fx_wave" };
@@ -185,8 +187,21 @@ export function createThemeEffects(sprites) {
     c.restore();
     if (danger) { c.save(); ring(c, x, y, r, "#8a6424", 2); label(c, "!", x, y - r + 15, "#6b4a1a"); c.restore(); }
   }
+  // 4장 번지는 불길: 그을린 재 바닥 위에 불꽃 그림 몇 개가 일렁인다(판정 원·! 표시는 다른 장과 같게)
+  function burn(c, x, y, r, time, remaining = 1, danger = true) {
+    c.save(); c.globalAlpha *= fxClamp(remaining * 3);
+    c.fillStyle = "rgba(60,40,30,.32)"; circle(c, x, y, r); c.fill();
+    for (let i = 0; i < 4; i++) {
+      const a = i * FX_TAU / 4 + .4, d = r * (i % 2 ? .45 : .3), k = quiet() ? 1 : .92 + .08 * Math.sin(time * 5 + i * 1.7);
+      stamp(c, "t4_fx_flames", x + Math.cos(a) * d, y + Math.sin(a) * d, r * 1.05 * k, .8);
+    }
+    stamp(c, "t4_fx_flames", x, y, r * 1.2 * (quiet() ? 1 : .95 + .05 * Math.sin(time * 4)), .85);
+    c.restore();
+    if (danger) { c.save(); ring(c, x, y, r, "#c0502a", 2); label(c, "!", x, y - r + 15, "#9a3a16"); c.restore(); }
+  }
   function smog(c, x, y, r, time, remaining = 1, danger = true) {
     if (skin.zone === "sludge") { sludge(c, x, y, r, time, remaining, danger); return; }
+    if (skin.zone === "burn") { burn(c, x, y, r, time, remaining, danger); return; }
     c.save(); const alpha = fxClamp(remaining * 3);
     c.globalAlpha *= alpha;
     circle(c, x, y, r); c.save(); c.clip();
@@ -331,6 +346,11 @@ export function createThemeEffects(sprites) {
     if (b.vfxKind === "foam" || b.vfxKind === "oil") {   // 3장 거품 폭탄 터짐·기름 방울 떨어짐: 그림이 퍼지며 옅어진다
       c.save(); c.globalAlpha = 1 - t;
       const ok = stamp(c, b.vfxKind === "foam" ? "t3_fx_foam" : "t3_fx_oil", x, y, r * 2 * (.6 + .5 * fxEase(t)), 1);
+      c.restore(); if (ok) return;
+    }
+    if (b.vfxKind === "flame" || b.vfxKind === "puff" || b.vfxKind === "slam4") {   // 4장 불 공 터짐 · 불씨 꺼짐 연기 · 불키 내려찍기
+      c.save(); c.globalAlpha = 1 - t;
+      const ok = stamp(c, b.vfxKind === "flame" ? "t4_fx_flames" : b.vfxKind === "puff" ? "t4_fx_puff" : "t4_fx_slam", x, y, r * 2 * (.6 + .5 * fxEase(t)), 1);
       c.restore(); if (ok) return;
     }
     if (b.vfxKind === "splat") {               // 세균 터짐·산성비: 연두색 방울이 튀며 옅어진다

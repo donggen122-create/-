@@ -40,14 +40,15 @@ export const THEMES = [
     ],
   },
   {
+    // 2026-10-07: 학생 숲 몬스터 활동지 바탕(이미지 에셋/테마4_숲_프롬프트.md 단계 구성). 4-5 대왕 지식 카드는 기획팀 학생 문장.
     name: "불타는 숲", boss: "산불 거인",
     stages: ["등산로 입구", "벌목장", "외래종 습격", "산불", "숲의 심장"],
     tips: [
-      "산에서 생긴 쓰레기는 되가져오고, 불씨는 완전히 꺼요.",
+      "산에는 라이터 같은 불 피울 것을 가져가지 않아요. 쓰레기는 되가져와요.",
       "이면지를 쓰면 나무를 덜 베어도 돼요.",
       "키우던 동물을 산이나 강에 놓아주면 안 돼요. 우리 동물의 자리를 빼앗아요.",
       "산불은 대부분 사람의 작은 실수에서 시작돼요.",
-      "나무 한 그루 심기는 지구를 식히는 가장 쉬운 방법이에요.",
+      "산불이 나면 동물들의 터전이 없어져요.",
     ],
   },
   {
@@ -172,6 +173,41 @@ export const T3_STAGES = [
   { mix: ["T3_BUBBLE", "T3_PETRI", "T3_CAN"], elites: [{ id: "T3_NET", atS: 180 }, { id: "T3_NET", atS: 660 }], dark: 0.12, floor: "t3_floor_stream", hint: "유령그물 대장이 팔을 들면 표시된 원 밖으로! 그물에 걸리면 좌우로 흔들어요" },
   { mix: ["T3_BUBBLE", "T3_PETRI", "T3_CAN", "T3_NETMON"], elites: [{ id: "T3_NET", atS: 450 }], dark: 0.15, floor: "t3_floor_bank", hint: "그물몬이 그물 몸을 펼치면 표시된 원 밖으로! 걸리면 좌우로 흔들어요" },
   { mix: ["T3_BUBBLE", "T3_PETRI", "T3_CAN", "T3_NETMON"], elites: [{ id: "T3_NET", atS: 300 }], dark: 0.18, floor: "t3_floor_sewer", boss: "T3_BOSS", hint: "구정물 대왕! 대왕이 뿌린 비닐 고리에서 물고기를 구하면 대왕이 약해져요" },
+];
+
+// ====================== 테마 4 「불타는 숲」 전투 데이터(2026-10-07, 학생 숲 몬스터 활동지 → 이미지 에셋/테마4_숲_프롬프트.md) ======================
+// 그림은 assets.js의 t4_* 스프라이트(game/tools/cut_theme4.py, 그림은 사용자가 Codex로 만듦). 새 행동(main.js sgT4Tick):
+//  flamer(버너몬: 따라오며 머리 불꽃이 작음 → 중간 → 최대로 커지고(클수록 지나간 자리 불길이 넓음), 최대가 되면 2초 뒤 스스로 꺼져 3초 동안 불씨 — 이때 받는 피해 1.5배) ·
+//  spinner(톱니몬: 데굴데굴 따라오다 가까우면 멈춰 빨간 원(예고) → 1초 동안 제자리 회전 공격, 원 밖으로 피함) ·
+//  guarder(뉴트몬: 떼로 둘러싸고, 가끔 이빨을 반짝(예고) → 2초 동안 이빨 방패 — 받는 피해 절반) ·
+//  charger(와르르 불도저: 크고 밀려나지 않음, 빨간 길 예고 → 돌진, 닿으면 밀려남, 지나간 자리 바퀴 자국(느려짐)) ·
+//  thrower(불키: 거리를 두고 불붙은 쓰레기 공 던지기(떨어질 자리 표시) · 가까우면 점프 내려찍기(그림자 예고, 피해 상한) · 쓰러질 때 1초 예고 원 → 펑).
+// cleanse = 정화될 때 바뀌는 모습(학생 원안: 버너몬 → 초록 나뭇잎 · 톱니몬 → 새싹 · 뉴트몬 → 다시 자라는 풀 · 불도저 → 삽에서 솟는 묘목 · 불키 → 되살아난 숲).
+export const T4_ENEMIES = {
+  T4_BURNER:  { name: "버너몬", type: "normal", behavior: "flamer", hpMult: 1.3, atkMult: 1.0, spdU: 2.4, radiusU: 0.42, mass: 1, xp: 3, sprite: "t4_en_burner_m", drawH: 50,
+                frames: { s: "t4_en_burner_s", m: "t4_en_burner_m", l: "t4_en_burner_l", out: "t4_en_burner_out" }, cleanse: "초록 나뭇잎" },
+  T4_SAW:     { name: "톱니몬", type: "normal", behavior: "spinner", hpMult: 1.6, atkMult: 1.0, spdU: 2.6, radiusU: 0.44, mass: 1.3, xp: 3, sprite: "t4_en_saw", drawH: 50,
+                frames: { spin: "t4_en_saw_spin" }, cleanse: "새싹" },
+  T4_NUTRIA:  { name: "뉴트몬", type: "normal", behavior: "guarder", hpMult: 0.8, atkMult: 0.9, spdU: 3.5, radiusU: 0.34, mass: 0.7, xp: 1, sprite: "t4_en_nutria", drawH: 40,
+                frames: { guard: "t4_en_nutria_guard" }, cleanse: "다시 자라는 풀" },
+  T4_BULKI:   { name: "불키", type: "elite", behavior: "thrower", hpMult: 10, atkMult: 1.4, spdU: 2.2, radiusU: 0.75, mass: 4, xp: 20, sprite: "t4_en_bulki", drawH: 96,
+                frames: { throw: "t4_en_bulki_throw", jump: "t4_en_bulki_jump" }, cleanse: "되살아난 숲" },
+  T4_DOZER:   { name: "와르르 불도저", type: "elite", behavior: "charger", hpMult: 16, atkMult: 1.6, spdU: 1.3, radiusU: 0.95, mass: 9, xp: 25, sprite: "t4_en_dozer", drawH: 108, heavy: true,
+                frames: { charge: "t4_en_dozer_charge" }, cleanse: "삽에서 솟는 묘목" },
+};
+// 대왕 기술표는 boss-patterns.js BOSS_PATTERNS_T4(rework-content.js가 넣는다). 체력·공격은 rework-content.js.
+export const T4_BOSS = {
+  id: "T4_BOSS", name: "산불 거인", hpMult: 400, atkMult: 2.0, radiusU: 1.5, spdU: 1.3, restS: 2.0, drawScale: 1.25, phase2At: 0.5,
+  img: { calm: "t4_boss_calm", angry: "t4_boss_angry" }, drawH: 180, patterns: [],
+};
+// CH16~CH20. 목표는 "불씨 끄기"(litter 자리에 불씨 — 옆에 서면 꺼지고 새싹이 돋음), 오염 구역(dark)은 번지는 불길, 안전 구역은 계곡 웅덩이.
+// 바닥: 4-1 숲길, 4-2·4-3 벌목장, 4-4·4-5 그을린 숲.
+export const T4_STAGES = [
+  { mix: ["T4_BURNER"], elites: [], dark: 0.08, floor: "t4_floor_trail", hint: "버너몬 불꽃이 커졌다가 꺼지면 약해져요 · 불씨 옆에 서면 꺼져요" },
+  { mix: ["T4_BURNER", "T4_SAW"], elites: [], dark: 0.1, floor: "t4_floor_logging", hint: "톱니몬 둘레에 빨간 원이 생기면 곧 빙글빙글! 원 밖으로 피해요" },
+  { mix: ["T4_BURNER", "T4_SAW", "T4_NUTRIA"], elites: [{ id: "T4_DOZER", atS: 180 }, { id: "T4_DOZER", atS: 660 }], dark: 0.12, floor: "t4_floor_logging", hint: "와르르 불도저가 빨간 길을 그리면 옆으로 비켜요!" },
+  { mix: ["T4_BURNER", "T4_SAW", "T4_NUTRIA"], elites: [{ id: "T4_BULKI", atS: 150 }, { id: "T4_BULKI", atS: 540 }], dark: 0.15, floor: "t4_floor_burnt", hint: "불키가 던진 불 공이 떨어질 자리와 점프 그림자를 피해요" },
+  { mix: ["T4_BURNER", "T4_SAW", "T4_NUTRIA"], elites: [{ id: "T4_BULKI", atS: 300 }], dark: 0.18, floor: "t4_floor_burnt", boss: "T4_BOSS", hint: "산불 거인! 거인이 뿌린 불씨를 끄면 거인이 약해져요" },
 ];
 
 const DEFAULT_TIP = "우리가 매일 하는 작은 선택이 지구를 바꿔요.";

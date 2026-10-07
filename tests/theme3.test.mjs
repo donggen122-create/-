@@ -6,15 +6,15 @@ import * as R from '../game/src/rework-core.js';
 import {T3_ENEMIES,T3_BOSS,T3_STAGES,THEMES,stageInfo} from '../game/src/themes.js';
 import {BOSS_PATTERNS_T3,pickBossPattern} from '../game/src/boss-patterns.js';
 
-test('fifteen stages: chapter 3 opens after 2-5, 3-5 is a boss stage with the same first-clear bonus',()=>{
- assert.equal(R.STAGES.length,15);assert.deepEqual(R.STAGES.slice(10).map(s=>s.id),['CH11','CH12','CH13','CH14','CH15']);
+test('chapter 3 opens after 2-5, 3-5 is a boss stage with the same first-clear bonus',()=>{
+ assert.ok(R.STAGES.length>=15);   // 4장(CH16~)이 뒤에 붙는다assert.deepEqual(R.STAGES.slice(10).map(s=>s.id),['CH11','CH12','CH13','CH14','CH15']);
  const p=R.freshProfile();for(let i=1;i<=9;i++)p.stages[`CH${String(i).padStart(2,'0')}`]={cleared:true,stars:1};
  assert.equal(R.stageUnlocked(p,'CH11'),false);p.stages.CH10={cleared:true,stars:1};assert.equal(R.stageUnlocked(p,'CH11'),true);assert.equal(R.stageUnlocked(p,'CH12'),false);
  assert.ok(R.isBossStage('CH15')&&!R.isBossStage('CH14'));assert.equal(R.durationFor(p,'CH15'),240);assert.equal(R.durationFor(p,'CH11'),300);
  for(let i=11;i<=14;i++)p.stages[`CH${i}`]={cleared:true,stars:1};
  const r=R.completeRun(p,{stage:'CH15',cleared:true,seconds:300,litter:5,difficulty:'normal'});
  assert.equal(r.reward.gifts,2);assert.ok(r.reward.coins>=260+120+60+30);   // 보급권 1 + 첫 대왕 1, 코인 기본+첫 성공+대왕+목표
- for(const s of R.STAGES.slice(10)){assert.match(s.goal,/물고기/);assert.ok(s.tip&&s.unlock&&s.story,s.id);}
+ for(const s of R.STAGES.slice(10,15)){assert.match(s.goal,/물고기/);assert.ok(s.tip&&s.unlock&&s.story,s.id);}
  // 3장 적(2026-09-30 사용자 "50% 상향" → 저녁 "승률 45%로"): 3-1~3-4는 같은 자리 2장 단계의 체력·공격 3배, 3-5는 공격 3배·체력 1.5배(대왕 체력)
  for(let i=0;i<5;i++){const a=R.STAGES[5+i],b=R.STAGES[10+i],hk=i<4?3:1.5;assert.ok(Math.abs(b.enemyHp-a.enemyHp*hk)<1e-9&&Math.abs(b.enemyAtk-a.enemyAtk*3)<1e-9,b.id);}
  assert.equal(R.stageLabel('CH13'),'3-3');assert.equal(R.hardGate(p,'CH13').chapter,3);assert.equal(R.hardReadiness(p,'CH13').chapter,3);

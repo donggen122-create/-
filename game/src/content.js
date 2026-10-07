@@ -2,7 +2,7 @@
 // 원본 수치는 content.data.js(자동 생성)에 그대로 있고, 여기서는 "어떻게 동작시킬지"만 정한다.
 import { RAW_ENEMIES, RAW_BOSSES, RAW_SKILLS, RAW_PASSIVES, RAW_EVOLUTIONS, RAW_CHAPTERS, RAW_CHARACTERS, RAW_EQUIPMENT } from "./content.data.js";
 
-import { T1_ENEMIES, T1_BOSS, T1_STAGES, T2_ENEMIES, T2_BOSS, T2_STAGES, T3_ENEMIES, T3_BOSS, T3_STAGES } from "./themes.js";
+import { T1_ENEMIES, T1_BOSS, T1_STAGES, T2_ENEMIES, T2_BOSS, T2_STAGES, T3_ENEMIES, T3_BOSS, T3_STAGES, T4_ENEMIES, T4_BOSS, T4_STAGES } from "./themes.js";
 export const U = 32; // 1u = 32px
 
 export const XP_CURVE = (n) => 20 + 6 * n + 0.25 * n * n;                 // docs/06 §4.1
@@ -252,7 +252,7 @@ export const chapterById = (id) => CHAPTERS.find((c) => c.id === id) || CHAPTERS
 
 // ====================== 환경 테마 1 「쓰레기 마을」 덮어쓰기 (themes.js) ======================
 // chapters.csv·enemies.csv·bosses.json은 그대로 두고, CH01~CH05의 적·엘리트·보스·바닥·악취 구역 비율만 테마 표로 바꾼다.
-for (const [id, r] of Object.entries({ ...T1_ENEMIES, ...T2_ENEMIES, ...T3_ENEMIES })) {
+for (const [id, r] of Object.entries({ ...T1_ENEMIES, ...T2_ENEMIES, ...T3_ENEMIES, ...T4_ENEMIES })) {
   ENEMIES[id] = {
     id, name: r.name, behavior: r.behavior, elite: r.type === "elite",
     hpMult: r.hpMult, atkMult: r.atkMult, spdU: r.spdU, radiusU: r.radiusU, mass: r.mass, xp: r.xp, ability: "",
@@ -265,6 +265,7 @@ for (const [id, r] of Object.entries({ ...T1_ENEMIES, ...T2_ENEMIES, ...T3_ENEMI
 BOSSES[T1_BOSS.id] = { ...T1_BOSS, shape: "tree", palette: paletteFor([130, 150, 60]), palette2: paletteFor([200, 90, 60]) };
 BOSSES[T2_BOSS.id] = { ...T2_BOSS, shape: "golem", palette: paletteFor([120, 110, 130]), palette2: paletteFor([200, 90, 60]) };
 BOSSES[T3_BOSS.id] = { ...T3_BOSS, shape: "blob", palette: paletteFor([150, 130, 80]), palette2: paletteFor([200, 90, 60]) };
+BOSSES[T4_BOSS.id] = { ...T4_BOSS, shape: "golem", palette: paletteFor([70, 64, 60]), palette2: paletteFor([200, 90, 60]) };
 T1_STAGES.forEach((s, i) => {
   const ch = CHAPTERS[i];
   if (!ch) return;
@@ -285,6 +286,15 @@ T3_STAGES.forEach((s, i) => {
   const ch = CHAPTERS[10 + i];
   if (!ch) return;
   ch.theme = 3; ch.mix = s.mix; ch.elites = s.elites; ch.dark = s.dark; ch.floor = s.floor; ch.hint = s.hint;
+  ch.groundTint = null; ch.desc = s.hint;
+  if (s.boss) ch.boss = s.boss;
+});
+
+// 테마 4 「불타는 숲」: CH16~CH20
+T4_STAGES.forEach((s, i) => {
+  const ch = CHAPTERS[15 + i];
+  if (!ch) return;
+  ch.theme = 4; ch.mix = s.mix; ch.elites = s.elites; ch.dark = s.dark; ch.floor = s.floor; ch.hint = s.hint;
   ch.groundTint = null; ch.desc = s.hint;
   if (s.boss) ch.boss = s.boss;
 });
