@@ -1,7 +1,13 @@
 import * as R from './rework-core.js';
+import { isUI2, art2, preloadUI2 } from './ui2-art.js';
 const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const entries=o=>Object.entries(o||{}),modern=id=>/^(element_|skill_|part_|combo_|mode_)/.test(id);
-export const icon=(id,cls='')=>`<img class="sg-icon ${cls}" src="./assets/${modern(id)?'elements_v2':'seoho_v1'}/icons/${esc(id)}.svg" alt="" />`;
+const legacyIcon=(id,cls='')=>`<img class="sg-icon ${cls}" src="./assets/${modern(id)?'elements_v2':'seoho_v1'}/icons/${esc(id)}.svg" alt="" />`;
+export const icon2=(name,fallbackSvgId,cls='')=>isUI2()?art2(name,cls):legacyIcon(fallbackSvgId,cls);
+export const icon=(id,cls='')=>{
+  const name={pass:'cur_pass',coin:'cur_coin',gift:'cur_gift'}[id] || (/^element_(fire|water|earth|wind|lightning)$/.test(id)?id.replace('element_','el_'):null);
+  return name?icon2(name,id,cls):legacyIcon(id,cls);
+};
 export const petImage=(id,cls='')=>`<img class="sg-pet ${cls}" src="./assets/seoho_v1/pets/${esc(id)}_idle.png" alt="${esc(R.PETS[id]?.name||id)}" />`;
 const stars=n=>'★'.repeat(Math.max(0,Math.min(3,n)))+'☆'.repeat(Math.max(0,3-n));
 // 스킬·지원품·진화·파츠 아이콘은 사용자 Gemini 그림(assets/sprites/skills)을 그대로 쓴다
@@ -31,7 +37,7 @@ const GEAR_PATHS={helm:'<path d="M4 15a8 8 0 0 1 16 0z"/><rect x="2" y="15" widt
  melee:'<path d="M20 2v3l-9 9 2 2-1.5 1.5-2-2-3 3L5 17l3-3-2-2L7.5 10.5l2 2 9-9z"/>'};
 const gearSvg=key=>`<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">${GEAR_PATHS[key]}</svg>`;
 export const gearIcon=(id,cls='')=>{const it=R.GEAR[id];if(!it)return '';if(GEAR_ART.has(id))return `<span class="sg-gear-icon has-art ${cls}" style="--set:${it.color}"><img src="./assets/sprites/gear/${esc(it.icon)}.png" alt="" loading="lazy" /></span>`;return `<span class="sg-gear-icon ${cls}" style="--set:${it.color}">${gearSvg(it.slot==='weapon'?it.type:it.slot)}</span>`;};
-const slotIcon=s=>`<span class="sg-gear-icon sg-gear-empty">${gearSvg(s==='weapon'?'melee':s)}</span>`;
+const slotIcon=s=>`<span class="sg-gear-icon sg-gear-empty">${ui2()?art2('slot_'+s):gearSvg(s==='weapon'?'melee':s)}</span>`;
 const GEAR_STAT={critPct:'치명타 확률',hpPct:'최대 체력',speedPct:'이동 속도',intervalPct:'공격 간격',atkSpeedPct:'공격 속도',dmgPct:'모든 피해',weaponDmgPct:'기본 무기 피해',weaponRangePct:'기본 무기 사거리',weaponArcPct:'휘두르기 범위',takenPct:'받는 피해',regenPct:'초당 체력 회복',critDmgPct:'치명타 피해',searchRangePct:'스킬이 적 찾는 거리',contactCapPct:'부딪혀 잃는 체력 상한'};
 const pctText=v=>{const x=Math.round(v*1000)/10;return `${x>0?'+':''}${x}%`;};
 const gearStat=(k,v)=>GEAR_STAT[k]?`${GEAR_STAT[k]} ${pctText(k==='intervalPct'?-v:v)}`:'';
@@ -57,9 +63,10 @@ const CHAPTERS=[
  {n:'4',from:15,eyebrow:'CHAPTER 04',name:'불타는 숲',short:'불타는 숲',title:'새싹이 다시 돋는 초록 숲',sub:'버려진 캠핑 쓰레기·벌목·외래종·산불로 숲이 아파요! 우리 학교 친구들이 만든 숲 몬스터를 정화하고 타는 불씨를 꺼요.',art:'t4',pictures:['en_burner_m','en_saw','en_dozer','en_bulki','boss_calm']},
 ];
 const chapterStages=c=>R.STAGES.slice(c.from,c.from+5);
-const ui2=()=>typeof document!=='undefined'&&document.documentElement.classList.contains('ui2');   // UI v2 미리 보기(index.html ?ui=2)
+const ui2=isUI2;   // UI v2 미리 보기(index.html ?ui=2)
 export class GuardianUI {
   constructor(menu,callbacks){
+    preloadUI2();
     this.c=callbacks;this.tab='adventure';this.stage='CH01';this.chapter='1';this.element='fire';this.partFilter='all';this.bookFilter='all';this.bookTab='skills';this.busy=false;
     menu.classList.add('sg-mode');this.root=document.createElement('div');this.root.id='guardian-lobby';menu.append(this.root);
     this.dialog=document.createElement('dialog');this.dialog.className='sg-dialog';document.body.append(this.dialog);
@@ -88,9 +95,9 @@ export class GuardianUI {
     if(!R.stageUnlocked(p,this.stage))this.stage='CH01';
     const pendingPet=R.pendingPet(p),pendingPart=R.pendingPart(p);
     this.markRoot(p);
-    this.root.innerHTML=`<header class="sg-header"><div class="sg-brand">${ui2()?'<img class="sg-ui2-emblem" src="./assets/ui/title_emblem.png" alt=""/>':icon('element_wind')}<span>서호팡팡<small>수호대</small></span></div><div class="sg-wallet"><button data-do="passes" aria-label="이용권 안내">${icon('pass')}<b>${passes?.remaining??'…'}</b><span>${passes?.event?'추석 2배':'이용권'}</span></button><div>${icon('coin')}<b>${p.coins.toLocaleString()}</b><span>코인</span></div><button data-tab="parts" aria-label="파츠 보급과 보급권">${icon('gift')}<b>${p.gifts}</b><span>보급권</span></button></div><button class="sg-account" data-do="account" aria-label="계정과 캐릭터 선택">${ui2()?`<img class="sg-ui2-avatar" src="./assets/ui/title_${p.hero==='minji'?'minji':'hoya'}.png" alt=""/><span>${p.hero==='minji'?'민지':'호야'}<small>${esc(user)}</small></span>`:`${esc(user)} 님`}</button></header>
+    this.root.innerHTML=`<header class="sg-header"><div class="sg-brand">${ui2()?'<img class="sg-ui2-emblem" src="./assets/ui2/emblem.png" alt=""/>':icon('element_wind')}<span>서호팡팡<small>수호대</small></span></div><div class="sg-wallet"><button data-do="passes" aria-label="이용권 안내">${icon('pass')}<b>${passes?.remaining??'…'}</b><span>${passes?.event?'추석 2배':'이용권'}</span></button><div>${icon('coin')}<b>${p.coins.toLocaleString()}</b><span>코인</span></div><button data-tab="parts" aria-label="파츠 보급과 보급권">${icon('gift')}<b>${p.gifts}</b><span>보급권</span></button></div><button class="sg-account" data-do="account" aria-label="계정과 캐릭터 선택">${ui2()?`${art2('fn_settings','sg-account-settings')}<img class="sg-ui2-avatar" src="./assets/ui/title_${p.hero==='minji'?'minji':'hoya'}.png" alt=""/><span>${p.hero==='minji'?'민지':'호야'}<small>${esc(user)}</small></span>`:`${esc(user)} 님`}</button></header>
     <main class="sg-main" aria-live="polite">${this.nextTask(p)}${this[this.tab](p,passes)}</main>
-    <nav class="sg-nav" aria-label="수호대 메뉴">${[['adventure','map','모험'],['training','mode_melee','훈련'],['parts','part_PART_F1','파츠'],['gear','shield','장비'],['friends','heart','친구'],['book','book','도감']].map(([id,im,label])=>`<button data-tab="${id}" class="${this.tab===id?'on':''}" aria-current="${this.tab===id?'page':'false'}">${icon(im)}<span>${label}${id==='parts'&&p.gifts>0?` <b class="sg-count-badge" aria-label="보급권 ${p.gifts}장">${p.gifts}</b>`:''}${id==='gear'&&this.gearAlert(p)?' <b class="sg-count-badge" aria-label="장비 할 일">!</b>':''}${id==='friends'&&pendingPet?' <b class="sg-count-badge" aria-label="친구 고르기">!</b>':''}</span></button>`).join('')}</nav>`;
+    <nav class="sg-nav" aria-label="수호대 메뉴">${[['adventure','map','모험'],['training','mode_melee','훈련'],['parts','part_PART_F1','파츠'],['gear','shield','장비'],['friends','heart','친구'],['book','book','도감']].map(([id,im,label])=>`<button data-tab="${id}" class="${this.tab===id?'on':''}" aria-current="${this.tab===id?'page':'false'}">${icon2('nav_'+id,im)}<span>${label}${id==='parts'&&p.gifts>0?` <b class="sg-count-badge" aria-label="보급권 ${p.gifts}장">${p.gifts}</b>`:''}${id==='gear'&&this.gearAlert(p)?' <b class="sg-count-badge" aria-label="장비 할 일">!</b>':''}${id==='friends'&&pendingPet?' <b class="sg-count-badge" aria-label="친구 고르기">!</b>':''}</span></button>`).join('')}</nav>`;
     if(this.busy)this.root.querySelectorAll('button,select').forEach(b=>b.disabled=true);
   }
   // 밸런스 시험 계정 로비(2026-09-29): 친구 1마리의 등급만 바꾸고 1-5 어려움만 출동. 다른 조작은 서버도 막는다(rework-core action).
@@ -165,7 +172,7 @@ export class GuardianUI {
   lockedChapter(p,c,stages){
     return `${this.titleBar(c.title,'data-info="adventure"','<span class="sg-progress">잠김</span>')}
     <div class="sg-stage-map">${stages.map((s,i)=>`<button class="sg-stage" disabled aria-label="${c.n}-${i+1} ${esc(s.name)} 잠김"><span class="sg-stage-number">${c.n}-${i+1}</span><img src="./assets/sprites/${c.art}/${c.pictures[i]}.png" alt=""/><strong>${esc(s.name)}</strong><span class="sg-stars">앞 장 정화 후</span></button>`).join('')}</div>
-    <div class="sg-departure"><div class="sg-hero-scene sg-chapter-art" aria-hidden="true"></div><div class="sg-brief"><div class="sg-brief-title"><span class="sg-stage-tag">${c.n}장</span><h2>${esc(c.name)}</h2></div><p class="sg-story">${esc(stages[0].story)}</p><div class="sg-goal">${icon('element_wind')} ${esc(stages[0].goal)}</div><button class="sg-primary sg-start" disabled>${Number(c.n)-1}-5 대왕을 정화하면 열려요</button></div></div>`;
+    <div class="sg-departure"><div class="sg-hero-scene sg-chapter-art" aria-hidden="true"></div><div class="sg-brief"><div class="sg-brief-title"><span class="sg-stage-tag">${c.n}장</span><h2>${esc(c.name)}</h2></div><p class="sg-story">${esc(stages[0].story)}</p><div class="sg-goal">${icon2('fn_clean','element_wind')} ${esc(stages[0].goal)}</div><button class="sg-primary sg-start" disabled>${Number(c.n)-1}-5 대왕을 정화하면 열려요</button></div></div>`;
   }
   adventure(p,passes){
     // 처음 로비에 오면 열린 가장 뒤 장을 보여 준다(장 단추를 누르면 그 장). 장을 바꾸면 그 장에서 열린 가장 뒤 단계를 고른다.
@@ -188,7 +195,7 @@ export class GuardianUI {
     <div class="sg-stage-map">${stages.map((s,i)=>{const open=R.stageUnlocked(p,s.id);return `<button class="sg-stage ${s.id===this.stage?'selected':''} ${p.stages[s.id]?.cleared?'cleared':''}" data-stage="${s.id}" ${open?'':'disabled'} aria-label="${chapter.n}-${i+1} ${esc(s.name)}${open?'':' 잠김'}"><span class="sg-stage-number">${chapter.n}-${i+1}</span><img src="./assets/sprites/${chapter.art}/${pictures[i]}.png" alt=""/><strong>${esc(s.name)}</strong><span class="sg-stars">${open?stars(p.stages[s.id]?.stars||0):'앞 단계 성공 후'}</span>${open&&passes?.day&&R.stageGiftLeft(p,s.id,passes.day)<R.STAGE_GIFT_CLEARS_PER_DAY?`<small class="sg-stage-gift ${R.stageGiftLeft(p,s.id,passes.day)?'':'done'}">${R.stageGiftLeft(p,s.id,passes.day)?`오늘 보급권 ${R.stageGiftLeft(p,s.id,passes.day)}번 남음`:'오늘 보급권 끝'}</small>`:''}</button>`;}).join('')}</div>
     <div class="sg-departure"><div class="sg-hero-scene ${chapter.n!=='1'?`sg-chapter-art ${p.stages[stages[4].id]?.cleared?'clean':''}`:''}"><img class="sg-hero" src="./assets/sprites/heroes/${p.hero==='minji'?'minji':'hoya'}_idle_1.png" alt="${p.hero==='hoya'?'호야':'민지'}"/>${p.activePet?petImage(p.activePet):'<span class="sg-future-pet">1-3 성공 후<br/>친구 선택</span>'}<span>${R.heroLocked(p)?'':'<button data-do="hero-dialog" class="sg-inline">캐릭터 고르기</button>'}</span></div><div class="sg-brief">
       <div class="sg-brief-title"><span class="sg-stage-tag">${label}</span><h2>${esc(st.name)}</h2></div><p class="sg-story">${esc(st.story)}</p>
-      <div class="sg-goal">${icon('element_wind')} ${esc(st.goal)}</div>
+      <div class="sg-goal">${icon2('fn_clean','element_wind')} ${esc(st.goal)}</div>
       <div class="sg-brief-row sg-diff-row"><span class="sg-field-label">난이도</span><div class="sg-diff" role="group" aria-label="난이도">${diffs}</div><button class="sg-info-btn" data-info="difficulty" aria-label="난이도 설명">?</button></div><input type="hidden" id="sg-difficulty" value="${difficulty}"/><div id="sg-hard-ready">${this.hardArea(p,st.id,difficulty)}</div>
       ${weapon}
       <div class="sg-brief-row sg-reward-row">${icon('gift')}<span>${left===null?'성공하면 별과 보급권을 받아요':left?`오늘 보급권 <b>${left}번 더</b> 받아요`:'오늘 보급권은 <b>다 받았어요</b>'}</span><button class="sg-info-btn" data-info="reward" aria-label="보상 설명">?</button></div>
@@ -213,7 +220,17 @@ export class GuardianUI {
   }
   training(p){
     const defs={attack:{name:'공격력',icon:'mode_melee',base:30,rate:.03,desc:'기본 무기와 모든 공격 스킬이 강해져요.'},hp:{name:'체력',icon:'heart',base:260,rate:.03,desc:'더 오래 버티며 조합을 완성할 수 있어요.'},speed:{name:'이동 속도',icon:'mode_ranged',base:4.5,rate:.005,desc:'위험한 공격을 피하고 경험치를 모아요.'}};
-    return `${this.titleBar('훈련','data-info="training"')}<div class="sg-grid sg-training">${entries(defs).map(([id,d])=>{const lv=p.training[id],cost=(R.trainingCost||R.upgradeCost)(lv),gain=R.trainingGain(id,lv)*100,value=d.base*(1+gain/100);return `<article class="sg-panel"><div class="sg-panel-title">${icon(d.icon)}<span class="sg-eyebrow">${d.name}</span><b>Lv.${lv} <small>/ ${R.TRAINING_MAX}</small></b></div><h2>${id==='speed'?value.toFixed(2):Math.round(value)}</h2><span class="sg-stat-increase">기본 능력 +${Number(gain.toFixed(1))}%</span><div class="sg-meter" role="meter" aria-label="${d.name} 훈련 단계" aria-valuemin="1" aria-valuemax="${R.TRAINING_MAX}" aria-valuenow="${lv}"><i style="width:${lv/R.TRAINING_MAX*100}%"></i></div><button data-action="train" data-stat="${id}" ${cost!==null&&p.coins>=cost?'':'disabled'}>${cost===null?'최고 단계':`훈련하기 · ${cost} 코인`}</button></article>`;}).join('')}</div>`;
+    return `${this.titleBar('훈련','data-info="training"')}<div class="sg-grid sg-training">${entries(defs).map(([id,d])=>{const lv=p.training[id],cost=(R.trainingCost||R.upgradeCost)(lv),gain=R.trainingGain(id,lv)*100,value=d.base*(1+gain/100);
+      if(ui2())return `<article class="sg-panel sg-training-card" data-training="${id}">
+        <div class="sg-training-stripe" aria-hidden="true"></div>
+        ${art2('stat_'+id,'sg-training-art')}
+        <b class="sg-training-level">Lv.${lv}<small> / ${R.TRAINING_MAX}</small></b>
+        <div class="sg-training-body"><h2 class="sg-training-name">${d.name}</h2>
+          <div class="sg-training-numbers"><strong class="sg-training-value">${id==='speed'?value.toFixed(2):Math.round(value)}</strong><span class="sg-training-bonus" aria-label="기본 능력 +${Number(gain.toFixed(1))}%">+${Number(gain.toFixed(1))}%</span></div>
+          ${cost===null?'<div class="sg-training-max">최고 단계</div>':`<div class="sg-meter" role="meter" aria-label="${d.name} 훈련 단계" aria-valuemin="1" aria-valuemax="${R.TRAINING_MAX}" aria-valuenow="${lv}"><i style="width:${lv/R.TRAINING_MAX*100}%"></i></div>`}
+          <button data-action="train" data-stat="${id}" ${cost!==null&&p.coins>=cost?'':'disabled'}>${cost===null?'최고 단계':`${art2('cur_coin')}훈련하기 · ${cost} 코인`}</button>
+        </div></article>`;
+      return `<article class="sg-panel"><div class="sg-panel-title">${icon(d.icon)}<span class="sg-eyebrow">${d.name}</span><b>Lv.${lv} <small>/ ${R.TRAINING_MAX}</small></b></div><h2>${id==='speed'?value.toFixed(2):Math.round(value)}</h2><span class="sg-stat-increase">기본 능력 +${Number(gain.toFixed(1))}%</span><div class="sg-meter" role="meter" aria-label="${d.name} 훈련 단계" aria-valuemin="1" aria-valuemax="${R.TRAINING_MAX}" aria-valuenow="${lv}"><i style="width:${lv/R.TRAINING_MAX*100}%"></i></div><button data-action="train" data-stat="${id}" ${cost!==null&&p.coins>=cost?'':'disabled'}>${cost===null?'최고 단계':`훈련하기 · ${cost} 코인`}</button></article>`;}).join('')}</div>`;
   }
   elementFilter(current,attribute){return `<div class="sg-element-filter" aria-label="원소별 보기"><button data-${attribute}="all" class="${current==='all'?'on':''}">전체</button>${elements().map(([id,d])=>`<button data-${attribute}="${id}" class="${current===id?'on':''}">${icon(`element_${id}`)}${esc(d.name)}</button>`).join('')}</div>`;}
   parts(p,passes){
@@ -487,7 +504,7 @@ export class GuardianUI {
   // 5개 × 보급권 2장. 해내는 순간 서버가 보급권을 넣는다(받기 버튼 없음). 모험 화면 제목 옆 버튼 → 목록 창.
   missionButton(p,passes){
     const list=R.missionList(p,passes?.day),done=list.filter(m=>m.done),got=done.reduce((n,m)=>n+m.gifts,0);
-    return `<button class="sg-mission-btn ${done.length===list.length?'all':''}" data-do="missions">${icon('gift')}<span><b>오늘의 미션 ${done.length}/${list.length}</b><small>${done.length===list.length?'모두 해냈어요!':`보급권 ${got}/${R.MISSION_GIFTS}장 받음`}</small></span></button>`;
+    return `<button class="sg-mission-btn ${done.length===list.length?'all':''}" data-do="missions">${icon2('fn_mission','gift')}<span><b>오늘의 미션 ${done.length}/${list.length}</b><small>${done.length===list.length?'모두 해냈어요!':`보급권 ${got}/${R.MISSION_GIFTS}장 받음`}</small></span></button>`;
   }
   missionDialog(){
     const {profile:p,passes}=this.state();if(!p)return;const list=R.missionList(p,passes?.day);

@@ -42,7 +42,7 @@ html.ui2 #guardian-lobby[data-chapter="4"]{--ui2-bg:url('../assets/sprites/t4/ca
 html.ui2 #guardian-lobby[data-cleared="1"][data-chapter="2"]{--ui2-bg:url('../assets/sprites/t2/card_clean.jpg')}
 html.ui2 #guardian-lobby[data-cleared="1"][data-chapter="3"]{--ui2-bg:url('../assets/sprites/t3/card_clean.jpg')}
 html.ui2 #guardian-lobby[data-cleared="1"][data-chapter="4"]{--ui2-bg:url('../assets/sprites/t4/card_clean.jpg')}
-html.ui2 #guardian-lobby:not([data-tab="adventure"])::before{filter:blur(16px) saturate(.9) brightness(.42)}
+html.ui2 #guardian-lobby:not([data-tab="adventure"])::before{background-image:url('../assets/ui2/bg_hq.jpg');filter:blur(3px) saturate(.9) brightness(.5)}
 html.ui2 #guardian-lobby :is(h1,h2,h3){font-family:var(--font-ui)!important;font-weight:400!important;letter-spacing:0!important;color:#fff!important;text-shadow:var(--to)!important}
 html.ui2 #guardian-lobby h1{font-size:clamp(26px,3.2vw,38px)!important;line-height:1.15!important}
 html.ui2 #guardian-lobby h2{font-size:24px!important;line-height:1.2!important}
@@ -150,7 +150,7 @@ html.ui2 #guardian-lobby .sg-stage.cleared>img{background:radial-gradient(circle
 html.ui2 #guardian-lobby .sg-stage.selected>img{background:radial-gradient(circle at 50% 38%,#fff3a6,#ffb81e 72%)!important;box-shadow:inset 0 0 0 3px #fff8cc,0 0 0 5px rgba(255,220,74,.55),0 0 28px 6px rgba(255,200,40,.55),0 6px 0 var(--ink)!important;animation:ui2-pulse 1.8s ease-in-out infinite}
 html.ui2 #guardian-lobby .sg-stage:disabled>img{background:radial-gradient(circle,#4a5590,#262d5c 72%)!important;filter:grayscale(1) brightness(.78) contrast(.85)!important;box-shadow:inset 0 0 0 3px rgba(120,130,170,.35),0 6px 0 var(--ink)!important}
 html.ui2 #guardian-lobby .sg-adventure .sg-stage-map .sg-stage:disabled{opacity:1!important}
-html.ui2 #guardian-lobby .sg-adventure .sg-stage-map .sg-stage:disabled .sg-stage-number::before{content:"🔒 "}
+html.ui2 #guardian-lobby .sg-adventure .sg-stage-map .sg-stage:disabled .sg-stage-number::before{content:"";display:inline-block;width:18px;height:18px;vertical-align:middle;background:url('../assets/ui2/icons/fn_lock.png') center/contain no-repeat}
 html.ui2 #guardian-lobby .sg-stage:last-child>img{width:126px!important;height:126px!important}
 html.ui2 #guardian-lobby .sg-stage-number{position:absolute!important;top:-10px!important;left:50%!important;transform:translateX(-50%);z-index:2;font-family:var(--font-ui)!important;font-weight:400!important;font-size:16px!important;color:#fff!important;text-shadow:var(--to-s)!important;
   background:linear-gradient(180deg,var(--red-2),var(--red-3))!important;border:3px solid var(--ink)!important;border-radius:10px!important;padding:0 10px!important;box-shadow:0 3px 0 var(--ink)!important;line-height:1.5}
@@ -430,4 +430,72 @@ html.ui2 #timer{line-height:24px!important}
   html.ui2 #levelup .card .sg-my-part{margin-top:3px!important;padding:2px 8px!important;font-size:11px!important}
   html.ui2 #levelup .lv-ops{margin-top:10px!important}
   html.ui2 #levelup .op{font-size:15px!important;padding:6px 16px!important}
+}
+
+/* UI 2 second pass: generated artwork + strengthening cards. UI 1 is untouched. */
+html.ui2 #guardian-lobby .sg-brand{display:flex!important}
+html.ui2 #guardian-lobby .sg-brand>span{display:none}
+html.ui2 .sg-brand .sg-ui2-emblem{object-fit:contain;background:none;border:0;border-radius:0;box-shadow:none;filter:drop-shadow(0 3px 0 var(--ink))}
+html.ui2 #guardian-lobby .sg-account{position:relative}
+html.ui2 #guardian-lobby .sg-account .sg-account-settings{width:22px;height:22px;flex-shrink:0;order:2}
+html.ui2 .sg-gear-empty>.sg-ui2-icon{width:100%;height:100%;object-fit:contain;filter:grayscale(1) brightness(1.6);opacity:.45}
+html.ui2 :is(#guardian-lobby,.sg-dialog) button>.sg-ui2-icon{object-fit:contain}
+html.ui2 :is(#guardian-lobby,.sg-dialog) .sg-primary .sg-ui2-icon{filter:drop-shadow(0 2px 0 var(--ink))}
+html.ui2 :is(#btn-mute,#btn-sound)>.sg-ui2-icon{width:26px;height:26px;vertical-align:middle;object-fit:contain;pointer-events:none}
+html.ui2 #timer::before{content:"";display:inline-block;width:22px;height:22px;margin-right:4px;vertical-align:middle;background:url('../assets/ui2/icons/fn_time.png') center/contain no-repeat}
+html.ui2 .sg-update h2>.sg-ui2-icon{width:28px;height:28px;vertical-align:middle;margin-right:6px}
+html.ui2 #levelup .card .tag>.sg-ui2-icon{width:22px!important;height:22px!important;margin:0 5px 0 0!important;vertical-align:middle;display:inline-block;grid-row:auto;filter:none}
+html.ui2 #result .ui2-stars i>.sg-ui2-icon{width:48px;height:48px;object-fit:contain}
+html.ui2 #result .ui2-stars i:not(.on)>.sg-ui2-icon{filter:grayscale(1);opacity:.3}
+html.ui2 #guardian-lobby .sg-training{gap:20px;align-items:start}
+html.ui2 #guardian-lobby .sg-training>.sg-training-card{--stat:#ff6b3d;position:relative;overflow:visible;padding:0!important;display:grid;grid-template-rows:108px 1fr;min-width:0}
+html.ui2 #guardian-lobby .sg-training-card[data-training="hp"]{--stat:#ff5d7a}
+html.ui2 #guardian-lobby .sg-training-card[data-training="speed"]{--stat:#39b6ff}
+html.ui2 #guardian-lobby .sg-training-stripe{position:absolute;inset:0 0 auto;height:106px;border-radius:18px 18px 0 0;border-bottom:3px solid var(--ink);background:repeating-linear-gradient(135deg,#ffffff24 0 12px,transparent 12px 26px),var(--stat)}
+html.ui2 #guardian-lobby .sg-training-card>.sg-training-art{position:relative;grid-row:1;grid-column:1;justify-self:center;width:112px!important;height:112px!important;object-fit:contain;margin-top:-9px;filter:drop-shadow(0 5px 0 #151a3d70)}
+html.ui2 #guardian-lobby .sg-training-level{position:absolute;right:10px;top:10px;padding:3px 8px;border:2px solid var(--ink);border-radius:999px;background:var(--nv-6);font:16px var(--font-ui);color:#fff;box-shadow:0 2px 0 #151a3d80}
+html.ui2 #guardian-lobby .sg-training-level small{font-size:12px!important;color:var(--gold-1)!important}
+html.ui2 #guardian-lobby .sg-training-body{position:relative;padding:16px 18px 18px;min-width:0}
+html.ui2 #guardian-lobby .sg-training-body>.sg-training-name{font-size:22px!important;margin:0!important;color:#fff!important;text-shadow:var(--to-s)!important}
+html.ui2 #guardian-lobby .sg-training-numbers{display:flex;align-items:center;gap:12px;margin:9px 0;min-height:48px;flex-wrap:wrap}
+html.ui2 #guardian-lobby .sg-training-value{font:44px/1 var(--font-ui);color:var(--cream-ink);font-weight:400}
+html.ui2 #guardian-lobby .sg-training-bonus{font:16px/1 var(--font-ui);padding:5px 9px;border:2px solid #23801c;border-radius:999px;background:linear-gradient(#d4ff94,#8be24f);color:#18521c;box-shadow:inset 0 2px 0 #ffffffe0}
+html.ui2 #guardian-lobby .sg-training-body>.sg-meter{height:14px!important;border:2px solid var(--ink);border-radius:8px;background:#252c54;overflow:hidden;margin:12px 0 16px!important;box-shadow:inset 0 2px 0 #0005}
+html.ui2 #guardian-lobby .sg-training-body>.sg-meter>i{display:block;height:100%;background:linear-gradient(#d4ff94 0 28%,#8be24f 28%,#43b42e);box-shadow:inset 0 2px 0 #fff8;border-radius:4px}
+html.ui2 #guardian-lobby .sg-training-max{height:24px;text-align:center;font:17px/24px var(--font-ui);color:var(--cream-ink);border:2px solid var(--ink);border-radius:7px;background:linear-gradient(var(--gold-1),var(--gold-3));margin:7px 0 11px}
+html.ui2 #guardian-lobby .sg-training-body>button{display:flex;align-items:center;justify-content:center;gap:7px;width:100%;min-height:48px!important;font:18px var(--font-ui)!important;color:var(--cream-ink)!important;padding:8px 5px!important;background:linear-gradient(var(--gold-1),var(--gold-2) 45%,var(--gold-3))!important;box-shadow:inset 0 3px 0 #fff9,inset 0 -3px 0 var(--gold-4),0 4px 0 var(--ink)!important;white-space:nowrap}
+html.ui2 #guardian-lobby .sg-training-body>button>.sg-icon{width:26px!important;height:26px!important;flex-shrink:0;filter:none}
+html.ui2 #guardian-lobby .sg-training-body>button:disabled{background:linear-gradient(#d7d9df,#aeb3c1)!important;box-shadow:inset 0 2px 0 #fffa,0 3px 0 var(--ink)!important;color:#53586b!important}
+@media(max-width:760px){
+  html.ui2 #guardian-lobby .sg-brand{display:none!important}
+  html.ui2 #guardian-lobby .sg-account .sg-account-settings{position:absolute;right:-4px;bottom:-4px;width:17px;height:17px}
+  html.ui2 #guardian-lobby .sg-wallet .sg-icon{width:46px!important;height:46px!important;left:-19px}
+  html.ui2 #guardian-lobby .sg-nav>button .sg-icon{width:34px!important;height:34px!important}
+  html.ui2 #guardian-lobby .sg-nav>button.on .sg-icon{width:40px!important;height:40px!important}
+  html.ui2 #guardian-lobby[data-tab="training"] .sg-main{padding-top:10px!important}
+  html.ui2 #guardian-lobby[data-tab="training"] .sg-next-task{margin-bottom:8px!important;min-height:38px!important;padding-top:3px!important;padding-bottom:3px!important}
+  html.ui2 #guardian-lobby[data-tab="training"] .sg-titlebar{margin-top:0!important;margin-bottom:10px!important}
+  html.ui2 #guardian-lobby .sg-training{grid-template-columns:1fr;gap:10px;margin-top:0!important}
+  html.ui2 #guardian-lobby .sg-training>.sg-training-card{grid-template-columns:88px minmax(0,1fr);grid-template-rows:auto;min-height:126px;border-radius:16px!important}
+  html.ui2 #guardian-lobby .sg-training-stripe{inset:0 auto 0 0;width:86px;height:auto;border-radius:12px 0 0 12px;border-bottom:0;border-right:3px solid var(--ink)}
+  html.ui2 #guardian-lobby .sg-training-card>.sg-training-art{grid-row:1;grid-column:1;align-self:center;justify-self:center;width:72px!important;height:72px!important;margin:0;transform:translateX(2px)}
+  html.ui2 #guardian-lobby .sg-training-level{top:6px;right:7px;font-size:13px;padding:2px 6px}
+  html.ui2 #guardian-lobby .sg-training-level small{font-size:10px!important}
+  html.ui2 #guardian-lobby .sg-training-body{grid-row:1;grid-column:2;padding:5px 10px 6px}
+  html.ui2 #guardian-lobby .sg-training-body>.sg-training-name{font-size:18px!important;line-height:1.2!important;padding-right:75px}
+  html.ui2 #guardian-lobby .sg-training-numbers{min-height:29px;margin:2px 0;gap:8px;flex-wrap:nowrap}
+  html.ui2 #guardian-lobby .sg-training-value{font-size:32px}
+  html.ui2 #guardian-lobby .sg-training-bonus{font-size:13px;padding:3px 7px}
+  html.ui2 #guardian-lobby .sg-training-body>.sg-meter{height:14px!important;margin:3px 0 4px!important}
+  html.ui2 #guardian-lobby .sg-training-body>button{font-size:14px!important;line-height:1.2!important;min-height:34px!important;padding:3px 4px!important;gap:4px}
+  html.ui2 #guardian-lobby .sg-training-body>button>.sg-icon{width:22px!important;height:22px!important}
+  html.ui2 #guardian-lobby .sg-training-max{font-size:14px;height:20px;line-height:16px;margin:3px 0 6px}
+  html.ui2 #result .ui2-stars i>.sg-ui2-icon{width:38px;height:38px}
+  html.ui2 #guardian-lobby .sg-wallet{gap:4px!important}
+  html.ui2 #guardian-lobby .sg-wallet>:is(div,button){padding:0 6px 0 27px!important;margin-left:14px}
+  html.ui2 #guardian-lobby .sg-wallet b{font-size:14px}
+  html.ui2 #timer::before{width:16px;height:16px;margin-right:3px}
+  html.ui2 #levelup .card{row-gap:2px!important}
+  html.ui2 #levelup .card .tag{display:inline-flex;align-items:center;line-height:16px!important}
+  html.ui2 #levelup .card .tag>.sg-ui2-icon{width:16px!important;height:16px!important;margin-right:4px!important}
 }

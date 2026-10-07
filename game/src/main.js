@@ -1,3 +1,4 @@
+import { isUI2, art2, preloadUI2 } from './ui2-art.js';
 import { U, XP_CURVE, ACCOUNT_XP_PER_RUN, ACCOUNT_LEVEL_COST, GOLD_SHARD_VALUE, gemValue, SKILLS, PASSIVES, ENEMIES, BOSSES, CHAPTERS, chapterById, enemyHp, enemyAtk, bossHp, bossAtk, START_SKILL, ATTACK_SLOTS, PASSIVE_SLOTS } from "./content.js";
 import { loadSave, writeSave, applyRunReward, buyUpgrade, normalizeSave, onSaveWritten } from "./save.js";
 import { cloud } from "./cloud.js";
@@ -66,13 +67,15 @@ const elSound = document.getElementById("btn-sound");   // 시작 화면·로비
 
 function refreshMuteBtn() {
   const icon = isMuted() ? "🔇" : "🔊";
-  elMute.textContent = icon;
-  if (elSound) { elSound.textContent = icon; elSound.title = isMuted() ? "소리 켜기" : "소리 끄기"; }
+  if (isUI2()) { elMute.innerHTML = art2(isMuted() ? "fn_sound_off" : "fn_sound_on"); elMute.setAttribute("aria-label", isMuted() ? "소리 켜기" : "소리 끄기"); }
+  else elMute.textContent = icon;
+  if (elSound) { if (isUI2()) elSound.innerHTML = art2(isMuted() ? "fn_sound_off" : "fn_sound_on"); else elSound.textContent = icon; elSound.title = isMuted() ? "소리 켜기" : "소리 끄기"; }
 }
 function onMuteToggle() { toggleMuted(); refreshMuteBtn(); music.syncMute(); }
 elMute.addEventListener("click", onMuteToggle);
 elSound?.addEventListener("click", onMuteToggle);
 refreshMuteBtn();
+preloadUI2();
 // 메인 테마곡(2026-09-23): 시작 화면·로비에서 반복 재생, 전투 시작하면 멈춤(bgmOff), 전투 뒤 로비로 오면 처음부터(bgmOn(true))
 function bgmOn(restart = false) { if (elSound) elSound.hidden = false; music.play({ restart }); }
 function bgmOff() { if (elSound) elSound.hidden = true; music.stop(); }
@@ -4993,7 +4996,7 @@ function updateHud() {
   setWidth(elXpbar, runCfg.rework && player.sgChoices>=runCfg.cardCap ? "100%" : `${Math.min(100, (player.xp / xpNeedFor(player.lvl)) * 100).toFixed(1)}%`);
   if(!runCfg.rework)setText(elLvl, `Lv.${player.lvl}${player.revives > 0 ? ` 💗${player.revives}` : ""}${player.shield > 1 ? ` 🛡${Math.round(player.shield)}` : ""}`);
   // 제한 시간 모드는 남은 시간, 그 외는 경과 시간
-  setText(elTimer, runCfg.bossPhase ? (runCfg.rework ? `대장 구출 ${formatTime(360-runTime)}` : "👾 보스전!") : runCfg.timeLimitS ? `⏳${formatTime(runCfg.timeLimitS - runTime)}` : formatTime(runTime));
+  setText(elTimer, runCfg.bossPhase ? (runCfg.rework ? `대장 구출 ${formatTime(360-runTime)}` : "👾 보스전!") : runCfg.timeLimitS ? `${isUI2()?'':'⏳'}${formatTime(runCfg.timeLimitS - runTime)}` : formatTime(runTime));
   const extra = runCfg.bossScore ? ` · 점수 ${Math.round(runStats.bossDamage / Math.max(1, chapter.enemyMult)).toLocaleString()}`
     : runCfg.floor ? ` · ${runCfg.floor}층`
     : runCfg.stages ? ` · 원정 ${runCfg.stage}/${runCfg.stages}`
@@ -5524,7 +5527,7 @@ function sgMaybeGuidance(){
 // 4장 업데이트 공지(2026-10-07): 공지 그림(assets/ui/notice_ch4.jpg, 사용자 Codex)이 있으면 그림을, 없으면 몬스터 6마리를 보여 준다.
 function sgChapter4Notice(p,hideKey){
   const open=R.stageUnlocked(p,'CH16'),img=n=>`<img src="./assets/sprites/t4/${n}.png" alt="">`;
-  sgUI.openDialog(`<div class="sg-update sg-update-ch4"><span class="sg-update-tag">NEW 업데이트</span><h2>4장 「불타는 숲」 오픈!</h2>
+  sgUI.openDialog(`<div class="sg-update sg-update-ch4"><span class="sg-update-tag">NEW 업데이트</span><h2>${isUI2()?art2('fn_news'):''}4장 「불타는 숲」 오픈!</h2>
     <img class="sg-update-art" src="./assets/ui/notice_ch4.jpg" alt="4장 불타는 숲">
     <div class="sg-update-foes">${['en_burner_m','en_saw','en_nutria','en_dozer','en_bulki','boss_calm'].map(img).join('')}</div>
     <p>4장 「불타는 숲」이 열렸어요!<br>친구들이 만든 숲 몬스터 5종 · 새 맵 5곳<br>불씨를 끄고 산불 거인을 정화해요.</p>
@@ -5622,9 +5625,9 @@ function sgCardHTML(c){
   if(c.kind==='shield')return `${sgIcon('shield')}<span class="tag">보호</span><h3>방패 충전</h3><p>체력의 12%만큼 보호막을 얻어요. 겹쳐 쌓이지 않아요.</p>`;
   if(c.kind==='evolve'){const d=R.COMBOS[c.id];return `${sgSkillImg(d,'sg-evo-icon')}<span class="tag evo">진화 · ${R.SKILLS[d.skill].name} + ${R.SUPPORTS[d.support].name}</span><h3>${d.name}</h3><p>${d.desc}</p><b>훨씬 크고 강해져요!</b>`;}
   if(c.kind==='support-new'||c.kind==='support-up'){const d=R.SUPPORTS[c.id],lv=player.sgRun.supports[c.id]?.lv||0,pair=Object.values(R.COMBOS).filter(x=>x.support===c.id).map(x=>`${R.SKILLS[x.skill].name}${player.skills[x.skill]?' ✓':''}`).join(' / ');
-    return `${sgSkillImg(d)}<span class="tag">지원품 · ${lv+1}/3단계</span><h3>${d.name}</h3><p>${d.desc}<br/><b>${d.label(lv+1)}</b></p><small>진화 짝<br/><b>${pair}</b></small>`;}
+    return `${sgSkillImg(d)}<span class="tag">${isUI2()&&d.element?sgIcon(`element_${d.element}`):''}지원품 · ${lv+1}/3단계</span><h3>${d.name}</h3><p>${d.desc}<br/><b>${d.label(lv+1)}</b></p><small>진화 짝<br/><b>${pair}</b></small>`;}
   const d=R.SKILLS[c.id],lv=player.skills[c.id]?.lv||0,partners=R.SKILL_PARTNERS[c.id].map(id=>`${R.SUPPORTS[id].name}${player.sgRun.supports[id]?' ✓':''}`).join(' / ');
-  return `${sgSkillImg(d)}<span class="tag">${R.ELEMENTS[d.element].name} · ${lv+1}/${R.RUN_RULES.maxSkillLevel}단계</span><h3>${d.name}</h3><p>${lv?d.levels[lv-1]:d.desc}</p><small>${R.RUN_RULES.maxSkillLevel}단계 + 짝 지원품이면 진화<br/><b>${partners}</b></small>${R.hasPart(sgRunProfile,c.id)?`<small class="sg-on sg-my-part">${sgSkillImg(d)} 내 파츠 · ${R.PARTS['PART_'+c.id].name}</small>`:''}`;
+  return `${sgSkillImg(d)}<span class="tag">${isUI2()?sgIcon(`element_${d.element}`):''}${R.ELEMENTS[d.element].name} · ${lv+1}/${R.RUN_RULES.maxSkillLevel}단계</span><h3>${d.name}</h3><p>${lv?d.levels[lv-1]:d.desc}</p><small>${R.RUN_RULES.maxSkillLevel}단계 + 짝 지원품이면 진화<br/><b>${partners}</b></small>${R.hasPart(sgRunProfile,c.id)?`<small class="sg-on sg-my-part">${sgSkillImg(d)} 내 파츠 · ${R.PARTS['PART_'+c.id].name}</small>`:''}`;
 }
 function sgApplyCard(c){
   const result=R.applyRunCard(player.skills,player.sgRun,c);player.sgChoices++;
@@ -6072,7 +6075,7 @@ async function sgSettle(pending,leaving=false){
     if(document.documentElement.classList.contains('ui2')){   // UI v2(docs/46): 별 줄을 큰 별 + 보상 타일로, 제목은 성공·실패 색 리본
       const top=elResultTable.querySelector('tr:first-child>td');elResult.dataset.win=r.cleared?'1':'0';
       if(top){top.className='ui2-res-top';top.removeAttribute('style');
-        top.innerHTML=`<div class="ui2-stars">${[0,1,2].map(i=>`<i class="${i<w.stars?'on':''}">★</i>`).join('')}</div>${dn?`<div class="ui2-res-sub">${dn} 난이도${r.cleared?' 성공':' 도전'}</div>`:''}<div class="ui2-res-tiles"><span><img src="./assets/seoho_v1/icons/coin.svg" alt=""/><b>+${w.coins}</b><small>코인</small></span><span><img src="./assets/seoho_v1/icons/gift.svg" alt=""/><b>+${w.gifts}</b><small>보급권</small></span><span><img src="./assets/seoho_v1/icons/pass.svg" alt=""/><b>${r.passes.remaining}</b><small>이용권 남음</small></span></div>`;}
+        top.innerHTML=`<div class="ui2-stars">${[0,1,2].map(i=>`<i class="${i<w.stars?'on':''}">${art2('cur_star')}</i>`).join('')}</div>${dn?`<div class="ui2-res-sub">${dn} 난이도${r.cleared?' 성공':' 도전'}</div>`:''}<div class="ui2-res-tiles"><span><img src="./assets/ui2/icons/cur_coin.png" alt=""/><b>+${w.coins}</b><small>코인</small></span><span><img src="./assets/ui2/icons/cur_gift.png" alt=""/><b>+${w.gifts}</b><small>보급권</small></span><span><img src="./assets/ui2/icons/cur_pass.png" alt=""/><b>${r.passes.remaining}</b><small>이용권 남음</small></span></div>`;}
     }
     for(const activity of w.partActivity||[]){
       const d=R.PARTS[activity.id];if(!d)continue;
