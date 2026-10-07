@@ -1,6 +1,6 @@
 # 서호팡팡수호대 — Claude 작업 안내 (모든 PC 공통)
 
-## 2026-10-07 18:2x KST. 4장 「불타는 숲」(CH16~CH20) 실서버 배포 완료 a9797e04 — `docs/45`
+## 2026-10-07 18:2x KST. 4장 「불타는 숲」(CH16~CH20) 실서버 배포 완료 a9797e04, 공지 그림 58e47ab7 — `docs/45`
 - 그림 11장(사용자 Codex) → `cut_theme4.py` → `t4/`. 적 `themes.js T4_*`, 행동 `main.js sgT4Tick`, 거인 `BOSS_PATTERNS_T4`. 단계 배율·어려움 기준은 시안(모의 뒤 사용자와). 로비 공지는 4장 오픈 공지(`sgChapter4Notice`, 다시 보지 않기·닫기, 그림 `assets/ui/notice_ch4.jpg`). 좁은 화면(920px 이하)은 장 단추 2개씩, ‹ › 로 다음 묶음(`chapterBar` sg-page-off).
 
 ## 2026-10-06. 4장 그림 프롬프트 — `이미지 에셋/테마4_숲_프롬프트.md`
