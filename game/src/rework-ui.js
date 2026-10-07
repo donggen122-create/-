@@ -1,5 +1,5 @@
 import * as R from './rework-core.js';
-import { isUI2, art2, preloadUI2 } from './ui2-art.js';
+import { isUI2, art2, preloadUI2, symbol2, skillAsset } from './ui2-art.js';
 const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const entries=o=>Object.entries(o||{}),modern=id=>/^(element_|skill_|part_|combo_|mode_)/.test(id);
 const legacyIcon=(id,cls='')=>`<img class="sg-icon ${cls}" src="./assets/${modern(id)?'elements_v2':'seoho_v1'}/icons/${esc(id)}.svg" alt="" />`;
@@ -10,8 +10,8 @@ export const icon=(id,cls='')=>{
 };
 export const petImage=(id,cls='')=>`<img class="sg-pet ${cls}" src="./assets/seoho_v1/pets/${esc(id)}_idle.png" alt="${esc(R.PETS[id]?.name||id)}" />`;
 const stars=n=>'★'.repeat(Math.max(0,Math.min(3,n)))+'☆'.repeat(Math.max(0,3-n));
-// 스킬·지원품·진화·파츠 아이콘은 사용자 Gemini 그림(assets/sprites/skills)을 그대로 쓴다
-const spriteImg=(d,cls='')=>d?.sprite?`<img class="sg-icon ${cls}" src="./assets/sprites/skills/${esc(d.sprite)}.png" alt="" />`:'';
+// UI 1 uses originals; UI 2 uses copies with uniform transparent padding.
+const spriteImg=(d,cls='')=>d?.sprite?`<img class="sg-icon ${cls}" src="${skillAsset(esc(d.sprite))}" alt="" />`:'';
 const skillIcon=id=>spriteImg(R.SKILLS[id]||R.COMBOS[id])||icon(`skill_${id}`),partIcon=id=>spriteImg(R.PARTS[id])||icon(`part_${id}`),supportIcon=id=>spriteImg(R.SUPPORTS[id]),elementName=id=>R.ELEMENTS[id]?.name||'기본';
 const elements=()=>entries(R.ELEMENTS).filter(([id])=>id!=='neutral');
 const desc=d=>d.desc||d.behavior||'',ingredients=d=>d.ingredients||d.skills||[],partSkill=d=>d.skill||d.skillId;
@@ -167,7 +167,7 @@ export class GuardianUI {
   chapterBar(p,cur){
     const i=CHAPTERS.indexOf(cur),prev=CHAPTERS[i-1],next=CHAPTERS[i+1],page=Math.floor(i/2);
     const state=c=>{const st=chapterStages(c);return R.stageUnlocked(p,st[0].id)?`${st.filter(s=>p.stages[s.id]?.cleared).length} / 5 정화`:`${Number(c.n)-1}-5 정화 후 열림`;};
-    return `<nav class="sg-chapter-bar" aria-label="장 이동"><button class="sg-chapter-arrow" ${prev?`data-chapter="${prev.n}"`:'disabled'} aria-label="이전 장">‹</button><div class="sg-chapter-chips">${CHAPTERS.map((c,k)=>`<button class="sg-chapter-chip sg-chip-${c.n} ${c===cur?'on':''} ${Math.floor(k/2)!==page?'sg-page-off':''}" data-chapter="${c.n}" aria-current="${c===cur?'true':'false'}"><b>${c.n}장</b><span><i class="sg-long">${esc(c.name)}</i><i class="sg-short">${esc(c.short)}</i></span><small>${state(c)}</small></button>`).join('')}</div><button class="sg-chapter-arrow" ${next?`data-chapter="${next.n}"`:'disabled'} aria-label="다음 장">›</button></nav>`;
+    return `<nav class="sg-chapter-bar" aria-label="장 이동"><button class="sg-chapter-arrow" ${prev?`data-chapter="${prev.n}"`:'disabled'} aria-label="이전 장">${symbol2('btn_prev','‹')}</button><div class="sg-chapter-chips">${CHAPTERS.map((c,k)=>`<button class="sg-chapter-chip sg-chip-${c.n} ${c===cur?'on':''} ${Math.floor(k/2)!==page?'sg-page-off':''}" data-chapter="${c.n}" aria-current="${c===cur?'true':'false'}"><b>${c.n}장</b><span><i class="sg-long">${esc(c.name)}</i><i class="sg-short">${esc(c.short)}</i></span><small>${state(c)}</small></button>`).join('')}</div><button class="sg-chapter-arrow" ${next?`data-chapter="${next.n}"`:'disabled'} aria-label="다음 장">${symbol2('btn_next','›')}</button></nav>`;
   }
   lockedChapter(p,c,stages){
     return `${this.titleBar(c.title,'data-info="adventure"','<span class="sg-progress">잠김</span>')}
@@ -196,13 +196,13 @@ export class GuardianUI {
     <div class="sg-departure"><div class="sg-hero-scene ${chapter.n!=='1'?`sg-chapter-art ${p.stages[stages[4].id]?.cleared?'clean':''}`:''}"><img class="sg-hero" src="./assets/sprites/heroes/${p.hero==='minji'?'minji':'hoya'}_idle_1.png" alt="${p.hero==='hoya'?'호야':'민지'}"/>${p.activePet?petImage(p.activePet):'<span class="sg-future-pet">1-3 성공 후<br/>친구 선택</span>'}<span>${R.heroLocked(p)?'':'<button data-do="hero-dialog" class="sg-inline">캐릭터 고르기</button>'}</span></div><div class="sg-brief">
       <div class="sg-brief-title"><span class="sg-stage-tag">${label}</span><h2>${esc(st.name)}</h2></div><p class="sg-story">${esc(st.story)}</p>
       <div class="sg-goal">${icon2('fn_clean','element_wind')} ${esc(st.goal)}</div>
-      <div class="sg-brief-row sg-diff-row"><span class="sg-field-label">난이도</span><div class="sg-diff" role="group" aria-label="난이도">${diffs}</div><button class="sg-info-btn" data-info="difficulty" aria-label="난이도 설명">?</button></div><input type="hidden" id="sg-difficulty" value="${difficulty}"/><div id="sg-hard-ready">${this.hardArea(p,st.id,difficulty)}</div>
+      <div class="sg-brief-row sg-diff-row"><span class="sg-field-label">난이도</span><div class="sg-diff" role="group" aria-label="난이도">${diffs}</div><button class="sg-info-btn" data-info="difficulty" aria-label="난이도 설명">${symbol2('btn_help','?')}</button></div><input type="hidden" id="sg-difficulty" value="${difficulty}"/><div id="sg-hard-ready">${this.hardArea(p,st.id,difficulty)}</div>
       ${weapon}
-      <div class="sg-brief-row sg-reward-row">${icon('gift')}<span>${left===null?'성공하면 별과 보급권을 받아요':left?`오늘 보급권 <b>${left}번 더</b> 받아요`:'오늘 보급권은 <b>다 받았어요</b>'}</span><button class="sg-info-btn" data-info="reward" aria-label="보상 설명">?</button></div>
+      <div class="sg-brief-row sg-reward-row">${icon('gift')}<span>${left===null?'성공하면 별과 보급권을 받아요':left?`오늘 보급권 <b>${left}번 더</b> 받아요`:'오늘 보급권은 <b>다 받았어요</b>'}</span><button class="sg-info-btn" data-info="reward" aria-label="보상 설명">${symbol2('btn_help','?')}</button></div>
       <button id="sg-start" class="sg-primary sg-start" data-do="start" ${passes?.remaining>0?'':'disabled'}>${passes?.remaining===0?'내일 아침 8시에 만나요':'출동하기'} ${icon('arrow')}</button><small class="sg-pass-hint">${duration===180?'첫 성공까지 3분':R.isBossStage(st.id)?'4분 뒤 대장 등장 · 최대 6분':'5분 도전'} · 성공할 때 이용권 1장</small></div></div>`;
   }
   // 2026-09-30 로비 정리(사용자 "텍스트 뭉텅이가 너무 많아, 버튼 클릭하면 필요한 정보가 뜨게"): 탭 제목 한 줄 + ? 도움말 단추. infoAttr = 'data-info="…"' 또는 'data-do="…"'
-  titleBar(title,infoAttr,side=''){return `<div class="sg-titlebar"><h1>${esc(title)}</h1>${infoAttr?`<button class="sg-info-btn" ${infoAttr} aria-label="${esc(title)} 도움말">?</button>`:''}${side?`<div class="sg-titlebar-side">${side}</div>`:''}</div>`;}
+  titleBar(title,infoAttr,side=''){return `<div class="sg-titlebar"><h1>${esc(title)}</h1>${infoAttr?`<button class="sg-info-btn" ${infoAttr} aria-label="${esc(title)} 도움말">${symbol2('btn_help','?')}</button>`:''}${side?`<div class="sg-titlebar-side">${side}</div>`:''}</div>`;}
   // 고른 난이도는 이 화면에 있는 동안 기억한다(단계를 바꿔도). 어려움이 잠긴 단계면 보통으로
   pickDifficulty(p,gate){const want=R.DIFFICULTIES[this.diffPick]?this.diffPick:R.difficultyOf(p);return want==='hard'&&!gate.open?'normal':want;}
   info(key){
@@ -216,7 +216,7 @@ export class GuardianUI {
       book:['도감',`<p><b>한 판의 칸</b> 기본 무기 1개 + 원소 스킬 4칸 + 지원품 4칸.</p><p><b>진화</b> 원소 스킬을 3단계까지 키우고 짝 지원품을 챙기면 다음 선택에 금색 진화 카드가 나와요. 진화하면 그 스킬이 훨씬 크고 강해지고, 지원품은 그대로 남아요. 한 판에 2~3번 진화할 수 있어요.</p><p>기본 무기와 친구는 진화 재료가 아니에요. 카드를 누르면 자세한 효과가 보여요.</p>`],
     };
     const t=T[key];if(!t)return;
-    this.openDialog(`<div class="sg-slot-head"><h2>${esc(t[0])}</h2><button class="sg-x" data-close aria-label="닫기">×</button></div><div class="sg-rules">${t[1]}</div><button class="sg-primary" data-close>확인</button>`);
+    this.openDialog(`<div class="sg-slot-head"><h2>${esc(t[0])}</h2><button class="sg-x" data-close aria-label="닫기">${symbol2('btn_close','×')}</button></div><div class="sg-rules">${t[1]}</div><button class="sg-primary" data-close>확인</button>`);
   }
   training(p){
     const defs={attack:{name:'공격력',icon:'mode_melee',base:30,rate:.03,desc:'기본 무기와 모든 공격 스킬이 강해져요.'},hp:{name:'체력',icon:'heart',base:260,rate:.03,desc:'더 오래 버티며 조합을 완성할 수 있어요.'},speed:{name:'이동 속도',icon:'mode_ranged',base:4.5,rate:.005,desc:'위험한 공격을 피하고 경험치를 모아요.'}};
@@ -240,7 +240,7 @@ export class GuardianUI {
       return `<article class="sg-panel sg-part-card ${on?'sg-equipped':''} ${item?'':'sg-unowned'}" style="--element:${R.ELEMENTS[d.element]?.color||'#4c91ae'}"><button class="sg-part-head" data-detail="${id}" aria-label="${esc(d.name)} 자세히">${partIcon(id)}<span><b>${esc(d.name)}</b><small>${elementName(d.element)} · ${esc(R.SKILLS[sid]?.name)}</small></span>${item?medal(item.copies):''}</button>${item?`<div class="sg-part-stats"><b>Lv.${item.level}</b><span>피해 +${partBonus(item)}%</span><small>${item.copies}개${nx?` · ${nx.name}까지 ${nx.left}개`:' · 최고 등급'}</small></div><div class="sg-part-buttons"><button data-action="${on?'unequip-part':full?'swap-part':'equip-part'}" data-id="${id}">${on?'장착 해제':full?'바꿔 끼우기':'장착'}</button><button data-action="upgrade-part" data-id="${id}" ${cost!==null&&p.coins>=cost?'':'disabled'}>${cost===null?'최고 레벨':`레벨 올리기 · ${cost}`}</button></div>`:'<p class="sg-part-unowned">보급으로 받아요</p>'}</article>`;};
     return `${this.titleBar('파츠','data-info="parts"',`<span class="sg-progress">장착 ${equipped.length} / 3</span>`)}
     ${pending?`<div class="sg-panel sg-first-part"><h2>첫 성공 보상 · 파츠 1개 고르기</h2><div class="sg-first-pick"><select id="sg-first-part" aria-label="첫 파츠">${partOptions(p,true)}</select><button class="sg-primary" data-do="choose-first-part" ${R.selectableParts(p).length?'':'disabled'}>받기</button></div></div>`:''}
-    <div class="sg-equipped-parts">${Array.from({length:3},(_,i)=>{const id=equipped[i],d=R.PARTS[id];return d?`<button data-action="unequip-part" data-id="${id}" title="장착 해제">${partIcon(id)}<span><b>${esc(d.name)}</b><small>Lv.${p.parts[id]?.level||1} · ${gradeName(p.parts[id]?.copies||1)}</small></span><span aria-hidden="true">×</span></button>`:`<div class="sg-empty-slot"><span>＋</span> 빈칸</div>`;}).join('')}</div>
+    <div class="sg-equipped-parts">${Array.from({length:3},(_,i)=>{const id=equipped[i],d=R.PARTS[id];return d?`<button data-action="unequip-part" data-id="${id}" title="장착 해제">${partIcon(id)}<span><b>${esc(d.name)}</b><small>Lv.${p.parts[id]?.level||1} · ${gradeName(p.parts[id]?.copies||1)}</small></span><span aria-hidden="true">${symbol2('btn_close','×')}</span></button>`:`<div class="sg-empty-slot"><span>＋</span> 빈칸</div>`;}).join('')}</div>
     <div class="sg-set-row">${elements().filter(([id])=>(counts[id]||0)>0).map(([id,d])=>`<span class="${(counts[id]||0)>=2?'sg-set-active':''}">${icon(`element_${id}`)} ${esc(d.name)} ${counts[id]}/2${counts[id]>=2?' · 피해 +4%':''}</span>`).join('')}<span class="${rainbow?'sg-set-active':''}">다른 원소 ${distinct}/3${rainbow?' · 체력 +5%':''}</span></div>
     ${this.supply(p,passes)}
     <div class="sg-section-heading"><h2>보관함</h2><small>${ownedKinds(p).length} / 10종</small></div>${this.elementFilter(this.partFilter,'part-filter')}<div class="sg-grid sg-parts-grid">${entries(R.PARTS).filter(([,d])=>this.partFilter==='all'||d.element===this.partFilter).map(card).join('')}</div>`;
@@ -249,7 +249,7 @@ export class GuardianUI {
     const open=!!p.stages.CH01?.cleared,mode=R.drawMode(p);
     const today=passes?.day,buys=R.supplyBuysToday(p,today),max=R.SUPPLY_EXCHANGE_COSTS.length,cost=R.supplyExchangeCost(p,today),done=!!today&&cost===null,canBuy=open&&!!today&&!done&&p.coins>=cost;
     const odds=R.SUPPLY_BUNDLES.map(b=>`${b.qty}개 ${Math.round(b.chance*100)}%`).join(' · ');
-    return `<section class="sg-supply sg-part-supply" data-mode="${mode||'done'}"><div class="sg-gear-bar-supply">${icon('gift')}<span><b>파츠 보급 · 보급권 ${p.gifts}장</b><small>${open?(mode?`10종 중 무작위 · ${odds}`:'모든 파츠가 전설이에요!'):'1-1 첫 성공 후 열려요'}</small></span><button class="sg-info-btn" data-do="supply-help" aria-label="보급 규칙">?</button><button class="sg-primary sg-supply-go" data-do="draw-part" data-mode="${mode||''}" ${open&&p.gifts>0&&mode?'':'disabled'}>보급 받기</button><button class="sg-supply-go5" data-do="draw-part" data-mode="${mode||''}" data-times="5" ${open&&p.gifts>=5&&mode?'':'disabled'}>5번</button></div><div class="sg-exchange">${icon('coin')}<span>코인 ${cost??R.SUPPLY_EXCHANGE_COSTS[max-1]} → 보급권 1장 <small>오늘 ${buys}/${max}</small></span><button data-do="buy-supply" ${canBuy?'':'disabled'}>${done?'오늘 교환 완료':'바꾸기'}</button></div></section>`;
+    return `<section class="sg-supply sg-part-supply" data-mode="${mode||'done'}"><div class="sg-gear-bar-supply">${icon('gift')}<span><b>파츠 보급 · 보급권 ${p.gifts}장</b><small>${open?(mode?`10종 중 무작위 · ${odds}`:'모든 파츠가 전설이에요!'):'1-1 첫 성공 후 열려요'}</small></span><button class="sg-info-btn" data-do="supply-help" aria-label="보급 규칙">${symbol2('btn_help','?')}</button><button class="sg-primary sg-supply-go" data-do="draw-part" data-mode="${mode||''}" ${open&&p.gifts>0&&mode?'':'disabled'}>보급 받기</button><button class="sg-supply-go5" data-do="draw-part" data-mode="${mode||''}" data-times="5" ${open&&p.gifts>=5&&mode?'':'disabled'}>5번</button></div><div class="sg-exchange">${icon('coin')}<span>코인 ${cost??R.SUPPLY_EXCHANGE_COSTS[max-1]} → 보급권 1장 <small>오늘 ${buys}/${max}</small></span><button data-do="buy-supply" ${canBuy?'':'disabled'}>${done?'오늘 교환 완료':'바꾸기'}</button></div></section>`;
   }
   supplyHelp(){
     this.openDialog(`<h2>파츠 보급 규칙</h2><div class="sg-rules"><p><b>보급</b> 보급권 1장으로 10종 중 무작위 파츠를 받아요(전설이 된 파츠는 빼고, 남은 파츠는 모두 같은 확률). 고를 수는 없어요.</p><p><b>개수</b> ${R.SUPPLY_BUNDLES.map(b=>`${b.qty}개 ${Math.round(b.chance*100)}%`).join(' · ')} — 운이 좋으면 한 번에 여러 개!</p><p><b>등급</b> 같은 파츠를 모으면 올라가요.</p>${gradeLadder()}${R.GRADE_NAMES.map((n,i)=>`<p class="sg-grade-row">${`<span class="sg-medal sg-medal-${i}">${n}</span>`} ${gradeAbility(i)}</p>`).join('')}<p><p><b>전설</b> 아주 오래 모아야 해요. 매일 열심히 해도 두 달쯤 걸려요.</p><p><b>보급권 받는 곳</b> 성공 보상(쉬움·보통 1장, 어려움 2장, 같은 단계는 하루 2번 성공까지), 실패 격려(하루 1장까지), 코인 교환(하루 ${R.SUPPLY_EXCHANGE_COSTS.length}번, ${R.SUPPLY_EXCHANGE_COSTS.join(' → ')}코인). 결제·광고는 없어요.</p></div><button class="sg-primary" data-close>확인</button>`);
@@ -263,22 +263,23 @@ export class GuardianUI {
     let skip=false;try{skip=localStorage.getItem('seoho_supply_skip_flip')==='1';}catch(e){}
     let reduce=false;try{reduce=matchMedia('(prefers-reduced-motion: reduce)').matches;}catch(e){}
     const fast=skip||reduce||noBox,g=Math.max(0,Math.min(4,grade|0)),lv=Math.max(0,Math.min(3,level|0));
+    const v2=ui2();
     const pal=g>=4?['#ff6b6b','#ffd166','#06d6a0','#4cc9f0','#b388ff','#ff9ecd']:[SUPPLY_COLORS[g],'#ffd76a','#ffffff',SUPPLY_COLORS[Math.min(4,g+1)]],n=[0,16,28,44][lv];
     const conf=Array.from({length:n},(_,i)=>{const a=Math.random()*Math.PI*2,d=(70+Math.random()*100)*(lv>=3?1.3:1);
       return `<i style="--x:${Math.round(Math.cos(a)*d)}px;--y:${Math.round(Math.sin(a)*d*.8-50)}px;--r:${Math.round(Math.random()*720-360)}deg;--c:${pal[i%pal.length]};--d:${Math.round(Math.random()*140)}ms;--s:${(.6+Math.random()*.7).toFixed(2)}"></i>`;}).join('');
-    this.openDialog(`<div class="sg-sup sg-sup-${box} sg-sup-lv${lv}${g>=4?' sg-sup-legend':''}" data-state="${fast?'party':'drop'}" style="--gc:${SUPPLY_COLORS[g]}"><div class="sg-sup-stage">
+    this.openDialog(`<div class="sg-sup sg-sup-${box}${v2?'':` sg-sup-lv${lv}${g>=4?' sg-sup-legend':''}`}" data-state="${fast?'party':'drop'}" style="--gc:${v2?'#ffffff':SUPPLY_COLORS[g]}"><div class="sg-sup-stage">
       <div class="sg-sup-rays"></div><div class="sg-sup-glow"></div>
-      ${noBox?'':`<button class="sg-sup-box" aria-label="${esc(label)} 상자 열기"><img class="sg-sup-closed" src="${SUPPLY_BOX(box,'closed')}" alt=""/><img class="sg-sup-open" src="${SUPPLY_BOX(box,'open')}" alt=""/>${box==='part'?`<img class="sg-sup-lidimg" src="${SUPPLY_BOX(box,'lid')}" alt=""/>`:''}</button><small class="sg-sup-tap">${esc(label)} 상자 · 누르면 바로 열려요</small>`}
+      ${noBox?'':`<button class="sg-sup-box" aria-label="${esc(label)} 상자 열기"><img class="sg-sup-closed" src="${v2?'./assets/ui2/icons/supply_closed.png':SUPPLY_BOX(box,'closed')}" alt=""/><img class="sg-sup-open" src="${v2?'./assets/ui2/icons/supply_open.png':SUPPLY_BOX(box,'open')}" alt=""/>${box==='part'&&!v2?`<img class="sg-sup-lidimg" src="${SUPPLY_BOX(box,'lid')}" alt=""/>`:''}</button><small class="sg-sup-tap">${esc(label)} 상자 · 누르면 바로 열려요</small>`}
       <div class="sg-sup-flash"></div><div class="sg-sup-card sg-grade-${g}">${front}</div>${banner?`<div class="sg-sup-banner">${esc(banner)}</div>`:''}<div class="sg-sup-confetti">${conf}</div>
     </div><div class="sg-flip-actions">${noBox?'':skip?'<button class="sg-inline" data-do="flip-on">상자 연출 다시 켜기</button>':'<button data-do="flip-skip">건너뛰기</button>'}<button class="sg-primary" data-close>확인</button></div></div>`);
     const root=this.dialog.querySelector('.sg-sup'),timers=[],sfx=k=>{try{this.c.sfx?.(k);}catch(e){}};
     const cheer=()=>{if(lv)sfx(lv>=3?'supGrand':lv>=2?'supBig':'supLuck');};
-    const set=st=>{root.dataset.state=st;};
+    const set=st=>{root.dataset.state=st;if(v2&&st==='party'){root.style.setProperty('--gc',SUPPLY_COLORS[g]);root.classList.add('sg-sup-lv'+lv);if(g>=4)root.classList.add('sg-sup-legend');}};
     const relabel=()=>{const b=this.dialog.querySelector('[data-do="flip-skip"]');if(b&&!b.disabled){b.textContent='다음부터 바로 결과 보기';b.classList.add('sg-inline');}};   // 결과가 나온 뒤에는 '건너뛸' 것이 없다
     const reveal=()=>{set('reveal');sfx('supReveal');timers.push(setTimeout(()=>{set('party');cheer();relabel();},520));};
     const open=()=>{if(root.dataset.state!=='drop')return;timers.forEach(clearTimeout);timers.length=0;set('open');sfx('supOpen');timers.push(setTimeout(reveal,380));};
     const done=()=>{timers.forEach(clearTimeout);timers.length=0;if(root.dataset.state!=='party'){set('party');cheer();}};
-    if(fast){sfx('supReveal');timers.push(setTimeout(cheer,120));}
+    if(fast){set('party');sfx('supReveal');timers.push(setTimeout(cheer,120));}
     else{sfx('supDrop');timers.push(setTimeout(()=>sfx('supShake'),640),setTimeout(open,1250));root.querySelector('.sg-sup-box').onclick=open;}
     this.dialog.addEventListener('close',()=>timers.forEach(clearTimeout),{once:true});
     const remember=v=>{try{if(v)localStorage.setItem('seoho_supply_skip_flip','1');else localStorage.removeItem('seoho_supply_skip_flip');}catch(e){}};
@@ -360,7 +361,7 @@ export class GuardianUI {
       const sp=g>=2?gearSpecialLines(it,g).filter(x=>x.on).map(x=>x.text).join(' · '):`유니크부터 · ${it.special.text[0]}`;
       return `<div class="sg-slot-item ${on?'on':''} ${g<0?'sg-unowned':''} ${ready?'sg-merge-ready':''}" style="--set:${it.color}">${gearIcon(id)}<div class="sg-slot-info"><p class="sg-slot-name"><b>${esc(it.name)}</b>${g>=0?`<span class="sg-medal sg-medal-${g}">${R.GRADE_NAMES[g]}</span>`:'<span class="sg-slot-none">없음</span>'}</p><small>${esc(it.setName)} · ${typeName(it.type)}${g>=0&&!on?` · 끼우면 세트 ${after}/6`:''}</small><small>${esc(gearBase(it,Math.max(0,g)))}</small><small class="sg-gear-special ${g>=2?'on':''}"><b>${esc(it.special.name)}</b> ${esc(sp)}</small>${g>=0?`<div class="sg-gear-progress"><div class="sg-meter"><i style="width:${next?Math.min(100,item.copies/next*100):100}%"></i></div><small>${item.copies}개${next?` / ${next}개면 ${R.GRADE_NAMES[g+1]} 합성`:' · 최고 등급'}</small></div>`:''}</div>
         <div class="sg-slot-acts">${ready?`<button class="sg-primary sg-merge" data-slot-act="merge-gear" data-id="${id}">합성 → ${R.GRADE_NAMES[g+1]}</button>`:''}${g<0?'<small>보급으로 받아요</small>':on?`<span class="sg-on-tag">착용 중</span><button data-slot-act="unequip-gear">빼기</button>`:`<button class="sg-primary" data-slot-act="equip-gear" data-id="${id}">끼우기</button>`}<button class="sg-inline" data-slot-detail="${id}">자세히</button></div></div>`;};
-    this.openDialog(`<div class="sg-slot-dlg"><div class="sg-slot-head">${eq[slot]&&R.GEAR[eq[slot]]?gearIcon(eq[slot]):slotIcon(slot)}<h2>${R.GEAR_SLOT_NAMES[slot]} 칸</h2><button class="sg-x" data-close aria-label="닫기">×</button></div>${slot==='weapon'?'<p class="sg-footnote">끼운 무기가 공격 방식(원거리·근거리)을 정해요.</p>':''}<div class="sg-slot-list">${[`${hero}_ranged_${slot}`,`${hero}_melee_${slot}`].map(row).join('')}</div><p class="sg-footnote">같은 장비를 모으면 [합성]으로 등급이 올라요. 장비는 장비 보급에서 받아요.</p></div>`);
+    this.openDialog(`<div class="sg-slot-dlg"><div class="sg-slot-head">${eq[slot]&&R.GEAR[eq[slot]]?gearIcon(eq[slot]):slotIcon(slot)}<h2>${R.GEAR_SLOT_NAMES[slot]} 칸</h2><button class="sg-x" data-close aria-label="닫기">${symbol2('btn_close','×')}</button></div>${slot==='weapon'?'<p class="sg-footnote">끼운 무기가 공격 방식(원거리·근거리)을 정해요.</p>':''}<div class="sg-slot-list">${[`${hero}_ranged_${slot}`,`${hero}_melee_${slot}`].map(row).join('')}</div><p class="sg-footnote">같은 장비를 모으면 [합성]으로 등급이 올라요. 장비는 장비 보급에서 받아요.</p></div>`);
     this.dialog.querySelectorAll('[data-slot-detail]').forEach(b=>b.onclick=()=>this.gearDetail(b.dataset.slotDetail));
     this.dialog.querySelectorAll('[data-slot-act]').forEach(b=>b.onclick=async()=>{if(this.busy)return;const k=b.dataset.slotAct;this.dialog.close();this.justSlot=slot;await this.perform(k==='unequip-gear'?{kind:k,slot}:{kind:k,id:b.dataset.id});});
   }
@@ -368,7 +369,7 @@ export class GuardianUI {
   gearSetDialog(set){
     const p=this.state().profile,d=R.GEAR_SETS[set];if(!p||!d)return;const n=R.gearBonuses(p).sets[set]||0,eq=p.equippedGear||{};
     const items=R.GEAR_SLOTS.map(sl=>{const id=`${set}_${sl}`,g=R.gearGrade(p,id),on=eq[sl]===id;return `<button class="sg-bag-cell ${g<0?'sg-unowned':''} ${on?'on':''}" data-bag-id="${id}" style="--set:${d.color}">${gearIcon(id)}<small>${R.GEAR_SLOT_NAMES[sl]}</small>${g>=0?`<span class="sg-medal sg-medal-${g}">${R.GRADE_NAMES[g]}</span>`:'<span class="sg-slot-none">없음</span>'}${on?'<i class="sg-bag-on">착용</i>':''}</button>`;}).join('');
-    this.openDialog(`<div class="sg-slot-head"><span class="sg-gear-setdot" style="--set:${d.color}"></span><h2>${esc(d.name)} <small>${typeName(d.type)}</small></h2><button class="sg-x" data-close aria-label="닫기">×</button></div><p>같은 세트를 끼운 개수만큼 효과가 켜져요. 지금 <b>${n}/6</b>.</p><div class="sg-rules sg-gear-rules">${R.GEAR_SET_SIZES.map(k=>`<p class="sg-grade-row ${n>=k?'on':''}"><b class="sg-tier ${n>=k?'on':''}" style="--set:${d.color}">${k}세트</b> ${esc(R.GEAR_SET_TEXT[d.type][k])}${n>=k?' ✓':''}</p>`).join('')}</div><div class="sg-bag-grid sg-bag-6">${items}</div>`);
+    this.openDialog(`<div class="sg-slot-head"><span class="sg-gear-setdot" style="--set:${d.color}"></span><h2>${esc(d.name)} <small>${typeName(d.type)}</small></h2><button class="sg-x" data-close aria-label="닫기">${symbol2('btn_close','×')}</button></div><p>같은 세트를 끼운 개수만큼 효과가 켜져요. 지금 <b>${n}/6</b>.</p><div class="sg-rules sg-gear-rules">${R.GEAR_SET_SIZES.map(k=>`<p class="sg-grade-row ${n>=k?'on':''}"><b class="sg-tier ${n>=k?'on':''}" style="--set:${d.color}">${k}세트</b> ${esc(R.GEAR_SET_TEXT[d.type][k])}${n>=k?' '+symbol2('btn_check','✓'):''}</p>`).join('')}</div><div class="sg-bag-grid sg-bag-6">${items}</div>`);
     this.dialog.classList.add('sg-wide');
     this.dialog.querySelectorAll('[data-bag-id]').forEach(b=>b.onclick=()=>this.gearDetail(b.dataset.bagId));
   }
@@ -376,7 +377,7 @@ export class GuardianUI {
   gearBagDialog(){
     const p=this.state().profile;if(!p)return;const hero=p.hero==='minji'?'minji':'hoya',eq=p.equippedGear||{};
     const cell=id=>{const it=R.GEAR[id],g=R.gearGrade(p,id),on=eq[it.slot]===id,ready=R.gearMergeReady(p,id);return `<button class="sg-bag-cell ${g<0?'sg-unowned':''} ${on?'on':''} ${ready?'sg-merge-ready':''}" data-bag-id="${id}" style="--set:${it.color}">${gearIcon(id)}<small>${esc(it.name)}</small>${g>=0?`<span class="sg-medal sg-medal-${g}">${R.GRADE_NAMES[g]} ${p.gear[id].copies}</span>`:'<span class="sg-slot-none">없음</span>'}${on?'<i class="sg-bag-on">착용</i>':''}${ready?'<i class="sg-bag-ready">합성!</i>':''}</button>`;};
-    this.openDialog(`<div class="sg-slot-head">${icon('gift')}<h2>장비 보관함</h2><button class="sg-x" data-close aria-label="닫기">×</button></div>${[`${hero}_ranged`,`${hero}_melee`].map(set=>`<p class="sg-bag-title" style="--set:${R.GEAR_SETS[set].color}"><b>${esc(R.GEAR_SETS[set].name)}</b> <small>${typeName(R.GEAR_SETS[set].type)}</small></p><div class="sg-bag-grid sg-bag-6">${R.GEAR_SLOTS.map(sl=>cell(`${set}_${sl}`)).join('')}</div>`).join('')}<p class="sg-footnote">장비를 누르면 자세히 보고 끼우거나 합성할 수 있어요. 숫자는 모은 개수예요.</p>`);
+    this.openDialog(`<div class="sg-slot-head">${icon('gift')}<h2>장비 보관함</h2><button class="sg-x" data-close aria-label="닫기">${symbol2('btn_close','×')}</button></div>${[`${hero}_ranged`,`${hero}_melee`].map(set=>`<p class="sg-bag-title" style="--set:${R.GEAR_SETS[set].color}"><b>${esc(R.GEAR_SETS[set].name)}</b> <small>${typeName(R.GEAR_SETS[set].type)}</small></p><div class="sg-bag-grid sg-bag-6">${R.GEAR_SLOTS.map(sl=>cell(`${set}_${sl}`)).join('')}</div>`).join('')}<p class="sg-footnote">장비를 누르면 자세히 보고 끼우거나 합성할 수 있어요. 숫자는 모은 개수예요.</p>`);
     this.dialog.classList.add('sg-wide');
     this.dialog.querySelectorAll('[data-bag-id]').forEach(b=>b.onclick=()=>this.gearDetail(b.dataset.bagId));
   }
@@ -388,22 +389,22 @@ export class GuardianUI {
   }
   hardGateDialog(stageId){
     const p=this.state().profile;if(!p)return;const g=R.hardGate(p,stageId),need=R.HARD_MIN[g.chapter];
-    const rows=g.items.map(it=>it.key==='stage'?`<tr class="${it.ok?'ok':'short'}"><td>${R.stageLabel(stageId)} 성공</td><td><b>${it.ok?'성공':'아직'}</b></td><td>보통 이상</td><td>${it.ok?'✓':'먼저 도전'}</td></tr>`:`<tr class="${it.ok?'ok':'short'}"><td>${esc(it.label)}</td><td><b>${it.now}</b>${esc(it.unit)}</td><td>${it.need}${esc(it.unit)}</td><td>${it.ok?'✓':`${it.need-it.now}${esc(it.unit)} 더`}</td></tr>`).join('');
+    const rows=g.items.map(it=>it.key==='stage'?`<tr class="${it.ok?'ok':'short'}"><td>${R.stageLabel(stageId)} 성공</td><td><b>${it.ok?'성공':'아직'}</b></td><td>보통 이상</td><td>${it.ok?symbol2('btn_check','✓'):'먼저 도전'}</td></tr>`:`<tr class="${it.ok?'ok':'short'}"><td>${esc(it.label)}</td><td><b>${it.now}</b>${esc(it.unit)}</td><td>${it.need}${esc(it.unit)}</td><td>${it.ok?symbol2('btn_check','✓'):`${it.need-it.now}${esc(it.unit)} 더`}</td></tr>`).join('');
     const training=g.items.some(it=>!it.ok&&it.tab==='training');
-    this.openDialog(`<div class="sg-slot-head"><span class="sg-ready-icon">🔒</span><h2>${R.stageLabel(stageId)} 어려움 열기</h2><button class="sg-x" data-close aria-label="닫기">×</button></div><p>어려움은 적이 아주 튼튼해요(체력 5배 넘게). 아래를 모두 채우면 어려움이 열려요. ${g.chapter}장은 공격력·체력 훈련 <b>${need.attack}단계</b>부터예요.</p><table class="sg-ready"><thead><tr><th>조건</th><th>지금</th><th>필요</th><th></th></tr></thead><tbody>${rows}</tbody></table><p class="sg-footnote">열린 뒤에도 권장치(훈련·파츠·장비)를 채울수록 성공하기 쉬워요. 코인은 쉬움·보통에서도 모여요.</p><div class="sg-ready-acts">${training?'<button class="sg-primary" data-gate-train>훈련하러 가기</button>':''}<button data-close>확인</button></div>`);
+    this.openDialog(`<div class="sg-slot-head"><span class="sg-ready-icon">🔒</span><h2>${R.stageLabel(stageId)} 어려움 열기</h2><button class="sg-x" data-close aria-label="닫기">${symbol2('btn_close','×')}</button></div><p>어려움은 적이 아주 튼튼해요(체력 5배 넘게). 아래를 모두 채우면 어려움이 열려요. ${g.chapter}장은 공격력·체력 훈련 <b>${need.attack}단계</b>부터예요.</p><table class="sg-ready"><thead><tr><th>조건</th><th>지금</th><th>필요</th><th></th></tr></thead><tbody>${rows}</tbody></table><p class="sg-footnote">열린 뒤에도 권장치(훈련·파츠·장비)를 채울수록 성공하기 쉬워요. 코인은 쉬움·보통에서도 모여요.</p><div class="sg-ready-acts">${training?'<button class="sg-primary" data-gate-train>훈련하러 가기</button>':''}<button data-close>확인</button></div>`);
     this.dialog.querySelector('[data-gate-train]')?.addEventListener('click',()=>{this.dialog.close();this.tab='training';this.render();});
   }
   // 어려움 준비 표: 항목 · 지금 · 권장 · 남은 것(부족한 것은 주황)
   hardLine(p,stageId){
     const r=R.hardReadiness(p,stageId);
-    return r.ready?`<p class="sg-hard-line ok">✓ ${r.chapter}장 어려움 권장치를 모두 채웠어요!</p>`:`<p class="sg-hard-line">어려움 권장치까지 <b>${r.missing}가지</b> 부족해요 · ${r.items.filter(it=>!it.ok).slice(0,2).map(it=>`${esc(it.label.replace(/\(.*\)/,''))} ${it.now}/${it.need}`).join(' · ')}${r.missing>2?' …':''} <button class="sg-inline" data-do="hard-ready">자세히</button></p>`;
+    return r.ready?`<p class="sg-hard-line ok">${symbol2('btn_check','✓')} ${r.chapter}장 어려움 권장치를 모두 채웠어요!</p>`:`<p class="sg-hard-line">어려움 권장치까지 <b>${r.missing}가지</b> 부족해요 · ${r.items.filter(it=>!it.ok).slice(0,2).map(it=>`${esc(it.label.replace(/\(.*\)/,''))} ${it.now}/${it.need}`).join(' · ')}${r.missing>2?' …':''} <button class="sg-inline" data-do="hard-ready">자세히</button></p>`;
   }
   hardReadyDialog(stageId){
     const p=this.state().profile;if(!p)return;const r=R.hardReadiness(p,stageId);
-    this.openDialog(`<div class="sg-slot-head"><span class="sg-ready-icon">💪</span><h2>${r.chapter}장 어려움 권장치</h2><button class="sg-x" data-close aria-label="닫기">×</button></div><p>어려움은 적 체력이 5배 넘게 튼튼해요. 아래를 채우면 성공이 보여요.</p>${this.hardReadyTable(r)}<button class="sg-primary" data-close>확인</button>`);
+    this.openDialog(`<div class="sg-slot-head"><span class="sg-ready-icon">💪</span><h2>${r.chapter}장 어려움 권장치</h2><button class="sg-x" data-close aria-label="닫기">${symbol2('btn_close','×')}</button></div><p>어려움은 적 체력이 5배 넘게 튼튼해요. 아래를 채우면 성공이 보여요.</p>${this.hardReadyTable(r)}<button class="sg-primary" data-close>확인</button>`);
   }
   hardReadyTable(r){
-    return `<table class="sg-ready"><thead><tr><th>항목</th><th>지금</th><th>권장</th><th></th></tr></thead><tbody>${r.items.map(it=>`<tr class="${it.ok?'ok':'short'}"><td>${esc(it.label)}</td><td><b>${it.now}</b>${esc(it.unit)}</td><td>${it.need}${esc(it.unit)}</td><td>${it.ok?'✓':`${it.need-it.now}${esc(it.unit)} 더`}</td></tr>`).join('')}</tbody></table>`;
+    return `<table class="sg-ready"><thead><tr><th>항목</th><th>지금</th><th>권장</th><th></th></tr></thead><tbody>${r.items.map(it=>`<tr class="${it.ok?'ok':'short'}"><td>${esc(it.label)}</td><td><b>${it.now}</b>${esc(it.unit)}</td><td>${it.need}${esc(it.unit)}</td><td>${it.ok?symbol2('btn_check','✓'):`${it.need-it.now}${esc(it.unit)} 더`}</td></tr>`).join('')}</tbody></table>`;
   }
   // 어려움 실패 뒤(2026-09-24 사용자 "어려움 1번 실패하면 장비·능력치 업그레이드가 부족하다면서 권장치를 구체적으로"): 부족한 것이 있을 때만 뜬다
   hardAdvice(stageId){
@@ -411,7 +412,7 @@ export class GuardianUI {
     let today='';try{today=new Date(Date.now()+9*3600e3-8*3600e3).toISOString().slice(0,10);if(localStorage.getItem('seoho_hard_advice_off')===today)return false;}catch(e){}
     const st=R.STAGES.find(s=>s.id===stageId),label=st?`${R.stageChapter(stageId)}-${(Number(stageId.slice(2))-1)%5+1}`:'';
     const tabs=[...new Set(r.items.filter(it=>!it.ok).map(it=>it.tab))],names={training:'훈련하러 가기',parts:'파츠 보러 가기',gear:'장비 보러 가기'};
-    this.openDialog(`<div class="sg-slot-head"><span class="sg-ready-icon">💪</span><h2>아직 준비가 조금 부족해요</h2><button class="sg-x" data-close aria-label="닫기">×</button></div><p>${label} 어려움은 적이 아주 튼튼해요(체력 5배 넘게). <b>${R.HARD_READY[r.chapter]?`${r.chapter}장 어려움 권장치`:'권장치'}</b>를 채우면 성공이 보여요. 부족한 것 <b>${r.missing}가지</b>.</p>${this.hardReadyTable(r)}<p class="sg-footnote">코인은 쉬움·보통에서도 모여요 → 훈련. 보급권 → 파츠·장비 보급. 유니크는 파츠 같은 것 ${R.GRADE_COPIES[2]}개, 장비 같은 것 ${R.CARD_COPIES[2]}개(모아서 합성)예요.</p><div class="sg-ready-acts">${tabs.map(t=>`<button class="sg-primary" data-ready-tab="${t}">${names[t]}</button>`).join('')}<button data-ready-normal>보통으로 바꾸기</button></div><button class="sg-inline sg-ready-off" data-ready-off>오늘은 그만 보기</button>`);
+    this.openDialog(`<div class="sg-slot-head"><span class="sg-ready-icon">💪</span><h2>아직 준비가 조금 부족해요</h2><button class="sg-x" data-close aria-label="닫기">${symbol2('btn_close','×')}</button></div><p>${label} 어려움은 적이 아주 튼튼해요(체력 5배 넘게). <b>${R.HARD_READY[r.chapter]?`${r.chapter}장 어려움 권장치`:'권장치'}</b>를 채우면 성공이 보여요. 부족한 것 <b>${r.missing}가지</b>.</p>${this.hardReadyTable(r)}<p class="sg-footnote">코인은 쉬움·보통에서도 모여요 → 훈련. 보급권 → 파츠·장비 보급. 유니크는 파츠 같은 것 ${R.GRADE_COPIES[2]}개, 장비 같은 것 ${R.CARD_COPIES[2]}개(모아서 합성)예요.</p><div class="sg-ready-acts">${tabs.map(t=>`<button class="sg-primary" data-ready-tab="${t}">${names[t]}</button>`).join('')}<button data-ready-normal>보통으로 바꾸기</button></div><button class="sg-inline sg-ready-off" data-ready-off>오늘은 그만 보기</button>`);
     this.dialog.querySelectorAll('[data-ready-tab]').forEach(b=>b.onclick=()=>{this.dialog.close();this.tab=b.dataset.readyTab;this.render();});
     this.dialog.querySelector('[data-ready-normal]').onclick=async()=>{if(this.busy)return;this.dialog.close();this.busy=true;try{const q=this.state().profile;await this.c.action({kind:'settings',difficulty:'normal',weaponMode:q.weaponMode,hero:q.hero});this.toast('보통 난이도로 바꿨어요');}catch(e){this.notify('확인해 주세요',e.message);}finally{this.busy=false;this.render();}};
     this.dialog.querySelector('[data-ready-off]').onclick=()=>{try{localStorage.setItem('seoho_hard_advice_off',today);}catch(e){}this.dialog.close();};
@@ -425,7 +426,7 @@ export class GuardianUI {
   gearDetail(id){
     const p=this.state().profile,it=R.GEAR[id];if(!it||!p)return;const g=R.gearGrade(p,id),item=p.gear?.[id],set=R.GEAR_SETS[it.set],eq=p.equippedGear?.[it.slot]===id;
     const grades=R.GRADE_NAMES.map((n,i)=>`<p class="sg-grade-row ${i===g?'on':''}"><span class="sg-medal sg-medal-${i}">${n}</span><span>${esc(gearBase(it,i))}${i===g?' <b>← 지금</b>':''}</span></p>`).join('');
-    const sp=gearSpecialLines(it,g).map(x=>`<p class="${x.on?'on':''}"><b>${x.name}</b> ${esc(x.text)}${x.on?' ✓':''}</p>`).join('');
+    const sp=gearSpecialLines(it,g).map(x=>`<p class="${x.on?'on':''}"><b>${x.name}</b> ${esc(x.text)}${x.on?' '+symbol2('btn_check','✓'):''}</p>`).join('');
     const own=p.hero===it.hero,next=g>=0&&g<R.CARD_COPIES.length-1?R.CARD_COPIES[g+1]:null;
     this.openDialog(`<div class="sg-dialog-icon">${gearIcon(id,'big')}</div><h2>${esc(it.name)}</h2><p>${esc(set.name)} · ${typeName(it.type)} · ${R.GEAR_SLOT_NAMES[it.slot]}${g>=0?` · ${item.copies}개 가짐${next?` (${next}개면 ${R.GRADE_NAMES[g+1]} 합성)`:''}`:' · 아직 없음'}</p>${it.slot==='weapon'?`<p>이 무기를 끼우면 <b>${typeName(it.type)}</b>으로 싸워요.</p>`:''}<div class="sg-rules sg-gear-rules"><h3>등급별 능력</h3>${grades}<h3>특수 효과 · ${esc(it.special.name)}</h3><div class="sg-gear-sp">${sp}</div><h3>${esc(set.name)} 효과(같은 세트 개수)</h3>${R.GEAR_SET_SIZES.map(k=>`<p><b>${k}세트</b> ${esc(R.GEAR_SET_TEXT[it.type][k])}</p>`).join('')}</div><div class="sg-gear-dialog-actions">${g>=0&&own?(R.gearMergeReady(p,id)?`<button class="sg-primary" data-gear-act="merge-gear">합성 → ${R.GRADE_NAMES[g+1]}</button>`:'')+(eq?`<button data-gear-act="unequip-gear">빼기</button>`:`<button class="sg-primary" data-gear-act="equip-gear">끼우기</button>`):''}<button data-close>닫기</button></div>`);
     this.dialog.querySelectorAll('[data-gear-act]').forEach(b=>b.onclick=async()=>{if(this.busy)return;this.dialog.close();const k=b.dataset.gearAct;await this.perform(k==='unequip-gear'?{kind:k,slot:it.slot}:{kind:k,id});});
@@ -486,7 +487,7 @@ export class GuardianUI {
   petDetail(id){
     const p=this.state().profile,d=R.PETS[id];if(!d||!p)return;const c=R.petCopies(p,id),g=R.petGrade(p,id),on=p.activePet===id;
     const grades=R.GRADE_NAMES.map((n,i)=>`<p class="sg-grade-row ${i===g?'on':''}"><span class="sg-medal sg-medal-${i}">${n}</span><span>${R.CARD_COPIES[i]}장 · ${esc(R.petBuffText(id,i))}</span></p>`).join('');
-    const sp=['유니크','에픽','전설'].map((n,i)=>`<p class="${g>=i+2?'on':''}"><b>${g>=i+2?'✓ ':''}${n}</b> ${esc(d.special.text[i])}</p>`).join('');
+    const sp=['유니크','에픽','전설'].map((n,i)=>`<p class="${g>=i+2?'on':''}"><b>${g>=i+2?symbol2('btn_check','✓')+' ':''}${n}</b> ${esc(d.special.text[i])}</p>`).join('');
     this.openDialog(`<div class="sg-dialog-icon">${petImage(id,'sg-pet-big')}</div><h2>${esc(d.name)}</h2><p>${d.no} ${esc(d.role)} · ${c?`카드 ${c}장${R.nextCardAt(c)?` (${R.nextCardAt(c)}장이면 ${R.GRADE_NAMES[R.cardGrade(R.nextCardAt(c))]})`:''}`:'아직 못 만났어요 · 친구 보급에서 만나요'}</p><div class="sg-rules sg-gear-rules"><h3>등급별 버프(함께 출동할 때)</h3>${grades}<h3>특수 능력 · ${esc(d.special.name)}</h3><div class="sg-gear-sp">${sp}</div></div><div class="sg-gear-dialog-actions">${c&&!on?`<button class="sg-primary" data-pet-go="${id}">함께 출동하기</button>`:''}<button data-close>닫기</button></div>`);
     this.dialog.querySelector('[data-pet-go]')?.addEventListener('click',async()=>{if(this.busy)return;this.dialog.close();await this.perform({kind:'pet',id});});
   }
@@ -508,7 +509,7 @@ export class GuardianUI {
   }
   missionDialog(){
     const {profile:p,passes}=this.state();if(!p)return;const list=R.missionList(p,passes?.day);
-    this.openDialog(`<h2>오늘의 미션</h2><p class="sg-mission-intro">해내면 바로 보급권! 다 하면 하루 <b>${R.MISSION_GIFTS}장</b>. 아침 8시에 새로 시작해요.</p><div class="sg-missions">${list.map(m=>`<div class="sg-mission ${m.done?'done':''}"><span class="sg-mission-check" aria-hidden="true">${m.done?'✓':''}</span><span class="sg-mission-text"><b>${esc(m.name)}</b>${m.hint?`<small>${esc(m.hint)}</small>`:''}<span class="sg-mission-bar"><i style="width:${Math.round(m.now/m.target*100)}%"></i></span></span><em>${m.done?'받았어요':`${m.now}/${m.target}`}<small>보급권 +${m.gifts}</small></em></div>`).join('')}</div><p class="sg-footnote sg-mission-foot">보급권은 파츠·장비·친구 보급에 써요. 이용권은 나오지 않아요.</p><button class="sg-primary" data-close>확인</button>`);
+    this.openDialog(`<h2>오늘의 미션</h2><p class="sg-mission-intro">해내면 바로 보급권! 다 하면 하루 <b>${R.MISSION_GIFTS}장</b>. 아침 8시에 새로 시작해요.</p><div class="sg-missions">${list.map(m=>`<div class="sg-mission ${m.done?'done':''}"><span class="sg-mission-check" aria-hidden="true">${m.done?symbol2('btn_check','✓'):''}</span><span class="sg-mission-text"><b>${esc(m.name)}</b>${m.hint?`<small>${esc(m.hint)}</small>`:''}<span class="sg-mission-bar"><i style="width:${Math.round(m.now/m.target*100)}%"></i></span></span><em>${m.done?'받았어요':`${m.now}/${m.target}`}<small>보급권 +${m.gifts}</small></em></div>`).join('')}</div><p class="sg-footnote sg-mission-foot">보급권은 파츠·장비·친구 보급에 써요. 이용권은 나오지 않아요.</p><button class="sg-primary" data-close>확인</button>`);
   }
   book(p){
     const tabs=[['skills','원소 스킬'],['supports','지원품'],['combos','진화'],['traits','특별한 적'],['records','정화 기록']];

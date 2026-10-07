@@ -1,4 +1,4 @@
-import { isUI2, art2, preloadUI2 } from './ui2-art.js';
+import { isUI2, art2, preloadUI2, symbol2, skillAsset } from './ui2-art.js';
 import { U, XP_CURVE, ACCOUNT_XP_PER_RUN, ACCOUNT_LEVEL_COST, GOLD_SHARD_VALUE, gemValue, SKILLS, PASSIVES, ENEMIES, BOSSES, CHAPTERS, chapterById, enemyHp, enemyAtk, bossHp, bossAtk, START_SKILL, ATTACK_SLOTS, PASSIVE_SLOTS } from "./content.js";
 import { loadSave, writeSave, applyRunReward, buyUpgrade, normalizeSave, onSaveWritten } from "./save.js";
 import { cloud } from "./cloud.js";
@@ -270,7 +270,7 @@ function sgMods(){
     weaponDmgMul:1+(b.weaponDmgPct||0),weaponRangeMul:1+(b.weaponRangePct||0),weaponArcMul:1+(b.weaponArcPct||0),searchMul:1+(b.searchRangePct||0),pierce:b.pierce||0,swingBlock:!!b.swingBlock,
     fastballEvery:sp.fastball?[5,4,3][sp.fastball-1]:0,fastballBoom:sp.fastball===3,spinEvery:sp.spin?[6,5,4][sp.spin-1]:0,spinReachMul:sp.spin===3?1.3:1};
 }
-const sgSkillImg=(d,cls='')=>d&&d.sprite?`<img class="sg-icon ${cls}" src="./assets/sprites/skills/${d.sprite}.png" alt="" />`:'';
+const sgSkillImg=(d,cls='')=>d&&d.sprite?`<img class="sg-icon ${cls}" src="${skillAsset(d.sprite)}" alt="" />`:'';
 const sgElements=createElementCombat({U,getPlayer:()=>player,getEnemies:()=>enemies,getBoss:()=>boss,getProfile:()=>sgRunProfile,damage:sgDamage,projectiles:()=>sgHostileShots,getMods:sgMods,
   onBlast:()=>{}});   // 스킬 폭발 화면 흔들림·멈춤은 없앴다(2026-09-24 밤 사용자 "자꾸 진동 때문에 거슬려") — 폭발 그림·소리로만
 const sgWeapon=createWeaponCombat({U,getPlayer:()=>player,getEnemies:()=>enemies,getBoss:()=>boss,getProfile:()=>sgRunProfile,damage:sgDamage,images:ELEMENT_WEAPONS,sound:()=>playSfx('attack',.12),getMods:sgMods,
@@ -5104,6 +5104,7 @@ function loop(now) {
   requestAnimationFrame(loop);
 }
 const elPauseBtn = document.getElementById("btn-pause");
+if(isUI2())elPauseBtn.innerHTML=art2('fn_pause');
 requestAnimationFrame(loop);
 
 // 자동화 테스트/QA 전용: rAF가 (탭 비가시성 등으로) 드물게 호출되는 환경에서도
@@ -5616,7 +5617,7 @@ function sgChooseCards(reroll=false){
   currentCards=R.cardChoices(sgRunProfile,player.skills,player.sgRun,player.hp/player.hpMax);
   elCardRow.innerHTML='';
   for(const c of currentCards){const b=document.createElement('button');b.className='card';b.innerHTML=sgCardHTML(c);b.dataset.kind=c.kind;{const el=c.kind==='evolve'?'#ffb81e':c.kind==='support-new'||c.kind==='support-up'?'#d9a23a':c.kind==='heal'?'#ff6b75':c.kind==='shield'?'#66c3ff':R.ELEMENTS[R.SKILLS[c.id]?.element]?.color;if(el)b.style.setProperty('--el',el);}/* UI v2: 카드 머리 색(원소·진화·지원품) */b.onclick=()=>{if(mode!=='levelup')return;playSfx('cardSelect',.45);sgApplyCard(c);closeLevelUp();};elCardRow.append(b);}
-  document.getElementById('lv-ops').innerHTML=`<button class="op big-op" id="op-reroll" ${player.rerolls>0?'':'disabled'}>다시 고르기 · ${player.rerolls}번 남음</button><span class="lv-pending">지금은 시간이 멈춰 있어요.</span>`;
+  document.getElementById('lv-ops').innerHTML=`<button class="op big-op" id="op-reroll" ${player.rerolls>0?'':'disabled'}>${isUI2()?art2('btn_reroll')+' ':''}다시 고르기 · ${player.rerolls}번 남음</button><span class="lv-pending">지금은 시간이 멈춰 있어요.</span>`;
   document.getElementById('op-reroll').onclick=()=>{if(player.rerolls<=0)return;player.rerolls--;sgChooseCards(true);};
   elLevelup.classList.remove('hidden');if(!reroll)playSfx('levelupOpen',.4);
 }
@@ -5624,9 +5625,9 @@ function sgCardHTML(c){
   if(c.kind==='heal')return `${sgIcon('heart')}<span class="tag">회복</span><h3>체력 채우기</h3><p>최대 체력의 20%를 채워요.</p>`;
   if(c.kind==='shield')return `${sgIcon('shield')}<span class="tag">보호</span><h3>방패 충전</h3><p>체력의 12%만큼 보호막을 얻어요. 겹쳐 쌓이지 않아요.</p>`;
   if(c.kind==='evolve'){const d=R.COMBOS[c.id];return `${sgSkillImg(d,'sg-evo-icon')}<span class="tag evo">진화 · ${R.SKILLS[d.skill].name} + ${R.SUPPORTS[d.support].name}</span><h3>${d.name}</h3><p>${d.desc}</p><b>훨씬 크고 강해져요!</b>`;}
-  if(c.kind==='support-new'||c.kind==='support-up'){const d=R.SUPPORTS[c.id],lv=player.sgRun.supports[c.id]?.lv||0,pair=Object.values(R.COMBOS).filter(x=>x.support===c.id).map(x=>`${R.SKILLS[x.skill].name}${player.skills[x.skill]?' ✓':''}`).join(' / ');
+  if(c.kind==='support-new'||c.kind==='support-up'){const d=R.SUPPORTS[c.id],lv=player.sgRun.supports[c.id]?.lv||0,pair=Object.values(R.COMBOS).filter(x=>x.support===c.id).map(x=>`${R.SKILLS[x.skill].name}${player.skills[x.skill]?' '+symbol2('btn_check','✓'):''}`).join(' / ');
     return `${sgSkillImg(d)}<span class="tag">${isUI2()&&d.element?sgIcon(`element_${d.element}`):''}지원품 · ${lv+1}/3단계</span><h3>${d.name}</h3><p>${d.desc}<br/><b>${d.label(lv+1)}</b></p><small>진화 짝<br/><b>${pair}</b></small>`;}
-  const d=R.SKILLS[c.id],lv=player.skills[c.id]?.lv||0,partners=R.SKILL_PARTNERS[c.id].map(id=>`${R.SUPPORTS[id].name}${player.sgRun.supports[id]?' ✓':''}`).join(' / ');
+  const d=R.SKILLS[c.id],lv=player.skills[c.id]?.lv||0,partners=R.SKILL_PARTNERS[c.id].map(id=>`${R.SUPPORTS[id].name}${player.sgRun.supports[id]?' '+symbol2('btn_check','✓'):''}`).join(' / ');
   return `${sgSkillImg(d)}<span class="tag">${isUI2()?sgIcon(`element_${d.element}`):''}${R.ELEMENTS[d.element].name} · ${lv+1}/${R.RUN_RULES.maxSkillLevel}단계</span><h3>${d.name}</h3><p>${lv?d.levels[lv-1]:d.desc}</p><small>${R.RUN_RULES.maxSkillLevel}단계 + 짝 지원품이면 진화<br/><b>${partners}</b></small>${R.hasPart(sgRunProfile,c.id)?`<small class="sg-on sg-my-part">${sgSkillImg(d)} 내 파츠 · ${R.PARTS['PART_'+c.id].name}</small>`:''}`;
 }
 function sgApplyCard(c){
@@ -6046,7 +6047,7 @@ function sgHud(){
   const sup=player.sgRun.supports||{};
   const signature=sgRunProfile.weaponMode+'|'+Object.entries(player.skills).map(([id,v])=>id+':'+v.lv).join(',')+'|'+Object.entries(sup).map(([id,v])=>id+':'+v.lv).join(',');
   if(signature===sgHudSignature)return;sgHudSignature=signature;
-  const html=`<span title="기본 무기">${sgIcon('mode_'+sgRunProfile.weaponMode)}기본</span>`
+  const html=`<span title="기본 무기">${isUI2()?art2(sgRunProfile.weaponMode==='ranged'?'hud_weapon_ranged':'slot_weapon'):sgIcon('mode_'+sgRunProfile.weaponMode)}기본</span>`
     +Object.entries(player.skills).map(([id,v])=>{const d=R.SKILLS[id]||R.COMBOS[id];return `<span class="${R.COMBOS[id]?'sg-evo':''}" title="${d.name}">${sgSkillImg(d)}${R.COMBOS[id]?'진화':`${v.lv}/${R.RUN_RULES.maxSkillLevel}`}</span>`;}).join('')
     +Array.from({length:Math.max(0,R.RUN_RULES.skillSlots-Object.keys(player.skills).length)},()=>'<span class="sg-empty-slot">＋</span>').join('')
     +`<span class="sg-hud-gap"></span>`

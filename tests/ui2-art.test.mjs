@@ -1,9 +1,9 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { existsSync } from 'node:fs';
+import { existsSync, readFileSync } from 'node:fs';
 import { GuardianUI, icon, icon2 } from '../game/src/rework-ui.js';
-import { UI2_ICONS, preloadUI2 } from '../game/src/ui2-art.js';
-import { freshProfile, trainingCost, TRAINING_MAX } from '../game/src/rework-core.js';
+import { UI2_ICONS, preloadUI2, symbol2, skillAsset } from '../game/src/ui2-art.js';
+import { freshProfile, trainingCost, TRAINING_MAX, SKILLS, PARTS, SUPPORTS, COMBOS } from '../game/src/rework-core.js';
 
 function mode(value, fn) {
   const old = globalThis.document;
@@ -18,13 +18,64 @@ test('UI 1 keeps legacy SVG markup and does not preload UI 2 art', () => mode(fa
   try { preloadUI2(); assert.equal(requests, 0); } finally { if (old === undefined) delete globalThis.Image; else globalThis.Image = old; }
   assert.doesNotMatch(GuardianUI.prototype.training.call({ titleBar: () => '' }, freshProfile()), /ui2|sg-training-card/);
 }));
-test('UI 2 uses context-specific art and all 34 preload icons exist', () => mode(true, () => {
+test('UI 2 uses context-specific art and all 44 preload icons exist', () => mode(true, () => {
   assert.match(icon('element_earth'), /ui2\/icons\/el_earth\.png/);
   assert.match(icon('gift'), /cur_gift\.png/);
   assert.match(icon2('nav_training','mode_melee'), /nav_training\.png/);
-  assert.equal(UI2_ICONS.length, 34);
-  assert.equal(new Set(UI2_ICONS).size, 34);
+  assert.equal(UI2_ICONS.length, 44);
+  assert.equal(new Set(UI2_ICONS).size, 44);
   for (const name of UI2_ICONS) assert.ok(existsSync(new URL(`../game/assets/ui2/icons/${name}.png`, import.meta.url)), name);
+}));
+test('UI 1 keeps original skill paths and symbol text; UI 2 has every referenced copy', () => {
+  const manifest = JSON.parse(readFileSync(new URL('../game/assets/ui2/skills/manifest.json', import.meta.url), 'utf8'));
+  const sprites = new Set([SKILLS, PARTS, SUPPORTS, COMBOS].flatMap(group => Object.values(group).map(d => d.sprite)).filter(Boolean));
+  assert.deepEqual(Object.keys(manifest).sort(), [...sprites].sort());
+  mode(false, () => {
+    assert.equal(symbol2('btn_help','?'), '?');
+    assert.equal(symbol2('btn_close','×'), '×');
+    for (const name of sprites) assert.equal(skillAsset(name), `./assets/sprites/skills/${name}.png`);
+  });
+  mode(true, () => {
+    assert.match(symbol2('btn_check','✓'), /btn_check\.png/);
+    for (const name of sprites) {
+      assert.equal(skillAsset(name), `./assets/ui2/skills/${name}.png`);
+      assert.ok(existsSync(new URL(`../game/assets/ui2/skills/${name}.png`, import.meta.url)));
+      assert.equal(manifest[name].source, `game/assets/sprites/skills/${name}.png`);
+    }
+  });
+});
+test('UI 2 supply stages do not expose grade or celebration until party', () => mode(true, () => {
+  const old = Object.fromEntries(['localStorage','matchMedia','setTimeout','clearTimeout'].map(k => [k, globalThis[k]]));
+  globalThis.localStorage = { getItem: () => null };
+  globalThis.matchMedia = () => ({ matches: false });
+  let neutral;
+  try {
+    for (let grade = 0; grade <= 4; grade++) {
+      const timers = [], sounds = [], classes = new Set(), props = {}, box = {};
+      globalThis.setTimeout = fn => (timers.push(fn), timers.length);
+      globalThis.clearTimeout = () => {};
+      const root = { dataset:{state:'drop'}, style:{setProperty:(k,v) => props[k]=v}, classList:{add:c => classes.add(c)}, querySelector:() => box };
+      const ui = { c:{sfx:k => sounds.push(k)}, dialog:{querySelector:s => s === '.sg-sup' ? root : null, addEventListener:() => {}}, openDialog:html => {
+        const frame = html.slice(0, html.indexOf('<div class="sg-sup-stage">'));
+        if (neutral === undefined) neutral = frame;
+        assert.equal(frame, neutral);
+        assert.match(html, /ui2\/icons\/supply_closed\.png/);
+        assert.match(html, /ui2\/icons\/supply_open\.png/);
+        assert.doesNotMatch(html, /sg-sup-lidimg/);
+      } };
+      GuardianUI.prototype.supplyShow.call(ui, { front:'result', grade, level:3 });
+      assert.equal(root.dataset.state,'drop');
+      box.onclick(); assert.equal(root.dataset.state,'open');
+      timers.at(-1)(); assert.equal(root.dataset.state,'reveal');
+      assert.equal(classes.size,0); assert.deepEqual(props,{});
+      assert.ok(!sounds.includes('supGrand'));
+      timers.at(-1)(); assert.equal(root.dataset.state,'party');
+      assert.ok(classes.has('sg-sup-lv3')); assert.equal(classes.has('sg-sup-legend'),grade===4);
+      assert.notEqual(props['--gc'],'#ffffff'); assert.ok(sounds.includes('supGrand'));
+    }
+  } finally {
+    for (const [key,value] of Object.entries(old)) { if (value === undefined) delete globalThis[key]; else globalThis[key] = value; }
+  }
 }));
 test('training still shows calculated cost and disables every unaffordable action', () => mode(true, () => {
   const p = freshProfile(); p.coins = 0; const html = GuardianUI.prototype.training.call({ titleBar: () => '' }, p);

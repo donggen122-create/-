@@ -267,8 +267,10 @@ html.ui2 #timer{font-family:var(--font-ui)!important;font-weight:400!important;f
 html.ui2 #killcount{font-family:var(--font-ui)!important;color:var(--gold-1)!important;text-shadow:var(--to-s)!important}
 html.ui2 :is(#btn-pause,#btn-mute){border:3px solid var(--ink)!important;background:linear-gradient(180deg,var(--nv-1),var(--nv-4))!important;color:#fff!important;box-shadow:0 3px 0 var(--ink)!important}
 html.ui2 #sg-run-tools>span{border:3px solid var(--ink)!important;border-radius:12px!important;background:linear-gradient(180deg,#fffaf0,#f0dcae)!important;color:var(--cream-ink)!important;font-family:var(--font-ui)!important;box-shadow:0 3px 0 var(--ink)!important}
-html.ui2 #sg-run-tools>span.sg-empty-slot{background:rgba(9,14,40,.55)!important;color:rgba(255,255,255,.5)!important;border-style:dashed!important;box-shadow:none!important}
-html.ui2 #sg-run-tools>span.sg-support{background:linear-gradient(180deg,#fff2b8,#ffd76a)!important}
+html.ui2 #sg-run-tools>span.sg-empty-slot{position:relative;font-size:0!important;background:#121a3c!important;color:rgba(255,255,255,.22)!important;border:2px solid #303c66!important;box-shadow:inset 0 3px 5px #0009,inset 0 -1px 0 #ffffff12!important;text-shadow:none!important}
+html.ui2 #sg-run-tools>span.sg-empty-slot::before,html.ui2 #sg-run-tools>span.sg-empty-slot::after{content:"";position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);background:#ffffff38;border-radius:1px;width:12px;height:2px}
+html.ui2 #sg-run-tools>span.sg-empty-slot::after{width:2px;height:12px}
+html.ui2 #sg-run-tools>span.sg-support:not(.sg-empty-slot){background:linear-gradient(180deg,#fff2b8,#ffd76a)!important}
 html.ui2 #sg-run-tools>span.sg-evo{background:conic-gradient(from 0deg,#ffd84a,#ff9a3c,#ff6ad5,#6ab8ff,#7dff9a,#ffd84a)!important}
 html.ui2 #sg-objective{font-family:var(--font-ui)!important;font-size:15px!important;color:#fff!important;text-shadow:var(--to-s)!important;background:linear-gradient(180deg,rgba(31,50,120,.92),rgba(16,28,74,.92))!important;border:3px solid var(--ink)!important;border-radius:14px!important;box-shadow:0 4px 0 rgba(0,0,0,.45)!important}
 
@@ -460,6 +462,23 @@ html.ui2 .sg-update h2>.sg-ui2-icon{width:28px;height:28px;vertical-align:middle
 html.ui2 #levelup .card .tag>.sg-ui2-icon{width:22px!important;height:22px!important;margin:0 5px 0 0!important;vertical-align:middle;display:inline-block;grid-row:auto;filter:none}
 html.ui2 #result .ui2-stars i>.sg-ui2-icon{width:48px;height:48px;object-fit:contain}
 html.ui2 #result .ui2-stars i:not(.on)>.sg-ui2-icon{filter:grayscale(1);opacity:.3}
+/* UI pass 3: artwork replaces symbols without changing control hit areas. */
+html.ui2 .sg-ui2-symbol{width:18px!important;height:18px!important;object-fit:contain;vertical-align:middle;display:inline-block;flex-shrink:0;filter:none;pointer-events:none}
+html.ui2 :is(#guardian-lobby,.sg-dialog) :is(.sg-info-btn,.sg-x,.sg-chapter-arrow){border-color:transparent!important;background:none!important;box-shadow:none!important}
+html.ui2 :is(#guardian-lobby,.sg-dialog) :is(.sg-info-btn,.sg-x,.sg-chapter-arrow)>.sg-ui2-symbol{width:100%!important;height:100%!important}
+html.ui2 .sg-mission.done .sg-mission-check{background:none;border-color:transparent}
+html.ui2 .sg-mission-check>.sg-ui2-symbol{width:26px!important;height:26px!important}
+html.ui2 #op-reroll>.sg-ui2-icon{width:26px;height:26px;vertical-align:middle;object-fit:contain}
+html.ui2 #btn-pause>.sg-ui2-icon{width:24px;height:24px;object-fit:contain;vertical-align:middle;pointer-events:none}
+/* Before party, every grade and celebration level uses the same white stage. */
+html.ui2 :is(#guardian-lobby,.sg-dialog) .sg-sup-box{background:none!important;border:0!important;box-shadow:none!important}
+html.ui2 .sg-sup:not([data-state=party]) :is(.sg-sup-card,.sg-sup-banner,.sg-sup-confetti){visibility:hidden!important}
+html.ui2 .sg-sup[data-state=reveal] .sg-sup-card{animation:none!important;opacity:0!important}
+html.ui2 .sg-sup[data-state=reveal] .sg-sup-box{display:block}
+html.ui2 .sg-sup[data-state=reveal] .sg-sup-closed{opacity:0}
+html.ui2 .sg-sup[data-state=reveal] .sg-sup-open{opacity:1}
+html.ui2 .sg-sup[data-state=open] .sg-sup-open{animation:ui3-chest-open .38s cubic-bezier(.3,1.5,.5,1) both}
+@keyframes ui3-chest-open{0%{transform:translateX(-50%) scale(.92)}55%{transform:translateX(-50%) scale(1.12)}100%{transform:translateX(-50%) scale(1.02)}}
 html.ui2 #guardian-lobby .sg-training{gap:20px;align-items:start}
 html.ui2 #guardian-lobby .sg-training>.sg-training-card{--stat:#ff6b3d;position:relative;overflow:visible;padding:0!important;display:grid;grid-template-rows:108px 1fr;min-width:0}
 html.ui2 #guardian-lobby .sg-training-card[data-training="hp"]{--stat:#ff5d7a}
@@ -511,4 +530,16 @@ html.ui2 #guardian-lobby .sg-training-body>button:disabled{background:linear-gra
   html.ui2 #levelup .card{row-gap:2px!important}
   html.ui2 #levelup .card .tag{display:inline-flex;align-items:center;line-height:16px!important}
   html.ui2 #levelup .card .tag>.sg-ui2-icon{width:16px!important;height:16px!important;margin-right:4px!important}
+}
+
+@media(min-width:1024px){
+  html.ui2 #guardian-lobby[data-tab="training"] .sg-main{display:flex;flex-direction:column}
+  html.ui2 #guardian-lobby .sg-training{margin-top:auto!important;margin-bottom:auto!important;padding-top:18px;padding-bottom:18px}
+  html.ui2 #guardian-lobby .sg-training>.sg-training-card{min-height:360px;grid-template-rows:144px 1fr}
+  html.ui2 #guardian-lobby .sg-training-stripe{height:142px}
+  html.ui2 #guardian-lobby .sg-training-card>.sg-training-art{width:150px!important;height:150px!important;margin-top:-10px}
+  html.ui2 #guardian-lobby .sg-training-value{font-size:56px}
+  html.ui2 #guardian-lobby .sg-training-body{padding:12px 16px 14px}
+  html.ui2 #guardian-lobby .sg-training-numbers{margin:6px 0}
+  html.ui2 #guardian-lobby .sg-training-body>.sg-meter{margin:7px 0 12px!important}
 }
