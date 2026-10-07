@@ -1,0 +1,110 @@
+{
+  "scope": "UI pass 3, section 0-2 only",
+  "base_commit": "711f29b",
+  "test_command": "node --test \"tests/*.test.mjs\"",
+  "tests_passed": 168,
+  "tests_failed": 0,
+  "responsive_total_issues": 0,
+  "screens": {
+    "360x640": {
+      "gear_height_range_px": {
+        "min": 88.75,
+        "max": 88.75
+      },
+      "gear_height_difference_px": 0.0,
+      "icon_box_px": 30,
+      "empty_gloves_dialog_issues": [],
+      "bag_icon_issues": [],
+      "bag_icons_checked": 12,
+      "page_errors": []
+    },
+    "375x667": {
+      "gear_height_range_px": {
+        "min": 88.75,
+        "max": 88.75
+      },
+      "gear_height_difference_px": 0.0,
+      "icon_box_px": 30,
+      "empty_gloves_dialog_issues": [],
+      "bag_icon_issues": [],
+      "bag_icons_checked": 12,
+      "page_errors": []
+    },
+    "768x1024": {
+      "gear_height_range_px": {
+        "min": 62.453125,
+        "max": 62.46875
+      },
+      "gear_height_difference_px": 0.015625,
+      "icon_box_px": 40,
+      "empty_gloves_dialog_issues": [],
+      "bag_icon_issues": [],
+      "bag_icons_checked": 12,
+      "page_errors": []
+    },
+    "820x1180": {
+      "gear_height_range_px": {
+        "min": 62.453125,
+        "max": 62.46875
+      },
+      "gear_height_difference_px": 0.015625,
+      "icon_box_px": 40,
+      "empty_gloves_dialog_issues": [],
+      "bag_icon_issues": [],
+      "bag_icons_checked": 12,
+      "page_errors": []
+    },
+    "1024x768": {
+      "gear_height_range_px": {
+        "min": 62.453125,
+        "max": 62.46875
+      },
+      "gear_height_difference_px": 0.015625,
+      "icon_box_px": 40,
+      "empty_gloves_dialog_issues": [],
+      "bag_icon_issues": [],
+      "bag_icons_checked": 12,
+      "page_errors": []
+    },
+    "1280x720": {
+      "gear_height_range_px": {
+        "min": 62.453125,
+        "max": 62.46875
+      },
+      "gear_height_difference_px": 0.015625,
+      "icon_box_px": 40,
+      "empty_gloves_dialog_issues": [],
+      "bag_icon_issues": [],
+      "bag_icons_checked": 12,
+      "page_errors": []
+    }
+  },
+  "ui1": {
+    "v1-1280-adventure": null,
+    "v1-dom-1280-adventure": true,
+    "v1-1280-training": null,
+    "v1-dom-1280-training": true,
+    "v1-1280-parts": null,
+    "v1-dom-1280-parts": true,
+    "v1-1280-gear": null,
+    "v1-dom-1280-gear": true,
+    "v1-1280-friends": null,
+    "v1-dom-1280-friends": true,
+    "v1-1280-book": null,
+    "v1-dom-1280-book": true,
+    "errors-ui1-1280": [],
+    "v1-375-adventure": null,
+    "v1-dom-375-adventure": true,
+    "v1-375-training": null,
+    "v1-dom-375-training": true,
+    "v1-375-parts": null,
+    "v1-dom-375-parts": true,
+    "v1-375-gear": null,
+    "v1-dom-375-gear": true,
+    "v1-375-friends": null,
+    "v1-dom-375-friends": true,
+    "v1-375-book": null,
+    "v1-dom-375-book": true,
+    "errors-ui1-375": []
+  }
+}

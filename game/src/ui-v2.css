@@ -438,7 +438,20 @@ html.ui2 #guardian-lobby .sg-brand>span{display:none}
 html.ui2 .sg-brand .sg-ui2-emblem{object-fit:contain;background:none;border:0;border-radius:0;box-shadow:none;filter:drop-shadow(0 3px 0 var(--ink))}
 html.ui2 #guardian-lobby .sg-account{position:relative}
 html.ui2 #guardian-lobby .sg-account .sg-account-settings{width:22px;height:22px;flex-shrink:0;order:2}
-html.ui2 .sg-gear-empty>.sg-ui2-icon{width:100%;height:100%;object-fit:contain;filter:grayscale(1) brightness(1.6);opacity:.45}
+/* A status badge changes child positions; the legacy nth-child(2) text rule
+   must never make an icon flex or give it full card width. */
+html.ui2 :is(#guardian-lobby,.sg-dialog) .sg-gear-icon.sg-gear-empty,
+html.ui2 .sg-dialog :is(.sg-slot-head,.sg-slot-item,.sg-bag-cell)>.sg-gear-icon,
+html.ui2 #guardian-lobby .sg-gear-slot>.sg-gear-icon{width:40px!important;height:40px!important;min-width:40px;max-width:40px;min-height:40px;max-height:40px;flex:0 0 40px!important;box-sizing:border-box}
+html.ui2 #guardian-lobby .sg-gear-slot>span:not(.sg-gear-icon){min-width:0;flex:1}
+html.ui2 #guardian-lobby .sg-gear-doll{grid-template-rows:repeat(3,minmax(0,1fr));align-items:stretch}
+html.ui2 #guardian-lobby .sg-gear-slot{align-self:stretch}
+html.ui2 .sg-gear-empty>.sg-ui2-icon{width:100%!important;height:100%!important;max-width:100%;max-height:100%;object-fit:contain;filter:grayscale(1) brightness(1.6);opacity:.45}
+@media(max-width:760px){
+  html.ui2 :is(#guardian-lobby,.sg-dialog) .sg-gear-icon.sg-gear-empty,
+  html.ui2 .sg-dialog :is(.sg-slot-head,.sg-slot-item,.sg-bag-cell)>.sg-gear-icon,
+  html.ui2 #guardian-lobby .sg-gear-slot>.sg-gear-icon{width:30px!important;height:30px!important;min-width:30px;max-width:30px;min-height:30px;max-height:30px;flex-basis:30px!important}
+}
 html.ui2 :is(#guardian-lobby,.sg-dialog) button>.sg-ui2-icon{object-fit:contain}
 html.ui2 :is(#guardian-lobby,.sg-dialog) .sg-primary .sg-ui2-icon{filter:drop-shadow(0 2px 0 var(--ink))}
 html.ui2 :is(#btn-mute,#btn-sound)>.sg-ui2-icon{width:26px;height:26px;vertical-align:middle;object-fit:contain;pointer-events:none}

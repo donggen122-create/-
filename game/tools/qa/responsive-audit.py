@@ -67,6 +67,25 @@ AUDIT_JS = r"""(kind)=>{
       let a=e,scroll=false;while(a&&a!==document.body){const s=getComputedStyle(a);if(['auto','scroll'].includes(s.overflowY)&&a.scrollHeight>a.clientHeight+2){scroll=true;break;}a=a.parentElement;}
       if(r.bottom>H+2||r.top<-2)(scroll?out.needsScroll=out.needsScroll||[]:out.vOverflow).push(name(e)+` [${Math.round(r.top)}..${Math.round(r.bottom)}] H=${H}`);}
   }
+  if(document.documentElement.classList.contains('ui2')){
+    const slots=[...document.querySelectorAll('#guardian-lobby [data-gear-slot]')].filter(vis);
+    if(kind==='lobby-gear'){
+      out.gearLayout=[];
+      if(slots.length!==6)out.gearLayout.push(`Expected 6 gear slots, found ${slots.length}`);
+      if(!document.querySelector('#guardian-lobby [data-gear-slot="gloves"]>.sg-gear-empty'))out.gearLayout.push('Regression profile must leave gloves unequipped');
+      else{
+        const heights=slots.map(e=>e.getBoundingClientRect().height);
+        out.gearHeightRange={min:Math.min(...heights),max:Math.max(...heights)};
+        if(out.gearHeightRange.max-out.gearHeightRange.min>4)out.gearLayout.push(`Gear slot heights differ by ${(out.gearHeightRange.max-out.gearHeightRange.min).toFixed(2)}px`);
+      }
+    }
+    const expected=W<=760?30:40;
+    const icons=[...document.querySelectorAll('#guardian-lobby [data-gear-slot]>.sg-gear-icon,dialog[open] .sg-gear-empty,dialog[open] :is(.sg-slot-head,.sg-slot-item,.sg-bag-cell)>.sg-gear-icon')].filter(vis);
+    if(icons.length){
+      out.gearIconSize=[];
+      for(const e of icons){const r=e.getBoundingClientRect();if(Math.abs(r.width-expected)>1||Math.abs(r.height-expected)>1)out.gearIconSize.push(`${name(e)} ${r.width.toFixed(1)}×${r.height.toFixed(1)} expected ${expected}px`);}
+    }
+  }
   return out;
 }"""
 
@@ -104,7 +123,7 @@ def audit_size(b, W, H, report):
     page.locator('[data-do="supply-help"]').first.click(); page.wait_for_timeout(300); check('dialog-supply-help', 'dialog'); quiet(page)
     page.locator('.sg-nav [data-tab="gear"]').click(); page.wait_for_timeout(200)
     page.locator('[data-do="gear-help"]').first.click(); page.wait_for_timeout(300); check('dialog-gear-help', 'dialog'); quiet(page)
-    page.locator('[data-gear-slot="helm"]').click(); page.wait_for_timeout(300); check('dialog-gear-slot', 'dialog'); quiet(page)
+    page.locator('[data-gear-slot="gloves"]').click(); page.wait_for_timeout(300); check('dialog-gear-slot', 'dialog'); quiet(page)
     page.locator('[data-do="gear-bag"]').click(); page.wait_for_timeout(300); check('dialog-gear-bag', 'dialog')
     page.locator('dialog[open] [data-bag-id]').first.click(); page.wait_for_timeout(300); check('dialog-gear-detail', 'dialog'); quiet(page)
     page.locator('[data-gear-set]').first.click(); page.wait_for_timeout(300); check('dialog-gear-set', 'dialog'); quiet(page)
