@@ -4857,14 +4857,14 @@ function draw() {
   for (let y = -offY; y < viewH; y += gridSize) { ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(viewW, y); ctx.stroke(); }
   }
 
-  drawDarkZones();
+  if (!qaFxOff?.has('zones')) drawDarkZones();
   if (!!chapter?.theme) themeFx.ground(ctx, worldToScreen);   // 대왕이 남긴 바닥 자국(금·끌린 자국)
   if (!!chapter?.theme && boss?.activePattern) themeFx.telegraph(ctx, boss.activePattern, boss, boss.telegraphT, runTime, U, worldToScreen);
   drawBeacon();
   for (const d of decor) if (onScreen(d, Math.max(180, d.h || 0))) drawDecorItem(d);
   for (const f of fields) drawField(f);      // 장판은 바닥에
   sgDrawT3Ground();                          // 3장 거품·기름 웅덩이(바닥)
-  sgDrawT4Ground();                          // 4장 불길 자국·바퀴 자국(바닥)
+  if (!qaFxOff?.has('t4ground')) sgDrawT4Ground(); // QA layer ablation only
   for (const t of traps) drawTrap(t);
   if (!qaFxOff?.has("skills")) sgElements.drawGround(ctx, worldToScreen);   // 원소 스킬 바닥층(불 웅덩이·용암·지뢰·그림자) — 적·주인공 아래
   for (const g of gems) if (onScreen(g, 48)) drawGem(g);
@@ -5168,6 +5168,7 @@ window.__debugSim = function (seconds) {
 window.__debugForceBoss = function () { if (!boss) spawnBoss(); return bossDef.id; };
 window.__debugBossHp = function (pct) { if (boss) boss.hp = boss.hpMax * pct; return boss && boss.hp; };   // 보스 체력 비율 강제(2페이즈 확인용)
 window.__debugTankBoss = function () { if (boss) { boss.hpMax = 2e9; boss.hp = 1e9; } return !!boss; };   // QA only: hold phase 2 for a comparable profiling window.
+window.__debugFoam = () => { player.t3FoamT = SG_FOAM.blur; };   // QA only: profile the full-screen foam overlay with god mode on.
 window.__debugDecor = function () { return decor.map((d) => ({ x: Math.round(d.x - player.x), y: Math.round(d.y - player.y), sprite: d.sprite, solid: d.solid || 0, opened: d.opened, boss: !!d.bossLitter })); };
 window.__debugBossPattern = function (name) {   // 다음 기술을 이름으로 지정(예: "쓰레기 뿌리기")
   const pat = bossDef.patterns.find((p) => p.name === name);
@@ -5178,6 +5179,11 @@ window.__debugPlayerPos = function () { return { x: player.x, y: player.y }; };
 window.__sgAcidCount = function () { return sgAcid.length; };   // QA: 산성비 표시 수
 window.__sgT4Edit = function (f) { if (SG_LOCAL && typeof f === 'function') f(enemies, player); return enemies.length; };   // QA 전용(로컬): 4장 적 상태를 정해 예고 장면 찍기
 window.__sgT4 = function () { return { fires: sgFires.length, marks: sgT4Marks.length, balls: sgT4Balls.length, booms: sgT4Booms.length, slow: player?.t4Slow || 1, states: enemies.filter((e) => e.t4State || e.t4Out > 0 || e.t4Lv).map((e) => ({ b: e.behavior, s: e.t4State || (e.t4Out > 0 ? 'out' : e.t4Lv) })) }; };
+window.__debugT4Visuals = function (kind) {   // QA-only synthetic presentation load; no reward/rule changes.
+  if (chapter?.theme !== 4) return;
+  if (kind === 'tracks') for (let i=0;i<8;i++) { if (sgT4Marks.length>=24) sgT4Marks.shift(); sgT4Marks.push({x:player.x+(i-4)*.9*U,y:player.y+3*U,r:.8*U,life:4,max:4,ang:0}); }
+  else if (kind === 'balls' && sgT4Balls.length<12) sgT4Balls.push({fx:player.x+5*U,fy:player.y-U,x:player.x+U,y:player.y+2*U,t:.9,max:.9,r:1.1*U,dmg:0});
+};
 window.__sgT3 = function () { return { puddles: sgPuddles.map((q) => q.kind), nets: sgNets.length, netT: player?.t3NetT || 0, tangleT: player?.t3TangleT || 0, pounce: enemies.filter((e) => e.behavior === "pouncer" && e.t3State === "windup").length, slow: player?.t3Slow || 1, foamT: player?.t3FoamT || 0, fish: sgFish.length }; };   // QA: 3장 상태
 window.__debugBossAt = function (dxU, dyU) { if (!boss) return false; boss.x = player.x + dxU * U; boss.y = player.y + dyU * U; return true; };   // QA: 대왕을 내 옆 (dx, dy)칸에
 window.__debugUnlockAll = function () {
@@ -5219,6 +5225,13 @@ window.__debugPerf = function (on) {
 // Deterministic fixed-tick QA compares gameplay and settlement inputs separately from rendering costs.
 window.__debugOutcome = () => ({ seconds: runTime, kills: killCount, hp: player.hp, hpMax: player.hpMax, litter: runStats.litter, choices: player.sgChoices,
   bossHp: boss?.hp ?? null, stats: JSON.parse(JSON.stringify(runStats)), elements: sgElements.snapshot(), mode });
+window.__debugLayerBench = (off = [], n = 12) => {
+  const previous = qaFxOff; qaFxOff = new Set(off);
+  const start = performance.now();
+  try { for (let i=0;i<n;i++) { draw(); ctx.getImageData(0,0,1,1); } }
+  finally { qaFxOff = previous; }
+  return (performance.now()-start)/n;
+};   // QA only: readback flushes deferred Canvas raster, identical scene / draw count.
 window.__debugFxAudit = function (layers = ["skills", "weapon", "blasts", "hit", "death", "themefx", "text"], nearU = 3, split = ["skills"], step = 3) {
   const cv = ctx.canvas, W = cv.width, H = cv.height, k = W / viewW, keepShake = shake.t;
   shake.t = 0;
@@ -5382,6 +5395,7 @@ window.__debugPilot=(seconds)=>{
         for(const b of sgT4Balls)away(b.x,b.y,b.r);for(const b of sgT4Booms)away(b.x,b.y,b.r,3);}
       if(avoid&&player.t3NetT>0)dx=Math.sin(runTime*12);                                   // 그물에 걸리면 좌우로 흔들기
       keys.clear();if(dx>.2)keys.add('d');else if(dx<-.2)keys.add('a');if(dy>.2)keys.add('s');else if(dy<-.2)keys.add('w');
+      if (window.__qaInputHash != null) for (const c of [...keys].join('')+';') window.__qaInputHash = Math.imul(window.__qaInputHash ^ c.charCodeAt(0), 16777619) >>> 0;
     }
     simTick(FIXED_DT);
   }
@@ -5876,7 +5890,7 @@ function sgDrawT3Threats(){
   ctx.restore();
 }
 function sgDrawT3Screen(){                     // 거품에 맞은 뒤 잠깐: 화면 가장자리에 거품이 끼어 뿌예진다(가운데는 보이게)
-  if(chapter?.theme!==3||!(player?.t3FoamT>0))return;
+  if(chapter?.theme!==3||!(player?.t3FoamT>0)||qaFxOff?.has('foam'))return;
   const a=Math.min(1,player.t3FoamT/.5);
   ctx.save();ctx.fillStyle=`rgba(235,245,255,${.2*a})`;ctx.fillRect(0,0,screenW,screenH);
   const m=Math.min(screenW,screenH),size=m*.55;

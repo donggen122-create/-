@@ -24,15 +24,16 @@ ap.add_argument('--gpu', action='store_true', help='그림을 GPU 길(소프트�
 args = ap.parse_args()
 OUT = Path(args.out); OUT.mkdir(parents=True, exist_ok=True)
 EXE = chrome_path()
-local_url(args.url)
+BASE = local_url(args.url)
 DEVICES = {'tablet': (1180, 820, 2, True), 'phone': (375, 812, 3, True), 'pc': (1280, 720, 1, False)}
 fresh = json.loads(subprocess.check_output(['node', '--input-type=module', '-e', "import {freshProfile} from './game/src/rework-core.js';console.log(JSON.stringify(freshProfile()));"], cwd=ROOT))
 
 def profile():
     p = json.loads(json.dumps(fresh)); parts = ['PART_F1', 'PART_W1', 'PART_L1']
     p.update(difficulty='normal', weaponMode='ranged', training={'attack': 60, 'hp': 60, 'speed': 40}, milestones={'firstPart': True, 'firstPet': True, 'bossPet': True},
-             pets=['otter'], petCopies={'otter': 8}, activePet='otter', stages={f'CH{i:02d}': {'cleared': True, 'stars': 2} for i in range(1, 11)},
+             hero='hoya', heroLocked=True, pets=['otter'], petCopies={'otter': 40}, activePet='otter', stages={f'CH{i:02d}': {'cleared': True, 'stars': 2} for i in range(1, 21)},
              parts={x: {'copies': 25, 'level': 5} for x in parts}, equippedParts=parts)
+    p['milestones']['firstGear'] = True
     return p
 
 def self_times(prof):
@@ -49,14 +50,16 @@ def run(b, dev):
     ctx = b.new_context(viewport={'width': W, 'height': H}, device_scale_factor=dsf, is_mobile=W < 700, has_touch=touch)
     page = ctx.new_page(); errs = []; page.on('pageerror', lambda e: errs.append(str(e)))
     uid = f'qaperf{random.randint(1000, 9999)}'
+    page.request.post(BASE + '/_qa/reset-attempts')
     page.goto(args.url, wait_until='networkidle')
     page.locator('#login-id').fill(uid); page.locator('#login-pw').fill('qa_local_1234'); page.locator('#btn-register').click()
-    page.locator('#btn-title-start').wait_for(state='visible'); assert page.request.post(args.url + '/_qa/profile', data={'id': uid, 'profile': profile()}).ok
+    page.locator('#btn-title-start').wait_for(state='visible'); assert page.request.post(BASE + '/_qa/profile', data={'id': uid, 'profile': profile()}).ok
+    page.reload(wait_until='networkidle')
     page.wait_for_function("!document.querySelector('#btn-title-start').disabled"); page.evaluate("document.getElementById('btn-title-start').click()")
     page.locator('#guardian-lobby .sg-nav').wait_for()
     for _ in range(6): page.wait_for_timeout(400); page.evaluate("document.querySelectorAll('dialog[open]').forEach(d=>d.close())")
     ch = (int(args.stage[2:]) - 1) // 5 + 1
-    page.locator(f'.sg-chapter-chip[data-chapter="{ch}"]').click(); page.wait_for_timeout(300)
+    page.evaluate(f"document.querySelector('.sg-chapter-chip[data-chapter=\"{ch}\"]').click()"); page.wait_for_timeout(300)
     page.locator(f'[data-stage="{args.stage}"]').click(); page.wait_for_timeout(300); page.locator('#sg-start').click(); page.locator('#levelup:not(.hidden)').wait_for()
     page.evaluate(f"""()=>{{window.__pilotAvoid=2;window.__pilotGod=true;window.__sgCombatLoad({json.dumps(args.skills.split(','))},{{}},{{S5:3,S1:3}});
       window.__debugPilot({args.ff});window.__debugGod=true;

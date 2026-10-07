@@ -17,20 +17,20 @@ ap.add_argument('--label', default='run')
 ap.add_argument('--gear', default='none', choices=['none', 'ranged', 'melee'])
 args = ap.parse_args()
 EXE = chrome_path()
-local_url(args.url)
+BASE = local_url(args.url)
 DEVICES = {'tablet': (1180, 820, 2, True), 'phone': (375, 812, 3, True), 'pc': (1280, 720, 1, False)}
 fresh = json.loads(subprocess.check_output(['node', '--input-type=module', '-e', "import {freshProfile} from './game/src/rework-core.js';console.log(JSON.stringify(freshProfile()));"], cwd=ROOT))
 
 def profile():
     p = json.loads(json.dumps(fresh)); parts = ['PART_F1', 'PART_W1', 'PART_L1']
     p.update(difficulty='normal', weaponMode='ranged', training={'attack': 60, 'hp': 60, 'speed': 40}, milestones={'firstPart': True, 'firstPet': True, 'bossPet': True},
-             pets=['otter'], petCopies={'otter': 8}, activePet='otter', stages={f'CH{i:02d}': {'cleared': True, 'stars': 2} for i in range(1, 11)},
+             pets=['otter'], petCopies={'otter': 40}, activePet='otter', stages={f'CH{i:02d}': {'cleared': True, 'stars': 2} for i in range(1, 21)},
              parts={x: {'copies': 25, 'level': 5} for x in parts}, equippedParts=parts)
     if args.gear != 'none':
         slots = ['helm', 'armor', 'shoes', 'gloves', 'necklace', 'weapon']; st = f'hoya_{args.gear}'
         p.update(hero='hoya', heroLocked=True, weaponMode=args.gear, gear={f'{st}_{x}': {'copies': 80, 'grade': 4} for x in slots}, equippedGear={x: f'{st}_{x}' for x in slots})
         p['milestones']['firstGear'] = True
-    else: p['heroLocked'] = True
+    else: p.update(hero='hoya', heroLocked=True); p['milestones']['firstGear'] = True
     return p
 
 with sync_playwright() as pw:
@@ -41,13 +41,14 @@ with sync_playwright() as pw:
         ctx = b.new_context(viewport={'width': W, 'height': H}, device_scale_factor=dsf, is_mobile=W < 700, has_touch=touch)
         page = ctx.new_page(); errs = []; page.on('pageerror', lambda e: errs.append(str(e)))
         uid = f'qabench{random.randint(100, 999)}'
-        page.request.post(args.url + '/_qa/reset-attempts'); page.goto(args.url, wait_until='networkidle')
+        page.request.post(BASE + '/_qa/reset-attempts'); page.goto(args.url, wait_until='networkidle')
         page.locator('#login-id').fill(uid); page.locator('#login-pw').fill('qa_local_1234'); page.locator('#btn-register').click()
-        page.locator('#btn-title-start').wait_for(state='visible'); assert page.request.post(args.url + '/_qa/profile', data={'id': uid, 'profile': profile()}).ok
+        page.locator('#btn-title-start').wait_for(state='visible'); assert page.request.post(BASE + '/_qa/profile', data={'id': uid, 'profile': profile()}).ok
+        page.reload(wait_until='networkidle')
         page.wait_for_function("!document.querySelector('#btn-title-start').disabled"); page.evaluate("document.getElementById('btn-title-start').click()")
         page.locator('#guardian-lobby .sg-nav').wait_for()
         for _ in range(6): page.wait_for_timeout(400); page.evaluate("document.querySelectorAll('dialog[open]').forEach(d=>d.close())")
-        page.locator(f'.sg-chapter-chip[data-chapter="{(int(args.stage[2:]) - 1) // 5 + 1}"]').click(); page.wait_for_timeout(300)
+        page.evaluate(f"document.querySelector('.sg-chapter-chip[data-chapter=\"{(int(args.stage[2:]) - 1) // 5 + 1}\"]').click()"); page.wait_for_timeout(300)
         page.locator(f'[data-stage="{args.stage}"]').click(); page.wait_for_timeout(300); page.locator('#sg-start').click(); page.locator('#levelup:not(.hidden)').wait_for()
         page.evaluate("""()=>{window.__pilotAvoid=2;window.__pilotGod=true;window.__sgCombatLoad(['EVO_F1','EVO_W1','EVO_L1','EVO_V2'],{},{S5:3,S1:3});window.__debugPilot(120);window.__debugGod=true;}""")
         page.evaluate("()=>{const t=Object.keys(window.__sgSnapshot().enemyTypes);window.__debugSpawn(t[0]||'T2_DUST',130,420);window.__debugBench(1,10,true,%s);}" % (1.5 if dsf > 1.5 else dsf))
