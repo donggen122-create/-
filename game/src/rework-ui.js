@@ -49,12 +49,12 @@ const starText=n=>'★'.repeat(Math.max(0,Math.min(3,n)));
 
 // 모험 장(챕터) — 2026-09-23 밤 사용자 "챕터 이동 버튼, 스테이지 UI 색감도 테마 분위기에 맞게". 1장은 지금 단계(R.STAGES),
 // 2장 대기오염 공장 지대는 그림이 오면 연다(이미지 에셋/테마2_대기오염_프롬프트.md). 색은 rework.css의 .sg-theme-1 ~ .sg-theme-4.
-// short = 휴대폰(760px 이하)·좁은 태블릿 장 단추 이름(2026-10-07: 장이 4개가 되어 3글자 이하로 — 단추 하나가 약 59px)
+// short = 휴대폰(760px 이하)·세로 태블릿 장 단추 이름. 좁은 화면(920px 이하)에서는 장 단추를 2개씩 보여 주고 ‹ › 로 넘긴다(2026-10-07 사용자, chapterBar).
 const CHAPTERS=[
- {n:'1',from:0,eyebrow:'CHAPTER 01',name:'쓰레기 마을',short:'쓰레기',title:'다섯 원소로 지키는 마을',sub:'이동에 집중하세요. 공격은 자동으로, 스킬은 내 선택으로.',art:'t1',pictures:['en_snackbag','en_buttbug','en_bottle','en_baggy','boss_calm']},
- {n:'2',from:5,eyebrow:'CHAPTER 02',name:'대기오염 공장 지대',short:'공장',title:'매연을 걷어 내는 공장 지대',sub:'굴뚝마다 시커먼 매연! 먼지몬·가스몬·세균몬을 정화하고 맑은 공기를 되찾아요.',art:'t2',pictures:['en_dust','en_gas','en_germ','en_raincloud','boss_calm']},
- {n:'3',from:10,eyebrow:'CHAPTER 03',name:'오염된 하천',short:'하천',title:'물고기가 돌아오는 맑은 개울',sub:'세제 거품·기름·버려진 그물로 개울이 아파요! 우리 학교 친구들이 만든 하천 몬스터를 정화하고 걸린 물고기를 구해요.',art:'t3',pictures:['en_bubble','en_petri','en_net','en_netmon','boss_calm']},
- {n:'4',from:15,eyebrow:'CHAPTER 04',name:'불타는 숲',short:'숲',title:'새싹이 다시 돋는 초록 숲',sub:'버려진 캠핑 쓰레기·벌목·외래종·산불로 숲이 아파요! 우리 학교 친구들이 만든 숲 몬스터를 정화하고 타는 불씨를 꺼요.',art:'t4',pictures:['en_burner_m','en_saw','en_dozer','en_bulki','boss_calm']},
+ {n:'1',from:0,eyebrow:'CHAPTER 01',name:'쓰레기 마을',short:'쓰레기 마을',title:'다섯 원소로 지키는 마을',sub:'이동에 집중하세요. 공격은 자동으로, 스킬은 내 선택으로.',art:'t1',pictures:['en_snackbag','en_buttbug','en_bottle','en_baggy','boss_calm']},
+ {n:'2',from:5,eyebrow:'CHAPTER 02',name:'대기오염 공장 지대',short:'대기오염',title:'매연을 걷어 내는 공장 지대',sub:'굴뚝마다 시커먼 매연! 먼지몬·가스몬·세균몬을 정화하고 맑은 공기를 되찾아요.',art:'t2',pictures:['en_dust','en_gas','en_germ','en_raincloud','boss_calm']},
+ {n:'3',from:10,eyebrow:'CHAPTER 03',name:'오염된 하천',short:'오염된 하천',title:'물고기가 돌아오는 맑은 개울',sub:'세제 거품·기름·버려진 그물로 개울이 아파요! 우리 학교 친구들이 만든 하천 몬스터를 정화하고 걸린 물고기를 구해요.',art:'t3',pictures:['en_bubble','en_petri','en_net','en_netmon','boss_calm']},
+ {n:'4',from:15,eyebrow:'CHAPTER 04',name:'불타는 숲',short:'불타는 숲',title:'새싹이 다시 돋는 초록 숲',sub:'버려진 캠핑 쓰레기·벌목·외래종·산불로 숲이 아파요! 우리 학교 친구들이 만든 숲 몬스터를 정화하고 타는 불씨를 꺼요.',art:'t4',pictures:['en_burner_m','en_saw','en_dozer','en_bulki','boss_calm']},
 ];
 const chapterStages=c=>R.STAGES.slice(c.from,c.from+5);
 export class GuardianUI {
@@ -152,10 +152,11 @@ export class GuardianUI {
     });
   }
   // 장 이동 막대: ‹ [1장 쓰레기 마을] [2장 대기오염 공장 지대] ›
+  // 좁은 화면(rework.css 920px 이하)은 지금 장이 든 2개 묶음만 보인다(sg-page-off는 숨김) — ‹ › 로 장을 옮기면 다음 묶음이 보인다.
   chapterBar(p,cur){
-    const i=CHAPTERS.indexOf(cur),prev=CHAPTERS[i-1],next=CHAPTERS[i+1];
+    const i=CHAPTERS.indexOf(cur),prev=CHAPTERS[i-1],next=CHAPTERS[i+1],page=Math.floor(i/2);
     const state=c=>{const st=chapterStages(c);return R.stageUnlocked(p,st[0].id)?`${st.filter(s=>p.stages[s.id]?.cleared).length} / 5 정화`:`${Number(c.n)-1}-5 정화 후 열림`;};
-    return `<nav class="sg-chapter-bar" aria-label="장 이동"><button class="sg-chapter-arrow" ${prev?`data-chapter="${prev.n}"`:'disabled'} aria-label="이전 장">‹</button><div class="sg-chapter-chips">${CHAPTERS.map(c=>`<button class="sg-chapter-chip sg-chip-${c.n} ${c===cur?'on':''}" data-chapter="${c.n}" aria-current="${c===cur?'true':'false'}"><b>${c.n}장</b><span><i class="sg-long">${esc(c.name)}</i><i class="sg-short">${esc(c.short)}</i></span><small>${state(c)}</small></button>`).join('')}</div><button class="sg-chapter-arrow" ${next?`data-chapter="${next.n}"`:'disabled'} aria-label="다음 장">›</button></nav>`;
+    return `<nav class="sg-chapter-bar" aria-label="장 이동"><button class="sg-chapter-arrow" ${prev?`data-chapter="${prev.n}"`:'disabled'} aria-label="이전 장">‹</button><div class="sg-chapter-chips">${CHAPTERS.map((c,k)=>`<button class="sg-chapter-chip sg-chip-${c.n} ${c===cur?'on':''} ${Math.floor(k/2)!==page?'sg-page-off':''}" data-chapter="${c.n}" aria-current="${c===cur?'true':'false'}"><b>${c.n}장</b><span><i class="sg-long">${esc(c.name)}</i><i class="sg-short">${esc(c.short)}</i></span><small>${state(c)}</small></button>`).join('')}</div><button class="sg-chapter-arrow" ${next?`data-chapter="${next.n}"`:'disabled'} aria-label="다음 장">›</button></nav>`;
   }
   lockedChapter(p,c,stages){
     return `${this.titleBar(c.title,'data-info="adventure"','<span class="sg-progress">잠김</span>')}

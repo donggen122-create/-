@@ -718,6 +718,8 @@
 }
 /* 좁은 태블릿(761~920px): 장 단추는 짧은 이름, 훈련 카드 이름은 한 줄 */
 @media(min-width:761px) and (max-width:920px){.sg-chapter-chip .sg-long{display:none}.sg-chapter-chip .sg-short{display:inline;white-space:nowrap}}
-@media(min-width:761px) and (max-width:920px){#guardian-lobby .sg-chapter-chip{flex:1 1 0;min-width:0;padding:8px 10px!important}.sg-chapter-chip>small{white-space:nowrap}}   /* 2026-10-07: 장 4개가 세로 태블릿(768·820)에서 한 줄에 다 보이게 */
+@media(min-width:761px) and (max-width:920px){#guardian-lobby .sg-chapter-chip{flex:1 1 0;min-width:0}.sg-chapter-chip>small{white-space:nowrap}}
+/* 2026-10-07 사용자: 장이 4개라 좁은 화면(휴대폰·세로 태블릿)은 2개씩 보여 주고 ‹ › 로 다음 장 묶음을 본다(rework-ui chapterBar) */
+@media(max-width:920px){#guardian-lobby .sg-chapter-chip.sg-page-off{display:none!important}}
 .sg-training .sg-panel-title .sg-eyebrow{white-space:nowrap}
 .sg-nav>button>span{white-space:nowrap}   /* 아래 메뉴: '파츠 2'의 숫자가 아랫줄로 떨어지지 않게 */
