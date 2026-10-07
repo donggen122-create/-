@@ -1,5 +1,5 @@
 ﻿# game/ → dist_single/LUMEN.html (서버 없이 더블클릭으로 열리는 단일 파일판)
-# ES 모듈은 file:// 에서 브라우저가 막기 때문에, 모듈 8개를 의존 순서대로 하나의 일반 스크립트로 합치고
+# ES 모듈은 file:// 에서 브라우저가 막기 때문에, 모듈을 의존 순서대로 하나의 일반 스크립트로 합치고
 # 이미지·효과음은 data: URI로 박아 넣는다. 원본 코드(game/src)는 건드리지 않는다.
 # 사용: powershell -ExecutionPolicy Bypass -File game/tools/build-single.ps1
 
@@ -10,6 +10,13 @@ $utf8 = New-Object System.Text.UTF8Encoding $false
 
 function ReadText($p) { return [System.IO.File]::ReadAllText($p, [System.Text.Encoding]::UTF8) }
 function DataUri($p) {
+  # Chapter 1 predates the chapter-card art. Use its existing title backdrop.
+  if (-not (Test-Path -LiteralPath $p)) {
+    if ($p.Replace("\", "/").EndsWith("/assets/sprites/t1/card_clean.jpg")) {
+      return (DataUri (Join-Path $root "assets\ui\title_landscape.jpg"))
+    }
+    throw "에셋 파일이 없음: $p"
+  }
   $ext = [System.IO.Path]::GetExtension($p).ToLower()
   $mime = @{ ".png" = "image/png"; ".ogg" = "audio/ogg"; ".mp3" = "audio/mpeg"; ".jpg" = "image/jpeg"; ".woff2" = "font/woff2"; ".svg" = "image/svg+xml" }[$ext]
   if (-not $mime) { throw "알 수 없는 에셋 형식: $p" }
@@ -17,7 +24,7 @@ function DataUri($p) {
 }
 
 # 의존 순서(앞 모듈이 뒤 모듈에 쓰인다). rework-*는 Codex 개편(Guardian v1) 모듈: core ← content·ui ← main
-$order = @("content.data", "themes", "content", "meta", "save", "assets", "cloud", "economy", "ecoui", "theme-effects", "element-content", "rework-core", "boss-patterns", "rework-content", "element-effects", "element-combat", "weapon-effects", "rework-ui", "music", "runtime-performance", "main")
+$order = @("content.data", "themes", "content", "meta", "save", "assets", "cloud", "economy", "ecoui", "theme-effects", "element-content", "equipment", "rework-core", "boss-patterns", "rework-content", "element-effects", "element-combat", "weapon-effects", "ui2-art", "rework-ui", "music", "runtime-performance", "main")
 $sb = New-Object System.Text.StringBuilder
 [void]$sb.AppendLine("var __m = {};")
 
@@ -25,10 +32,11 @@ $sb = New-Object System.Text.StringBuilder
 # 해당 폴더의 파일을 전부 표(__ASSETS)로 넣고 __asset("seoho_v1/...")로 찾게 한다
 $assetMap = New-Object System.Text.StringBuilder
 [void]$assetMap.AppendLine("var __ASSETS = {")
-foreach ($dir in @("seoho_v1", "elements_v2", "sprites\heroes", "sprites\skills")) {
+foreach ($dir in @("seoho_v1", "elements_v2", "sprites", "ui", "ui2")) {
   $base = Join-Path $root "assets\$dir"
   if (-not (Test-Path $base)) { continue }
   foreach ($f in (Get-ChildItem $base -Recurse -File)) {
+    if ($f.Extension -notin @('.png','.jpg','.svg','.woff2','.ogg','.mp3')) { continue }
     $rel = $f.FullName.Substring((Join-Path $root "assets").Length + 1).Replace("\", "/")
     [void]$assetMap.AppendLine('"' + $rel + '": "' + (DataUri $f.FullName) + '",')
   }
@@ -50,9 +58,14 @@ foreach ($name in $order) {
   $src = [regex]::Replace($src, '"\./assets/(audio/[\w.\-]+\.mp3)"', {
     param($m) return '"' + (DataUri (Join-Path $root ("assets\" + $m.Groups[1].Value.Replace("/", "\")))) + '"'
   })
+  # Static URLs can appear in ordinary JS strings AND HTML inside templates.
+  # Replace the URL itself, preserving quotes and the surrounding string type.
+  $src = [regex]::Replace($src, '\./assets/((?:[\w\-]+/)+[\w.\-]+\.(?:png|jpg|woff2|svg))', {
+    param($m) return (DataUri (Join-Path $root ("assets\" + $m.Groups[1].Value.Replace("/", "\"))))
+  })
   # 템플릿 문자열 안의 ./assets/seoho_v1/…, elements_v2/…, sprites/heroes/…, ./assets/${폴더식}/icons/… → ${__asset(`…`)}
   # 경로 뒤쪽은 ${…} 식(안에 따옴표가 있을 수 있음) 또는 따옴표·공백·$ 가 아닌 글자들로 이어진다
-  $src = [regex]::Replace($src, '(?:\./)?assets/((?:seoho_v1|elements_v2|sprites/heroes|sprites/skills|\$\{[^}]*\})/(?:\$\{[^}]*\}|[^`"''\s$])*)', {
+  $src = [regex]::Replace($src, '(?:\./)?assets/((?:seoho_v1|elements_v2|sprites/heroes|sprites/skills|sprites/gear|sprites/ui|sprites|ui2|ui|\$\{[^}]*\})/(?:\$\{[^}]*\}|[^`"''\s$])*)', {
     param($m) return '${__asset(`' + $m.Groups[1].Value + '`)}'
   })
 
@@ -94,9 +107,10 @@ $html = [regex]::Replace($html, '\./assets/((?:[\w\-]+/)+[\w.\-]+\.(?:png|ogg|jp
   param($m) return (DataUri (Join-Path $root ("assets\" + $m.Groups[1].Value.Replace("/", "\"))))
 })
 # Codex 개편 CSS(rework.css)는 <link>로 붙어 있으므로 인라인 <style>로 바꾼다(안의 ../assets/ 경로도 data URI)
-$cssTag = '<link rel="stylesheet" href="./src/rework.css" />'
-if ($html.Contains($cssTag)) {
-  $css = ReadText (Join-Path $root "src\rework.css")
+foreach ($stylesheet in @("rework", "ui-v2")) {
+  $cssTag = '<link rel="stylesheet" href="./src/' + $stylesheet + '.css" />'
+  if (-not $html.Contains($cssTag)) { throw "index.html에서 $stylesheet CSS 태그를 찾지 못함" }
+  $css = ReadText (Join-Path $root "src\$stylesheet.css")
   $css = [regex]::Replace($css, '\.\./assets/((?:[\w\-]+/)+[\w.\-]+\.(?:png|ogg|jpg|woff2|svg))', {
     param($m) return (DataUri (Join-Path $root ("assets\" + $m.Groups[1].Value.Replace("/", "\"))))
   })
