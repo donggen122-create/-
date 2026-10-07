@@ -1,0 +1,1233 @@
+{
+  "code_commit": "86c42c7f1fabec004648ab40eb226fbdd23f86ef",
+  "tests": {
+    "passed": 171,
+    "failed": 0
+  },
+  "responsive_total_issues": 0,
+  "responsive": {
+    "360x640": {
+      "title": {
+        "hOverflow": [],
+        "clipped": [],
+        "overlap": [],
+        "vOverflow": []
+      },
+      "lobby-adventure": {
+        "hOverflow": [],
+        "clipped": [],
+        "overlap": [],
+        "vOverflow": []
+      },
+      "lobby-training": {
+        "hOverflow": [],
+        "clipped": [],
+        "overlap": [],
+        "vOverflow": []
+      },
+      "lobby-parts": {
+        "hOverflow": [],
+        "clipped": [],
+        "overlap": [],
+        "vOverflow": []
+      },
+      "lobby-gear": {
+        "hOverflow": [],
+        "clipped": [],
+        "overlap": [],
+        "vOverflow": [],
+        "gearLayout": [],
+        "gearHeightRange": {
+          "min": 88.75,
+          "max": 88.75
+        },
+        "gearIconSize": []
+      },
+      "lobby-friends": {
+        "hOverflow": [],
+        "clipped": [],
+        "overlap": [],
+        "vOverflow": []
+      },
+      "lobby-book": {
+        "hOverflow": [],
+        "clipped": [],
+        "overlap": [],
+        "vOverflow": []
+      },
+      "dialog-supply-help": {
+        "hOverflow": [],
+        "clipped": [],
+        "overlap": [],
+        "vOverflow": []
+      },
+      "dialog-gear-help": {
+        "hOverflow": [],
+        "clipped": [],
+        "overlap": [],
+        "vOverflow": [],
+        "gearIconSize": []
+      },
+      "dialog-gear-slot": {
+        "hOverflow": [],
+        "clipped": [],
+        "overlap": [],
+        "vOverflow": [],
+        "gearIconSize": []
+      },
+      "dialog-gear-bag": {
+        "hOverflow": [],
+        "clipped": [],
+        "overlap": [],
+        "vOverflow": [],
+        "gearIconSize": []
+      },
+      "dialog-gear-detail": {
+        "hOverflow": [],
+        "clipped": [],
+        "overlap": [],
+        "vOverflow": [],
+        "gearIconSize": []
+      },
+      "dialog-gear-set": {
+        "hOverflow": [],
+        "clipped": [],
+        "overlap": [],
+        "vOverflow": [],
+        "gearIconSize": []
+      },
+      "levelup": {
+        "hOverflow": [],
+        "clipped": [],
+        "overlap": [],
+        "vOverflow": []
+      },
+      "battle": {
+        "hOverflow": [],
+        "clipped": [],
+        "overlap": [],
+        "vOverflow": [],
+        "bossBarY": null
+      },
+      "pause": {
+        "hOverflow": [],
+        "clipped": [],
+        "overlap": [],
+        "vOverflow": []
+      },
+      "result": {
+        "hOverflow": [],
+        "clipped": [],
+        "overlap": [],
+        "vOverflow": []
+      },
+      "_pageErrors": []
+    },
+    "375x667": {
+      "title": {
+        "hOverflow": [],
+        "clipped": [],
+        "overlap": [],
+        "vOverflow": []
+      },
+      "lobby-adventure": {
+        "hOverflow": [],
+        "clipped": [],
+        "overlap": [],
+        "vOverflow": []
+      },
+      "lobby-training": {
+        "hOverflow": [],
+        "clipped": [],
+        "overlap": [],
+        "vOverflow": []
+      },
+      "lobby-parts": {
+        "hOverflow": [],
+        "clipped": [],
+        "overlap": [],
+        "vOverflow": []
+      },
+      "lobby-gear": {
+        "hOverflow": [],
+        "clipped": [],
+        "overlap": [],
+        "vOverflow": [],
+        "gearLayout": [],
+        "gearHeightRange": {
+          "min": 88.75,
+          "max": 88.75
+        },
+        "gearIconSize": []
+      },
+      "lobby-friends": {
+        "hOverflow": [],
+        "clipped": [],
+        "overlap": [],
+        "vOverflow": []
+      },
+      "lobby-book": {
+        "hOverflow": [],
+        "clipped": [],
+        "overlap": [],
+        "vOverflow": []
+      },
+      "dialog-supply-help": {
+        "hOverflow": [],
+        "clipped": [],
+        "overlap": [],
+        "vOverflow": []
+      },
+      "dialog-gear-help": {
+        "hOverflow": [],
+        "clipped": [],
+        "overlap": [],
+        "vOverflow": [],
+        "gearIconSize": []
+      },
+      "dialog-gear-slot": {
+        "hOverflow": [],
+        "clipped": [],
+        "overlap": [],
+        "vOverflow": [],
+        "gearIconSize": []
+      },
+      "dialog-gear-bag": {
+        "hOverflow": [],
+        "clipped": [],
+        "overlap": [],
+        "vOverflow": [],
+        "gearIconSize": []
+      },
+      "dialog-gear-detail": {
+        "hOverflow": [],
+        "clipped": [],
+        "overlap": [],
+        "vOverflow": [],
+        "gearIconSize": []
+      },
+      "dialog-gear-set": {
+        "hOverflow": [],
+        "clipped": [],
+        "overlap": [],
+        "vOverflow": [],
+        "gearIconSize": []
+      },
+      "levelup": {
+        "hOverflow": [],
+        "clipped": [],
+        "overlap": [],
+        "vOverflow": []
+      },
+      "battle": {
+        "hOverflow": [],
+        "clipped": [],
+        "overlap": [],
+        "vOverflow": [],
+        "bossBarY": null
+      },
+      "pause": {
+        "hOverflow": [],
+        "clipped": [],
+        "overlap": [],
+        "vOverflow": []
+      },
+      "result": {
+        "hOverflow": [],
+        "clipped": [],
+        "overlap": [],
+        "vOverflow": []
+      },
+      "_pageErrors": []
+    },
+    "768x1024": {
+      "title": {
+        "hOverflow": [],
+        "clipped": [],
+        "overlap": [],
+        "vOverflow": []
+      },
+      "lobby-adventure": {
+        "hOverflow": [],
+        "clipped": [],
+        "overlap": [],
+        "vOverflow": []
+      },
+      "lobby-training": {
+        "hOverflow": [],
+        "clipped": [],
+        "overlap": [],
+        "vOverflow": []
+      },
+      "lobby-parts": {
+        "hOverflow": [],
+        "clipped": [],
+        "overlap": [],
+        "vOverflow": []
+      },
+      "lobby-gear": {
+        "hOverflow": [],
+        "clipped": [],
+        "overlap": [],
+        "vOverflow": [],
+        "gearLayout": [],
+        "gearHeightRange": {
+          "min": 62.453125,
+          "max": 62.46875
+        },
+        "gearIconSize": []
+      },
+      "lobby-friends": {
+        "hOverflow": [],
+        "clipped": [],
+        "overlap": [],
+        "vOverflow": []
+      },
+      "lobby-book": {
+        "hOverflow": [],
+        "clipped": [],
+        "overlap": [],
+        "vOverflow": []
+      },
+      "dialog-supply-help": {
+        "hOverflow": [],
+        "clipped": [],
+        "overlap": [],
+        "vOverflow": []
+      },
+      "dialog-gear-help": {
+        "hOverflow": [],
+        "clipped": [],
+        "overlap": [],
+        "vOverflow": [],
+        "gearIconSize": []
+      },
+      "dialog-gear-slot": {
+        "hOverflow": [],
+        "clipped": [],
+        "overlap": [],
+        "vOverflow": [],
+        "gearIconSize": []
+      },
+      "dialog-gear-bag": {
+        "hOverflow": [],
+        "clipped": [],
+        "overlap": [],
+        "vOverflow": [],
+        "gearIconSize": []
+      },
+      "dialog-gear-detail": {
+        "hOverflow": [],
+        "clipped": [],
+        "overlap": [],
+        "vOverflow": [],
+        "gearIconSize": []
+      },
+      "dialog-gear-set": {
+        "hOverflow": [],
+        "clipped": [],
+        "overlap": [],
+        "vOverflow": [],
+        "gearIconSize": []
+      },
+      "levelup": {
+        "hOverflow": [],
+        "clipped": [],
+        "overlap": [],
+        "vOverflow": []
+      },
+      "battle": {
+        "hOverflow": [],
+        "clipped": [],
+        "overlap": [],
+        "vOverflow": [],
+        "bossBarY": null
+      },
+      "pause": {
+        "hOverflow": [],
+        "clipped": [],
+        "overlap": [],
+        "vOverflow": []
+      },
+      "result": {
+        "hOverflow": [],
+        "clipped": [],
+        "overlap": [],
+        "vOverflow": []
+      },
+      "_pageErrors": []
+    },
+    "820x1180": {
+      "title": {
+        "hOverflow": [],
+        "clipped": [],
+        "overlap": [],
+        "vOverflow": []
+      },
+      "lobby-adventure": {
+        "hOverflow": [],
+        "clipped": [],
+        "overlap": [],
+        "vOverflow": []
+      },
+      "lobby-training": {
+        "hOverflow": [],
+        "clipped": [],
+        "overlap": [],
+        "vOverflow": []
+      },
+      "lobby-parts": {
+        "hOverflow": [],
+        "clipped": [],
+        "overlap": [],
+        "vOverflow": []
+      },
+      "lobby-gear": {
+        "hOverflow": [],
+        "clipped": [],
+        "overlap": [],
+        "vOverflow": [],
+        "gearLayout": [],
+        "gearHeightRange": {
+          "min": 62.453125,
+          "max": 62.46875
+        },
+        "gearIconSize": []
+      },
+      "lobby-friends": {
+        "hOverflow": [],
+        "clipped": [],
+        "overlap": [],
+        "vOverflow": []
+      },
+      "lobby-book": {
+        "hOverflow": [],
+        "clipped": [],
+        "overlap": [],
+        "vOverflow": []
+      },
+      "dialog-supply-help": {
+        "hOverflow": [],
+        "clipped": [],
+        "overlap": [],
+        "vOverflow": []
+      },
+      "dialog-gear-help": {
+        "hOverflow": [],
+        "clipped": [],
+        "overlap": [],
+        "vOverflow": [],
+        "gearIconSize": []
+      },
+      "dialog-gear-slot": {
+        "hOverflow": [],
+        "clipped": [],
+        "overlap": [],
+        "vOverflow": [],
+        "gearIconSize": []
+      },
+      "dialog-gear-bag": {
+        "hOverflow": [],
+        "clipped": [],
+        "overlap": [],
+        "vOverflow": [],
+        "gearIconSize": []
+      },
+      "dialog-gear-detail": {
+        "hOverflow": [],
+        "clipped": [],
+        "overlap": [],
+        "vOverflow": [],
+        "gearIconSize": []
+      },
+      "dialog-gear-set": {
+        "hOverflow": [],
+        "clipped": [],
+        "overlap": [],
+        "vOverflow": [],
+        "gearIconSize": []
+      },
+      "levelup": {
+        "hOverflow": [],
+        "clipped": [],
+        "overlap": [],
+        "vOverflow": []
+      },
+      "battle": {
+        "hOverflow": [],
+        "clipped": [],
+        "overlap": [],
+        "vOverflow": [],
+        "bossBarY": null
+      },
+      "pause": {
+        "hOverflow": [],
+        "clipped": [],
+        "overlap": [],
+        "vOverflow": []
+      },
+      "result": {
+        "hOverflow": [],
+        "clipped": [],
+        "overlap": [],
+        "vOverflow": []
+      },
+      "_pageErrors": []
+    },
+    "1024x768": {
+      "title": {
+        "hOverflow": [],
+        "clipped": [],
+        "overlap": [],
+        "vOverflow": []
+      },
+      "lobby-adventure": {
+        "hOverflow": [],
+        "clipped": [],
+        "overlap": [],
+        "vOverflow": []
+      },
+      "lobby-training": {
+        "hOverflow": [],
+        "clipped": [],
+        "overlap": [],
+        "vOverflow": []
+      },
+      "lobby-parts": {
+        "hOverflow": [],
+        "clipped": [],
+        "overlap": [],
+        "vOverflow": []
+      },
+      "lobby-gear": {
+        "hOverflow": [],
+        "clipped": [],
+        "overlap": [],
+        "vOverflow": [],
+        "gearLayout": [],
+        "gearHeightRange": {
+          "min": 62.453125,
+          "max": 62.46875
+        },
+        "gearIconSize": []
+      },
+      "lobby-friends": {
+        "hOverflow": [],
+        "clipped": [],
+        "overlap": [],
+        "vOverflow": []
+      },
+      "lobby-book": {
+        "hOverflow": [],
+        "clipped": [],
+        "overlap": [],
+        "vOverflow": []
+      },
+      "dialog-supply-help": {
+        "hOverflow": [],
+        "clipped": [],
+        "overlap": [],
+        "vOverflow": []
+      },
+      "dialog-gear-help": {
+        "hOverflow": [],
+        "clipped": [],
+        "overlap": [],
+        "vOverflow": [],
+        "gearIconSize": []
+      },
+      "dialog-gear-slot": {
+        "hOverflow": [],
+        "clipped": [],
+        "overlap": [],
+        "vOverflow": [],
+        "gearIconSize": []
+      },
+      "dialog-gear-bag": {
+        "hOverflow": [],
+        "clipped": [],
+        "overlap": [],
+        "vOverflow": [],
+        "gearIconSize": []
+      },
+      "dialog-gear-detail": {
+        "hOverflow": [],
+        "clipped": [],
+        "overlap": [],
+        "vOverflow": [],
+        "gearIconSize": []
+      },
+      "dialog-gear-set": {
+        "hOverflow": [],
+        "clipped": [],
+        "overlap": [],
+        "vOverflow": [],
+        "gearIconSize": []
+      },
+      "levelup": {
+        "hOverflow": [],
+        "clipped": [],
+        "overlap": [],
+        "vOverflow": []
+      },
+      "battle": {
+        "hOverflow": [],
+        "clipped": [],
+        "overlap": [],
+        "vOverflow": [],
+        "bossBarY": null
+      },
+      "pause": {
+        "hOverflow": [],
+        "clipped": [],
+        "overlap": [],
+        "vOverflow": []
+      },
+      "result": {
+        "hOverflow": [],
+        "clipped": [],
+        "overlap": [],
+        "vOverflow": []
+      },
+      "_pageErrors": []
+    },
+    "1280x720": {
+      "title": {
+        "hOverflow": [],
+        "clipped": [],
+        "overlap": [],
+        "vOverflow": []
+      },
+      "lobby-adventure": {
+        "hOverflow": [],
+        "clipped": [],
+        "overlap": [],
+        "vOverflow": []
+      },
+      "lobby-training": {
+        "hOverflow": [],
+        "clipped": [],
+        "overlap": [],
+        "vOverflow": []
+      },
+      "lobby-parts": {
+        "hOverflow": [],
+        "clipped": [],
+        "overlap": [],
+        "vOverflow": []
+      },
+      "lobby-gear": {
+        "hOverflow": [],
+        "clipped": [],
+        "overlap": [],
+        "vOverflow": [],
+        "gearLayout": [],
+        "gearHeightRange": {
+          "min": 62.453125,
+          "max": 62.46875
+        },
+        "gearIconSize": []
+      },
+      "lobby-friends": {
+        "hOverflow": [],
+        "clipped": [],
+        "overlap": [],
+        "vOverflow": []
+      },
+      "lobby-book": {
+        "hOverflow": [],
+        "clipped": [],
+        "overlap": [],
+        "vOverflow": []
+      },
+      "dialog-supply-help": {
+        "hOverflow": [],
+        "clipped": [],
+        "overlap": [],
+        "vOverflow": []
+      },
+      "dialog-gear-help": {
+        "hOverflow": [],
+        "clipped": [],
+        "overlap": [],
+        "vOverflow": [],
+        "gearIconSize": []
+      },
+      "dialog-gear-slot": {
+        "hOverflow": [],
+        "clipped": [],
+        "overlap": [],
+        "vOverflow": [],
+        "gearIconSize": []
+      },
+      "dialog-gear-bag": {
+        "hOverflow": [],
+        "clipped": [],
+        "overlap": [],
+        "vOverflow": [],
+        "gearIconSize": []
+      },
+      "dialog-gear-detail": {
+        "hOverflow": [],
+        "clipped": [],
+        "overlap": [],
+        "vOverflow": [],
+        "gearIconSize": []
+      },
+      "dialog-gear-set": {
+        "hOverflow": [],
+        "clipped": [],
+        "overlap": [],
+        "vOverflow": [],
+        "gearIconSize": []
+      },
+      "levelup": {
+        "hOverflow": [],
+        "clipped": [],
+        "overlap": [],
+        "vOverflow": []
+      },
+      "battle": {
+        "hOverflow": [],
+        "clipped": [],
+        "overlap": [],
+        "vOverflow": [],
+        "bossBarY": null
+      },
+      "pause": {
+        "hOverflow": [],
+        "clipped": [],
+        "overlap": [],
+        "vOverflow": []
+      },
+      "result": {
+        "hOverflow": [],
+        "clipped": [],
+        "overlap": [],
+        "vOverflow": []
+      },
+      "_pageErrors": []
+    }
+  },
+  "ui1_dom": {
+    "v1-dom-1280-adventure": true,
+    "v1-dom-1280-training": true,
+    "v1-dom-1280-parts": true,
+    "v1-dom-1280-gear": true,
+    "v1-dom-1280-friends": true,
+    "v1-dom-1280-book": true,
+    "errors-ui1-1280": [],
+    "v1-dom-375-adventure": true,
+    "v1-dom-375-training": true,
+    "v1-dom-375-parts": true,
+    "v1-dom-375-gear": true,
+    "v1-dom-375-friends": true,
+    "v1-dom-375-book": true,
+    "errors-ui1-375": []
+  },
+  "training": {
+    "training-cards-1280": [
+      {
+        "height": 360,
+        "top": 249.6875,
+        "art": 150,
+        "valueFont": "56px"
+      },
+      {
+        "height": 360,
+        "top": 249.6875,
+        "art": 150,
+        "valueFont": "56px"
+      },
+      {
+        "height": 360,
+        "top": 249.6875,
+        "art": 150,
+        "valueFont": "56px"
+      }
+    ],
+    "training-1280x720": [
+      {
+        "bottom": 579.078125,
+        "disabled": false,
+        "text": "훈련하기 · 758 코인"
+      },
+      {
+        "bottom": 579.078125,
+        "disabled": false,
+        "text": "훈련하기 · 758 코인"
+      },
+      {
+        "bottom": 579.078125,
+        "disabled": false,
+        "text": "훈련하기 · 518 코인"
+      }
+    ],
+    "training-cards-375": [
+      {
+        "height": 127.59375,
+        "top": 176,
+        "art": 72,
+        "valueFont": "32px"
+      },
+      {
+        "height": 127.59375,
+        "top": 313.59375,
+        "art": 72,
+        "valueFont": "32px"
+      },
+      {
+        "height": 127.59375,
+        "top": 451.1875,
+        "art": 72,
+        "valueFont": "32px"
+      }
+    ],
+    "training-375x812": [
+      {
+        "bottom": 294.59375,
+        "disabled": false,
+        "text": "훈련하기 · 758 코인"
+      },
+      {
+        "bottom": 432.1875,
+        "disabled": false,
+        "text": "훈련하기 · 758 코인"
+      },
+      {
+        "bottom": 569.78125,
+        "disabled": false,
+        "text": "훈련하기 · 518 코인"
+      }
+    ],
+    "training-375x667": [
+      {
+        "bottom": 294.59375
+      },
+      {
+        "bottom": 432.1875
+      },
+      {
+        "bottom": 569.78125
+      }
+    ]
+  },
+  "supply": {
+    "1280x720": {
+      "box_button": {
+        "bg": "rgba(0, 0, 0, 0)",
+        "border": "0px",
+        "shadow": "none"
+      },
+      "prereveal_same_art_and_style": true,
+      "prereveal_pixels_identical": true,
+      "max_rgb_error_by_stage": {
+        "drop": 0,
+        "open": 0,
+        "reveal": 0
+      },
+      "party": {
+        "0": {
+          "color": "#9aa8b1",
+          "confetti": 0
+        },
+        "4": {
+          "color": "#e0b53c",
+          "confetti": 44
+        }
+      },
+      "page_errors": []
+    },
+    "375x812": {
+      "box_button": {
+        "bg": "rgba(0, 0, 0, 0)",
+        "border": "0px",
+        "shadow": "none"
+      },
+      "prereveal_same_art_and_style": true,
+      "prereveal_pixels_identical": true,
+      "max_rgb_error_by_stage": {
+        "drop": 0,
+        "open": 0,
+        "reveal": 0
+      },
+      "party": {
+        "0": {
+          "color": "#9aa8b1",
+          "confetti": 0
+        },
+        "4": {
+          "color": "#e0b53c",
+          "confetti": 44
+        }
+      },
+      "page_errors": []
+    }
+  },
+  "hud": {
+    "360x640": {
+      "audit": {
+        "hOverflow": [],
+        "clipped": [],
+        "overlap": [],
+        "vOverflow": [],
+        "bossBarY": null
+      },
+      "empty_slots": [
+        {
+          "background": "rgb(18, 26, 60)",
+          "border": "solid",
+          "shadow": "rgba(0, 0, 0, 0.6) 0px 3px 5px 0px inset, rgba(255, 255, 255, 0.07) 0px -1px 0px 0px inset",
+          "plusX": "12px",
+          "plusY": "12px"
+        },
+        {
+          "background": "rgb(18, 26, 60)",
+          "border": "solid",
+          "shadow": "rgba(0, 0, 0, 0.6) 0px 3px 5px 0px inset, rgba(255, 255, 255, 0.07) 0px -1px 0px 0px inset",
+          "plusX": "12px",
+          "plusY": "12px"
+        },
+        {
+          "background": "rgb(18, 26, 60)",
+          "border": "solid",
+          "shadow": "rgba(0, 0, 0, 0.6) 0px 3px 5px 0px inset, rgba(255, 255, 255, 0.07) 0px -1px 0px 0px inset",
+          "plusX": "12px",
+          "plusY": "12px"
+        },
+        {
+          "background": "rgb(18, 26, 60)",
+          "border": "solid",
+          "shadow": "rgba(0, 0, 0, 0.6) 0px 3px 5px 0px inset, rgba(255, 255, 255, 0.07) 0px -1px 0px 0px inset",
+          "plusX": "12px",
+          "plusY": "12px"
+        },
+        {
+          "background": "rgb(18, 26, 60)",
+          "border": "solid",
+          "shadow": "rgba(0, 0, 0, 0.6) 0px 3px 5px 0px inset, rgba(255, 255, 255, 0.07) 0px -1px 0px 0px inset",
+          "plusX": "12px",
+          "plusY": "12px"
+        },
+        {
+          "background": "rgb(18, 26, 60)",
+          "border": "solid",
+          "shadow": "rgba(0, 0, 0, 0.6) 0px 3px 5px 0px inset, rgba(255, 255, 255, 0.07) 0px -1px 0px 0px inset",
+          "plusX": "12px",
+          "plusY": "12px"
+        }
+      ]
+    },
+    "375x667": {
+      "audit": {
+        "hOverflow": [],
+        "clipped": [],
+        "overlap": [],
+        "vOverflow": [],
+        "bossBarY": null
+      },
+      "empty_slots": [
+        {
+          "background": "rgb(18, 26, 60)",
+          "border": "solid",
+          "shadow": "rgba(0, 0, 0, 0.6) 0px 3px 5px 0px inset, rgba(255, 255, 255, 0.07) 0px -1px 0px 0px inset",
+          "plusX": "12px",
+          "plusY": "12px"
+        },
+        {
+          "background": "rgb(18, 26, 60)",
+          "border": "solid",
+          "shadow": "rgba(0, 0, 0, 0.6) 0px 3px 5px 0px inset, rgba(255, 255, 255, 0.07) 0px -1px 0px 0px inset",
+          "plusX": "12px",
+          "plusY": "12px"
+        },
+        {
+          "background": "rgb(18, 26, 60)",
+          "border": "solid",
+          "shadow": "rgba(0, 0, 0, 0.6) 0px 3px 5px 0px inset, rgba(255, 255, 255, 0.07) 0px -1px 0px 0px inset",
+          "plusX": "12px",
+          "plusY": "12px"
+        },
+        {
+          "background": "rgb(18, 26, 60)",
+          "border": "solid",
+          "shadow": "rgba(0, 0, 0, 0.6) 0px 3px 5px 0px inset, rgba(255, 255, 255, 0.07) 0px -1px 0px 0px inset",
+          "plusX": "12px",
+          "plusY": "12px"
+        },
+        {
+          "background": "rgb(18, 26, 60)",
+          "border": "solid",
+          "shadow": "rgba(0, 0, 0, 0.6) 0px 3px 5px 0px inset, rgba(255, 255, 255, 0.07) 0px -1px 0px 0px inset",
+          "plusX": "12px",
+          "plusY": "12px"
+        },
+        {
+          "background": "rgb(18, 26, 60)",
+          "border": "solid",
+          "shadow": "rgba(0, 0, 0, 0.6) 0px 3px 5px 0px inset, rgba(255, 255, 255, 0.07) 0px -1px 0px 0px inset",
+          "plusX": "12px",
+          "plusY": "12px"
+        }
+      ]
+    },
+    "768x1024": {
+      "audit": {
+        "hOverflow": [],
+        "clipped": [],
+        "overlap": [],
+        "vOverflow": [],
+        "bossBarY": null
+      },
+      "empty_slots": [
+        {
+          "background": "rgb(18, 26, 60)",
+          "border": "solid",
+          "shadow": "rgba(0, 0, 0, 0.6) 0px 3px 5px 0px inset, rgba(255, 255, 255, 0.07) 0px -1px 0px 0px inset",
+          "plusX": "12px",
+          "plusY": "12px"
+        },
+        {
+          "background": "rgb(18, 26, 60)",
+          "border": "solid",
+          "shadow": "rgba(0, 0, 0, 0.6) 0px 3px 5px 0px inset, rgba(255, 255, 255, 0.07) 0px -1px 0px 0px inset",
+          "plusX": "12px",
+          "plusY": "12px"
+        },
+        {
+          "background": "rgb(18, 26, 60)",
+          "border": "solid",
+          "shadow": "rgba(0, 0, 0, 0.6) 0px 3px 5px 0px inset, rgba(255, 255, 255, 0.07) 0px -1px 0px 0px inset",
+          "plusX": "12px",
+          "plusY": "12px"
+        },
+        {
+          "background": "rgb(18, 26, 60)",
+          "border": "solid",
+          "shadow": "rgba(0, 0, 0, 0.6) 0px 3px 5px 0px inset, rgba(255, 255, 255, 0.07) 0px -1px 0px 0px inset",
+          "plusX": "12px",
+          "plusY": "12px"
+        },
+        {
+          "background": "rgb(18, 26, 60)",
+          "border": "solid",
+          "shadow": "rgba(0, 0, 0, 0.6) 0px 3px 5px 0px inset, rgba(255, 255, 255, 0.07) 0px -1px 0px 0px inset",
+          "plusX": "12px",
+          "plusY": "12px"
+        },
+        {
+          "background": "rgb(18, 26, 60)",
+          "border": "solid",
+          "shadow": "rgba(0, 0, 0, 0.6) 0px 3px 5px 0px inset, rgba(255, 255, 255, 0.07) 0px -1px 0px 0px inset",
+          "plusX": "12px",
+          "plusY": "12px"
+        }
+      ]
+    },
+    "820x1180": {
+      "audit": {
+        "hOverflow": [],
+        "clipped": [],
+        "overlap": [],
+        "vOverflow": [],
+        "bossBarY": null
+      },
+      "empty_slots": [
+        {
+          "background": "rgb(18, 26, 60)",
+          "border": "solid",
+          "shadow": "rgba(0, 0, 0, 0.6) 0px 3px 5px 0px inset, rgba(255, 255, 255, 0.07) 0px -1px 0px 0px inset",
+          "plusX": "12px",
+          "plusY": "12px"
+        },
+        {
+          "background": "rgb(18, 26, 60)",
+          "border": "solid",
+          "shadow": "rgba(0, 0, 0, 0.6) 0px 3px 5px 0px inset, rgba(255, 255, 255, 0.07) 0px -1px 0px 0px inset",
+          "plusX": "12px",
+          "plusY": "12px"
+        },
+        {
+          "background": "rgb(18, 26, 60)",
+          "border": "solid",
+          "shadow": "rgba(0, 0, 0, 0.6) 0px 3px 5px 0px inset, rgba(255, 255, 255, 0.07) 0px -1px 0px 0px inset",
+          "plusX": "12px",
+          "plusY": "12px"
+        },
+        {
+          "background": "rgb(18, 26, 60)",
+          "border": "solid",
+          "shadow": "rgba(0, 0, 0, 0.6) 0px 3px 5px 0px inset, rgba(255, 255, 255, 0.07) 0px -1px 0px 0px inset",
+          "plusX": "12px",
+          "plusY": "12px"
+        },
+        {
+          "background": "rgb(18, 26, 60)",
+          "border": "solid",
+          "shadow": "rgba(0, 0, 0, 0.6) 0px 3px 5px 0px inset, rgba(255, 255, 255, 0.07) 0px -1px 0px 0px inset",
+          "plusX": "12px",
+          "plusY": "12px"
+        },
+        {
+          "background": "rgb(18, 26, 60)",
+          "border": "solid",
+          "shadow": "rgba(0, 0, 0, 0.6) 0px 3px 5px 0px inset, rgba(255, 255, 255, 0.07) 0px -1px 0px 0px inset",
+          "plusX": "12px",
+          "plusY": "12px"
+        }
+      ]
+    },
+    "1024x768": {
+      "audit": {
+        "hOverflow": [],
+        "clipped": [],
+        "overlap": [],
+        "vOverflow": [],
+        "bossBarY": null
+      },
+      "empty_slots": [
+        {
+          "background": "rgb(18, 26, 60)",
+          "border": "solid",
+          "shadow": "rgba(0, 0, 0, 0.6) 0px 3px 5px 0px inset, rgba(255, 255, 255, 0.07) 0px -1px 0px 0px inset",
+          "plusX": "12px",
+          "plusY": "12px"
+        },
+        {
+          "background": "rgb(18, 26, 60)",
+          "border": "solid",
+          "shadow": "rgba(0, 0, 0, 0.6) 0px 3px 5px 0px inset, rgba(255, 255, 255, 0.07) 0px -1px 0px 0px inset",
+          "plusX": "12px",
+          "plusY": "12px"
+        },
+        {
+          "background": "rgb(18, 26, 60)",
+          "border": "solid",
+          "shadow": "rgba(0, 0, 0, 0.6) 0px 3px 5px 0px inset, rgba(255, 255, 255, 0.07) 0px -1px 0px 0px inset",
+          "plusX": "12px",
+          "plusY": "12px"
+        },
+        {
+          "background": "rgb(18, 26, 60)",
+          "border": "solid",
+          "shadow": "rgba(0, 0, 0, 0.6) 0px 3px 5px 0px inset, rgba(255, 255, 255, 0.07) 0px -1px 0px 0px inset",
+          "plusX": "12px",
+          "plusY": "12px"
+        },
+        {
+          "background": "rgb(18, 26, 60)",
+          "border": "solid",
+          "shadow": "rgba(0, 0, 0, 0.6) 0px 3px 5px 0px inset, rgba(255, 255, 255, 0.07) 0px -1px 0px 0px inset",
+          "plusX": "12px",
+          "plusY": "12px"
+        },
+        {
+          "background": "rgb(18, 26, 60)",
+          "border": "solid",
+          "shadow": "rgba(0, 0, 0, 0.6) 0px 3px 5px 0px inset, rgba(255, 255, 255, 0.07) 0px -1px 0px 0px inset",
+          "plusX": "12px",
+          "plusY": "12px"
+        }
+      ]
+    },
+    "1280x720": {
+      "audit": {
+        "hOverflow": [],
+        "clipped": [],
+        "overlap": [],
+        "vOverflow": [],
+        "bossBarY": null
+      },
+      "empty_slots": [
+        {
+          "background": "rgb(18, 26, 60)",
+          "border": "solid",
+          "shadow": "rgba(0, 0, 0, 0.6) 0px 3px 5px 0px inset, rgba(255, 255, 255, 0.07) 0px -1px 0px 0px inset",
+          "plusX": "12px",
+          "plusY": "12px"
+        },
+        {
+          "background": "rgb(18, 26, 60)",
+          "border": "solid",
+          "shadow": "rgba(0, 0, 0, 0.6) 0px 3px 5px 0px inset, rgba(255, 255, 255, 0.07) 0px -1px 0px 0px inset",
+          "plusX": "12px",
+          "plusY": "12px"
+        },
+        {
+          "background": "rgb(18, 26, 60)",
+          "border": "solid",
+          "shadow": "rgba(0, 0, 0, 0.6) 0px 3px 5px 0px inset, rgba(255, 255, 255, 0.07) 0px -1px 0px 0px inset",
+          "plusX": "12px",
+          "plusY": "12px"
+        },
+        {
+          "background": "rgb(18, 26, 60)",
+          "border": "solid",
+          "shadow": "rgba(0, 0, 0, 0.6) 0px 3px 5px 0px inset, rgba(255, 255, 255, 0.07) 0px -1px 0px 0px inset",
+          "plusX": "12px",
+          "plusY": "12px"
+        },
+        {
+          "background": "rgb(18, 26, 60)",
+          "border": "solid",
+          "shadow": "rgba(0, 0, 0, 0.6) 0px 3px 5px 0px inset, rgba(255, 255, 255, 0.07) 0px -1px 0px 0px inset",
+          "plusX": "12px",
+          "plusY": "12px"
+        },
+        {
+          "background": "rgb(18, 26, 60)",
+          "border": "solid",
+          "shadow": "rgba(0, 0, 0, 0.6) 0px 3px 5px 0px inset, rgba(255, 255, 255, 0.07) 0px -1px 0px 0px inset",
+          "plusX": "12px",
+          "plusY": "12px"
+        }
+      ]
+    },
+    "melee_icon": "slot_weapon.png",
+    "errors": []
+  },
+  "single_file": {
+    "ui1-adventure": {
+      "broken_images": [],
+      "art_embedded": true
+    },
+    "ui1-training": {
+      "broken_images": [],
+      "art_embedded": true
+    },
+    "ui1": {
+      "url": "dist_single/LUMEN.html",
+      "page_errors": [],
+      "failed_requests": [
+        {
+          "url": "http://localhost:8797/api/health",
+          "reason": "net::ERR_ABORTED"
+        }
+      ]
+    },
+    "ui2-adventure": {
+      "broken_images": [],
+      "art_embedded": true
+    },
+    "ui2-training": {
+      "broken_images": [],
+      "art_embedded": true
+    },
+    "ui2": {
+      "url": "dist_single/LUMEN.html?ui=2",
+      "page_errors": [],
+      "failed_requests": [
+        {
+          "url": "http://localhost:8797/api/health",
+          "reason": "net::ERR_ABORTED"
+        }
+      ]
+    }
+  },
+  "preview_bytes": {
+    "ui3_icons.jpg": 75422,
+    "ui3_pc_1280.jpg": 360269,
+    "ui3_phone_375.jpg": 377367,
+    "ui3_single_file.jpg": 159386
+  }
+}
