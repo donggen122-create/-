@@ -1,0 +1,572 @@
+{
+  "earth_boulder_1": {
+    "source": "game/assets/sprites/skills/earth_boulder_1.png",
+    "used_by": [
+      "COMBOS:EVO_E1"
+    ],
+    "source_size": [
+      218,
+      215
+    ],
+    "alpha_box": [
+      1,
+      2,
+      216,
+      214
+    ],
+    "copy_size": [
+      245,
+      245
+    ]
+  },
+  "earth_mole_1": {
+    "source": "game/assets/sprites/skills/earth_mole_1.png",
+    "used_by": [
+      "SKILLS:E2",
+      "PARTS:PART_E2"
+    ],
+    "source_size": [
+      183,
+      128
+    ],
+    "alpha_box": [
+      2,
+      2,
+      181,
+      126
+    ],
+    "copy_size": [
+      204,
+      204
+    ]
+  },
+  "earth_molefield": {
+    "source": "game/assets/sprites/skills/earth_molefield.png",
+    "used_by": [
+      "COMBOS:EVO_E2"
+    ],
+    "source_size": [
+      245,
+      188
+    ],
+    "alpha_box": [
+      2,
+      2,
+      244,
+      186
+    ],
+    "copy_size": [
+      275,
+      275
+    ]
+  },
+  "earth_stone_1": {
+    "source": "game/assets/sprites/skills/earth_stone_1.png",
+    "used_by": [
+      "SKILLS:E1",
+      "PARTS:PART_E1"
+    ],
+    "source_size": [
+      126,
+      110
+    ],
+    "alpha_box": [
+      2,
+      2,
+      125,
+      108
+    ],
+    "copy_size": [
+      140,
+      140
+    ]
+  },
+  "fire_bottle": {
+    "source": "game/assets/sprites/skills/fire_bottle.png",
+    "used_by": [
+      "SKILLS:F1",
+      "PARTS:PART_F1"
+    ],
+    "source_size": [
+      152,
+      188
+    ],
+    "alpha_box": [
+      2,
+      2,
+      150,
+      186
+    ],
+    "copy_size": [
+      210,
+      210
+    ]
+  },
+  "fire_frocket": {
+    "source": "game/assets/sprites/skills/fire_frocket.png",
+    "used_by": [
+      "COMBOS:EVO_F2"
+    ],
+    "source_size": [
+      190,
+      189
+    ],
+    "alpha_box": [
+      1,
+      2,
+      188,
+      189
+    ],
+    "copy_size": [
+      213,
+      213
+    ]
+  },
+  "fire_rocket": {
+    "source": "game/assets/sprites/skills/fire_rocket.png",
+    "used_by": [
+      "SKILLS:F2",
+      "PARTS:PART_F2"
+    ],
+    "source_size": [
+      180,
+      172
+    ],
+    "alpha_box": [
+      1,
+      1,
+      178,
+      170
+    ],
+    "copy_size": [
+      202,
+      202
+    ]
+  },
+  "fire_volcano": {
+    "source": "game/assets/sprites/skills/fire_volcano.png",
+    "used_by": [
+      "COMBOS:EVO_F1"
+    ],
+    "source_size": [
+      185,
+      205
+    ],
+    "alpha_box": [
+      1,
+      2,
+      183,
+      203
+    ],
+    "copy_size": [
+      229,
+      229
+    ]
+  },
+  "lightning_bee_1": {
+    "source": "game/assets/sprites/skills/lightning_bee_1.png",
+    "used_by": [
+      "SKILLS:L2",
+      "PARTS:PART_L2"
+    ],
+    "source_size": [
+      146,
+      155
+    ],
+    "alpha_box": [
+      2,
+      2,
+      144,
+      153
+    ],
+    "copy_size": [
+      172,
+      172
+    ]
+  },
+  "lightning_cloud": {
+    "source": "game/assets/sprites/skills/lightning_cloud.png",
+    "used_by": [
+      "SKILLS:L1",
+      "PARTS:PART_L1"
+    ],
+    "source_size": [
+      236,
+      169
+    ],
+    "alpha_box": [
+      1,
+      1,
+      236,
+      168
+    ],
+    "copy_size": [
+      268,
+      268
+    ]
+  },
+  "lightning_storm": {
+    "source": "game/assets/sprites/skills/lightning_storm.png",
+    "used_by": [
+      "COMBOS:EVO_L1"
+    ],
+    "source_size": [
+      249,
+      183
+    ],
+    "alpha_box": [
+      2,
+      2,
+      249,
+      181
+    ],
+    "copy_size": [
+      281,
+      281
+    ]
+  },
+  "lightning_swarm": {
+    "source": "game/assets/sprites/skills/lightning_swarm.png",
+    "used_by": [
+      "COMBOS:EVO_L2"
+    ],
+    "source_size": [
+      191,
+      204
+    ],
+    "alpha_box": [
+      2,
+      2,
+      189,
+      202
+    ],
+    "copy_size": [
+      228,
+      228
+    ]
+  },
+  "support_S1": {
+    "source": "game/assets/sprites/skills/support_S1.png",
+    "used_by": [
+      "SUPPORTS:S1"
+    ],
+    "source_size": [
+      216,
+      265
+    ],
+    "alpha_box": [
+      2,
+      2,
+      214,
+      263
+    ],
+    "copy_size": [
+      297,
+      297
+    ]
+  },
+  "support_S2": {
+    "source": "game/assets/sprites/skills/support_S2.png",
+    "used_by": [
+      "SUPPORTS:S2"
+    ],
+    "source_size": [
+      275,
+      217
+    ],
+    "alpha_box": [
+      2,
+      2,
+      273,
+      215
+    ],
+    "copy_size": [
+      308,
+      308
+    ]
+  },
+  "support_S3": {
+    "source": "game/assets/sprites/skills/support_S3.png",
+    "used_by": [
+      "SUPPORTS:S3"
+    ],
+    "source_size": [
+      287,
+      209
+    ],
+    "alpha_box": [
+      1,
+      2,
+      285,
+      207
+    ],
+    "copy_size": [
+      323,
+      323
+    ]
+  },
+  "support_S4": {
+    "source": "game/assets/sprites/skills/support_S4.png",
+    "used_by": [
+      "SUPPORTS:S4"
+    ],
+    "source_size": [
+      243,
+      251
+    ],
+    "alpha_box": [
+      2,
+      2,
+      242,
+      249
+    ],
+    "copy_size": [
+      281,
+      281
+    ]
+  },
+  "support_S5": {
+    "source": "game/assets/sprites/skills/support_S5.png",
+    "used_by": [
+      "SUPPORTS:S5"
+    ],
+    "source_size": [
+      196,
+      304
+    ],
+    "alpha_box": [
+      2,
+      2,
+      194,
+      302
+    ],
+    "copy_size": [
+      341,
+      341
+    ]
+  },
+  "support_S6": {
+    "source": "game/assets/sprites/skills/support_S6.png",
+    "used_by": [
+      "SUPPORTS:S6"
+    ],
+    "source_size": [
+      192,
+      278
+    ],
+    "alpha_box": [
+      2,
+      2,
+      190,
+      276
+    ],
+    "copy_size": [
+      312,
+      312
+    ]
+  },
+  "support_S7": {
+    "source": "game/assets/sprites/skills/support_S7.png",
+    "used_by": [
+      "SUPPORTS:S7"
+    ],
+    "source_size": [
+      281,
+      256
+    ],
+    "alpha_box": [
+      2,
+      1,
+      279,
+      254
+    ],
+    "copy_size": [
+      315,
+      315
+    ]
+  },
+  "support_S8": {
+    "source": "game/assets/sprites/skills/support_S8.png",
+    "used_by": [
+      "SUPPORTS:S8"
+    ],
+    "source_size": [
+      274,
+      277
+    ],
+    "alpha_box": [
+      2,
+      2,
+      272,
+      275
+    ],
+    "copy_size": [
+      311,
+      311
+    ]
+  },
+  "water_balloon": {
+    "source": "game/assets/sprites/skills/water_balloon.png",
+    "used_by": [
+      "SKILLS:W1",
+      "PARTS:PART_W1"
+    ],
+    "source_size": [
+      154,
+      193
+    ],
+    "alpha_box": [
+      1,
+      2,
+      152,
+      191
+    ],
+    "copy_size": [
+      215,
+      215
+    ]
+  },
+  "water_beam_tip": {
+    "source": "game/assets/sprites/skills/water_beam_tip.png",
+    "used_by": [
+      "SKILLS:W2",
+      "PARTS:PART_W2"
+    ],
+    "source_size": [
+      172,
+      104
+    ],
+    "alpha_box": [
+      2,
+      2,
+      171,
+      102
+    ],
+    "copy_size": [
+      193,
+      193
+    ]
+  },
+  "water_kballoon": {
+    "source": "game/assets/sprites/skills/water_kballoon.png",
+    "used_by": [
+      "COMBOS:EVO_W1"
+    ],
+    "source_size": [
+      205,
+      242
+    ],
+    "alpha_box": [
+      2,
+      2,
+      203,
+      240
+    ],
+    "copy_size": [
+      271,
+      271
+    ]
+  },
+  "water_rbeam_tip": {
+    "source": "game/assets/sprites/skills/water_rbeam_tip.png",
+    "used_by": [
+      "COMBOS:EVO_W2"
+    ],
+    "source_size": [
+      182,
+      113
+    ],
+    "alpha_box": [
+      2,
+      2,
+      180,
+      111
+    ],
+    "copy_size": [
+      203,
+      203
+    ]
+  },
+  "wind_boomerang_1": {
+    "source": "game/assets/sprites/skills/wind_boomerang_1.png",
+    "used_by": [
+      "SKILLS:V1",
+      "PARTS:PART_V1"
+    ],
+    "source_size": [
+      223,
+      120
+    ],
+    "alpha_box": [
+      1,
+      1,
+      222,
+      119
+    ],
+    "copy_size": [
+      252,
+      252
+    ]
+  },
+  "wind_mboomerang_1": {
+    "source": "game/assets/sprites/skills/wind_mboomerang_1.png",
+    "used_by": [
+      "COMBOS:EVO_V1"
+    ],
+    "source_size": [
+      244,
+      236
+    ],
+    "alpha_box": [
+      1,
+      1,
+      243,
+      236
+    ],
+    "copy_size": [
+      275,
+      275
+    ]
+  },
+  "wind_top_1": {
+    "source": "game/assets/sprites/skills/wind_top_1.png",
+    "used_by": [
+      "SKILLS:V2",
+      "PARTS:PART_V2"
+    ],
+    "source_size": [
+      162,
+      163
+    ],
+    "alpha_box": [
+      1,
+      2,
+      161,
+      162
+    ],
+    "copy_size": [
+      182,
+      182
+    ]
+  },
+  "wind_typhoon_1": {
+    "source": "game/assets/sprites/skills/wind_typhoon_1.png",
+    "used_by": [
+      "COMBOS:EVO_V2"
+    ],
+    "source_size": [
+      199,
+      235
+    ],
+    "alpha_box": [
+      2,
+      0,
+      197,
+      233
+    ],
+    "copy_size": [
+      265,
+      265
+    ]
+  }
+}

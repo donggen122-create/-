@@ -5,6 +5,9 @@ Requires Pillow and numpy. Wrong count or undersized source stops the build.
 Detached highlights are attached to the nearest substantial component.
 """
 import argparse
+import json
+import math
+import subprocess
 from pathlib import Path
 import numpy as np
 from PIL import Image, ImageFilter, ImageDraw
@@ -20,6 +23,36 @@ SHEETS = {
     'UI_장비칸.png': ['slot_helm','slot_armor','slot_gloves','slot_shoes','slot_necklace','slot_weapon'],
     'UI_엠블럼.png': ['emblem'],
 }
+NEW_SHEETS = {
+    'UI_아이콘_단추.png': ['btn_help','btn_close','btn_prev','btn_next','btn_check','btn_reroll'],
+    'UI_보급상자.png': ['supply_closed','supply_open','hud_weapon_ranged','fn_pause'],
+}
+
+def normalize_skills(output):
+    """Copy only UI sprites referenced by content; retain the original pixels.
+
+    Copies have square canvases with 6% padding regardless of source size.
+    They are not forced to 256px: small original sprites are never upscaled.
+    """
+    script="import * as R from './game/src/rework-core.js';console.log(JSON.stringify(Object.fromEntries(['SKILLS','PARTS','SUPPORTS','COMBOS'].map(k=>[k,Object.fromEntries(Object.entries(R[k]).map(([id,d])=>[id,d.sprite]))]))));"
+    content=json.loads(subprocess.check_output(['node','--input-type=module','-e',script],cwd=ROOT))
+    used={}
+    for kind,items in content.items():
+        for id,name in items.items():
+            if name: used.setdefault(name,[]).append(f'{kind}:{id}')
+    prepared=[]; manifest={}
+    for name,ids in sorted(used.items()):
+        source=ROOT/f'game/assets/sprites/skills/{name}.png'
+        im=Image.open(source).convert('RGBA'); box=im.getchannel('A').getbbox()
+        if not box: raise ValueError(f'Empty skill sprite: {source}')
+        crop=im.crop(box); side=math.ceil(max(crop.size)/.88)
+        out=Image.new('RGBA',(side,side)); out.alpha_composite(crop,((side-crop.width)//2,(side-crop.height)//2))
+        prepared.append((name,out))
+        manifest[name]={'source':source.relative_to(ROOT).as_posix(),'used_by':ids,'source_size':list(im.size),'alpha_box':list(box),'copy_size':[side,side]}
+    dest=output/'skills'; dest.mkdir(parents=True,exist_ok=True)
+    for name,im in prepared: im.save(dest/(name+'.png'),optimize=True)
+    (dest/'manifest.json').write_text(json.dumps(manifest,ensure_ascii=False,indent=2)+'\n',encoding='utf-8',newline='\n')
+    print(f'Normalized {len(prepared)} referenced skill/support/evolution sprites without upscaling')
 
 def key_magenta(im):
     rgb = np.asarray(im.convert('RGB')).astype(np.float32)
@@ -97,6 +130,29 @@ def fitted(im,box,size):
     out=Image.new('RGBA',(size,size)); out.alpha_composite(crop,((size-crop.width)//2,(size-crop.height)//2))
     return out
 
+def prepare_ui3_sheets(folder):
+    """Keep generated subjects; standardize keyed backdrops and 4:1 layout.
+
+    This is the same chroma-key/crop operation used for the game icons.
+    No subject is drawn, stretched or upscaled.
+    """
+    prepared=[]
+    for filename,names in NEW_SHEETS.items():
+        im=key_magenta(Image.open(folder/filename)); boxes=ordered_boxes(im,len(names))
+        if filename=='UI_보급상자.png':
+            cell=math.ceil(max(max(b[2]-b[0],b[3]-b[1]) for b in boxes)/.88/64)*64
+            sheet=Image.new('RGB',(cell*4,cell),(255,0,255))
+            for i,box in enumerate(boxes):
+                crop=im.crop(box); sheet.paste(crop,(i*cell+(cell-crop.width)//2,(cell-crop.height)//2),crop)
+        else:
+            sheet=Image.new('RGB',im.size,(255,0,255)); sheet.paste(im,(0,0),im)
+        # Alpha quantization can leave 1/255 near-key pixels at the boundary.
+        # Snap only pixels the cutter classifies as fully transparent.
+        rgb=np.asarray(sheet).copy(); rgb[np.asarray(key_magenta(sheet))[:,:,3]==0]=[255,0,255]
+        sheet=Image.fromarray(rgb)
+        prepared.append((folder/filename,sheet))
+    for path,sheet in prepared: sheet.save(path,optimize=True)
+
 def preview(files,path):
     cell=100; W=cell*len(files); out=Image.new('RGB',(W,248)); draw=ImageDraw.Draw(out)
     for row,bg in enumerate(['#151a3d','#fffaf0']):
@@ -109,22 +165,27 @@ def preview(files,path):
     if path.stat().st_size>400000: raise ValueError('Icon preview exceeds 400KB')
 
 def main():
-    ap=argparse.ArgumentParser(); ap.add_argument('--input',type=Path,default=ROOT/'이미지 에셋/UI'); ap.add_argument('--output',type=Path,default=ROOT/'game/assets/ui2'); args=ap.parse_args()
+    ap=argparse.ArgumentParser(); ap.add_argument('--input',type=Path,default=ROOT/'이미지 에셋/UI'); ap.add_argument('--output',type=Path,default=ROOT/'game/assets/ui2'); ap.add_argument('--ui3',action='store_true',help='Build only third-pass sheets and skill copies'); ap.add_argument('--prepare-ui3-sheets',action='store_true',help='Standardize generated key backgrounds and the supply 4:1 sheet'); args=ap.parse_args()
+    if args.prepare_ui3_sheets: prepare_ui3_sheets(args.input)
     # Validate every source before writing outputs, so count failures leave no partial set.
     prepared=[]
-    for filename,names in SHEETS.items():
+    for filename,names in (NEW_SHEETS if args.ui3 else {**SHEETS,**NEW_SHEETS}).items():
         im=key_magenta(Image.open(args.input/filename)); boxes=ordered_boxes(im,len(names))
-        prepared.extend((name,fitted(im,box,512 if name=='emblem' else 256)) for name,box in zip(names,boxes))
+        prepared.extend((name,fitted(im,box,512 if name in ['emblem','supply_closed','supply_open'] else 256)) for name,box in zip(names,boxes))
         print(f'{filename}: {len(boxes)} icons; source boxes {boxes}')
-    bg=Image.open(args.input/'UI_배경_작전본부.png').convert('RGB')
-    if bg.width<1600: raise ValueError('HQ background needs a larger source')
-    bg=bg.resize((1600,round(bg.height*1600/bg.width)),Image.Resampling.LANCZOS)
+    bg=None
+    if not args.ui3:
+        bg=Image.open(args.input/'UI_배경_작전본부.png').convert('RGB')
+        if bg.width<1600: raise ValueError('HQ background needs a larger source')
+        bg=bg.resize((1600,round(bg.height*1600/bg.width)),Image.Resampling.LANCZOS)
     icons=args.output/'icons'; icons.mkdir(parents=True,exist_ok=True)
     files=[]
     for name,im in prepared:
         path=(args.output if name=='emblem' else icons)/(name+'.png'); im.save(path,optimize=True); files.append(path)
-    bg.save(args.output/'bg_hq.jpg',quality=80,optimize=True)
-    dest=ROOT/'docs/codex/preview/ui2_icons.jpg'; dest.parent.mkdir(parents=True,exist_ok=True); preview(files,dest)
-    print(f'Built {len(prepared)-1} icons + emblem + HQ background; {dest.stat().st_size} byte preview')
+    if bg is not None: bg.save(args.output/'bg_hq.jpg',quality=80,optimize=True)
+    new_names={name for names in NEW_SHEETS.values() for name in names}
+    dest=ROOT/'docs/codex/preview/ui3_icons.jpg'; dest.parent.mkdir(parents=True,exist_ok=True); preview([f for f in files if f.stem in new_names],dest)
+    normalize_skills(args.output)
+    print(f'Built {len(prepared)} sheet assets; {dest.stat().st_size} byte preview')
 
 if __name__=='__main__': main()
