@@ -52,6 +52,7 @@ ap.add_argument('--source', help='Read JS/CSS from this local git commit for per
 ap.add_argument('--paired', help='Alternate this baseline and the working tree for each repetition/condition')
 ap.add_argument('--weapons', default='ranged,melee', help='Replay weapon modes')
 ap.add_argument('--replay-crowds', default='natural,stress', help='Replay both natural and synthetic crowd paths')
+ap.add_argument('--resume', action='store_true', help='Resume complete pairs only, with identical source and conditions')
 ap.add_argument('--out', default=str(ROOT / 'game/tools/qa/out/tablet'))
 args = ap.parse_args()
 BASE = local_url(args.url)
@@ -74,7 +75,8 @@ def profile():
 
 
 def seed_js(seed):
-    return f"""let s={seed};Math.random=()=>{{s=(s+0x6D2B79F5)|0;let t=Math.imul(s^(s>>>15),1|s);t^=t+Math.imul(t^(t>>>7),61|t);return ((t^(t>>>14))>>>0)/4294967296;}};"""
+    probe = 'window.__qaRandomCalls++;window.__qaRandomState=s>>>0;' if args.mode == 'replay' else ''
+    return f"""let s={seed};window.__qaRandomCalls=0;window.__qaRandomState=s>>>0;Math.random=()=>{{s=(s+0x6D2B79F5)|0;{probe}let t=Math.imul(s^(s>>>15),1|s);t^=t+Math.imul(t^(t>>>7),61|t);return ((t^(t>>>14))>>>0)/4294967296;}};"""
 
 
 def source_routes(ctx, ref):
@@ -93,12 +95,12 @@ def source_routes(ctx, ref):
 # bytes retain negative zero and exact coordinate/HP/knockback bits; no RNG calls.
 REPLAY_PROBE = """
 if (SG_LOCAL) {
-  window.__qaCheckpoints=[];
+  window.__qaCheckpoints=[];window.__qaInputs=[];
   const qaState=()=>{
     const all=[...enemies,...(boss?[boss]:[])], bytes=new Uint8Array(all.length*7*8), dv=new DataView(bytes.buffer);
     all.forEach((e,i)=>[e.x,e.y,e.hp,e.hpMax,e.kbVx??0,e.kbVy??0,e.radiusU??0].forEach((v,j)=>dv.setFloat64((i*7+j)*8,v,true)));
     let str='';for(const b of bytes)str+=String.fromCharCode(b);
-    return {tick:simTickNo,seconds:runTime,count:all.length,types:all.map(e=>e.typeId??e.id??''),bits:btoa(str)};
+    return {tick:simTickNo,seconds:runTime,count:all.length,types:all.map(e=>e.typeId??e.id??''),bits:btoa(str),randomCalls:window.__qaRandomCalls,randomState:window.__qaRandomState};
   };
   window.__qaEnemyState=qaState;
   const qaTick=simTick;let qaBucket=0;
@@ -113,7 +115,10 @@ def context(b, dev, ref=None, replay=False, weapon='ranged'):
     source_routes(ctx, ref)
     if replay:
         body = (SOURCE_CACHE[ref]['game/src/main.js'].decode('utf-8')
-                if ref else (ROOT/'game/src/main.js').read_text(encoding='utf-8')) + REPLAY_PROBE
+                if ref else (ROOT/'game/src/main.js').read_text(encoding='utf-8'))
+        marker="window.__qaInputHash = Math.imul(window.__qaInputHash ^ c.charCodeAt(0), 16777619) >>> 0;"
+        if marker not in body:raise AssertionError('Replay input instrumentation anchor missing')
+        body = body.replace(marker,marker+"\n      window.__qaInputs.push([...keys].join(''));") + REPLAY_PROBE
         ctx.route(BASE+'/src/main.js*', lambda route: route.fulfill(body=body,content_type='application/javascript'))
     # Reject every off-host request, including future API endpoints / external fonts.
     ctx.route('**/*', lambda route: route.fallback() if urlsplit(route.request.url).hostname in ('localhost', '127.0.0.1') else route.abort())
@@ -218,9 +223,13 @@ def measure(page, cdp, name):
         cdp.send('Tracing.start', {'categories': 'devtools.timeline,v8', 'transferMode': 'ReturnAsStream'})
     cpu0=cpu_watch.snapshot()
     page.evaluate('window.__qaThreatMax={};window.__debugPerf(true)')
-    page.wait_for_timeout(int(args.measure*1000))
+    cpu_samples=[]
+    deadline=time.monotonic()+args.measure
+    while time.monotonic()<deadline:
+        page.wait_for_timeout(min(1000,max(1,int((deadline-time.monotonic())*1000))))
+        cpu_samples.append(cpu_watch.snapshot())
     perf = page.evaluate('window.__debugPerf(false)')
-    perf['foreignCpu']=cpu_watch.foreign_cpu(cpu0,cpu_watch.snapshot())
+    perf['foreignCpu']=cpu_watch.foreign_cpu(cpu0,cpu_watch.snapshot(),cpu_samples)
     if args.threat_effects:
         perf['threatSampleMax'] = page.evaluate('window.__qaThreatMax')
         if not perf['threatSampleMax'].get('marks' if 'CH18' in name else 'balls'):
@@ -342,14 +351,29 @@ def state_digest(state):
     return state
 
 
+def resume_signature():
+    source=hashlib.sha256(b''.join(p.read_bytes() for p in sorted((ROOT/'game/src').glob('*')) if p.suffix in ('.js','.css'))).hexdigest()
+    conditions={k:v for k,v in vars(args).items() if k not in ('out','label','resume')}
+    return {'sourceSha256':source,'conditions':conditions}
+
+
 def replay(b):
     if not args.reference:
         raise ValueError('--reference measurement commit required')
-    results = []
+    signature=resume_signature()
+    meta=OUT/f'{args.label}-replay-meta.json'
+    progress=OUT/f'{args.label}-replay.json'
+    results=[]
+    if args.resume and progress.exists():
+        if json.loads(meta.read_text(encoding='utf-8'))!=signature:raise AssertionError('Replay resume sources/conditions changed')
+        results=[r for r in json.loads(progress.read_text(encoding='utf-8')) if r['equal']]
+    meta.write_text(json.dumps(signature),encoding='utf-8')
+    done={(r['stage'],r['seed'],r['weapon'],r['crowd']) for r in results}
     for stage in args.stages.split(','):
       for seed in (args.seed, args.seed+1):
        for weapon in args.weapons.split(','):
         for crowd in args.replay_crowds.split(','):
+            if (stage,seed,weapon,crowd) in done:continue
             god = seed == args.seed
             device, quality = ('pc',0) if god else ('ipad',5)
             pair = []
@@ -391,7 +415,9 @@ def replay(b):
                         raise AssertionError('No local settlement response captured')
                     reward = {k: rewards[-1][k] for k in ('reward','charged','cleared','stage')}
                     pair.append({'outcome': outcome, 'checkpoints':checkpoints, 'finalEnemyState':final_state,
-                                 'inputHash': page.evaluate('window.__qaInputHash'), 'canvasHash':canvas_hash, 'settlement': reward, 'errors': list(errors)})
+                                 'inputHash': page.evaluate('window.__qaInputHash'),
+                                 'inputSha256':hashlib.sha256(page.evaluate("window.__qaInputs.join(';')").encode()).hexdigest(),
+                                 'canvasHash':canvas_hash, 'settlement': reward, 'errors': list(errors)})
                 finally:
                     ctx.close()
             equal = pair[0] == pair[1] and not any(x['errors'] for x in pair)

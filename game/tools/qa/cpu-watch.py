@@ -37,19 +37,23 @@ def snapshot():
     return out
 
 
-def foreign_cpu(before,after):
+def foreign_cpu(before,after,intermediate=()):
     # This Python process, venv parent and its Playwright/browser descendants.
     family={os.getpid()}
-    for rows in (before,after):
+    snapshots=[before,*intermediate,after]
+    for rows in snapshots:
         for _ in range(10):
             family.update(pid for pid,r in rows.items() if r['parent'] in family)
     deltas=[]
-    for pid,r in after.items():
-        old=before.get(pid)
-        if pid not in family and old and old['created']==r['created']:
-            used=max(0,r['cpu']-old['cpu'])
-            if used:
-                deltas.append({'process':r['name'],'cpuSeconds':round(used,3)})
+    totals={}
+    for previous,current in zip(snapshots,snapshots[1:]):
+        for pid,r in current.items():
+            old=previous.get(pid)
+            if pid not in family:
+                used=max(0,r['cpu']-old['cpu']) if old and old['created']==r['created'] else r['cpu']
+                key=(pid,r['created'],r['name'])
+                totals[key]=totals.get(key,0)+used
+    deltas=[{'process':key[2],'cpuSeconds':round(used,3)} for key,used in totals.items() if used]
     deltas.sort(key=lambda r:-r['cpuSeconds'])
     return {'top':deltas[:5], 'totalSeconds':round(sum(r['cpuSeconds'] for r in deltas),3),
             'readableProcesses':len(after),'busy':bool(deltas and deltas[0]['cpuSeconds']>2) or sum(r['cpuSeconds'] for r in deltas)>4}
