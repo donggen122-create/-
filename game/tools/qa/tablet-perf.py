@@ -53,8 +53,11 @@ ap.add_argument('--paired', help='Alternate this baseline and the working tree f
 ap.add_argument('--weapons', default='ranged,melee', help='Replay weapon modes')
 ap.add_argument('--replay-crowds', default='natural,stress', help='Replay both natural and synthetic crowd paths')
 ap.add_argument('--resume', action='store_true', help='Resume complete pairs only, with identical source and conditions')
+ap.add_argument('--account', default='qa', help='Separate local QA account for deterministic replay jobs')
 ap.add_argument('--out', default=str(ROOT / 'game/tools/qa/out/tablet'))
 args = ap.parse_args()
+if not args.account.startswith('qa') or not args.account.isascii() or not args.account.isalnum() or len(args.account)>12:
+    raise ValueError('Local QA account must be alphanumeric, start with qa and have at most 12 characters')
 BASE = local_url(args.url)
 OUT = Path(args.out)
 OUT.mkdir(parents=True, exist_ok=True)
@@ -134,7 +137,7 @@ def context(b, dev, ref=None, replay=False, weapon='ranged'):
     page.on('pageerror', lambda e: errors.append(str(e)))
     page.request.post(BASE + '/_qa/reset-attempts')
     page.goto(args.url, wait_until='networkidle')
-    page.locator('#login-id').fill('qa')
+    page.locator('#login-id').fill(args.account)
     page.locator('#login-pw').fill('qa_local_1234')
     page.locator('#btn-register').click()
     page.wait_for_timeout(350)
@@ -151,7 +154,7 @@ def context(b, dev, ref=None, replay=False, weapon='ranged'):
 def reset_profile(page, weapon='ranged'):
     p = profile()
     p['weaponMode'] = weapon
-    assert page.request.post(BASE + '/_qa/profile', data={'id': 'qa', 'profile': p}).ok
+    assert page.request.post(BASE + '/_qa/profile', data={'id': args.account, 'profile': p}).ok
     page.reload(wait_until='networkidle')
     page.wait_for_function("!document.querySelector('#btn-title-start').disabled")
 
