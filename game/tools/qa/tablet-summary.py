@@ -17,8 +17,9 @@ ap.add_argument('--output')
 ap.add_argument('--chart', default=str(ROOT/'docs/codex/preview/perf_before_after.png'))
 ap.add_argument('--pass2', action='store_true', help='Require interleaved three-pair simulation suites and 64 expanded replays')
 ap.add_argument('--replay-labels', default='invariant2', help='Completed expanded replay labels, comma-separated')
+ap.add_argument('--verification-only', action='store_true', help='Publish checks with explicitly incomplete measurements; never claim performance gains')
 args = ap.parse_args()
-args.output=args.output or str(ROOT/('docs/codex/2026-10-08_태블릿_측정_2차.json' if args.pass2 else 'docs/codex/2026-10-08_태블릿_측정.json'))
+args.output=args.output or str(ROOT/('docs/codex/2026-10-08_태블릿_검증_2차.json' if args.pass2 and args.verification_only else 'docs/codex/2026-10-08_태블릿_측정_2차.json' if args.pass2 else 'docs/codex/2026-10-08_태블릿_측정.json'))
 folder = Path(args.input)
 
 
@@ -39,11 +40,21 @@ def has_errors(value):
 
 
 def pass2_summary():
-    result={'scope':'Loopback QA only; not physical tablet performance.', 'baseline':'9b313a0', 'suites':{}}
+    result={'scope':'Loopback QA only; not physical tablet performance.', 'baseline':'9b313a0', 'suites':{},
+            'measurementStatus':'incomplete' if args.verification_only else 'complete', 'requiredWindows':90}
     tables=[]
     metrics=('simMs','fps','low1','long50Pct')
     expected={'crowd':{(s,d,r) for s in ('CH18','CH20','CH19') for d in ('ipad','android') for r in (4,6)},
               'natural':{(s,'ipad',4) for s in ('CH18','CH13')},'trace':{('CH18','ipad',6)}}
+    if args.verification_only:
+        expected={}
+        rejected=[json.loads(line) for line in (folder/'discarded-samples.jsonl').read_text(encoding='utf-8').splitlines()]
+        if not rejected or not all(r['perf']['foreignCpu']['busy'] for r in rejected):raise AssertionError('No verified CPU-load blocker')
+        result['discardedWindows']=[{'label':r['label'],'stage':r['stage'],'device':r['device'],'rate':r['rate'],
+                                    'foreignCpuSeconds':r['perf']['foreignCpu']['totalSeconds'],
+                                    'maxForeignProcessCpuSeconds':r['perf']['foreignCpu']['top'][0]['cpuSeconds']}
+                                   for r in rejected]
+        result['blocker']='Other processes consumed CPU in every attempted sample; no valid before/after comparison. All requested performance conditions remain pending.'
     def stat(values):
         return {'median':statistics.median(values),'min':min(values),'max':max(values)}
     def fmt(v):
