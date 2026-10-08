@@ -58,6 +58,7 @@ BASE = local_url(args.url)
 OUT = Path(args.out)
 OUT.mkdir(parents=True, exist_ok=True)
 fresh = json.loads(subprocess.check_output(['node', '--input-type=module', '-e', "import {freshProfile} from './game/src/rework-core.js';console.log(JSON.stringify(freshProfile()));"], cwd=ROOT))
+SOURCE_CACHE = {}
 
 
 def profile():
@@ -80,11 +81,12 @@ def source_routes(ctx, ref):
     if not ref:
         return
     # Only repository source; assets are unchanged by this audit.
-    names = subprocess.check_output(['git', 'ls-tree', '-r', '--name-only', ref, 'game/src'], cwd=ROOT, text=True).splitlines()
-    for name in names:
-        if name.endswith(('.js', '.css')):
-            content = subprocess.check_output(['git', 'show', f'{ref}:{name}'], cwd=ROOT)
-            ctx.route(BASE + '/' + name.removeprefix('game/') + '*', lambda route, request, body=content, n=name: route.fulfill(body=body, content_type='text/css' if n.endswith('.css') else 'application/javascript'))
+    if ref not in SOURCE_CACHE:
+        names = subprocess.check_output(['git', 'ls-tree', '-r', '--name-only', ref, 'game/src'], cwd=ROOT, text=True).splitlines()
+        SOURCE_CACHE[ref] = {name:subprocess.check_output(['git', 'show', f'{ref}:{name}'], cwd=ROOT)
+                             for name in names if name.endswith(('.js','.css'))}
+    for name,content in SOURCE_CACHE[ref].items():
+        ctx.route(BASE + '/' + name.removeprefix('game/') + '*', lambda route, request, body=content, n=name: route.fulfill(body=body, content_type='text/css' if n.endswith('.css') else 'application/javascript'))
 
 
 # Identical read-only instrumentation is appended to BOTH replay sources. Float64
@@ -105,12 +107,12 @@ if (SG_LOCAL) {
 """
 
 
-def context(b, dev, ref=None, replay=False):
+def context(b, dev, ref=None, replay=False, weapon='ranged'):
     w, h, dsf = DEVICES[dev]
     ctx = b.new_context(viewport={'width': w, 'height': h}, device_scale_factor=dsf, has_touch=dev != 'pc')
     source_routes(ctx, ref)
     if replay:
-        body = (subprocess.check_output(['git','show',f'{ref}:game/src/main.js'],cwd=ROOT).decode('utf-8')
+        body = (SOURCE_CACHE[ref]['game/src/main.js'].decode('utf-8')
                 if ref else (ROOT/'game/src/main.js').read_text(encoding='utf-8')) + REPLAY_PROBE
         ctx.route(BASE+'/src/main.js*', lambda route: route.fulfill(body=body,content_type='application/javascript'))
     # Reject every off-host request, including future API endpoints / external fonts.
@@ -134,7 +136,7 @@ def context(b, dev, ref=None, replay=False):
     if page.locator('#btn-title-start').is_hidden():
         page.locator('#btn-login').click()
     page.locator('#btn-title-start').wait_for(state='visible')
-    reset_profile(page)
+    reset_profile(page,weapon)
     page.evaluate("document.getElementById('btn-title-start').click()")
     page.locator('#guardian-lobby .sg-nav').wait_for()
     quiet(page)
@@ -352,12 +354,8 @@ def replay(b):
             device, quality = ('pc',0) if god else ('ipad',5)
             pair = []
             for ref in (args.reference, None):
-                ctx, page, errors = context(b, device, ref, replay=True)
+                ctx, page, errors = context(b, device, ref, replay=True,weapon=weapon)
                 try:
-                    reset_profile(page, weapon)
-                    page.evaluate("document.getElementById('btn-title-start').click()")
-                    page.locator('#guardian-lobby .sg-nav').wait_for()
-                    quiet(page)
                     rewards = []
                     page.on('response', lambda r: rewards.append(r.json()) if r.url.endswith('/api/play/finish') and r.ok else None)
                     original = args.seed
@@ -371,7 +369,7 @@ def replay(b):
                         page.evaluate('window.__debugPilot(120)')
                         types={'CH05':'T1_BAGGY','CH10':'T2_DUST','CH13':'T3_BUBBLE','CH15':'T3_BUBBLE','CH17':'T4_SAW','CH18':'T4_NUTRIA','CH19':'T4_BURNER','CH20':'T4_BURNER'}
                         page.evaluate("t=>window.__debugSpawn(t,Math.max(0,160-window.__sgSnapshot().enemies),250)",types[stage])
-                        page.evaluate("window.__sgCombatLoad(['EVO_F1','EVO_W1','EVO_L1','EVO_V2','EVO_E1','EVO_P1','EVO_I1','EVO_E2','EVO_V1','EVO_L2'],{},{S5:3,S1:3})")
+                        page.evaluate("window.__sgCombatLoad(['EVO_F1','EVO_F2','EVO_W1','EVO_W2','EVO_V1','EVO_V2','EVO_E1','EVO_E2','EVO_L1','EVO_L2'],{},{S5:3,S1:3})")
                         page.evaluate('window.__debugPilot(140)')
                     else:
                         page.evaluate('window.__debugPilot(260)')

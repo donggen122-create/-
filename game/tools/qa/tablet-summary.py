@@ -5,6 +5,7 @@ Requires matplotlib in the external QA venv. Raw traces remain in ignored out/.
 """
 import argparse
 import json
+import statistics
 from pathlib import Path
 from collections import defaultdict
 
@@ -13,11 +14,12 @@ ap = argparse.ArgumentParser()
 ap.add_argument('--input', default=str(ROOT/'game/tools/qa/out/tablet'))
 ap.add_argument('--output', default=str(ROOT/'docs/codex/2026-10-08_태블릿_측정.json'))
 ap.add_argument('--chart', default=str(ROOT/'docs/codex/preview/perf_before_after.png'))
+ap.add_argument('--pass2', action='store_true', help='Require interleaved three-pair simulation suites and 64 expanded replays')
 args = ap.parse_args()
 folder = Path(args.input)
 
 
-def script_top(path):
+def script_top(path, limit=10):
     p = json.loads(path.read_text(encoding='utf-8'))
     nodes = {n['id']: n['callFrame'] for n in p['nodes']}
     totals = defaultdict(float)
@@ -25,12 +27,89 @@ def script_top(path):
         cf = nodes[sid]
         if '/src/' in cf.get('url',''):
             totals[f"{cf['functionName'] or '(anonymous)'} {cf['url'].split('/')[-1]}:{cf['lineNumber']+1}"] += dt/1000
-    return [{'function':k,'selfMs':round(v,2)} for k,v in sorted(totals.items(),key=lambda x:-x[1])[:10]]
+    return [{'function':k,'selfMs':round(v,2)} for k,v in sorted(totals.items(),key=lambda x:-x[1])[:limit]]
 
 def has_errors(value):
     if isinstance(value,dict):
         return bool(value.get('errors')) or any(has_errors(v) for v in value.values())
     return isinstance(value,list) and any(has_errors(v) for v in value)
+
+
+def pass2_summary():
+    result={'scope':'Loopback QA only; not physical tablet performance.', 'baseline':'9b313a0', 'suites':{}}
+    tables=[]
+    metrics=('simMs','fps','low1','long50Pct')
+    expected={'crowd':{(s,d,r) for s in ('CH18','CH20','CH19') for d in ('ipad','android') for r in (4,6)},
+              'natural':{(s,'ipad',4) for s in ('CH18','CH13')},'trace':{('CH18','ipad',6)}}
+    def stat(values):
+        return {'median':statistics.median(values),'min':min(values),'max':max(values)}
+    def fmt(v):
+        return f"{v['median']:.2f} ({v['min']:.2f}~{v['max']:.2f})"
+    for suite,keys in expected.items():
+        raw=json.loads((folder/f'paired-{suite}.json').read_text(encoding='utf-8'))
+        if raw['conditions']['paired']!='9b313a0' or raw['conditions']['reps']<3 or has_errors(raw):
+            raise AssertionError(f'Invalid suite {suite}')
+        rows=raw['records']; groups={}
+        for i in range(0,len(rows),2):
+            b,a=rows[i:i+2]
+            k=(b['stage'],b['device'],b['rate'])
+            if b['side']!='before' or a['side']!='after' or k!=(a['stage'],a['device'],a['rate']) or a['rep']!=b['rep']:
+                raise AssertionError('Measurements are not alternating pairs')
+            groups.setdefault(k,{'before':[],'after':[]})
+            for side,row in (('before',b),('after',a)):
+                if row['perf']['foreignCpu']['busy']:raise AssertionError('Contaminated sample')
+                groups[k][side].append(row)
+        if set(groups)!=keys:raise AssertionError(f'Incomplete conditions {suite}')
+        tables.append(f'## {suite}\n\n|장면|기기·CPU|계산 ms 전 → 후|평균 FPS 전 → 후|하위 1% FPS 전 → 후|>50ms % 전 → 후|판정(계산 / FPS)|\n|---|---|---|---|---|---|---|')
+        out=[]
+        for k,g in groups.items():
+            if any(len(g[side])<3 for side in g):raise AssertionError('Less than three samples')
+            stats={side:{m:stat([r['perf'][m] for r in g[side]]) for m in metrics} for side in g}
+            verdict=[]
+            for m in ('simMs','fps'):
+                b,a=[stats[x][m] for x in ('before','after')]
+                verdict.append('차이 없음' if max(b['min'],a['min'])<=min(b['max'],a['max']) else
+                               '개선' if (a['median']<b['median'] if m=='simMs' else a['median']>b['median']) else '악화')
+            stage=f'{(int(k[0][2:])-1)//5+1}-{(int(k[0][2:])-1)%5+1}'
+            cells=[f'{fmt(stats["before"][m])} → {fmt(stats["after"][m])}' for m in metrics]
+            tables.append('|'+ '|'.join([stage,f'{k[1]} ×{k[2]:g}',*cells,' / '.join(verdict)])+'|')
+            rec={'stage':k[0],'device':k[1],'rate':k[2],'stats':stats,'verdict':dict(zip(('simMs','fps'),verdict)),
+                 'samples':[{key:r[key] for key in ('side','rep','attempt')}|{'perf':{m:r['perf'][m] for m in (*metrics,'frames','steps','gameSeconds','drawMs','ratio')},'foreignCpuSeconds':r['perf']['foreignCpu']['totalSeconds']} for side in g for r in g[side]]}
+            if suite=='trace':
+                rec['top10']={}
+                for side in g:
+                    profiles=[]
+                    for r in g[side]:
+                        path=folder/f'paired-trace-{side}-{k[0]}-{k[1]}-x{k[2]:g}-r{r["rep"]}.cpuprofile'
+                        profiles.append({p['function']:p['selfMs'] for p in script_top(path,None)})
+                    names=set().union(*profiles)
+                    ranking=[{'function':name,**stat([p.get(name,0) for p in profiles])} for name in names]
+                    rec['top10'][side]=sorted(ranking,key=lambda r:-r['median'])[:10]
+            out.append(rec)
+        result['suites'][suite]={'conditions':{k:v for k,v in raw['conditions'].items() if k not in ('out','url')},'browser':raw['browser'],'records':out}
+        tables.append('')
+    replay=json.loads((folder/'invariant2.json').read_text(encoding='utf-8'))
+    records=replay['records']
+    if len(records)!=64 or has_errors(records) or not all(r['equal'] and r['before']==r['after'] for r in records):
+        raise AssertionError('Expanded replay incomplete/failed')
+    result['replay']=[{k:r[k] for k in ('stage','seed','weapon','crowd','quality','god','equal')}|
+                      {'checkpoints':len(r['after']['checkpoints']),'seconds':r['after']['outcome']['seconds'],
+                       'kills':r['after']['outcome']['kills'],'canvasHash':r['after']['canvasHash'],
+                       'finalEnemyState':r['after']['finalEnemyState'],'inputHash':r['after']['inputHash'],
+                       'settlement':r['after']['settlement']} for r in records]
+    for ui in (1,2):
+        rec=json.loads((folder/f'responsive-ui{ui}'/'report.json').read_text(encoding='utf-8'))
+        issues=sum(len(v) for r in rec.values() for screen in r.values() if isinstance(screen,dict) for v in screen.values() if isinstance(v,list))
+        if len(rec)!=6 or issues or any(r.get('_error') or r.get('_pageErrors') for r in rec.values()):raise AssertionError('UI audit failed')
+        result[f'responsiveUI{ui}']={'sizes':list(rec),'issues':issues,'pageErrors':0}
+    (folder/'tables.md').write_text('\n'.join(tables),encoding='utf-8')
+    Path(args.output).write_text(json.dumps(result,ensure_ascii=False,indent=2)+'\n',encoding='utf-8',newline='\n')
+    print(f'Validated {sum(len(v["records"])*6 for v in result["suites"].values())} measurement windows; 64 replays; UI issues 0')
+
+
+if args.pass2:
+    pass2_summary()
+    raise SystemExit(0)
 
 
 data = {'scope':'Loopback QA only. Chromium software rendering, synthetic CPU throttling; not physical tablet results.',
