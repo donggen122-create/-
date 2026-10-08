@@ -1,0 +1,5381 @@
+{
+  "scope": "Loopback QA only; not physical tablet performance.",
+  "baseline": "9b313a0",
+  "suites": {},
+  "measurementStatus": "incomplete",
+  "requiredWindows": 90,
+  "discardedWindows": [
+    {
+      "label": "pilot-pair-before",
+      "stage": "CH18",
+      "device": "ipad",
+      "rate": 6.0,
+      "foreignCpuSeconds": 90.905,
+      "maxForeignProcessCpuSeconds": 15.047
+    },
+    {
+      "label": "paired-trace-before",
+      "stage": "CH18",
+      "device": "ipad",
+      "rate": 6.0,
+      "foreignCpuSeconds": 48.994,
+      "maxForeignProcessCpuSeconds": 14.781
+    },
+    {
+      "label": "paired-trace-before",
+      "stage": "CH18",
+      "device": "ipad",
+      "rate": 6.0,
+      "foreignCpuSeconds": 38.069,
+      "maxForeignProcessCpuSeconds": 8.375
+    },
+    {
+      "label": "paired-trace-before",
+      "stage": "CH18",
+      "device": "ipad",
+      "rate": 6.0,
+      "foreignCpuSeconds": 72.493,
+      "maxForeignProcessCpuSeconds": 15.156
+    },
+    {
+      "label": "paired-trace-before",
+      "stage": "CH18",
+      "device": "ipad",
+      "rate": 6.0,
+      "foreignCpuSeconds": 56.532,
+      "maxForeignProcessCpuSeconds": 14.609
+    },
+    {
+      "label": "paired-trace-before",
+      "stage": "CH18",
+      "device": "ipad",
+      "rate": 6.0,
+      "foreignCpuSeconds": 41.288,
+      "maxForeignProcessCpuSeconds": 15.016
+    },
+    {
+      "label": "paired-trace-before",
+      "stage": "CH18",
+      "device": "ipad",
+      "rate": 6.0,
+      "foreignCpuSeconds": 45.522,
+      "maxForeignProcessCpuSeconds": 15.141
+    }
+  ],
+  "blocker": "Other processes consumed CPU in every attempted sample; no valid before/after comparison. All requested performance conditions remain pending.",
+  "workingSourceSha256": "c4426eb4556fbdb7a1f96a956579335dfebb49486407fb5d5ddc5da567e725cb",
+  "replay": [
+    {
+      "stage": "CH05",
+      "seed": 10808,
+      "weapon": "ranged",
+      "crowd": "natural",
+      "quality": 0,
+      "god": true,
+      "equal": true,
+      "checkpoints": 51,
+      "seconds": 259.95000000009225,
+      "kills": 2288,
+      "canvasHash": "981059aefd70de3dcb77617c00bb6ec0b61b6f8192db50f6b5780ef172bb729c",
+      "finalEnemyState": {
+        "tick": 15597,
+        "seconds": 259.95000000009225,
+        "count": 1,
+        "types": [
+          ""
+        ],
+        "randomCalls": 28417,
+        "randomState": 1192025901,
+        "sha256": "a53d5356dcc5923be143bdf78c0536c38c8fa572f1ca70ab3fa18839116b1202"
+      },
+      "inputHash": 1709885624,
+      "inputSha256": "92c351194eb1e059282ad120a4590d23d2f3cf9f4ba682ad86e6c18a6a5511d4",
+      "settlement": {
+        "reward": {
+          "coins": 250,
+          "petCoinPct": 0,
+          "gifts": 1,
+          "missions": [
+            {
+              "id": "win1",
+              "name": "도전 1번 성공하기",
+              "gifts": 2
+            },
+            {
+              "id": "goal1",
+              "name": "환경 목표 1번 해내기",
+              "gifts": 2
+            }
+          ],
+          "stars": 2,
+          "first": false,
+          "partActivity": [
+            {
+              "id": "PART_F1",
+              "active": true
+            },
+            {
+              "id": "PART_W1",
+              "active": false
+            },
+            {
+              "id": "PART_L1",
+              "active": true
+            }
+          ],
+          "stageGift": {
+            "left": 1,
+            "capped": false,
+            "limit": 2
+          },
+          "difficulty": "normal",
+          "goal": true,
+          "notes": []
+        },
+        "charged": 1,
+        "cleared": true,
+        "stage": "CH05"
+      }
+    },
+    {
+      "stage": "CH05",
+      "seed": 10808,
+      "weapon": "ranged",
+      "crowd": "stress",
+      "quality": 0,
+      "god": true,
+      "equal": true,
+      "checkpoints": 49,
+      "seconds": 248.13333333342294,
+      "kills": 2467,
+      "canvasHash": "35f1ad64e6b8d577b8405532d1a4a6ba4a352f820d0ebb023aafc12030463017",
+      "finalEnemyState": {
+        "tick": 14888,
+        "seconds": 248.13333333342294,
+        "count": 1,
+        "types": [
+          ""
+        ],
+        "randomCalls": 28534,
+        "randomState": 736861222,
+        "sha256": "3b03bc6550dfec4c220d5a5c7f818948a8d835fe3d21a3bf612e321fb100e3a4"
+      },
+      "inputHash": 2655321822,
+      "inputSha256": "ed6a7af1cf671b576053e3cc20c713b2fbbe38ef7cecc2db7f4e07628a7e812e",
+      "settlement": {
+        "reward": {
+          "coins": 250,
+          "petCoinPct": 0,
+          "gifts": 1,
+          "missions": [
+            {
+              "id": "win1",
+              "name": "도전 1번 성공하기",
+              "gifts": 2
+            },
+            {
+              "id": "goal1",
+              "name": "환경 목표 1번 해내기",
+              "gifts": 2
+            }
+          ],
+          "stars": 2,
+          "first": false,
+          "partActivity": [
+            {
+              "id": "PART_F1",
+              "active": false
+            },
+            {
+              "id": "PART_W1",
+              "active": false
+            },
+            {
+              "id": "PART_L1",
+              "active": true
+            }
+          ],
+          "stageGift": {
+            "left": 1,
+            "capped": false,
+            "limit": 2
+          },
+          "difficulty": "normal",
+          "goal": true,
+          "notes": []
+        },
+        "charged": 1,
+        "cleared": true,
+        "stage": "CH05"
+      }
+    },
+    {
+      "stage": "CH05",
+      "seed": 10808,
+      "weapon": "melee",
+      "crowd": "natural",
+      "quality": 0,
+      "god": true,
+      "equal": true,
+      "checkpoints": 50,
+      "seconds": 253.78333333342744,
+      "kills": 2292,
+      "canvasHash": "8c828a1c4c51a8a532899c2a0fa38297178304aa6387b476a64a7c71d325c4f1",
+      "finalEnemyState": {
+        "tick": 15227,
+        "seconds": 253.78333333342744,
+        "count": 1,
+        "types": [
+          ""
+        ],
+        "randomCalls": 28035,
+        "randomState": 1613554583,
+        "sha256": "87c3c7491adade9d3da62fa102efe7d712542d85952b0c12ec20155b9bcc6797"
+      },
+      "inputHash": 2408142940,
+      "inputSha256": "45eab6e74f1c48f239b45bcf6f3ede693e2101d9983029eb0a1e630d444c5cf2",
+      "settlement": {
+        "reward": {
+          "coins": 250,
+          "petCoinPct": 0,
+          "gifts": 1,
+          "missions": [
+            {
+              "id": "win1",
+              "name": "도전 1번 성공하기",
+              "gifts": 2
+            },
+            {
+              "id": "goal1",
+              "name": "환경 목표 1번 해내기",
+              "gifts": 2
+            }
+          ],
+          "stars": 2,
+          "first": false,
+          "partActivity": [
+            {
+              "id": "PART_F1",
+              "active": true
+            },
+            {
+              "id": "PART_W1",
+              "active": false
+            },
+            {
+              "id": "PART_L1",
+              "active": true
+            }
+          ],
+          "stageGift": {
+            "left": 1,
+            "capped": false,
+            "limit": 2
+          },
+          "difficulty": "normal",
+          "goal": true,
+          "notes": []
+        },
+        "charged": 1,
+        "cleared": true,
+        "stage": "CH05"
+      }
+    },
+    {
+      "stage": "CH05",
+      "seed": 10808,
+      "weapon": "melee",
+      "crowd": "stress",
+      "quality": 0,
+      "god": true,
+      "equal": true,
+      "checkpoints": 49,
+      "seconds": 246.56666666675503,
+      "kills": 2434,
+      "canvasHash": "c6e9f57e3da3d50535bf08b0570cac8c8ed6faf97adb1aaa92cafdd01b0dfab9",
+      "finalEnemyState": {
+        "tick": 14794,
+        "seconds": 246.56666666675503,
+        "count": 1,
+        "types": [
+          ""
+        ],
+        "randomCalls": 28150,
+        "randomState": 1790225574,
+        "sha256": "ad8ba930ba6ef816e0d1fb2720fb969945b5cebddbbbf9ea4e09148e907bd308"
+      },
+      "inputHash": 1860898966,
+      "inputSha256": "16267478aef82d5fe590aa3179262a669e69639fd48aab326a5497b01ff1266c",
+      "settlement": {
+        "reward": {
+          "coins": 250,
+          "petCoinPct": 0,
+          "gifts": 1,
+          "missions": [
+            {
+              "id": "win1",
+              "name": "도전 1번 성공하기",
+              "gifts": 2
+            },
+            {
+              "id": "goal1",
+              "name": "환경 목표 1번 해내기",
+              "gifts": 2
+            }
+          ],
+          "stars": 2,
+          "first": false,
+          "partActivity": [
+            {
+              "id": "PART_F1",
+              "active": false
+            },
+            {
+              "id": "PART_W1",
+              "active": false
+            },
+            {
+              "id": "PART_L1",
+              "active": true
+            }
+          ],
+          "stageGift": {
+            "left": 1,
+            "capped": false,
+            "limit": 2
+          },
+          "difficulty": "normal",
+          "goal": true,
+          "notes": []
+        },
+        "charged": 1,
+        "cleared": true,
+        "stage": "CH05"
+      }
+    },
+    {
+      "stage": "CH05",
+      "seed": 10809,
+      "weapon": "ranged",
+      "crowd": "natural",
+      "quality": 5,
+      "god": false,
+      "equal": true,
+      "checkpoints": 50,
+      "seconds": 252.75000000009328,
+      "kills": 2289,
+      "canvasHash": null,
+      "finalEnemyState": {
+        "tick": 15165,
+        "seconds": 252.75000000009328,
+        "count": 1,
+        "types": [
+          ""
+        ],
+        "randomCalls": 22361,
+        "randomState": 3129987942,
+        "sha256": "19b2e21240e7b600a4c3f2cbb7ff5adce07bd0166c9a66771fbbcb5d332d5a4d"
+      },
+      "inputHash": 3581649370,
+      "inputSha256": "a2e06b280f446b361c31a7743d7bca208f567e624239a64b6457417dfbb70deb",
+      "settlement": {
+        "reward": {
+          "coins": 250,
+          "petCoinPct": 0,
+          "gifts": 1,
+          "missions": [
+            {
+              "id": "win1",
+              "name": "도전 1번 성공하기",
+              "gifts": 2
+            },
+            {
+              "id": "goal1",
+              "name": "환경 목표 1번 해내기",
+              "gifts": 2
+            }
+          ],
+          "stars": 2,
+          "first": false,
+          "partActivity": [
+            {
+              "id": "PART_F1",
+              "active": true
+            },
+            {
+              "id": "PART_W1",
+              "active": false
+            },
+            {
+              "id": "PART_L1",
+              "active": false
+            }
+          ],
+          "stageGift": {
+            "left": 1,
+            "capped": false,
+            "limit": 2
+          },
+          "difficulty": "normal",
+          "goal": true,
+          "notes": []
+        },
+        "charged": 1,
+        "cleared": true,
+        "stage": "CH05"
+      }
+    },
+    {
+      "stage": "CH05",
+      "seed": 10809,
+      "weapon": "ranged",
+      "crowd": "stress",
+      "quality": 5,
+      "god": false,
+      "equal": true,
+      "checkpoints": 49,
+      "seconds": 247.96666666675614,
+      "kills": 2442,
+      "canvasHash": null,
+      "finalEnemyState": {
+        "tick": 14878,
+        "seconds": 247.96666666675614,
+        "count": 1,
+        "types": [
+          ""
+        ],
+        "randomCalls": 26632,
+        "randomState": 317161953,
+        "sha256": "29dd94ea3796ae111d9a6ad0a0442e7e4097c6c8320568147d845f46b9f5c3b8"
+      },
+      "inputHash": 1092594042,
+      "inputSha256": "17208f1a80ee599679ab89af01d268ed8e61976c76f9240bfbba088fc4a041e7",
+      "settlement": {
+        "reward": {
+          "coins": 250,
+          "petCoinPct": 0,
+          "gifts": 1,
+          "missions": [
+            {
+              "id": "win1",
+              "name": "도전 1번 성공하기",
+              "gifts": 2
+            },
+            {
+              "id": "goal1",
+              "name": "환경 목표 1번 해내기",
+              "gifts": 2
+            }
+          ],
+          "stars": 2,
+          "first": false,
+          "partActivity": [
+            {
+              "id": "PART_F1",
+              "active": true
+            },
+            {
+              "id": "PART_W1",
+              "active": false
+            },
+            {
+              "id": "PART_L1",
+              "active": false
+            }
+          ],
+          "stageGift": {
+            "left": 1,
+            "capped": false,
+            "limit": 2
+          },
+          "difficulty": "normal",
+          "goal": true,
+          "notes": []
+        },
+        "charged": 1,
+        "cleared": true,
+        "stage": "CH05"
+      }
+    },
+    {
+      "stage": "CH05",
+      "seed": 10809,
+      "weapon": "melee",
+      "crowd": "natural",
+      "quality": 5,
+      "god": false,
+      "equal": true,
+      "checkpoints": 49,
+      "seconds": 248.63333333342334,
+      "kills": 2303,
+      "canvasHash": null,
+      "finalEnemyState": {
+        "tick": 14918,
+        "seconds": 248.63333333342334,
+        "count": 1,
+        "types": [
+          ""
+        ],
+        "randomCalls": 25998,
+        "randomState": 3040573727,
+        "sha256": "d6265e2686cc78ec298ef022ae13d5d342095050a839d9333938fe972aaded5a"
+      },
+      "inputHash": 2224162386,
+      "inputSha256": "b5375c19255ac0286a91c69f9eb3eecadee70beb0699115b89225f1dd0686662",
+      "settlement": {
+        "reward": {
+          "coins": 250,
+          "petCoinPct": 0,
+          "gifts": 1,
+          "missions": [
+            {
+              "id": "win1",
+              "name": "도전 1번 성공하기",
+              "gifts": 2
+            },
+            {
+              "id": "goal1",
+              "name": "환경 목표 1번 해내기",
+              "gifts": 2
+            }
+          ],
+          "stars": 2,
+          "first": false,
+          "partActivity": [
+            {
+              "id": "PART_F1",
+              "active": true
+            },
+            {
+              "id": "PART_W1",
+              "active": false
+            },
+            {
+              "id": "PART_L1",
+              "active": true
+            }
+          ],
+          "stageGift": {
+            "left": 1,
+            "capped": false,
+            "limit": 2
+          },
+          "difficulty": "normal",
+          "goal": true,
+          "notes": []
+        },
+        "charged": 1,
+        "cleared": true,
+        "stage": "CH05"
+      }
+    },
+    {
+      "stage": "CH05",
+      "seed": 10809,
+      "weapon": "melee",
+      "crowd": "stress",
+      "quality": 5,
+      "god": false,
+      "equal": true,
+      "checkpoints": 49,
+      "seconds": 247.11666666675546,
+      "kills": 2451,
+      "canvasHash": null,
+      "finalEnemyState": {
+        "tick": 14827,
+        "seconds": 247.11666666675546,
+        "count": 1,
+        "types": [
+          ""
+        ],
+        "randomCalls": 27512,
+        "randomState": 1482341393,
+        "sha256": "8b0b2ef54c7bdc9c018241b98316b83f4910432c7d1113517aed04762dca9ddf"
+      },
+      "inputHash": 1726540091,
+      "inputSha256": "931ea7c48f1d51b68dbca1dc920cd16471a4859dbb3c7eb723f418d094fdbac7",
+      "settlement": {
+        "reward": {
+          "coins": 250,
+          "petCoinPct": 0,
+          "gifts": 1,
+          "missions": [
+            {
+              "id": "win1",
+              "name": "도전 1번 성공하기",
+              "gifts": 2
+            },
+            {
+              "id": "goal1",
+              "name": "환경 목표 1번 해내기",
+              "gifts": 2
+            }
+          ],
+          "stars": 2,
+          "first": false,
+          "partActivity": [
+            {
+              "id": "PART_F1",
+              "active": true
+            },
+            {
+              "id": "PART_W1",
+              "active": false
+            },
+            {
+              "id": "PART_L1",
+              "active": true
+            }
+          ],
+          "stageGift": {
+            "left": 1,
+            "capped": false,
+            "limit": 2
+          },
+          "difficulty": "normal",
+          "goal": true,
+          "notes": []
+        },
+        "charged": 1,
+        "cleared": true,
+        "stage": "CH05"
+      }
+    },
+    {
+      "stage": "CH10",
+      "seed": 10808,
+      "weapon": "ranged",
+      "crowd": "natural",
+      "quality": 0,
+      "god": true,
+      "equal": true,
+      "checkpoints": 54,
+      "seconds": 274.6000000000789,
+      "kills": 1984,
+      "canvasHash": "6bbc72ea0b880c105e308ed84b331c872f8197e8b227f372c1d759388c72a6a3",
+      "finalEnemyState": {
+        "tick": 16476,
+        "seconds": 274.6000000000789,
+        "count": 1,
+        "types": [
+          ""
+        ],
+        "randomCalls": 30600,
+        "randomState": 885643104,
+        "sha256": "4cb018a336ba355a50d589d3217d20b16b6f7fce87c6cce313ac146356e14536"
+      },
+      "inputHash": 2754404115,
+      "inputSha256": "e979a455f3b50e70b92c881267c840e7a3f1efccb64acc33d5a75a0578b7e24a",
+      "settlement": {
+        "reward": {
+          "coins": 115,
+          "petCoinPct": 0,
+          "gifts": 0,
+          "missions": [],
+          "stars": 0,
+          "first": false,
+          "partActivity": [
+            {
+              "id": "PART_F1",
+              "active": false
+            },
+            {
+              "id": "PART_W1",
+              "active": true
+            },
+            {
+              "id": "PART_L1",
+              "active": true
+            }
+          ],
+          "stageGift": null,
+          "difficulty": "normal",
+          "goal": false,
+          "notes": []
+        },
+        "charged": 0,
+        "cleared": false,
+        "stage": "CH10"
+      }
+    },
+    {
+      "stage": "CH10",
+      "seed": 10808,
+      "weapon": "ranged",
+      "crowd": "stress",
+      "quality": 0,
+      "god": true,
+      "equal": true,
+      "checkpoints": 51,
+      "seconds": 257.68333333342764,
+      "kills": 2107,
+      "canvasHash": "4c8d11ea223e5f1cda37cbc1b25ea40a0ae06d6dc0064c40d5dbee3e93f47c0e",
+      "finalEnemyState": {
+        "tick": 15461,
+        "seconds": 257.68333333342764,
+        "count": 1,
+        "types": [
+          ""
+        ],
+        "randomCalls": 31566,
+        "randomState": 651692510,
+        "sha256": "64b4867b27765a0833602ebffbd667e0d36399bcbdec3b553039cbd46e885a05"
+      },
+      "inputHash": 3818231805,
+      "inputSha256": "6acb96d4007b8fdc031a51396dbd47e41b16b142de538549b80c1179dd07935b",
+      "settlement": {
+        "reward": {
+          "coins": 300,
+          "petCoinPct": 0,
+          "gifts": 1,
+          "missions": [
+            {
+              "id": "win1",
+              "name": "도전 1번 성공하기",
+              "gifts": 2
+            },
+            {
+              "id": "goal1",
+              "name": "환경 목표 1번 해내기",
+              "gifts": 2
+            }
+          ],
+          "stars": 2,
+          "first": false,
+          "partActivity": [
+            {
+              "id": "PART_F1",
+              "active": false
+            },
+            {
+              "id": "PART_W1",
+              "active": false
+            },
+            {
+              "id": "PART_L1",
+              "active": true
+            }
+          ],
+          "stageGift": {
+            "left": 1,
+            "capped": false,
+            "limit": 2
+          },
+          "difficulty": "normal",
+          "goal": true,
+          "notes": []
+        },
+        "charged": 1,
+        "cleared": true,
+        "stage": "CH10"
+      }
+    },
+    {
+      "stage": "CH10",
+      "seed": 10808,
+      "weapon": "melee",
+      "crowd": "natural",
+      "quality": 0,
+      "god": true,
+      "equal": true,
+      "checkpoints": 54,
+      "seconds": 274.6000000000789,
+      "kills": 1946,
+      "canvasHash": "19f9c413228097dcd1d4b9059b5c4cf9da3c49ad1a0b26fcdf52373cfcddc37f",
+      "finalEnemyState": {
+        "tick": 16476,
+        "seconds": 274.6000000000789,
+        "count": 1,
+        "types": [
+          ""
+        ],
+        "randomCalls": 28170,
+        "randomState": 4061803466,
+        "sha256": "01610d6778495efcc3ca811e6994c2f4d7fec7ec3cd33270545b146aac4407db"
+      },
+      "inputHash": 2459900493,
+      "inputSha256": "d24a7db7dd9f91785f0766307e896e357a1b157e6c96ff92600eaa1aaafdad0a",
+      "settlement": {
+        "reward": {
+          "coins": 115,
+          "petCoinPct": 0,
+          "gifts": 0,
+          "missions": [],
+          "stars": 0,
+          "first": false,
+          "partActivity": [
+            {
+              "id": "PART_F1",
+              "active": false
+            },
+            {
+              "id": "PART_W1",
+              "active": true
+            },
+            {
+              "id": "PART_L1",
+              "active": true
+            }
+          ],
+          "stageGift": null,
+          "difficulty": "normal",
+          "goal": false,
+          "notes": []
+        },
+        "charged": 0,
+        "cleared": false,
+        "stage": "CH10"
+      }
+    },
+    {
+      "stage": "CH10",
+      "seed": 10808,
+      "weapon": "melee",
+      "crowd": "stress",
+      "quality": 0,
+      "god": true,
+      "equal": true,
+      "checkpoints": 51,
+      "seconds": 257.4166666667612,
+      "kills": 2102,
+      "canvasHash": "43a35463bbff486d8ebf97f8dd2775a6ff7d8a28e9de625cc92dc5682ccd2424",
+      "finalEnemyState": {
+        "tick": 15445,
+        "seconds": 257.4166666667612,
+        "count": 1,
+        "types": [
+          ""
+        ],
+        "randomCalls": 30612,
+        "randomState": 1389596380,
+        "sha256": "7ce0908014b247ad7329a15a1a3cf82dce2cdb904fb2dd8f94141c623ddf116e"
+      },
+      "inputHash": 3202420264,
+      "inputSha256": "aed9fb3455e9157af6614dab7e8532812ea5de602e27fc1e3a132dda4f243060",
+      "settlement": {
+        "reward": {
+          "coins": 300,
+          "petCoinPct": 0,
+          "gifts": 1,
+          "missions": [
+            {
+              "id": "win1",
+              "name": "도전 1번 성공하기",
+              "gifts": 2
+            },
+            {
+              "id": "goal1",
+              "name": "환경 목표 1번 해내기",
+              "gifts": 2
+            }
+          ],
+          "stars": 2,
+          "first": false,
+          "partActivity": [
+            {
+              "id": "PART_F1",
+              "active": false
+            },
+            {
+              "id": "PART_W1",
+              "active": false
+            },
+            {
+              "id": "PART_L1",
+              "active": true
+            }
+          ],
+          "stageGift": {
+            "left": 1,
+            "capped": false,
+            "limit": 2
+          },
+          "difficulty": "normal",
+          "goal": true,
+          "notes": []
+        },
+        "charged": 1,
+        "cleared": true,
+        "stage": "CH10"
+      }
+    },
+    {
+      "stage": "CH10",
+      "seed": 10809,
+      "weapon": "ranged",
+      "crowd": "natural",
+      "quality": 5,
+      "god": false,
+      "equal": true,
+      "checkpoints": 51,
+      "seconds": 255.10000000009515,
+      "kills": 1967,
+      "canvasHash": null,
+      "finalEnemyState": {
+        "tick": 15306,
+        "seconds": 255.10000000009515,
+        "count": 1,
+        "types": [
+          ""
+        ],
+        "randomCalls": 23746,
+        "randomState": 1522967011,
+        "sha256": "1f538568c11a20ff81a0b956faee90110922088139073199551c7930368ce4b3"
+      },
+      "inputHash": 1713652701,
+      "inputSha256": "545ba41dbfbe6cbe2cd1fa9bf1e02c55f06e8be9ca6e9ffa6ae10dedebbfe17b",
+      "settlement": {
+        "reward": {
+          "coins": 300,
+          "petCoinPct": 0,
+          "gifts": 1,
+          "missions": [
+            {
+              "id": "win1",
+              "name": "도전 1번 성공하기",
+              "gifts": 2
+            },
+            {
+              "id": "goal1",
+              "name": "환경 목표 1번 해내기",
+              "gifts": 2
+            }
+          ],
+          "stars": 2,
+          "first": false,
+          "partActivity": [
+            {
+              "id": "PART_F1",
+              "active": true
+            },
+            {
+              "id": "PART_W1",
+              "active": false
+            },
+            {
+              "id": "PART_L1",
+              "active": false
+            }
+          ],
+          "stageGift": {
+            "left": 1,
+            "capped": false,
+            "limit": 2
+          },
+          "difficulty": "normal",
+          "goal": true,
+          "notes": []
+        },
+        "charged": 1,
+        "cleared": true,
+        "stage": "CH10"
+      }
+    },
+    {
+      "stage": "CH10",
+      "seed": 10809,
+      "weapon": "ranged",
+      "crowd": "stress",
+      "quality": 5,
+      "god": false,
+      "equal": true,
+      "checkpoints": 51,
+      "seconds": 256.8000000000951,
+      "kills": 2120,
+      "canvasHash": null,
+      "finalEnemyState": {
+        "tick": 15408,
+        "seconds": 256.8000000000951,
+        "count": 1,
+        "types": [
+          ""
+        ],
+        "randomCalls": 29206,
+        "randomState": 3188440903,
+        "sha256": "2b840eea596bdb8904f89e8aeef3cbb6a7f9e4321d3e6d2ee5ecd4e0d1188286"
+      },
+      "inputHash": 1398609806,
+      "inputSha256": "27ff9101c4af32c4483a8cea58be147224db41f9532cc9925e8cc029c6590792",
+      "settlement": {
+        "reward": {
+          "coins": 300,
+          "petCoinPct": 0,
+          "gifts": 1,
+          "missions": [
+            {
+              "id": "win1",
+              "name": "도전 1번 성공하기",
+              "gifts": 2
+            },
+            {
+              "id": "goal1",
+              "name": "환경 목표 1번 해내기",
+              "gifts": 2
+            }
+          ],
+          "stars": 2,
+          "first": false,
+          "partActivity": [
+            {
+              "id": "PART_F1",
+              "active": true
+            },
+            {
+              "id": "PART_W1",
+              "active": false
+            },
+            {
+              "id": "PART_L1",
+              "active": false
+            }
+          ],
+          "stageGift": {
+            "left": 1,
+            "capped": false,
+            "limit": 2
+          },
+          "difficulty": "normal",
+          "goal": true,
+          "notes": []
+        },
+        "charged": 1,
+        "cleared": true,
+        "stage": "CH10"
+      }
+    },
+    {
+      "stage": "CH10",
+      "seed": 10809,
+      "weapon": "melee",
+      "crowd": "natural",
+      "quality": 5,
+      "god": false,
+      "equal": true,
+      "checkpoints": 52,
+      "seconds": 262.5833333334232,
+      "kills": 1959,
+      "canvasHash": null,
+      "finalEnemyState": {
+        "tick": 15755,
+        "seconds": 262.5833333334232,
+        "count": 1,
+        "types": [
+          ""
+        ],
+        "randomCalls": 24192,
+        "randomState": 2357533369,
+        "sha256": "e719a244e790cd41e7761134cd6ae86f28e6486f80eb8dd517c2ca431dd01e82"
+      },
+      "inputHash": 1675246288,
+      "inputSha256": "b6491e03a939cb31f1cfbc524a82fd5186f4e8ba58421200ad7ad6c85feb318f",
+      "settlement": {
+        "reward": {
+          "coins": 300,
+          "petCoinPct": 0,
+          "gifts": 1,
+          "missions": [
+            {
+              "id": "win1",
+              "name": "도전 1번 성공하기",
+              "gifts": 2
+            },
+            {
+              "id": "goal1",
+              "name": "환경 목표 1번 해내기",
+              "gifts": 2
+            }
+          ],
+          "stars": 2,
+          "first": false,
+          "partActivity": [
+            {
+              "id": "PART_F1",
+              "active": true
+            },
+            {
+              "id": "PART_W1",
+              "active": false
+            },
+            {
+              "id": "PART_L1",
+              "active": true
+            }
+          ],
+          "stageGift": {
+            "left": 1,
+            "capped": false,
+            "limit": 2
+          },
+          "difficulty": "normal",
+          "goal": true,
+          "notes": []
+        },
+        "charged": 1,
+        "cleared": true,
+        "stage": "CH10"
+      }
+    },
+    {
+      "stage": "CH10",
+      "seed": 10809,
+      "weapon": "melee",
+      "crowd": "stress",
+      "quality": 5,
+      "god": false,
+      "equal": true,
+      "checkpoints": 51,
+      "seconds": 255.86666666676243,
+      "kills": 2102,
+      "canvasHash": null,
+      "finalEnemyState": {
+        "tick": 15352,
+        "seconds": 255.86666666676243,
+        "count": 1,
+        "types": [
+          ""
+        ],
+        "randomCalls": 28930,
+        "randomState": 187450147,
+        "sha256": "4a4f489035ecd681a04458403ab3ae15788bf9b68b61217734329c3e6a370472"
+      },
+      "inputHash": 603306182,
+      "inputSha256": "fb6a31a3076a3a4ef845f49d672bcc77c6ec82373964b35397c9f09958b347e9",
+      "settlement": {
+        "reward": {
+          "coins": 300,
+          "petCoinPct": 0,
+          "gifts": 1,
+          "missions": [
+            {
+              "id": "win1",
+              "name": "도전 1번 성공하기",
+              "gifts": 2
+            },
+            {
+              "id": "goal1",
+              "name": "환경 목표 1번 해내기",
+              "gifts": 2
+            }
+          ],
+          "stars": 2,
+          "first": false,
+          "partActivity": [
+            {
+              "id": "PART_F1",
+              "active": true
+            },
+            {
+              "id": "PART_W1",
+              "active": false
+            },
+            {
+              "id": "PART_L1",
+              "active": false
+            }
+          ],
+          "stageGift": {
+            "left": 1,
+            "capped": false,
+            "limit": 2
+          },
+          "difficulty": "normal",
+          "goal": true,
+          "notes": []
+        },
+        "charged": 1,
+        "cleared": true,
+        "stage": "CH10"
+      }
+    },
+    {
+      "stage": "CH13",
+      "seed": 10808,
+      "weapon": "ranged",
+      "crowd": "natural",
+      "quality": 0,
+      "god": true,
+      "equal": true,
+      "checkpoints": 54,
+      "seconds": 274.6000000000789,
+      "kills": 2122,
+      "canvasHash": "2e24297260720c1b8c7ceab662f1f5b46e1cebde1d74b69dda35143614b6dbac",
+      "finalEnemyState": {
+        "tick": 16476,
+        "seconds": 274.6000000000789,
+        "count": 63,
+        "types": [
+          "T3_CAN",
+          "T3_PETRI",
+          "T3_CAN",
+          "T3_BUBBLE",
+          "T3_CAN",
+          "T3_CAN",
+          "T3_CAN",
+          "T3_PETRI",
+          "T3_CAN",
+          "T3_BUBBLE",
+          "T3_PETRI",
+          "T3_CAN",
+          "T3_CAN",
+          "T3_BUBBLE",
+          "T3_CAN",
+          "T3_BUBBLE",
+          "T3_BUBBLE",
+          "T3_PETRI",
+          "T3_CAN",
+          "T3_BUBBLE",
+          "T3_CAN",
+          "T3_BUBBLE",
+          "T3_CAN",
+          "T3_PETRI",
+          "T3_PETRI",
+          "T3_PETRI",
+          "T3_CAN",
+          "T3_CAN",
+          "T3_CAN",
+          "T3_CAN",
+          "T3_BUBBLE",
+          "T3_BUBBLE",
+          "T3_PETRI",
+          "T3_BUBBLE",
+          "T3_CAN",
+          "T3_BUBBLE",
+          "T3_BUBBLE",
+          "T3_PETRI",
+          "T3_PETRI",
+          "T3_CAN",
+          "T3_CAN",
+          "T3_BUBBLE",
+          "T3_PETRI",
+          "T3_CAN",
+          "T3_BUBBLE",
+          "T3_BUBBLE",
+          "T3_CAN",
+          "T3_BUBBLE",
+          "T3_CAN",
+          "T3_BUBBLE",
+          "T3_CAN",
+          "T3_BUBBLE",
+          "T3_PETRI",
+          "T3_CAN",
+          "T3_BUBBLE",
+          "T3_PETRI",
+          "T3_CAN",
+          "T3_BUBBLE",
+          "T3_PETRI",
+          "T3_CAN",
+          "T3_BUBBLE",
+          "T3_PETRI",
+          "T3_CAN"
+        ],
+        "randomCalls": 34396,
+        "randomState": 4252384324,
+        "sha256": "71014a688a6dbc0bfb6a119b7957ffe7cec62f75c98d919b3e1f7ab31a6b255b"
+      },
+      "inputHash": 318682617,
+      "inputSha256": "802c8a234b6efdbc808af8cc19e65c3746703d039f64b44ad4141fb925a32ee7",
+      "settlement": {
+        "reward": {
+          "coins": 131,
+          "petCoinPct": 0,
+          "gifts": 0,
+          "missions": [],
+          "stars": 0,
+          "first": false,
+          "partActivity": [
+            {
+              "id": "PART_F1",
+              "active": false
+            },
+            {
+              "id": "PART_W1",
+              "active": false
+            },
+            {
+              "id": "PART_L1",
+              "active": true
+            }
+          ],
+          "stageGift": null,
+          "difficulty": "normal",
+          "goal": false,
+          "notes": []
+        },
+        "charged": 0,
+        "cleared": false,
+        "stage": "CH13"
+      }
+    },
+    {
+      "stage": "CH13",
+      "seed": 10808,
+      "weapon": "ranged",
+      "crowd": "stress",
+      "quality": 0,
+      "god": true,
+      "equal": true,
+      "checkpoints": 54,
+      "seconds": 274.7833333334121,
+      "kills": 2298,
+      "canvasHash": "2de97896ed53810cafd8e413672939aba49b4af5f2cd7a2ea79fac0904f5180b",
+      "finalEnemyState": {
+        "tick": 16487,
+        "seconds": 274.7833333334121,
+        "count": 12,
+        "types": [
+          "T3_CAN",
+          "T3_PETRI",
+          "T3_PETRI",
+          "T3_CAN",
+          "T3_BUBBLE",
+          "T3_BUBBLE",
+          "T3_BUBBLE",
+          "T3_PETRI",
+          "T3_CAN",
+          "T3_BUBBLE",
+          "T3_PETRI",
+          "T3_CAN"
+        ],
+        "randomCalls": 33499,
+        "randomState": 2015357135,
+        "sha256": "ee6ead6647238fffc11358f904134623d65e1e3e224c650712101f0e5a368123"
+      },
+      "inputHash": 2530988840,
+      "inputSha256": "bc7928acdc0e3f12ec8504d0ac227299e58242e4dd82f9769ef20c88f5f1a2f0",
+      "settlement": {
+        "reward": {
+          "coins": 131,
+          "petCoinPct": 0,
+          "gifts": 0,
+          "missions": [],
+          "stars": 0,
+          "first": false,
+          "partActivity": [
+            {
+              "id": "PART_F1",
+              "active": false
+            },
+            {
+              "id": "PART_W1",
+              "active": false
+            },
+            {
+              "id": "PART_L1",
+              "active": true
+            }
+          ],
+          "stageGift": null,
+          "difficulty": "normal",
+          "goal": false,
+          "notes": []
+        },
+        "charged": 0,
+        "cleared": false,
+        "stage": "CH13"
+      }
+    },
+    {
+      "stage": "CH13",
+      "seed": 10808,
+      "weapon": "melee",
+      "crowd": "natural",
+      "quality": 0,
+      "god": true,
+      "equal": true,
+      "checkpoints": 54,
+      "seconds": 274.6000000000789,
+      "kills": 2096,
+      "canvasHash": "37a9abe3da748c4e6708ebf2f8253b42177a3923f7934b952a5f538501d40df1",
+      "finalEnemyState": {
+        "tick": 16476,
+        "seconds": 274.6000000000789,
+        "count": 89,
+        "types": [
+          "T3_CAN",
+          "T3_CAN",
+          "T3_BUBBLE",
+          "T3_CAN",
+          "T3_BUBBLE",
+          "T3_CAN",
+          "T3_BUBBLE",
+          "T3_BUBBLE",
+          "T3_BUBBLE",
+          "T3_CAN",
+          "T3_CAN",
+          "T3_CAN",
+          "T3_CAN",
+          "T3_CAN",
+          "T3_BUBBLE",
+          "T3_CAN",
+          "T3_BUBBLE",
+          "T3_BUBBLE",
+          "T3_CAN",
+          "T3_CAN",
+          "T3_BUBBLE",
+          "T3_BUBBLE",
+          "T3_PETRI",
+          "T3_CAN",
+          "T3_BUBBLE",
+          "T3_BUBBLE",
+          "T3_CAN",
+          "T3_BUBBLE",
+          "T3_CAN",
+          "T3_BUBBLE",
+          "T3_CAN",
+          "T3_BUBBLE",
+          "T3_CAN",
+          "T3_BUBBLE",
+          "T3_PETRI",
+          "T3_CAN",
+          "T3_BUBBLE",
+          "T3_CAN",
+          "T3_BUBBLE",
+          "T3_PETRI",
+          "T3_CAN",
+          "T3_BUBBLE",
+          "T3_PETRI",
+          "T3_CAN",
+          "T3_BUBBLE",
+          "T3_PETRI",
+          "T3_CAN",
+          "T3_PETRI",
+          "T3_CAN",
+          "T3_BUBBLE",
+          "T3_PETRI",
+          "T3_CAN",
+          "T3_BUBBLE",
+          "T3_CAN",
+          "T3_BUBBLE",
+          "T3_BUBBLE",
+          "T3_BUBBLE",
+          "T3_BUBBLE",
+          "T3_CAN",
+          "T3_BUBBLE",
+          "T3_BUBBLE",
+          "T3_PETRI",
+          "T3_CAN",
+          "T3_PETRI",
+          "T3_CAN",
+          "T3_BUBBLE",
+          "T3_CAN",
+          "T3_BUBBLE",
+          "T3_CAN",
+          "T3_BUBBLE",
+          "T3_CAN",
+          "T3_BUBBLE",
+          "T3_PETRI",
+          "T3_CAN",
+          "T3_BUBBLE",
+          "T3_PETRI",
+          "T3_CAN",
+          "T3_BUBBLE",
+          "T3_PETRI",
+          "T3_CAN",
+          "T3_BUBBLE",
+          "T3_PETRI",
+          "T3_CAN",
+          "T3_BUBBLE",
+          "T3_PETRI",
+          "T3_CAN",
+          "T3_BUBBLE",
+          "T3_PETRI",
+          "T3_CAN"
+        ],
+        "randomCalls": 34151,
+        "randomState": 2195358923,
+        "sha256": "f4a048ce44b12ed9566bb83d1eeb610129fba19bd29268f6ac08d03f9348e1e3"
+      },
+      "inputHash": 3298703467,
+      "inputSha256": "eb6a0b90aa2307fabdc165b68bbd85d853b2ce4efc8498cd1c4e625436254610",
+      "settlement": {
+        "reward": {
+          "coins": 131,
+          "petCoinPct": 0,
+          "gifts": 0,
+          "missions": [],
+          "stars": 0,
+          "first": false,
+          "partActivity": [
+            {
+              "id": "PART_F1",
+              "active": false
+            },
+            {
+              "id": "PART_W1",
+              "active": false
+            },
+            {
+              "id": "PART_L1",
+              "active": true
+            }
+          ],
+          "stageGift": null,
+          "difficulty": "normal",
+          "goal": false,
+          "notes": []
+        },
+        "charged": 0,
+        "cleared": false,
+        "stage": "CH13"
+      }
+    },
+    {
+      "stage": "CH13",
+      "seed": 10808,
+      "weapon": "melee",
+      "crowd": "stress",
+      "quality": 0,
+      "god": true,
+      "equal": true,
+      "checkpoints": 54,
+      "seconds": 274.80000000007874,
+      "kills": 2278,
+      "canvasHash": "8136c3d5114a064c106500ff2990dba859816c73a80a76b9ccd87163d719295e",
+      "finalEnemyState": {
+        "tick": 16488,
+        "seconds": 274.80000000007874,
+        "count": 32,
+        "types": [
+          "T3_CAN",
+          "T3_BUBBLE",
+          "T3_CAN",
+          "T3_BUBBLE",
+          "T3_CAN",
+          "T3_CAN",
+          "T3_CAN",
+          "T3_BUBBLE",
+          "T3_PETRI",
+          "T3_CAN",
+          "T3_PETRI",
+          "T3_CAN",
+          "T3_PETRI",
+          "T3_CAN",
+          "T3_BUBBLE",
+          "T3_CAN",
+          "T3_BUBBLE",
+          "T3_CAN",
+          "T3_BUBBLE",
+          "T3_PETRI",
+          "T3_BUBBLE",
+          "T3_CAN",
+          "T3_CAN",
+          "T3_PETRI",
+          "T3_CAN",
+          "T3_PETRI",
+          "T3_BUBBLE",
+          "T3_PETRI",
+          "T3_CAN",
+          "T3_BUBBLE",
+          "T3_PETRI",
+          "T3_CAN"
+        ],
+        "randomCalls": 33264,
+        "randomState": 1094120680,
+        "sha256": "0f913720ed394462467cb2f193504e3b62ba5c34e9c1cb2f3601033ae378c13f"
+      },
+      "inputHash": 1070002924,
+      "inputSha256": "093e501d9f5f12a932d732143a5abe82d9da26275e1432403d5ec765cd7d69d6",
+      "settlement": {
+        "reward": {
+          "coins": 131,
+          "petCoinPct": 0,
+          "gifts": 0,
+          "missions": [],
+          "stars": 0,
+          "first": false,
+          "partActivity": [
+            {
+              "id": "PART_F1",
+              "active": false
+            },
+            {
+              "id": "PART_W1",
+              "active": false
+            },
+            {
+              "id": "PART_L1",
+              "active": true
+            }
+          ],
+          "stageGift": null,
+          "difficulty": "normal",
+          "goal": false,
+          "notes": []
+        },
+        "charged": 0,
+        "cleared": false,
+        "stage": "CH13"
+      }
+    },
+    {
+      "stage": "CH13",
+      "seed": 10809,
+      "weapon": "ranged",
+      "crowd": "natural",
+      "quality": 5,
+      "god": false,
+      "equal": true,
+      "checkpoints": 54,
+      "seconds": 274.6166666667456,
+      "kills": 2138,
+      "canvasHash": null,
+      "finalEnemyState": {
+        "tick": 16477,
+        "seconds": 274.6166666667456,
+        "count": 47,
+        "types": [
+          "T3_BUBBLE",
+          "T3_CAN",
+          "T3_CAN",
+          "T3_CAN",
+          "T3_BUBBLE",
+          "T3_CAN",
+          "T3_BUBBLE",
+          "T3_CAN",
+          "T3_CAN",
+          "T3_CAN",
+          "T3_BUBBLE",
+          "T3_CAN",
+          "T3_CAN",
+          "T3_BUBBLE",
+          "T3_CAN",
+          "T3_BUBBLE",
+          "T3_CAN",
+          "T3_PETRI",
+          "T3_BUBBLE",
+          "T3_BUBBLE",
+          "T3_BUBBLE",
+          "T3_PETRI",
+          "T3_BUBBLE",
+          "T3_PETRI",
+          "T3_BUBBLE",
+          "T3_BUBBLE",
+          "T3_PETRI",
+          "T3_CAN",
+          "T3_PETRI",
+          "T3_CAN",
+          "T3_BUBBLE",
+          "T3_PETRI",
+          "T3_BUBBLE",
+          "T3_PETRI",
+          "T3_CAN",
+          "T3_BUBBLE",
+          "T3_PETRI",
+          "T3_CAN",
+          "T3_BUBBLE",
+          "T3_PETRI",
+          "T3_CAN",
+          "T3_BUBBLE",
+          "T3_PETRI",
+          "T3_CAN",
+          "T3_BUBBLE",
+          "T3_PETRI",
+          "T3_CAN"
+        ],
+        "randomCalls": 27411,
+        "randomState": 1177788008,
+        "sha256": "32800cc00b64d2520126f03f166e296006618a700bb812c0c163228fcdd4a07c"
+      },
+      "inputHash": 185733491,
+      "inputSha256": "bccc0796ce8816f4803081402f570512b42122d82ca0e292e2dc821f6ed80fc2",
+      "settlement": {
+        "reward": {
+          "coins": 131,
+          "petCoinPct": 0,
+          "gifts": 0,
+          "missions": [],
+          "stars": 0,
+          "first": false,
+          "partActivity": [
+            {
+              "id": "PART_F1",
+              "active": true
+            },
+            {
+              "id": "PART_W1",
+              "active": false
+            },
+            {
+              "id": "PART_L1",
+              "active": false
+            }
+          ],
+          "stageGift": null,
+          "difficulty": "normal",
+          "goal": false,
+          "notes": []
+        },
+        "charged": 0,
+        "cleared": false,
+        "stage": "CH13"
+      }
+    },
+    {
+      "stage": "CH13",
+      "seed": 10809,
+      "weapon": "ranged",
+      "crowd": "stress",
+      "quality": 5,
+      "god": false,
+      "equal": true,
+      "checkpoints": 54,
+      "seconds": 274.80000000007874,
+      "kills": 2294,
+      "canvasHash": null,
+      "finalEnemyState": {
+        "tick": 16488,
+        "seconds": 274.80000000007874,
+        "count": 20,
+        "types": [
+          "T3_BUBBLE",
+          "T3_CAN",
+          "T3_BUBBLE",
+          "T3_CAN",
+          "T3_BUBBLE",
+          "T3_PETRI",
+          "T3_BUBBLE",
+          "T3_BUBBLE",
+          "T3_CAN",
+          "T3_BUBBLE",
+          "T3_BUBBLE",
+          "T3_BUBBLE",
+          "T3_PETRI",
+          "T3_CAN",
+          "T3_CAN",
+          "T3_BUBBLE",
+          "T3_CAN",
+          "T3_BUBBLE",
+          "T3_PETRI",
+          "T3_CAN"
+        ],
+        "randomCalls": 31567,
+        "randomState": 2483258324,
+        "sha256": "2bab2a365d69d49ffc44e42aab60d1819818561d2eb0e3c806171765e019282f"
+      },
+      "inputHash": 2691430022,
+      "inputSha256": "454d4eb3926c18159859ea593d5cce57e746f6e7f8e455658ec04be887be7cbe",
+      "settlement": {
+        "reward": {
+          "coins": 131,
+          "petCoinPct": 0,
+          "gifts": 0,
+          "missions": [],
+          "stars": 0,
+          "first": false,
+          "partActivity": [
+            {
+              "id": "PART_F1",
+              "active": true
+            },
+            {
+              "id": "PART_W1",
+              "active": false
+            },
+            {
+              "id": "PART_L1",
+              "active": false
+            }
+          ],
+          "stageGift": null,
+          "difficulty": "normal",
+          "goal": false,
+          "notes": []
+        },
+        "charged": 0,
+        "cleared": false,
+        "stage": "CH13"
+      }
+    },
+    {
+      "stage": "CH13",
+      "seed": 10809,
+      "weapon": "melee",
+      "crowd": "natural",
+      "quality": 5,
+      "god": false,
+      "equal": true,
+      "checkpoints": 54,
+      "seconds": 274.6333333334122,
+      "kills": 2157,
+      "canvasHash": null,
+      "finalEnemyState": {
+        "tick": 16478,
+        "seconds": 274.6333333334122,
+        "count": 28,
+        "types": [
+          "T3_BUBBLE",
+          "T3_CAN",
+          "T3_CAN",
+          "T3_BUBBLE",
+          "T3_CAN",
+          "T3_PETRI",
+          "T3_BUBBLE",
+          "T3_BUBBLE",
+          "T3_CAN",
+          "T3_BUBBLE",
+          "T3_CAN",
+          "T3_BUBBLE",
+          "T3_PETRI",
+          "T3_CAN",
+          "T3_BUBBLE",
+          "T3_CAN",
+          "T3_PETRI",
+          "T3_BUBBLE",
+          "T3_PETRI",
+          "T3_CAN",
+          "T3_BUBBLE",
+          "T3_PETRI",
+          "T3_BUBBLE",
+          "T3_PETRI",
+          "T3_CAN",
+          "T3_BUBBLE",
+          "T3_PETRI",
+          "T3_CAN"
+        ],
+        "randomCalls": 26474,
+        "randomState": 2987539627,
+        "sha256": "e9b9a058455605a884a5783c572a0c00aa7ae50e83181966951f04aaab8df939"
+      },
+      "inputHash": 2049764304,
+      "inputSha256": "0ea6de01c54eba3eca2f96f8b810cbb3de7692bc06a6cff391852421193f07a6",
+      "settlement": {
+        "reward": {
+          "coins": 131,
+          "petCoinPct": 0,
+          "gifts": 0,
+          "missions": [],
+          "stars": 0,
+          "first": false,
+          "partActivity": [
+            {
+              "id": "PART_F1",
+              "active": true
+            },
+            {
+              "id": "PART_W1",
+              "active": false
+            },
+            {
+              "id": "PART_L1",
+              "active": false
+            }
+          ],
+          "stageGift": null,
+          "difficulty": "normal",
+          "goal": false,
+          "notes": []
+        },
+        "charged": 0,
+        "cleared": false,
+        "stage": "CH13"
+      }
+    },
+    {
+      "stage": "CH13",
+      "seed": 10809,
+      "weapon": "melee",
+      "crowd": "stress",
+      "quality": 5,
+      "god": false,
+      "equal": true,
+      "checkpoints": 54,
+      "seconds": 274.80000000007874,
+      "kills": 2279,
+      "canvasHash": null,
+      "finalEnemyState": {
+        "tick": 16488,
+        "seconds": 274.80000000007874,
+        "count": 27,
+        "types": [
+          "T3_CAN",
+          "T3_CAN",
+          "T3_BUBBLE",
+          "T3_CAN",
+          "T3_BUBBLE",
+          "T3_CAN",
+          "T3_BUBBLE",
+          "T3_BUBBLE",
+          "T3_BUBBLE",
+          "T3_CAN",
+          "T3_BUBBLE",
+          "T3_PETRI",
+          "T3_BUBBLE",
+          "T3_PETRI",
+          "T3_CAN",
+          "T3_BUBBLE",
+          "T3_BUBBLE",
+          "T3_PETRI",
+          "T3_CAN",
+          "T3_BUBBLE",
+          "T3_PETRI",
+          "T3_CAN",
+          "T3_BUBBLE",
+          "T3_CAN",
+          "T3_BUBBLE",
+          "T3_BUBBLE",
+          "T3_CAN"
+        ],
+        "randomCalls": 31374,
+        "randomState": 1178374687,
+        "sha256": "f15cd0779e75ea3fd3bea520b2340031eef9b6a31232f131aae4990eb39e853a"
+      },
+      "inputHash": 514642849,
+      "inputSha256": "8531d5f569e77a9b44e7ea879c0db6bc0230a5d31246f6804f9c9d3c4192b9a9",
+      "settlement": {
+        "reward": {
+          "coins": 131,
+          "petCoinPct": 0,
+          "gifts": 0,
+          "missions": [],
+          "stars": 0,
+          "first": false,
+          "partActivity": [
+            {
+              "id": "PART_F1",
+              "active": true
+            },
+            {
+              "id": "PART_W1",
+              "active": false
+            },
+            {
+              "id": "PART_L1",
+              "active": false
+            }
+          ],
+          "stageGift": null,
+          "difficulty": "normal",
+          "goal": false,
+          "notes": []
+        },
+        "charged": 0,
+        "cleared": false,
+        "stage": "CH13"
+      }
+    },
+    {
+      "stage": "CH15",
+      "seed": 10808,
+      "weapon": "ranged",
+      "crowd": "natural",
+      "quality": 0,
+      "god": true,
+      "equal": true,
+      "checkpoints": 54,
+      "seconds": 274.6000000000789,
+      "kills": 2013,
+      "canvasHash": "87ae0a1ebdd5d444ac3e55ed502565ce48da22a57d4fe7b3d4a928f8ec47c63b",
+      "finalEnemyState": {
+        "tick": 16476,
+        "seconds": 274.6000000000789,
+        "count": 1,
+        "types": [
+          ""
+        ],
+        "randomCalls": 29926,
+        "randomState": 3360866390,
+        "sha256": "531cd64f5a1c544c9a0a7a7c78f7ec1f9172ac2b81519c16a0a375ac37f00ce5"
+      },
+      "inputHash": 1745860868,
+      "inputSha256": "85c898c03ee0742ce7981965945abb002612f3b239f7ecf2b5267485a629b3e4",
+      "settlement": {
+        "reward": {
+          "coins": 142,
+          "petCoinPct": 0,
+          "gifts": 0,
+          "missions": [],
+          "stars": 0,
+          "first": false,
+          "partActivity": [
+            {
+              "id": "PART_F1",
+              "active": false
+            },
+            {
+              "id": "PART_W1",
+              "active": false
+            },
+            {
+              "id": "PART_L1",
+              "active": true
+            }
+          ],
+          "stageGift": null,
+          "difficulty": "normal",
+          "goal": false,
+          "notes": []
+        },
+        "charged": 0,
+        "cleared": false,
+        "stage": "CH15"
+      }
+    },
+    {
+      "stage": "CH15",
+      "seed": 10808,
+      "weapon": "ranged",
+      "crowd": "stress",
+      "quality": 0,
+      "god": true,
+      "equal": true,
+      "checkpoints": 52,
+      "seconds": 263.2666666667559,
+      "kills": 2146,
+      "canvasHash": "d19cab40d120ab8087c1536f7c96434df2e8935ce07fc2949dc104989e800297",
+      "finalEnemyState": {
+        "tick": 15796,
+        "seconds": 263.2666666667559,
+        "count": 1,
+        "types": [
+          ""
+        ],
+        "randomCalls": 34903,
+        "randomState": 848348283,
+        "sha256": "25c98e53746d33e6a92f6f77c4e1caba07b321acba5468587de1c304a86d247e"
+      },
+      "inputHash": 2983674822,
+      "inputSha256": "80ea48eb7610481324bdbef1a7a077584a1c2b0edcccc3872165aa24151c8321",
+      "settlement": {
+        "reward": {
+          "coins": 350,
+          "petCoinPct": 0,
+          "gifts": 1,
+          "missions": [
+            {
+              "id": "win1",
+              "name": "도전 1번 성공하기",
+              "gifts": 2
+            },
+            {
+              "id": "goal1",
+              "name": "환경 목표 1번 해내기",
+              "gifts": 2
+            }
+          ],
+          "stars": 2,
+          "first": false,
+          "partActivity": [
+            {
+              "id": "PART_F1",
+              "active": false
+            },
+            {
+              "id": "PART_W1",
+              "active": false
+            },
+            {
+              "id": "PART_L1",
+              "active": true
+            }
+          ],
+          "stageGift": {
+            "left": 1,
+            "capped": false,
+            "limit": 2
+          },
+          "difficulty": "normal",
+          "goal": true,
+          "notes": []
+        },
+        "charged": 1,
+        "cleared": true,
+        "stage": "CH15"
+      }
+    },
+    {
+      "stage": "CH15",
+      "seed": 10808,
+      "weapon": "melee",
+      "crowd": "natural",
+      "quality": 0,
+      "god": true,
+      "equal": true,
+      "checkpoints": 54,
+      "seconds": 274.6000000000789,
+      "kills": 2037,
+      "canvasHash": "60e51fdf8ac439a8a2b9f0e8f1d182c1d8e37ee1d64559e0178127658611f3a5",
+      "finalEnemyState": {
+        "tick": 16476,
+        "seconds": 274.6000000000789,
+        "count": 1,
+        "types": [
+          ""
+        ],
+        "randomCalls": 33738,
+        "randomState": 1672922250,
+        "sha256": "bae037982351ec2655e7126e7b85830c46f71aa6edf7782f3749065b1e5149bb"
+      },
+      "inputHash": 4269133462,
+      "inputSha256": "9608e9a6954854d4242a9bf7cb8b9cc8cc8323f7bfdd35bd8e75d29ef04c3243",
+      "settlement": {
+        "reward": {
+          "coins": 142,
+          "petCoinPct": 0,
+          "gifts": 0,
+          "missions": [],
+          "stars": 0,
+          "first": false,
+          "partActivity": [
+            {
+              "id": "PART_F1",
+              "active": true
+            },
+            {
+              "id": "PART_W1",
+              "active": true
+            },
+            {
+              "id": "PART_L1",
+              "active": true
+            }
+          ],
+          "stageGift": null,
+          "difficulty": "normal",
+          "goal": false,
+          "notes": []
+        },
+        "charged": 0,
+        "cleared": false,
+        "stage": "CH15"
+      }
+    },
+    {
+      "stage": "CH15",
+      "seed": 10808,
+      "weapon": "melee",
+      "crowd": "stress",
+      "quality": 0,
+      "god": true,
+      "equal": true,
+      "checkpoints": 53,
+      "seconds": 267.65000000008524,
+      "kills": 2188,
+      "canvasHash": "8f551769d9f190d6d489cb228c949767c597f213a9b3837ac9070d924c3fe281",
+      "finalEnemyState": {
+        "tick": 16059,
+        "seconds": 267.65000000008524,
+        "count": 1,
+        "types": [
+          ""
+        ],
+        "randomCalls": 35130,
+        "randomState": 1960122,
+        "sha256": "2943cb79afca545251ed934869c16f0699fb2faf0e2b27b5ff278eecd0742cc5"
+      },
+      "inputHash": 2816238309,
+      "inputSha256": "5e3a4b7130bc0764d0dd1837a51cb35615e01d8543b4a25b744673cb30f15a73",
+      "settlement": {
+        "reward": {
+          "coins": 350,
+          "petCoinPct": 0,
+          "gifts": 1,
+          "missions": [
+            {
+              "id": "win1",
+              "name": "도전 1번 성공하기",
+              "gifts": 2
+            },
+            {
+              "id": "goal1",
+              "name": "환경 목표 1번 해내기",
+              "gifts": 2
+            }
+          ],
+          "stars": 2,
+          "first": false,
+          "partActivity": [
+            {
+              "id": "PART_F1",
+              "active": false
+            },
+            {
+              "id": "PART_W1",
+              "active": true
+            },
+            {
+              "id": "PART_L1",
+              "active": true
+            }
+          ],
+          "stageGift": {
+            "left": 1,
+            "capped": false,
+            "limit": 2
+          },
+          "difficulty": "normal",
+          "goal": true,
+          "notes": []
+        },
+        "charged": 1,
+        "cleared": true,
+        "stage": "CH15"
+      }
+    },
+    {
+      "stage": "CH15",
+      "seed": 10809,
+      "weapon": "ranged",
+      "crowd": "natural",
+      "quality": 5,
+      "god": false,
+      "equal": true,
+      "checkpoints": 54,
+      "seconds": 274.6000000000789,
+      "kills": 2037,
+      "canvasHash": null,
+      "finalEnemyState": {
+        "tick": 16476,
+        "seconds": 274.6000000000789,
+        "count": 1,
+        "types": [
+          ""
+        ],
+        "randomCalls": 27352,
+        "randomState": 489587441,
+        "sha256": "bdb132204d70681d7d2aa46cd96315c84227a1b2b00c03eb9fda72ecd60b7f83"
+      },
+      "inputHash": 250856047,
+      "inputSha256": "d8bdd86390a9ed4f29fbca02a6360b41e243fb343a8d7fec889a0ba55b86b38e",
+      "settlement": {
+        "reward": {
+          "coins": 142,
+          "petCoinPct": 0,
+          "gifts": 0,
+          "missions": [],
+          "stars": 0,
+          "first": false,
+          "partActivity": [
+            {
+              "id": "PART_F1",
+              "active": true
+            },
+            {
+              "id": "PART_W1",
+              "active": true
+            },
+            {
+              "id": "PART_L1",
+              "active": false
+            }
+          ],
+          "stageGift": null,
+          "difficulty": "normal",
+          "goal": false,
+          "notes": []
+        },
+        "charged": 0,
+        "cleared": false,
+        "stage": "CH15"
+      }
+    },
+    {
+      "stage": "CH15",
+      "seed": 10809,
+      "weapon": "ranged",
+      "crowd": "stress",
+      "quality": 5,
+      "god": false,
+      "equal": true,
+      "checkpoints": 53,
+      "seconds": 267.03333333341914,
+      "kills": 2162,
+      "canvasHash": null,
+      "finalEnemyState": {
+        "tick": 16022,
+        "seconds": 267.03333333341914,
+        "count": 1,
+        "types": [
+          ""
+        ],
+        "randomCalls": 33628,
+        "randomState": 2064145733,
+        "sha256": "cc5f87871240ea1325f046b7d4ece070b3885ec00583e11fc2cf3520bcebd5c8"
+      },
+      "inputHash": 1130162948,
+      "inputSha256": "a0941f02f8a067137adf7e8f81a7e2a1608e721c5052126b4c25c806c451666a",
+      "settlement": {
+        "reward": {
+          "coins": 350,
+          "petCoinPct": 0,
+          "gifts": 1,
+          "missions": [
+            {
+              "id": "win1",
+              "name": "도전 1번 성공하기",
+              "gifts": 2
+            },
+            {
+              "id": "goal1",
+              "name": "환경 목표 1번 해내기",
+              "gifts": 2
+            }
+          ],
+          "stars": 2,
+          "first": false,
+          "partActivity": [
+            {
+              "id": "PART_F1",
+              "active": true
+            },
+            {
+              "id": "PART_W1",
+              "active": false
+            },
+            {
+              "id": "PART_L1",
+              "active": false
+            }
+          ],
+          "stageGift": {
+            "left": 1,
+            "capped": false,
+            "limit": 2
+          },
+          "difficulty": "normal",
+          "goal": true,
+          "notes": []
+        },
+        "charged": 1,
+        "cleared": true,
+        "stage": "CH15"
+      }
+    },
+    {
+      "stage": "CH15",
+      "seed": 10809,
+      "weapon": "melee",
+      "crowd": "natural",
+      "quality": 5,
+      "god": false,
+      "equal": true,
+      "checkpoints": 54,
+      "seconds": 274.6000000000789,
+      "kills": 2007,
+      "canvasHash": null,
+      "finalEnemyState": {
+        "tick": 16476,
+        "seconds": 274.6000000000789,
+        "count": 1,
+        "types": [
+          ""
+        ],
+        "randomCalls": 25438,
+        "randomState": 3860902191,
+        "sha256": "07672db9469c58a104d9cb7e9e71072c955e04ad3c07c1999e2679f2db65c944"
+      },
+      "inputHash": 805125580,
+      "inputSha256": "9d1cf8d4f59085f390416efe45e6a34a91433de654142e0482cacbe904d5b8db",
+      "settlement": {
+        "reward": {
+          "coins": 142,
+          "petCoinPct": 0,
+          "gifts": 0,
+          "missions": [],
+          "stars": 0,
+          "first": false,
+          "partActivity": [
+            {
+              "id": "PART_F1",
+              "active": true
+            },
+            {
+              "id": "PART_W1",
+              "active": false
+            },
+            {
+              "id": "PART_L1",
+              "active": false
+            }
+          ],
+          "stageGift": null,
+          "difficulty": "normal",
+          "goal": false,
+          "notes": []
+        },
+        "charged": 0,
+        "cleared": false,
+        "stage": "CH15"
+      }
+    },
+    {
+      "stage": "CH15",
+      "seed": 10809,
+      "weapon": "melee",
+      "crowd": "stress",
+      "quality": 5,
+      "god": false,
+      "equal": true,
+      "checkpoints": 52,
+      "seconds": 264.8833333334211,
+      "kills": 2156,
+      "canvasHash": null,
+      "finalEnemyState": {
+        "tick": 15893,
+        "seconds": 264.8833333334211,
+        "count": 1,
+        "types": [
+          ""
+        ],
+        "randomCalls": 33204,
+        "randomState": 2869321597,
+        "sha256": "22a8e5c2da50a7d62b488f56f02a8061cd9ec70842bf0a6fc8ed6dc46f42f3cf"
+      },
+      "inputHash": 3672568260,
+      "inputSha256": "ed12cf5086d9bea61871320baa677b8f2f3f40e2d3c6a11223e6812e11212bfc",
+      "settlement": {
+        "reward": {
+          "coins": 350,
+          "petCoinPct": 0,
+          "gifts": 1,
+          "missions": [
+            {
+              "id": "win1",
+              "name": "도전 1번 성공하기",
+              "gifts": 2
+            },
+            {
+              "id": "goal1",
+              "name": "환경 목표 1번 해내기",
+              "gifts": 2
+            }
+          ],
+          "stars": 2,
+          "first": false,
+          "partActivity": [
+            {
+              "id": "PART_F1",
+              "active": true
+            },
+            {
+              "id": "PART_W1",
+              "active": false
+            },
+            {
+              "id": "PART_L1",
+              "active": false
+            }
+          ],
+          "stageGift": {
+            "left": 1,
+            "capped": false,
+            "limit": 2
+          },
+          "difficulty": "normal",
+          "goal": true,
+          "notes": []
+        },
+        "charged": 1,
+        "cleared": true,
+        "stage": "CH15"
+      }
+    },
+    {
+      "stage": "CH17",
+      "seed": 10808,
+      "weapon": "ranged",
+      "crowd": "natural",
+      "quality": 0,
+      "god": true,
+      "equal": true,
+      "checkpoints": 54,
+      "seconds": 274.6000000000789,
+      "kills": 1959,
+      "canvasHash": "7a5d1f2492749fb1a7dd5ed6cefa89cb77d8d36a783d5b12348a7221ef6602b3",
+      "finalEnemyState": {
+        "tick": 16476,
+        "seconds": 274.6000000000789,
+        "count": 125,
+        "types": [
+          "T4_BURNER",
+          "T4_BURNER",
+          "T4_BURNER",
+          "T4_BURNER",
+          "T4_BURNER",
+          "T4_BURNER",
+          "T4_BURNER",
+          "T4_BURNER",
+          "T4_BURNER",
+          "T4_BURNER",
+          "T4_BURNER",
+          "T4_BURNER",
+          "T4_BURNER",
+          "T4_BURNER",
+          "T4_BURNER",
+          "T4_BURNER",
+          "T4_BURNER",
+          "T4_BURNER",
+          "T4_BURNER",
+          "T4_BURNER",
+          "T4_BURNER",
+          "T4_BURNER",
+          "T4_BURNER",
+          "T4_BURNER",
+          "T4_BURNER",
+          "T4_SAW",
+          "T4_BURNER",
+          "T4_SAW",
+          "T4_BURNER",
+          "T4_BURNER",
+          "T4_BURNER",
+          "T4_SAW",
+          "T4_BURNER",
+          "T4_SAW",
+          "T4_BURNER",
+          "T4_SAW",
+          "T4_SAW",
+          "T4_BURNER",
+          "T4_BURNER",
+          "T4_SAW",
+          "T4_BURNER",
+          "T4_SAW",
+          "T4_BURNER",
+          "T4_BURNER",
+          "T4_SAW",
+          "T4_BURNER",
+          "T4_BURNER",
+          "T4_SAW",
+          "T4_BURNER",
+          "T4_BURNER",
+          "T4_BURNER",
+          "T4_BURNER",
+          "T4_BURNER",
+          "T4_BURNER",
+          "T4_BURNER",
+          "T4_BURNER",
+          "T4_SAW",
+          "T4_SAW",
+          "T4_SAW",
+          "T4_BURNER",
+          "T4_SAW",
+          "T4_BURNER",
+          "T4_BURNER",
+          "T4_BURNER",
+          "T4_BURNER",
+          "T4_BURNER",
+          "T4_BURNER",
+          "T4_SAW",
+          "T4_BURNER",
+          "T4_SAW",
+          "T4_BURNER",
+          "T4_SAW",
+          "T4_BURNER",
+          "T4_BURNER",
+          "T4_SAW",
+          "T4_SAW",
+          "T4_SAW",
+          "T4_BURNER",
+          "T4_BURNER",
+          "T4_SAW",
+          "T4_BURNER",
+          "T4_SAW",
+          "T4_BURNER",
+          "T4_BURNER",
+          "T4_SAW",
+          "T4_BURNER",
+          "T4_SAW",
+          "T4_BURNER",
+          "T4_SAW",
+          "T4_BURNER",
+          "T4_BURNER",
+          "T4_BURNER",
+          "T4_BURNER",
+          "T4_SAW",
+          "T4_SAW",
+          "T4_SAW",
+          "T4_SAW",
+          "T4_BURNER",
+          "T4_SAW",
+          "T4_BURNER",
+          "T4_SAW",
+          "T4_SAW",
+          "T4_BURNER",
+          "T4_SAW",
+          "T4_BURNER",
+          "T4_BURNER",
+          "T4_BURNER",
+          "T4_SAW",
+          "T4_SAW",
+          "T4_SAW",
+          "T4_BURNER",
+          "T4_SAW",
+          "T4_BURNER",
+          "T4_BURNER",
+          "T4_SAW",
+          "T4_BURNER",
+          "T4_BURNER",
+          "T4_SAW",
+          "T4_BURNER",
+          "T4_BURNER",
+          "T4_SAW",
+          "T4_BURNER",
+          "T4_SAW",
+          "T4_BURNER",
+          "T4_SAW"
+        ],
+        "randomCalls": 43228,
+        "randomState": 1499840708,
+        "sha256": "a57f083f264a43802cc0abf6b18e16448e4f76e0486631f6cada9b33f6612d1c"
+      },
+      "inputHash": 1898481092,
+      "inputSha256": "45d68cd2de7250c0a55bd02b733463b96c491b6f01b13a6b6f82436aaa330e7f",
+      "settlement": {
+        "reward": {
+          "coins": 153,
+          "petCoinPct": 0,
+          "gifts": 0,
+          "missions": [],
+          "stars": 0,
+          "first": false,
+          "partActivity": [
+            {
+              "id": "PART_F1",
+              "active": false
+            },
+            {
+              "id": "PART_W1",
+              "active": false
+            },
+            {
+              "id": "PART_L1",
+              "active": true
+            }
+          ],
+          "stageGift": null,
+          "difficulty": "normal",
+          "goal": false,
+          "notes": []
+        },
+        "charged": 0,
+        "cleared": false,
+        "stage": "CH17"
+      }
+    },
+    {
+      "stage": "CH17",
+      "seed": 10808,
+      "weapon": "ranged",
+      "crowd": "stress",
+      "quality": 0,
+      "god": true,
+      "equal": true,
+      "checkpoints": 54,
+      "seconds": 274.7833333334121,
+      "kills": 2188,
+      "canvasHash": "4910e7a871dc67392d7d53f9ad5fe4c2656180c9fda5387694cccaf3449318f8",
+      "finalEnemyState": {
+        "tick": 16487,
+        "seconds": 274.7833333334121,
+        "count": 17,
+        "types": [
+          "T4_SAW",
+          "T4_BURNER",
+          "T4_BURNER",
+          "T4_SAW",
+          "T4_SAW",
+          "T4_SAW",
+          "T4_SAW",
+          "T4_SAW",
+          "T4_SAW",
+          "T4_BURNER",
+          "T4_SAW",
+          "T4_BURNER",
+          "T4_SAW",
+          "T4_BURNER",
+          "T4_SAW",
+          "T4_BURNER",
+          "T4_SAW"
+        ],
+        "randomCalls": 38061,
+        "randomState": 3907205321,
+        "sha256": "13bb00b66d66efcced64a58226ab60d1722a7ec746a62d5a458f14965e9328e2"
+      },
+      "inputHash": 218604132,
+      "inputSha256": "899c9f4374169989169621cc1c0c49c42a9028de67faa85d4756ab14b3f9d955",
+      "settlement": {
+        "reward": {
+          "coins": 153,
+          "petCoinPct": 0,
+          "gifts": 0,
+          "missions": [],
+          "stars": 0,
+          "first": false,
+          "partActivity": [
+            {
+              "id": "PART_F1",
+              "active": false
+            },
+            {
+              "id": "PART_W1",
+              "active": false
+            },
+            {
+              "id": "PART_L1",
+              "active": true
+            }
+          ],
+          "stageGift": null,
+          "difficulty": "normal",
+          "goal": false,
+          "notes": []
+        },
+        "charged": 0,
+        "cleared": false,
+        "stage": "CH17"
+      }
+    },
+    {
+      "stage": "CH17",
+      "seed": 10808,
+      "weapon": "melee",
+      "crowd": "natural",
+      "quality": 0,
+      "god": true,
+      "equal": true,
+      "checkpoints": 54,
+      "seconds": 274.6000000000789,
+      "kills": 1878,
+      "canvasHash": "8bf6daf45f5d46e04b509b3873ce7b959397585f278ca11b83f61a03022c20c1",
+      "finalEnemyState": {
+        "tick": 16476,
+        "seconds": 274.6000000000789,
+        "count": 93,
+        "types": [
+          "T4_BURNER",
+          "T4_SAW",
+          "T4_SAW",
+          "T4_BURNER",
+          "T4_SAW",
+          "T4_BURNER",
+          "T4_SAW",
+          "T4_SAW",
+          "T4_BURNER",
+          "T4_SAW",
+          "T4_BURNER",
+          "T4_SAW",
+          "T4_BURNER",
+          "T4_BURNER",
+          "T4_BURNER",
+          "T4_SAW",
+          "T4_SAW",
+          "T4_SAW",
+          "T4_SAW",
+          "T4_BURNER",
+          "T4_SAW",
+          "T4_SAW",
+          "T4_BURNER",
+          "T4_BURNER",
+          "T4_SAW",
+          "T4_SAW",
+          "T4_SAW",
+          "T4_BURNER",
+          "T4_BURNER",
+          "T4_BURNER",
+          "T4_SAW",
+          "T4_BURNER",
+          "T4_BURNER",
+          "T4_SAW",
+          "T4_BURNER",
+          "T4_SAW",
+          "T4_SAW",
+          "T4_SAW",
+          "T4_BURNER",
+          "T4_SAW",
+          "T4_BURNER",
+          "T4_SAW",
+          "T4_BURNER",
+          "T4_BURNER",
+          "T4_BURNER",
+          "T4_SAW",
+          "T4_SAW",
+          "T4_SAW",
+          "T4_SAW",
+          "T4_BURNER",
+          "T4_SAW",
+          "T4_BURNER",
+          "T4_BURNER",
+          "T4_SAW",
+          "T4_SAW",
+          "T4_SAW",
+          "T4_BURNER",
+          "T4_SAW",
+          "T4_SAW",
+          "T4_SAW",
+          "T4_BURNER",
+          "T4_SAW",
+          "T4_BURNER",
+          "T4_SAW",
+          "T4_BURNER",
+          "T4_SAW",
+          "T4_SAW",
+          "T4_BURNER",
+          "T4_SAW",
+          "T4_BURNER",
+          "T4_BURNER",
+          "T4_SAW",
+          "T4_SAW",
+          "T4_BURNER",
+          "T4_SAW",
+          "T4_BURNER",
+          "T4_SAW",
+          "T4_BURNER",
+          "T4_SAW",
+          "T4_BURNER",
+          "T4_SAW",
+          "T4_SAW",
+          "T4_BURNER",
+          "T4_SAW",
+          "T4_SAW",
+          "T4_BURNER",
+          "T4_SAW",
+          "T4_BURNER",
+          "T4_SAW",
+          "T4_BURNER",
+          "T4_SAW",
+          "T4_BURNER",
+          "T4_SAW"
+        ],
+        "randomCalls": 43251,
+        "randomState": 676181447,
+        "sha256": "73067f02470b56f7f8f58ebf366d659288bef02ac3cb3c3828d767eb04340341"
+      },
+      "inputHash": 3921042651,
+      "inputSha256": "bbbab3cb8d923a1ebee8a8dc486a727e71088493bdcb86bbc2e341e6eb97c5b4",
+      "settlement": {
+        "reward": {
+          "coins": 153,
+          "petCoinPct": 0,
+          "gifts": 0,
+          "missions": [],
+          "stars": 0,
+          "first": false,
+          "partActivity": [
+            {
+              "id": "PART_F1",
+              "active": false
+            },
+            {
+              "id": "PART_W1",
+              "active": false
+            },
+            {
+              "id": "PART_L1",
+              "active": true
+            }
+          ],
+          "stageGift": null,
+          "difficulty": "normal",
+          "goal": false,
+          "notes": []
+        },
+        "charged": 0,
+        "cleared": false,
+        "stage": "CH17"
+      }
+    },
+    {
+      "stage": "CH17",
+      "seed": 10808,
+      "weapon": "melee",
+      "crowd": "stress",
+      "quality": 0,
+      "god": true,
+      "equal": true,
+      "checkpoints": 54,
+      "seconds": 274.76666666674544,
+      "kills": 2181,
+      "canvasHash": "0a49a674f4f95cf44291c9e44cfb9c59d57ba95ad391fe47986d4e8b75e1aa62",
+      "finalEnemyState": {
+        "tick": 16486,
+        "seconds": 274.76666666674544,
+        "count": 21,
+        "types": [
+          "T4_BURNER",
+          "T4_BURNER",
+          "T4_BURNER",
+          "T4_BURNER",
+          "T4_BURNER",
+          "T4_BURNER",
+          "T4_SAW",
+          "T4_SAW",
+          "T4_BURNER",
+          "T4_BURNER",
+          "T4_SAW",
+          "T4_BURNER",
+          "T4_BURNER",
+          "T4_BURNER",
+          "T4_BURNER",
+          "T4_SAW",
+          "T4_BURNER",
+          "T4_BURNER",
+          "T4_SAW",
+          "T4_BURNER",
+          "T4_SAW"
+        ],
+        "randomCalls": 37682,
+        "randomState": 1233496850,
+        "sha256": "71aad107d06f135f1de3c3fe41358139fd837742d54159410c1eb054469acb2f"
+      },
+      "inputHash": 952415659,
+      "inputSha256": "3a9f71ffbd38608bd2f2825f55de2dd377f87337ffe3f3feed3d412d1355d0df",
+      "settlement": {
+        "reward": {
+          "coins": 153,
+          "petCoinPct": 0,
+          "gifts": 0,
+          "missions": [],
+          "stars": 0,
+          "first": false,
+          "partActivity": [
+            {
+              "id": "PART_F1",
+              "active": false
+            },
+            {
+              "id": "PART_W1",
+              "active": false
+            },
+            {
+              "id": "PART_L1",
+              "active": true
+            }
+          ],
+          "stageGift": null,
+          "difficulty": "normal",
+          "goal": false,
+          "notes": []
+        },
+        "charged": 0,
+        "cleared": false,
+        "stage": "CH17"
+      }
+    },
+    {
+      "stage": "CH17",
+      "seed": 10809,
+      "weapon": "ranged",
+      "crowd": "natural",
+      "quality": 5,
+      "god": false,
+      "equal": true,
+      "checkpoints": 54,
+      "seconds": 274.6166666667456,
+      "kills": 2065,
+      "canvasHash": null,
+      "finalEnemyState": {
+        "tick": 16477,
+        "seconds": 274.6166666667456,
+        "count": 19,
+        "types": [
+          "T4_BURNER",
+          "T4_BURNER",
+          "T4_SAW",
+          "T4_SAW",
+          "T4_BURNER",
+          "T4_BURNER",
+          "T4_SAW",
+          "T4_SAW",
+          "T4_BURNER",
+          "T4_SAW",
+          "T4_BURNER",
+          "T4_SAW",
+          "T4_BURNER",
+          "T4_BURNER",
+          "T4_SAW",
+          "T4_BURNER",
+          "T4_SAW",
+          "T4_BURNER",
+          "T4_SAW"
+        ],
+        "randomCalls": 28168,
+        "randomState": 398671841,
+        "sha256": "fba9848bedcf7b11d2187a09f8833960ea4bb486c196d5aa78177f2b949e465d"
+      },
+      "inputHash": 2530241665,
+      "inputSha256": "a9c5e18381d77304613a8de8ec4a0a5fe98e0225c5bb32cf959d593090454d76",
+      "settlement": {
+        "reward": {
+          "coins": 153,
+          "petCoinPct": 0,
+          "gifts": 0,
+          "missions": [],
+          "stars": 0,
+          "first": false,
+          "partActivity": [
+            {
+              "id": "PART_F1",
+              "active": true
+            },
+            {
+              "id": "PART_W1",
+              "active": true
+            },
+            {
+              "id": "PART_L1",
+              "active": false
+            }
+          ],
+          "stageGift": null,
+          "difficulty": "normal",
+          "goal": false,
+          "notes": []
+        },
+        "charged": 0,
+        "cleared": false,
+        "stage": "CH17"
+      }
+    },
+    {
+      "stage": "CH17",
+      "seed": 10809,
+      "weapon": "ranged",
+      "crowd": "stress",
+      "quality": 5,
+      "god": false,
+      "equal": true,
+      "checkpoints": 54,
+      "seconds": 274.80000000007874,
+      "kills": 2199,
+      "canvasHash": null,
+      "finalEnemyState": {
+        "tick": 16488,
+        "seconds": 274.80000000007874,
+        "count": 24,
+        "types": [
+          "T4_BURNER",
+          "T4_SAW",
+          "T4_BURNER",
+          "T4_BURNER",
+          "T4_BURNER",
+          "T4_BURNER",
+          "T4_BURNER",
+          "T4_BURNER",
+          "T4_BURNER",
+          "T4_BURNER",
+          "T4_SAW",
+          "T4_BURNER",
+          "T4_SAW",
+          "T4_BURNER",
+          "T4_SAW",
+          "T4_BURNER",
+          "T4_BURNER",
+          "T4_SAW",
+          "T4_BURNER",
+          "T4_SAW",
+          "T4_BURNER",
+          "T4_BURNER",
+          "T4_BURNER",
+          "T4_SAW"
+        ],
+        "randomCalls": 35250,
+        "randomState": 746525587,
+        "sha256": "cabccfb1c15d2db3a5ed32254adcb768e2bc102d347be8d987140643b36024b7"
+      },
+      "inputHash": 3996236295,
+      "inputSha256": "ea9f9d5afe4f912c6df7329b40c5c7aaf9ef91f8914da75e61384e13b88c1826",
+      "settlement": {
+        "reward": {
+          "coins": 153,
+          "petCoinPct": 0,
+          "gifts": 0,
+          "missions": [],
+          "stars": 0,
+          "first": false,
+          "partActivity": [
+            {
+              "id": "PART_F1",
+              "active": true
+            },
+            {
+              "id": "PART_W1",
+              "active": true
+            },
+            {
+              "id": "PART_L1",
+              "active": false
+            }
+          ],
+          "stageGift": null,
+          "difficulty": "normal",
+          "goal": false,
+          "notes": []
+        },
+        "charged": 0,
+        "cleared": false,
+        "stage": "CH17"
+      }
+    },
+    {
+      "stage": "CH17",
+      "seed": 10809,
+      "weapon": "melee",
+      "crowd": "natural",
+      "quality": 5,
+      "god": false,
+      "equal": true,
+      "checkpoints": 54,
+      "seconds": 274.6000000000789,
+      "kills": 2032,
+      "canvasHash": null,
+      "finalEnemyState": {
+        "tick": 16476,
+        "seconds": 274.6000000000789,
+        "count": 52,
+        "types": [
+          "T4_BURNER",
+          "T4_BURNER",
+          "T4_BURNER",
+          "T4_BURNER",
+          "T4_SAW",
+          "T4_BURNER",
+          "T4_SAW",
+          "T4_BURNER",
+          "T4_BURNER",
+          "T4_SAW",
+          "T4_BURNER",
+          "T4_BURNER",
+          "T4_BURNER",
+          "T4_BURNER",
+          "T4_BURNER",
+          "T4_BURNER",
+          "T4_BURNER",
+          "T4_BURNER",
+          "T4_SAW",
+          "T4_SAW",
+          "T4_SAW",
+          "T4_BURNER",
+          "T4_SAW",
+          "T4_BURNER",
+          "T4_SAW",
+          "T4_BURNER",
+          "T4_BURNER",
+          "T4_BURNER",
+          "T4_BURNER",
+          "T4_SAW",
+          "T4_BURNER",
+          "T4_SAW",
+          "T4_SAW",
+          "T4_BURNER",
+          "T4_SAW",
+          "T4_BURNER",
+          "T4_SAW",
+          "T4_BURNER",
+          "T4_SAW",
+          "T4_BURNER",
+          "T4_SAW",
+          "T4_SAW",
+          "T4_BURNER",
+          "T4_SAW",
+          "T4_BURNER",
+          "T4_SAW",
+          "T4_BURNER",
+          "T4_SAW",
+          "T4_BURNER",
+          "T4_SAW",
+          "T4_BURNER",
+          "T4_SAW"
+        ],
+        "randomCalls": 34438,
+        "randomState": 3868737143,
+        "sha256": "d12453dbd28caea95adb60e9467e61a16a25471e4d0b13f3472d6112287d96ab"
+      },
+      "inputHash": 44272232,
+      "inputSha256": "29e9226f2fa7b4b7acb253c3fe49d0338a665a5e405a94eec81366e319ecd7f5",
+      "settlement": {
+        "reward": {
+          "coins": 153,
+          "petCoinPct": 0,
+          "gifts": 0,
+          "missions": [],
+          "stars": 0,
+          "first": false,
+          "partActivity": [
+            {
+              "id": "PART_F1",
+              "active": true
+            },
+            {
+              "id": "PART_W1",
+              "active": false
+            },
+            {
+              "id": "PART_L1",
+              "active": true
+            }
+          ],
+          "stageGift": null,
+          "difficulty": "normal",
+          "goal": false,
+          "notes": []
+        },
+        "charged": 0,
+        "cleared": false,
+        "stage": "CH17"
+      }
+    },
+    {
+      "stage": "CH17",
+      "seed": 10809,
+      "weapon": "melee",
+      "crowd": "stress",
+      "quality": 5,
+      "god": false,
+      "equal": true,
+      "checkpoints": 54,
+      "seconds": 274.80000000007874,
+      "kills": 2195,
+      "canvasHash": null,
+      "finalEnemyState": {
+        "tick": 16488,
+        "seconds": 274.80000000007874,
+        "count": 22,
+        "types": [
+          "T4_BURNER",
+          "T4_SAW",
+          "T4_BURNER",
+          "T4_SAW",
+          "T4_BURNER",
+          "T4_BURNER",
+          "T4_SAW",
+          "T4_SAW",
+          "T4_BURNER",
+          "T4_SAW",
+          "T4_SAW",
+          "T4_BURNER",
+          "T4_SAW",
+          "T4_BURNER",
+          "T4_SAW",
+          "T4_BURNER",
+          "T4_SAW",
+          "T4_SAW",
+          "T4_BURNER",
+          "T4_SAW",
+          "T4_BURNER",
+          "T4_SAW"
+        ],
+        "randomCalls": 36003,
+        "randomState": 1231080760,
+        "sha256": "6e0cf1534920726bed4bff29d7d7fc0ccad042d3f8fab5718b7a834f9ae23fb2"
+      },
+      "inputHash": 3804747012,
+      "inputSha256": "fd8637c59bfc2e65319058458ff6779c18b3a25fa60da3107e0c3051cd3af686",
+      "settlement": {
+        "reward": {
+          "coins": 153,
+          "petCoinPct": 0,
+          "gifts": 0,
+          "missions": [],
+          "stars": 0,
+          "first": false,
+          "partActivity": [
+            {
+              "id": "PART_F1",
+              "active": true
+            },
+            {
+              "id": "PART_W1",
+              "active": false
+            },
+            {
+              "id": "PART_L1",
+              "active": true
+            }
+          ],
+          "stageGift": null,
+          "difficulty": "normal",
+          "goal": false,
+          "notes": []
+        },
+        "charged": 0,
+        "cleared": false,
+        "stage": "CH17"
+      }
+    },
+    {
+      "stage": "CH18",
+      "seed": 10808,
+      "weapon": "ranged",
+      "crowd": "natural",
+      "quality": 0,
+      "god": true,
+      "equal": true,
+      "checkpoints": 54,
+      "seconds": 274.6333333334122,
+      "kills": 2225,
+      "canvasHash": "1b5cefdd0e89f43632d43c0f953beca20d04f8c54f94167cc10ccd741d3a0894",
+      "finalEnemyState": {
+        "tick": 16478,
+        "seconds": 274.6333333334122,
+        "count": 44,
+        "types": [
+          "T4_BURNER",
+          "T4_BURNER",
+          "T4_BURNER",
+          "T4_SAW",
+          "T4_BURNER",
+          "T4_SAW",
+          "T4_SAW",
+          "T4_SAW",
+          "T4_BURNER",
+          "T4_BURNER",
+          "T4_SAW",
+          "T4_BURNER",
+          "T4_BURNER",
+          "T4_BURNER",
+          "T4_BURNER",
+          "T4_BURNER",
+          "T4_SAW",
+          "T4_BURNER",
+          "T4_SAW",
+          "T4_NUTRIA",
+          "T4_BURNER",
+          "T4_BURNER",
+          "T4_SAW",
+          "T4_NUTRIA",
+          "T4_BURNER",
+          "T4_SAW",
+          "T4_NUTRIA",
+          "T4_SAW",
+          "T4_NUTRIA",
+          "T4_BURNER",
+          "T4_BURNER",
+          "T4_SAW",
+          "T4_NUTRIA",
+          "T4_SAW",
+          "T4_NUTRIA",
+          "T4_BURNER",
+          "T4_SAW",
+          "T4_NUTRIA",
+          "T4_BURNER",
+          "T4_SAW",
+          "T4_NUTRIA",
+          "T4_BURNER",
+          "T4_SAW",
+          "T4_NUTRIA"
+        ],
+        "randomCalls": 44447,
+        "randomState": 795572835,
+        "sha256": "73df8e94e5f71d3a135a31310e8f4b0294dce8b27cfff10218e828703d031ea7"
+      },
+      "inputHash": 2367241709,
+      "inputSha256": "e455dc19614c15433e388a4039fbc6bae7d22440eb198849f26a99a7c342b4a0",
+      "settlement": {
+        "reward": {
+          "coins": 159,
+          "petCoinPct": 0,
+          "gifts": 0,
+          "missions": [],
+          "stars": 0,
+          "first": false,
+          "partActivity": [
+            {
+              "id": "PART_F1",
+              "active": false
+            },
+            {
+              "id": "PART_W1",
+              "active": true
+            },
+            {
+              "id": "PART_L1",
+              "active": true
+            }
+          ],
+          "stageGift": null,
+          "difficulty": "normal",
+          "goal": false,
+          "notes": []
+        },
+        "charged": 0,
+        "cleared": false,
+        "stage": "CH18"
+      }
+    },
+    {
+      "stage": "CH18",
+      "seed": 10808,
+      "weapon": "ranged",
+      "crowd": "stress",
+      "quality": 0,
+      "god": true,
+      "equal": true,
+      "checkpoints": 54,
+      "seconds": 274.8166666667454,
+      "kills": 2356,
+      "canvasHash": "2cca8d0da43ae6710fc0e69f5acea26dd02f22ea98133a0fadfdcbf42bba8f3e",
+      "finalEnemyState": {
+        "tick": 16489,
+        "seconds": 274.8166666667454,
+        "count": 34,
+        "types": [
+          "T4_BURNER",
+          "T4_SAW",
+          "T4_BURNER",
+          "T4_BURNER",
+          "T4_BURNER",
+          "T4_SAW",
+          "T4_SAW",
+          "T4_BURNER",
+          "T4_SAW",
+          "T4_SAW",
+          "T4_BURNER",
+          "T4_SAW",
+          "T4_BURNER",
+          "T4_SAW",
+          "T4_SAW",
+          "T4_SAW",
+          "T4_BURNER",
+          "T4_SAW",
+          "T4_BURNER",
+          "T4_SAW",
+          "T4_BURNER",
+          "T4_SAW",
+          "T4_BURNER",
+          "T4_BURNER",
+          "T4_SAW",
+          "T4_BURNER",
+          "T4_NUTRIA",
+          "T4_BURNER",
+          "T4_SAW",
+          "T4_NUTRIA",
+          "T4_SAW",
+          "T4_NUTRIA",
+          "T4_BURNER",
+          "T4_SAW"
+        ],
+        "randomCalls": 38265,
+        "randomState": 3884476421,
+        "sha256": "0c1c4f3e016d550488b88a3b9194c835a382bb7ae8bb61093a87aa17fc77fffa"
+      },
+      "inputHash": 1296408334,
+      "inputSha256": "ceb3ea3d9ee07b8cc68eceb11a8c216e67c544f634422f6394adaab4a374220b",
+      "settlement": {
+        "reward": {
+          "coins": 159,
+          "petCoinPct": 0,
+          "gifts": 0,
+          "missions": [],
+          "stars": 0,
+          "first": false,
+          "partActivity": [
+            {
+              "id": "PART_F1",
+              "active": false
+            },
+            {
+              "id": "PART_W1",
+              "active": false
+            },
+            {
+              "id": "PART_L1",
+              "active": true
+            }
+          ],
+          "stageGift": null,
+          "difficulty": "normal",
+          "goal": false,
+          "notes": []
+        },
+        "charged": 0,
+        "cleared": false,
+        "stage": "CH18"
+      }
+    },
+    {
+      "stage": "CH18",
+      "seed": 10808,
+      "weapon": "melee",
+      "crowd": "natural",
+      "quality": 0,
+      "god": true,
+      "equal": true,
+      "checkpoints": 54,
+      "seconds": 274.6000000000789,
+      "kills": 2144,
+      "canvasHash": "34b0bd861de2712bf7c99c392dcd80adfe445971a153ed154ff247fbb56e6bd3",
+      "finalEnemyState": {
+        "tick": 16476,
+        "seconds": 274.6000000000789,
+        "count": 121,
+        "types": [
+          "T4_SAW",
+          "T4_SAW",
+          "T4_BURNER",
+          "T4_BURNER",
+          "T4_NUTRIA",
+          "T4_NUTRIA",
+          "T4_NUTRIA",
+          "T4_BURNER",
+          "T4_NUTRIA",
+          "T4_NUTRIA",
+          "T4_NUTRIA",
+          "T4_BURNER",
+          "T4_BURNER",
+          "T4_BURNER",
+          "T4_NUTRIA",
+          "T4_BURNER",
+          "T4_SAW",
+          "T4_BURNER",
+          "T4_SAW",
+          "T4_NUTRIA",
+          "T4_BURNER",
+          "T4_NUTRIA",
+          "T4_BURNER",
+          "T4_BURNER",
+          "T4_NUTRIA",
+          "T4_BURNER",
+          "T4_BURNER",
+          "T4_BURNER",
+          "T4_SAW",
+          "T4_BURNER",
+          "T4_BURNER",
+          "T4_BURNER",
+          "T4_NUTRIA",
+          "T4_BURNER",
+          "T4_NUTRIA",
+          "T4_BURNER",
+          "T4_BURNER",
+          "T4_SAW",
+          "T4_NUTRIA",
+          "T4_SAW",
+          "T4_BURNER",
+          "T4_BURNER",
+          "T4_BURNER",
+          "T4_BURNER",
+          "T4_BURNER",
+          "T4_SAW",
+          "T4_NUTRIA",
+          "T4_SAW",
+          "T4_SAW",
+          "T4_SAW",
+          "T4_BURNER",
+          "T4_SAW",
+          "T4_BURNER",
+          "T4_BURNER",
+          "T4_SAW",
+          "T4_BURNER",
+          "T4_SAW",
+          "T4_BURNER",
+          "T4_SAW",
+          "T4_SAW",
+          "T4_BURNER",
+          "T4_SAW",
+          "T4_BURNER",
+          "T4_SAW",
+          "T4_BURNER",
+          "T4_SAW",
+          "T4_BURNER",
+          "T4_BURNER",
+          "T4_NUTRIA",
+          "T4_BURNER",
+          "T4_SAW",
+          "T4_BURNER",
+          "T4_SAW",
+          "T4_NUTRIA",
+          "T4_BURNER",
+          "T4_SAW",
+          "T4_SAW",
+          "T4_BURNER",
+          "T4_SAW",
+          "T4_BURNER",
+          "T4_BURNER",
+          "T4_BURNER",
+          "T4_SAW",
+          "T4_SAW",
+          "T4_BURNER",
+          "T4_BURNER",
+          "T4_BURNER",
+          "T4_BURNER",
+          "T4_BURNER",
+          "T4_BURNER",
+          "T4_BURNER",
+          "T4_BURNER",
+          "T4_BURNER",
+          "T4_SAW",
+          "T4_NUTRIA",
+          "T4_BURNER",
+          "T4_SAW",
+          "T4_NUTRIA",
+          "T4_BURNER",
+          "T4_SAW",
+          "T4_NUTRIA",
+          "T4_BURNER",
+          "T4_SAW",
+          "T4_NUTRIA",
+          "T4_BURNER",
+          "T4_SAW",
+          "T4_NUTRIA",
+          "T4_SAW",
+          "T4_NUTRIA",
+          "T4_BURNER",
+          "T4_SAW",
+          "T4_NUTRIA",
+          "T4_BURNER",
+          "T4_SAW",
+          "T4_NUTRIA",
+          "T4_BURNER",
+          "T4_SAW",
+          "T4_NUTRIA",
+          "T4_BURNER",
+          "T4_SAW",
+          "T4_NUTRIA"
+        ],
+        "randomCalls": 40876,
+        "randomState": 1509246420,
+        "sha256": "ea961fb9305ddb52d5fb50d62d06b6c40decc117b636b909740353006e17a766"
+      },
+      "inputHash": 2136182641,
+      "inputSha256": "9fc1f2d29bef8a8279056e1ab695bf39eea2a764ea5ff86e7c9f8b5785726e26",
+      "settlement": {
+        "reward": {
+          "coins": 159,
+          "petCoinPct": 0,
+          "gifts": 0,
+          "missions": [],
+          "stars": 0,
+          "first": false,
+          "partActivity": [
+            {
+              "id": "PART_F1",
+              "active": false
+            },
+            {
+              "id": "PART_W1",
+              "active": false
+            },
+            {
+              "id": "PART_L1",
+              "active": true
+            }
+          ],
+          "stageGift": null,
+          "difficulty": "normal",
+          "goal": false,
+          "notes": []
+        },
+        "charged": 0,
+        "cleared": false,
+        "stage": "CH18"
+      }
+    },
+    {
+      "stage": "CH18",
+      "seed": 10808,
+      "weapon": "melee",
+      "crowd": "stress",
+      "quality": 0,
+      "god": true,
+      "equal": true,
+      "checkpoints": 54,
+      "seconds": 274.76666666674544,
+      "kills": 2372,
+      "canvasHash": "e80dbde3829fd6f72ffae8024f1be7c4b2f085610455bf18096bf5116ae9bfb9",
+      "finalEnemyState": {
+        "tick": 16486,
+        "seconds": 274.76666666674544,
+        "count": 19,
+        "types": [
+          "T4_BURNER",
+          "T4_BURNER",
+          "T4_BURNER",
+          "T4_BURNER",
+          "T4_SAW",
+          "T4_BURNER",
+          "T4_SAW",
+          "T4_BURNER",
+          "T4_BURNER",
+          "T4_SAW",
+          "T4_BURNER",
+          "T4_SAW",
+          "T4_NUTRIA",
+          "T4_BURNER",
+          "T4_SAW",
+          "T4_NUTRIA",
+          "T4_SAW",
+          "T4_SAW",
+          "T4_NUTRIA"
+        ],
+        "randomCalls": 37522,
+        "randomState": 240742898,
+        "sha256": "679e606353e7693f34ac2f32c5b1bfe9c0d0360d7349790c195e005ab0ff0b7d"
+      },
+      "inputHash": 3163984243,
+      "inputSha256": "3a61e5295ffb2362c432003ac957e80773e689d902f5550fef1c17b989696bfa",
+      "settlement": {
+        "reward": {
+          "coins": 159,
+          "petCoinPct": 0,
+          "gifts": 0,
+          "missions": [],
+          "stars": 0,
+          "first": false,
+          "partActivity": [
+            {
+              "id": "PART_F1",
+              "active": false
+            },
+            {
+              "id": "PART_W1",
+              "active": false
+            },
+            {
+              "id": "PART_L1",
+              "active": true
+            }
+          ],
+          "stageGift": null,
+          "difficulty": "normal",
+          "goal": false,
+          "notes": []
+        },
+        "charged": 0,
+        "cleared": false,
+        "stage": "CH18"
+      }
+    },
+    {
+      "stage": "CH18",
+      "seed": 10809,
+      "weapon": "ranged",
+      "crowd": "natural",
+      "quality": 5,
+      "god": false,
+      "equal": true,
+      "checkpoints": 54,
+      "seconds": 274.6000000000789,
+      "kills": 2198,
+      "canvasHash": null,
+      "finalEnemyState": {
+        "tick": 16476,
+        "seconds": 274.6000000000789,
+        "count": 71,
+        "types": [
+          "T4_BURNER",
+          "T4_BURNER",
+          "T4_BURNER",
+          "T4_BURNER",
+          "T4_BURNER",
+          "T4_BURNER",
+          "T4_BURNER",
+          "T4_SAW",
+          "T4_BURNER",
+          "T4_BURNER",
+          "T4_SAW",
+          "T4_BURNER",
+          "T4_BURNER",
+          "T4_SAW",
+          "T4_SAW",
+          "T4_BURNER",
+          "T4_BURNER",
+          "T4_SAW",
+          "T4_SAW",
+          "T4_BURNER",
+          "T4_BURNER",
+          "T4_SAW",
+          "T4_BURNER",
+          "T4_BURNER",
+          "T4_SAW",
+          "T4_BURNER",
+          "T4_BURNER",
+          "T4_BURNER",
+          "T4_BURNER",
+          "T4_BURNER",
+          "T4_BURNER",
+          "T4_BURNER",
+          "T4_SAW",
+          "T4_SAW",
+          "T4_BURNER",
+          "T4_BURNER",
+          "T4_SAW",
+          "T4_SAW",
+          "T4_BURNER",
+          "T4_SAW",
+          "T4_BURNER",
+          "T4_NUTRIA",
+          "T4_SAW",
+          "T4_SAW",
+          "T4_SAW",
+          "T4_NUTRIA",
+          "T4_BURNER",
+          "T4_NUTRIA",
+          "T4_BURNER",
+          "T4_SAW",
+          "T4_NUTRIA",
+          "T4_SAW",
+          "T4_NUTRIA",
+          "T4_BURNER",
+          "T4_SAW",
+          "T4_BURNER",
+          "T4_SAW",
+          "T4_NUTRIA",
+          "T4_BURNER",
+          "T4_SAW",
+          "T4_NUTRIA",
+          "T4_BURNER",
+          "T4_SAW",
+          "T4_BURNER",
+          "T4_SAW",
+          "T4_NUTRIA",
+          "T4_BURNER",
+          "T4_SAW",
+          "T4_BURNER",
+          "T4_SAW",
+          "T4_NUTRIA"
+        ],
+        "randomCalls": 31721,
+        "randomState": 1076551990,
+        "sha256": "58821f7f08c83f9ddd850c9a341fe62549f68e5e7f3f4198b8b47102c1368c9b"
+      },
+      "inputHash": 4198384522,
+      "inputSha256": "922da677694d4ea02b6e5dd9678f0874cf2f8b82cb9ddf051c3c0052ca1358b8",
+      "settlement": {
+        "reward": {
+          "coins": 159,
+          "petCoinPct": 0,
+          "gifts": 0,
+          "missions": [],
+          "stars": 0,
+          "first": false,
+          "partActivity": [
+            {
+              "id": "PART_F1",
+              "active": true
+            },
+            {
+              "id": "PART_W1",
+              "active": false
+            },
+            {
+              "id": "PART_L1",
+              "active": false
+            }
+          ],
+          "stageGift": null,
+          "difficulty": "normal",
+          "goal": false,
+          "notes": []
+        },
+        "charged": 0,
+        "cleared": false,
+        "stage": "CH18"
+      }
+    },
+    {
+      "stage": "CH18",
+      "seed": 10809,
+      "weapon": "ranged",
+      "crowd": "stress",
+      "quality": 5,
+      "god": false,
+      "equal": true,
+      "checkpoints": 54,
+      "seconds": 274.80000000007874,
+      "kills": 2372,
+      "canvasHash": null,
+      "finalEnemyState": {
+        "tick": 16488,
+        "seconds": 274.80000000007874,
+        "count": 21,
+        "types": [
+          "T4_BURNER",
+          "T4_BURNER",
+          "T4_BURNER",
+          "T4_NUTRIA",
+          "T4_SAW",
+          "T4_SAW",
+          "T4_SAW",
+          "T4_NUTRIA",
+          "T4_SAW",
+          "T4_BURNER",
+          "T4_SAW",
+          "T4_SAW",
+          "T4_NUTRIA",
+          "T4_NUTRIA",
+          "T4_BURNER",
+          "T4_SAW",
+          "T4_BURNER",
+          "T4_SAW",
+          "T4_NUTRIA",
+          "T4_BURNER",
+          "T4_SAW"
+        ],
+        "randomCalls": 35771,
+        "randomState": 1509574448,
+        "sha256": "c5f72efbb92ed26a5df28813afce147d2d32ff07e8dceb391546b70de811cb7a"
+      },
+      "inputHash": 2891171740,
+      "inputSha256": "53a02ecef988aa54b28c6d3cf82fc5328432bb0c09f4baf0d33ed86433bc51fb",
+      "settlement": {
+        "reward": {
+          "coins": 159,
+          "petCoinPct": 0,
+          "gifts": 0,
+          "missions": [],
+          "stars": 0,
+          "first": false,
+          "partActivity": [
+            {
+              "id": "PART_F1",
+              "active": true
+            },
+            {
+              "id": "PART_W1",
+              "active": false
+            },
+            {
+              "id": "PART_L1",
+              "active": false
+            }
+          ],
+          "stageGift": null,
+          "difficulty": "normal",
+          "goal": false,
+          "notes": []
+        },
+        "charged": 0,
+        "cleared": false,
+        "stage": "CH18"
+      }
+    },
+    {
+      "stage": "CH18",
+      "seed": 10809,
+      "weapon": "melee",
+      "crowd": "natural",
+      "quality": 5,
+      "god": false,
+      "equal": true,
+      "checkpoints": 54,
+      "seconds": 274.6333333334122,
+      "kills": 2252,
+      "canvasHash": null,
+      "finalEnemyState": {
+        "tick": 16478,
+        "seconds": 274.6333333334122,
+        "count": 17,
+        "types": [
+          "T4_BURNER",
+          "T4_SAW",
+          "T4_SAW",
+          "T4_BURNER",
+          "T4_SAW",
+          "T4_BURNER",
+          "T4_SAW",
+          "T4_NUTRIA",
+          "T4_NUTRIA",
+          "T4_SAW",
+          "T4_NUTRIA",
+          "T4_BURNER",
+          "T4_SAW",
+          "T4_NUTRIA",
+          "T4_BURNER",
+          "T4_SAW",
+          "T4_NUTRIA"
+        ],
+        "randomCalls": 35516,
+        "randomState": 2611727397,
+        "sha256": "05d5df38f0404bbaece1f5458126b5edd9e47392ba4f33e4625a5542ed0d7fe6"
+      },
+      "inputHash": 2003056808,
+      "inputSha256": "29eacdbb4a37452a197230731ea72176889a6926366bd899fbaf7971e5db9639",
+      "settlement": {
+        "reward": {
+          "coins": 159,
+          "petCoinPct": 0,
+          "gifts": 0,
+          "missions": [],
+          "stars": 0,
+          "first": false,
+          "partActivity": [
+            {
+              "id": "PART_F1",
+              "active": true
+            },
+            {
+              "id": "PART_W1",
+              "active": true
+            },
+            {
+              "id": "PART_L1",
+              "active": true
+            }
+          ],
+          "stageGift": null,
+          "difficulty": "normal",
+          "goal": false,
+          "notes": []
+        },
+        "charged": 0,
+        "cleared": false,
+        "stage": "CH18"
+      }
+    },
+    {
+      "stage": "CH18",
+      "seed": 10809,
+      "weapon": "melee",
+      "crowd": "stress",
+      "quality": 5,
+      "god": false,
+      "equal": true,
+      "checkpoints": 54,
+      "seconds": 274.8166666667454,
+      "kills": 2387,
+      "canvasHash": null,
+      "finalEnemyState": {
+        "tick": 16489,
+        "seconds": 274.8166666667454,
+        "count": 21,
+        "types": [
+          "T4_BURNER",
+          "T4_SAW",
+          "T4_SAW",
+          "T4_BURNER",
+          "T4_BURNER",
+          "T4_SAW",
+          "T4_NUTRIA",
+          "T4_SAW",
+          "T4_SAW",
+          "T4_BURNER",
+          "T4_SAW",
+          "T4_NUTRIA",
+          "T4_BURNER",
+          "T4_SAW",
+          "T4_BURNER",
+          "T4_SAW",
+          "T4_NUTRIA",
+          "T4_BURNER",
+          "T4_SAW",
+          "T4_NUTRIA",
+          "T4_SAW"
+        ],
+        "randomCalls": 36114,
+        "randomState": 2671423091,
+        "sha256": "dfc50a3ea09657f962cdd9922073dd1ceed8fd5c5cc8e3a169b37e7d00c69d8a"
+      },
+      "inputHash": 3241362730,
+      "inputSha256": "4ea330a12215dbde0faace272b97aa4f8272bd37509c02b238be12a96fc060c2",
+      "settlement": {
+        "reward": {
+          "coins": 159,
+          "petCoinPct": 0,
+          "gifts": 0,
+          "missions": [],
+          "stars": 0,
+          "first": false,
+          "partActivity": [
+            {
+              "id": "PART_F1",
+              "active": true
+            },
+            {
+              "id": "PART_W1",
+              "active": false
+            },
+            {
+              "id": "PART_L1",
+              "active": true
+            }
+          ],
+          "stageGift": null,
+          "difficulty": "normal",
+          "goal": false,
+          "notes": []
+        },
+        "charged": 0,
+        "cleared": false,
+        "stage": "CH18"
+      }
+    },
+    {
+      "stage": "CH19",
+      "seed": 10808,
+      "weapon": "ranged",
+      "crowd": "natural",
+      "quality": 0,
+      "god": true,
+      "equal": true,
+      "checkpoints": 54,
+      "seconds": 274.6000000000789,
+      "kills": 2348,
+      "canvasHash": "6ba6d3b3b424ebbe1f4a43dadf401a4cb5b01fb32f09152513419953a8089e3d",
+      "finalEnemyState": {
+        "tick": 16476,
+        "seconds": 274.6000000000789,
+        "count": 113,
+        "types": [
+          "T4_BURNER",
+          "T4_BURNER",
+          "T4_BURNER",
+          "T4_BURNER",
+          "T4_BURNER",
+          "T4_BURNER",
+          "T4_BURNER",
+          "T4_SAW",
+          "T4_BURNER",
+          "T4_BURNER",
+          "T4_BURNER",
+          "T4_BURNER",
+          "T4_NUTRIA",
+          "T4_NUTRIA",
+          "T4_BURNER",
+          "T4_SAW",
+          "T4_BURNER",
+          "T4_BURNER",
+          "T4_NUTRIA",
+          "T4_BURNER",
+          "T4_BURNER",
+          "T4_BURNER",
+          "T4_SAW",
+          "T4_SAW",
+          "T4_SAW",
+          "T4_NUTRIA",
+          "T4_SAW",
+          "T4_BURNER",
+          "T4_BURNER",
+          "T4_BURNER",
+          "T4_SAW",
+          "T4_NUTRIA",
+          "T4_SAW",
+          "T4_SAW",
+          "T4_SAW",
+          "T4_SAW",
+          "T4_BURNER",
+          "T4_SAW",
+          "T4_BURNER",
+          "T4_BURNER",
+          "T4_SAW",
+          "T4_NUTRIA",
+          "T4_BURNER",
+          "T4_SAW",
+          "T4_BURNER",
+          "T4_SAW",
+          "T4_BURNER",
+          "T4_NUTRIA",
+          "T4_SAW",
+          "T4_NUTRIA",
+          "T4_BURNER",
+          "T4_NUTRIA",
+          "T4_BURNER",
+          "T4_SAW",
+          "T4_NUTRIA",
+          "T4_SAW",
+          "T4_NUTRIA",
+          "T4_BURNER",
+          "T4_SAW",
+          "T4_NUTRIA",
+          "T4_SAW",
+          "T4_BURNER",
+          "T4_SAW",
+          "T4_NUTRIA",
+          "T4_SAW",
+          "T4_NUTRIA",
+          "T4_SAW",
+          "T4_NUTRIA",
+          "T4_SAW",
+          "T4_NUTRIA",
+          "T4_BURNER",
+          "T4_NUTRIA",
+          "T4_BURNER",
+          "T4_SAW",
+          "T4_NUTRIA",
+          "T4_BURNER",
+          "T4_NUTRIA",
+          "T4_BURNER",
+          "T4_SAW",
+          "T4_BURNER",
+          "T4_SAW",
+          "T4_NUTRIA",
+          "T4_BURNER",
+          "T4_SAW",
+          "T4_BURNER",
+          "T4_SAW",
+          "T4_NUTRIA",
+          "T4_BURNER",
+          "T4_SAW",
+          "T4_NUTRIA",
+          "T4_BURNER",
+          "T4_SAW",
+          "T4_NUTRIA",
+          "T4_BURNER",
+          "T4_SAW",
+          "T4_BURNER",
+          "T4_SAW",
+          "T4_NUTRIA",
+          "T4_BURNER",
+          "T4_SAW",
+          "T4_NUTRIA",
+          "T4_BURNER",
+          "T4_SAW",
+          "T4_NUTRIA",
+          "T4_BURNER",
+          "T4_SAW",
+          "T4_NUTRIA",
+          "T4_BURNER",
+          "T4_SAW",
+          "T4_NUTRIA",
+          "T4_BURNER",
+          "T4_SAW",
+          "T4_NUTRIA"
+        ],
+        "randomCalls": 47275,
+        "randomState": 733133023,
+        "sha256": "efab99afc24dc9b16402d7207cb0e8100d58c4303bf29bf6b75ca25697dc1541"
+      },
+      "inputHash": 1329619409,
+      "inputSha256": "a8aa23a72f4f7f49f5092720be2cf1b9b570c4de1425f8159ddcb5d4a43caec1",
+      "settlement": {
+        "reward": {
+          "coins": 164,
+          "petCoinPct": 0,
+          "gifts": 0,
+          "missions": [],
+          "stars": 0,
+          "first": false,
+          "partActivity": [
+            {
+              "id": "PART_F1",
+              "active": false
+            },
+            {
+              "id": "PART_W1",
+              "active": false
+            },
+            {
+              "id": "PART_L1",
+              "active": true
+            }
+          ],
+          "stageGift": null,
+          "difficulty": "normal",
+          "goal": false,
+          "notes": []
+        },
+        "charged": 0,
+        "cleared": false,
+        "stage": "CH19"
+      }
+    },
+    {
+      "stage": "CH19",
+      "seed": 10808,
+      "weapon": "ranged",
+      "crowd": "stress",
+      "quality": 0,
+      "god": true,
+      "equal": true,
+      "checkpoints": 54,
+      "seconds": 274.80000000007874,
+      "kills": 2558,
+      "canvasHash": "fc2d50e4564489fea66be419c08ebc721da47db2eeaf42076658df247c04815c",
+      "finalEnemyState": {
+        "tick": 16488,
+        "seconds": 274.80000000007874,
+        "count": 19,
+        "types": [
+          "T4_BURNER",
+          "T4_SAW",
+          "T4_SAW",
+          "T4_BURNER",
+          "T4_BURNER",
+          "T4_SAW",
+          "T4_NUTRIA",
+          "T4_NUTRIA",
+          "T4_SAW",
+          "T4_BURNER",
+          "T4_SAW",
+          "T4_NUTRIA",
+          "T4_SAW",
+          "T4_NUTRIA",
+          "T4_BURNER",
+          "T4_SAW",
+          "T4_NUTRIA",
+          "T4_BURNER",
+          "T4_SAW"
+        ],
+        "randomCalls": 41818,
+        "randomState": 267389274,
+        "sha256": "ad8288424a1809660cf20cfe1ce99e546036fecd221d01b1533e0499333b177d"
+      },
+      "inputHash": 3905941285,
+      "inputSha256": "1309b4eebbd5709149d5084407886718059b5fd18f1c09a04b22f0c93d6cd870",
+      "settlement": {
+        "reward": {
+          "coins": 164,
+          "petCoinPct": 0,
+          "gifts": 0,
+          "missions": [],
+          "stars": 0,
+          "first": false,
+          "partActivity": [
+            {
+              "id": "PART_F1",
+              "active": false
+            },
+            {
+              "id": "PART_W1",
+              "active": false
+            },
+            {
+              "id": "PART_L1",
+              "active": true
+            }
+          ],
+          "stageGift": null,
+          "difficulty": "normal",
+          "goal": false,
+          "notes": []
+        },
+        "charged": 0,
+        "cleared": false,
+        "stage": "CH19"
+      }
+    },
+    {
+      "stage": "CH19",
+      "seed": 10808,
+      "weapon": "melee",
+      "crowd": "natural",
+      "quality": 0,
+      "god": true,
+      "equal": true,
+      "checkpoints": 54,
+      "seconds": 274.6333333334122,
+      "kills": 2430,
+      "canvasHash": "04d7c61937c273cf1ac1819c301467cd11899f66dc26a289928021d559f26c59",
+      "finalEnemyState": {
+        "tick": 16478,
+        "seconds": 274.6333333334122,
+        "count": 31,
+        "types": [
+          "T4_BURNER",
+          "T4_BURNER",
+          "T4_BURNER",
+          "T4_SAW",
+          "T4_BURNER",
+          "T4_BURNER",
+          "T4_NUTRIA",
+          "T4_SAW",
+          "T4_SAW",
+          "T4_SAW",
+          "T4_SAW",
+          "T4_SAW",
+          "T4_SAW",
+          "T4_NUTRIA",
+          "T4_SAW",
+          "T4_SAW",
+          "T4_NUTRIA",
+          "T4_BURNER",
+          "T4_SAW",
+          "T4_NUTRIA",
+          "T4_BURNER",
+          "T4_SAW",
+          "T4_NUTRIA",
+          "T4_BURNER",
+          "T4_NUTRIA",
+          "T4_BURNER",
+          "T4_SAW",
+          "T4_NUTRIA",
+          "T4_BURNER",
+          "T4_SAW",
+          "T4_NUTRIA"
+        ],
+        "randomCalls": 39711,
+        "randomState": 2333820387,
+        "sha256": "d15af18ede72974626fe309296b20a4aee0c34c24b7c355aec5aa04c5dad4733"
+      },
+      "inputHash": 4120181933,
+      "inputSha256": "77334ec4c4dabbafc69d73b1c55d53bdfc68bf46ea0d90b3b289fa3e17c91d30",
+      "settlement": {
+        "reward": {
+          "coins": 164,
+          "petCoinPct": 0,
+          "gifts": 0,
+          "missions": [],
+          "stars": 0,
+          "first": false,
+          "partActivity": [
+            {
+              "id": "PART_F1",
+              "active": true
+            },
+            {
+              "id": "PART_W1",
+              "active": true
+            },
+            {
+              "id": "PART_L1",
+              "active": true
+            }
+          ],
+          "stageGift": null,
+          "difficulty": "normal",
+          "goal": false,
+          "notes": []
+        },
+        "charged": 0,
+        "cleared": false,
+        "stage": "CH19"
+      }
+    },
+    {
+      "stage": "CH19",
+      "seed": 10808,
+      "weapon": "melee",
+      "crowd": "stress",
+      "quality": 0,
+      "god": true,
+      "equal": true,
+      "checkpoints": 54,
+      "seconds": 274.80000000007874,
+      "kills": 2584,
+      "canvasHash": "c6314e78bb75110472699c1be842f2162924bbf442daab961e5fe1d5e432a6cf",
+      "finalEnemyState": {
+        "tick": 16488,
+        "seconds": 274.80000000007874,
+        "count": 15,
+        "types": [
+          "T4_NUTRIA",
+          "T4_BURNER",
+          "T4_BURNER",
+          "T4_BURNER",
+          "T4_BURNER",
+          "T4_SAW",
+          "T4_BURNER",
+          "T4_NUTRIA",
+          "T4_NUTRIA",
+          "T4_BURNER",
+          "T4_SAW",
+          "T4_NUTRIA",
+          "T4_BURNER",
+          "T4_SAW",
+          "T4_NUTRIA"
+        ],
+        "randomCalls": 41013,
+        "randomState": 3325659633,
+        "sha256": "de79ecde4bb237936e4184525b455a3cf454c0b153c3a2320b5ae0f1b176bd89"
+      },
+      "inputHash": 1089690076,
+      "inputSha256": "a40d9e8c355d1c1989d615923c491c748c58d4fb2115255b11063bf729719d73",
+      "settlement": {
+        "reward": {
+          "coins": 164,
+          "petCoinPct": 0,
+          "gifts": 0,
+          "missions": [],
+          "stars": 0,
+          "first": false,
+          "partActivity": [
+            {
+              "id": "PART_F1",
+              "active": true
+            },
+            {
+              "id": "PART_W1",
+              "active": false
+            },
+            {
+              "id": "PART_L1",
+              "active": true
+            }
+          ],
+          "stageGift": null,
+          "difficulty": "normal",
+          "goal": false,
+          "notes": []
+        },
+        "charged": 0,
+        "cleared": false,
+        "stage": "CH19"
+      }
+    },
+    {
+      "stage": "CH19",
+      "seed": 10809,
+      "weapon": "ranged",
+      "crowd": "natural",
+      "quality": 5,
+      "god": false,
+      "equal": true,
+      "checkpoints": 54,
+      "seconds": 274.6166666667456,
+      "kills": 2419,
+      "canvasHash": null,
+      "finalEnemyState": {
+        "tick": 16477,
+        "seconds": 274.6166666667456,
+        "count": 42,
+        "types": [
+          "T4_BURNER",
+          "T4_BURNER",
+          "T4_SAW",
+          "T4_BURNER",
+          "T4_BURNER",
+          "T4_NUTRIA",
+          "T4_SAW",
+          "T4_BURNER",
+          "T4_BURNER",
+          "T4_SAW",
+          "T4_SAW",
+          "T4_SAW",
+          "T4_NUTRIA",
+          "T4_BURNER",
+          "T4_BURNER",
+          "T4_SAW",
+          "T4_BURNER",
+          "T4_NUTRIA",
+          "T4_SAW",
+          "T4_SAW",
+          "T4_BURNER",
+          "T4_SAW",
+          "T4_BURNER",
+          "T4_SAW",
+          "T4_NUTRIA",
+          "T4_BURNER",
+          "T4_SAW",
+          "T4_NUTRIA",
+          "T4_BURNER",
+          "T4_SAW",
+          "T4_BURNER",
+          "T4_SAW",
+          "T4_NUTRIA",
+          "T4_BURNER",
+          "T4_SAW",
+          "T4_NUTRIA",
+          "T4_BURNER",
+          "T4_SAW",
+          "T4_NUTRIA",
+          "T4_BURNER",
+          "T4_SAW",
+          "T4_NUTRIA"
+        ],
+        "randomCalls": 38398,
+        "randomState": 2669593679,
+        "sha256": "1eac312ce94ff092faece759d0d6247fd2f736c0c55a1a5632ee1977ec96b88a"
+      },
+      "inputHash": 1520050547,
+      "inputSha256": "f74248e1a9154e09f7a088570218e174a654d43c2459b567e462298e03380c65",
+      "settlement": {
+        "reward": {
+          "coins": 164,
+          "petCoinPct": 0,
+          "gifts": 0,
+          "missions": [],
+          "stars": 0,
+          "first": false,
+          "partActivity": [
+            {
+              "id": "PART_F1",
+              "active": true
+            },
+            {
+              "id": "PART_W1",
+              "active": false
+            },
+            {
+              "id": "PART_L1",
+              "active": true
+            }
+          ],
+          "stageGift": null,
+          "difficulty": "normal",
+          "goal": false,
+          "notes": []
+        },
+        "charged": 0,
+        "cleared": false,
+        "stage": "CH19"
+      }
+    },
+    {
+      "stage": "CH19",
+      "seed": 10809,
+      "weapon": "ranged",
+      "crowd": "stress",
+      "quality": 5,
+      "god": false,
+      "equal": true,
+      "checkpoints": 54,
+      "seconds": 274.80000000007874,
+      "kills": 2570,
+      "canvasHash": null,
+      "finalEnemyState": {
+        "tick": 16488,
+        "seconds": 274.80000000007874,
+        "count": 17,
+        "types": [
+          "T4_BURNER",
+          "T4_SAW",
+          "T4_BURNER",
+          "T4_SAW",
+          "T4_NUTRIA",
+          "T4_BURNER",
+          "T4_SAW",
+          "T4_NUTRIA",
+          "T4_NUTRIA",
+          "T4_NUTRIA",
+          "T4_SAW",
+          "T4_BURNER",
+          "T4_NUTRIA",
+          "T4_BURNER",
+          "T4_SAW",
+          "T4_SAW",
+          "T4_NUTRIA"
+        ],
+        "randomCalls": 39706,
+        "randomState": 1765925915,
+        "sha256": "a69197d7fcf18e0381fd84f5af1a797e0c3ab26c5099c86cfafc98af42eab85f"
+      },
+      "inputHash": 281286200,
+      "inputSha256": "04bfb80a53cbf431c49619c3576a7221744f72543f0ccf60e9394dd312443390",
+      "settlement": {
+        "reward": {
+          "coins": 164,
+          "petCoinPct": 0,
+          "gifts": 0,
+          "missions": [],
+          "stars": 0,
+          "first": false,
+          "partActivity": [
+            {
+              "id": "PART_F1",
+              "active": true
+            },
+            {
+              "id": "PART_W1",
+              "active": false
+            },
+            {
+              "id": "PART_L1",
+              "active": true
+            }
+          ],
+          "stageGift": null,
+          "difficulty": "normal",
+          "goal": false,
+          "notes": []
+        },
+        "charged": 0,
+        "cleared": false,
+        "stage": "CH19"
+      }
+    },
+    {
+      "stage": "CH19",
+      "seed": 10809,
+      "weapon": "melee",
+      "crowd": "natural",
+      "quality": 5,
+      "god": false,
+      "equal": true,
+      "checkpoints": 54,
+      "seconds": 274.6166666667456,
+      "kills": 2411,
+      "canvasHash": null,
+      "finalEnemyState": {
+        "tick": 16477,
+        "seconds": 274.6166666667456,
+        "count": 50,
+        "types": [
+          "T4_BURNER",
+          "T4_BURNER",
+          "T4_BURNER",
+          "T4_BURNER",
+          "T4_SAW",
+          "T4_BURNER",
+          "T4_BURNER",
+          "T4_BURNER",
+          "T4_SAW",
+          "T4_BURNER",
+          "T4_NUTRIA",
+          "T4_BURNER",
+          "T4_BURNER",
+          "T4_SAW",
+          "T4_BURNER",
+          "T4_BURNER",
+          "T4_BURNER",
+          "T4_BURNER",
+          "T4_BURNER",
+          "T4_NUTRIA",
+          "T4_BURNER",
+          "T4_SAW",
+          "T4_SAW",
+          "T4_NUTRIA",
+          "T4_SAW",
+          "T4_BURNER",
+          "T4_SAW",
+          "T4_BURNER",
+          "T4_SAW",
+          "T4_NUTRIA",
+          "T4_SAW",
+          "T4_NUTRIA",
+          "T4_BURNER",
+          "T4_SAW",
+          "T4_NUTRIA",
+          "T4_BURNER",
+          "T4_SAW",
+          "T4_NUTRIA",
+          "T4_BURNER",
+          "T4_SAW",
+          "T4_NUTRIA",
+          "T4_BURNER",
+          "T4_SAW",
+          "T4_NUTRIA",
+          "T4_BURNER",
+          "T4_SAW",
+          "T4_NUTRIA",
+          "T4_BURNER",
+          "T4_SAW",
+          "T4_NUTRIA"
+        ],
+        "randomCalls": 33421,
+        "randomState": 887144490,
+        "sha256": "adf6b5434e1ab37c2393f61481a3c2b5888431348da20c0747aff7d01d2a33cd"
+      },
+      "inputHash": 3047965244,
+      "inputSha256": "b39516bf643bf8801fbb49cfa3be3a82b1d91e673af46538149884206d619b63",
+      "settlement": {
+        "reward": {
+          "coins": 164,
+          "petCoinPct": 0,
+          "gifts": 0,
+          "missions": [],
+          "stars": 0,
+          "first": false,
+          "partActivity": [
+            {
+              "id": "PART_F1",
+              "active": true
+            },
+            {
+              "id": "PART_W1",
+              "active": false
+            },
+            {
+              "id": "PART_L1",
+              "active": false
+            }
+          ],
+          "stageGift": null,
+          "difficulty": "normal",
+          "goal": false,
+          "notes": []
+        },
+        "charged": 0,
+        "cleared": false,
+        "stage": "CH19"
+      }
+    },
+    {
+      "stage": "CH19",
+      "seed": 10809,
+      "weapon": "melee",
+      "crowd": "stress",
+      "quality": 5,
+      "god": false,
+      "equal": true,
+      "checkpoints": 54,
+      "seconds": 274.7833333334121,
+      "kills": 2567,
+      "canvasHash": null,
+      "finalEnemyState": {
+        "tick": 16487,
+        "seconds": 274.7833333334121,
+        "count": 16,
+        "types": [
+          "T4_SAW",
+          "T4_SAW",
+          "T4_SAW",
+          "T4_SAW",
+          "T4_NUTRIA",
+          "T4_NUTRIA",
+          "T4_BURNER",
+          "T4_BURNER",
+          "T4_SAW",
+          "T4_BURNER",
+          "T4_SAW",
+          "T4_BURNER",
+          "T4_NUTRIA",
+          "T4_BURNER",
+          "T4_SAW",
+          "T4_NUTRIA"
+        ],
+        "randomCalls": 38800,
+        "randomState": 224675593,
+        "sha256": "be77c2b451f5fe27192028180e1d6e50115ac0f93e729545bff83612f7082b55"
+      },
+      "inputHash": 382309379,
+      "inputSha256": "f5b3349d00a95960b31ed85c6bbcf7bb29d3349edd1a68ba5961babcc176cc57",
+      "settlement": {
+        "reward": {
+          "coins": 164,
+          "petCoinPct": 0,
+          "gifts": 0,
+          "missions": [],
+          "stars": 0,
+          "first": false,
+          "partActivity": [
+            {
+              "id": "PART_F1",
+              "active": true
+            },
+            {
+              "id": "PART_W1",
+              "active": false
+            },
+            {
+              "id": "PART_L1",
+              "active": false
+            }
+          ],
+          "stageGift": null,
+          "difficulty": "normal",
+          "goal": false,
+          "notes": []
+        },
+        "charged": 0,
+        "cleared": false,
+        "stage": "CH19"
+      }
+    },
+    {
+      "stage": "CH20",
+      "seed": 10808,
+      "weapon": "ranged",
+      "crowd": "natural",
+      "quality": 0,
+      "god": true,
+      "equal": true,
+      "checkpoints": 54,
+      "seconds": 274.6000000000789,
+      "kills": 2031,
+      "canvasHash": "42335a7815c92fa027fea8726aec350f19116a0f531d141e8398f4621e942e92",
+      "finalEnemyState": {
+        "tick": 16476,
+        "seconds": 274.6000000000789,
+        "count": 1,
+        "types": [
+          ""
+        ],
+        "randomCalls": 35863,
+        "randomState": 2509904699,
+        "sha256": "44de29f07ba955ded2b5d89e0555161a0eee3f42a6d7b9cecc99f1e7e6b58dda"
+      },
+      "inputHash": 3392902672,
+      "inputSha256": "1905e17e5aa6bb7d4ee8a0d6a2be928a3b8c33cd35fb9565c0d2ae2717c0b84a",
+      "settlement": {
+        "reward": {
+          "coins": 170,
+          "petCoinPct": 0,
+          "gifts": 0,
+          "missions": [],
+          "stars": 0,
+          "first": false,
+          "partActivity": [
+            {
+              "id": "PART_F1",
+              "active": false
+            },
+            {
+              "id": "PART_W1",
+              "active": false
+            },
+            {
+              "id": "PART_L1",
+              "active": true
+            }
+          ],
+          "stageGift": null,
+          "difficulty": "normal",
+          "goal": false,
+          "notes": []
+        },
+        "charged": 0,
+        "cleared": false,
+        "stage": "CH20"
+      }
+    },
+    {
+      "stage": "CH20",
+      "seed": 10808,
+      "weapon": "ranged",
+      "crowd": "stress",
+      "quality": 0,
+      "god": true,
+      "equal": true,
+      "checkpoints": 54,
+      "seconds": 272.50000000008083,
+      "kills": 2236,
+      "canvasHash": "07b1d6c320a96d32c6c07b44a8d1cf1efb353f7cd50b796f846445a866f04b6e",
+      "finalEnemyState": {
+        "tick": 16350,
+        "seconds": 272.50000000008083,
+        "count": 1,
+        "types": [
+          ""
+        ],
+        "randomCalls": 39836,
+        "randomState": 3646280324,
+        "sha256": "9765e6fc65a3a358f69299315c2434d2e599d253dc9e26964f7fc27b0af187db"
+      },
+      "inputHash": 3527692734,
+      "inputSha256": "d738a65e51434535b2012fcd71ade55cf3b349f20cf10edc634829125809b16c",
+      "settlement": {
+        "reward": {
+          "coins": 400,
+          "petCoinPct": 0,
+          "gifts": 1,
+          "missions": [
+            {
+              "id": "win1",
+              "name": "도전 1번 성공하기",
+              "gifts": 2
+            },
+            {
+              "id": "goal1",
+              "name": "환경 목표 1번 해내기",
+              "gifts": 2
+            }
+          ],
+          "stars": 2,
+          "first": false,
+          "partActivity": [
+            {
+              "id": "PART_F1",
+              "active": false
+            },
+            {
+              "id": "PART_W1",
+              "active": false
+            },
+            {
+              "id": "PART_L1",
+              "active": true
+            }
+          ],
+          "stageGift": {
+            "left": 1,
+            "capped": false,
+            "limit": 2
+          },
+          "difficulty": "normal",
+          "goal": true,
+          "notes": []
+        },
+        "charged": 1,
+        "cleared": true,
+        "stage": "CH20"
+      }
+    },
+    {
+      "stage": "CH20",
+      "seed": 10808,
+      "weapon": "melee",
+      "crowd": "natural",
+      "quality": 0,
+      "god": true,
+      "equal": true,
+      "checkpoints": 54,
+      "seconds": 274.6000000000789,
+      "kills": 2081,
+      "canvasHash": "349aa48608cce56c5b76322c8f8f3a25af29291881fc9399d905df6cc4568e4c",
+      "finalEnemyState": {
+        "tick": 16476,
+        "seconds": 274.6000000000789,
+        "count": 1,
+        "types": [
+          ""
+        ],
+        "randomCalls": 32380,
+        "randomState": 1192612580,
+        "sha256": "eb0f5df241258596ae52325483cc1ba9d6877ff75a6d300810a91508ddb231c1"
+      },
+      "inputHash": 3544709492,
+      "inputSha256": "525b3532f6bc6d5d4378964c8511f89305e4ebdc7035af2baa36f746ec381864",
+      "settlement": {
+        "reward": {
+          "coins": 170,
+          "petCoinPct": 0,
+          "gifts": 0,
+          "missions": [],
+          "stars": 0,
+          "first": false,
+          "partActivity": [
+            {
+              "id": "PART_F1",
+              "active": false
+            },
+            {
+              "id": "PART_W1",
+              "active": false
+            },
+            {
+              "id": "PART_L1",
+              "active": true
+            }
+          ],
+          "stageGift": null,
+          "difficulty": "normal",
+          "goal": false,
+          "notes": []
+        },
+        "charged": 0,
+        "cleared": false,
+        "stage": "CH20"
+      }
+    },
+    {
+      "stage": "CH20",
+      "seed": 10808,
+      "weapon": "melee",
+      "crowd": "stress",
+      "quality": 0,
+      "god": true,
+      "equal": true,
+      "checkpoints": 54,
+      "seconds": 273.0000000000804,
+      "kills": 2236,
+      "canvasHash": "7b03c56934a03bd98d54ab7dc50f4af33e85fea27e7f7ee9a080de535dabf572",
+      "finalEnemyState": {
+        "tick": 16380,
+        "seconds": 273.0000000000804,
+        "count": 1,
+        "types": [
+          ""
+        ],
+        "randomCalls": 39089,
+        "randomState": 1266218141,
+        "sha256": "371c3ed13a30310e96e8f0ac82d5343980df8f4fe0640d5b3f2765a87afcec8b"
+      },
+      "inputHash": 4147782429,
+      "inputSha256": "a9f9d8198cc9df80c3de667678cd47bb762eea4e13c579c526cf7ec2903cd8f9",
+      "settlement": {
+        "reward": {
+          "coins": 400,
+          "petCoinPct": 0,
+          "gifts": 1,
+          "missions": [
+            {
+              "id": "win1",
+              "name": "도전 1번 성공하기",
+              "gifts": 2
+            },
+            {
+              "id": "goal1",
+              "name": "환경 목표 1번 해내기",
+              "gifts": 2
+            }
+          ],
+          "stars": 2,
+          "first": false,
+          "partActivity": [
+            {
+              "id": "PART_F1",
+              "active": false
+            },
+            {
+              "id": "PART_W1",
+              "active": false
+            },
+            {
+              "id": "PART_L1",
+              "active": true
+            }
+          ],
+          "stageGift": {
+            "left": 1,
+            "capped": false,
+            "limit": 2
+          },
+          "difficulty": "normal",
+          "goal": true,
+          "notes": []
+        },
+        "charged": 1,
+        "cleared": true,
+        "stage": "CH20"
+      }
+    },
+    {
+      "stage": "CH20",
+      "seed": 10809,
+      "weapon": "ranged",
+      "crowd": "natural",
+      "quality": 5,
+      "god": false,
+      "equal": true,
+      "checkpoints": 54,
+      "seconds": 274.6000000000789,
+      "kills": 2116,
+      "canvasHash": null,
+      "finalEnemyState": {
+        "tick": 16476,
+        "seconds": 274.6000000000789,
+        "count": 1,
+        "types": [
+          ""
+        ],
+        "randomCalls": 35090,
+        "randomState": 4048738931,
+        "sha256": "74af01e5b6ec8cacfdd020e3be63ea7289223e9857941aa24b8cb9c26e169a14"
+      },
+      "inputHash": 4079286096,
+      "inputSha256": "0eced3695c206853e7256bf3b772326aab47c4e7a4234bea60f045b3e25f59a7",
+      "settlement": {
+        "reward": {
+          "coins": 170,
+          "petCoinPct": 0,
+          "gifts": 0,
+          "missions": [],
+          "stars": 0,
+          "first": false,
+          "partActivity": [
+            {
+              "id": "PART_F1",
+              "active": true
+            },
+            {
+              "id": "PART_W1",
+              "active": true
+            },
+            {
+              "id": "PART_L1",
+              "active": true
+            }
+          ],
+          "stageGift": null,
+          "difficulty": "normal",
+          "goal": false,
+          "notes": []
+        },
+        "charged": 0,
+        "cleared": false,
+        "stage": "CH20"
+      }
+    },
+    {
+      "stage": "CH20",
+      "seed": 10809,
+      "weapon": "ranged",
+      "crowd": "stress",
+      "quality": 5,
+      "god": false,
+      "equal": true,
+      "checkpoints": 54,
+      "seconds": 272.01666666674794,
+      "kills": 2242,
+      "canvasHash": null,
+      "finalEnemyState": {
+        "tick": 16321,
+        "seconds": 272.01666666674794,
+        "count": 1,
+        "types": [
+          ""
+        ],
+        "randomCalls": 38039,
+        "randomState": 2267463100,
+        "sha256": "6bb66c42b234f93fd01b853a87e70a4c519acf37a766fb7e528ae266f66eb063"
+      },
+      "inputHash": 1071329784,
+      "inputSha256": "aba70957603cc603dc828caf70f026effc2714a980a2e4f0e023cdf5166adc4f",
+      "settlement": {
+        "reward": {
+          "coins": 400,
+          "petCoinPct": 0,
+          "gifts": 1,
+          "missions": [
+            {
+              "id": "win1",
+              "name": "도전 1번 성공하기",
+              "gifts": 2
+            },
+            {
+              "id": "goal1",
+              "name": "환경 목표 1번 해내기",
+              "gifts": 2
+            }
+          ],
+          "stars": 2,
+          "first": false,
+          "partActivity": [
+            {
+              "id": "PART_F1",
+              "active": true
+            },
+            {
+              "id": "PART_W1",
+              "active": false
+            },
+            {
+              "id": "PART_L1",
+              "active": true
+            }
+          ],
+          "stageGift": {
+            "left": 1,
+            "capped": false,
+            "limit": 2
+          },
+          "difficulty": "normal",
+          "goal": true,
+          "notes": []
+        },
+        "charged": 1,
+        "cleared": true,
+        "stage": "CH20"
+      }
+    },
+    {
+      "stage": "CH20",
+      "seed": 10809,
+      "weapon": "melee",
+      "crowd": "natural",
+      "quality": 5,
+      "god": false,
+      "equal": true,
+      "checkpoints": 54,
+      "seconds": 274.6000000000789,
+      "kills": 2069,
+      "canvasHash": null,
+      "finalEnemyState": {
+        "tick": 16476,
+        "seconds": 274.6000000000789,
+        "count": 1,
+        "types": [
+          ""
+        ],
+        "randomCalls": 30579,
+        "randomState": 1077466696,
+        "sha256": "a86fb87cd5d7653d65bbeac490322fe0f5dd6dc923d9eeaadebdd09c17f05be2"
+      },
+      "inputHash": 341261563,
+      "inputSha256": "76aaf0c7a1b02800916f99b4b8eab1b120b470ad60d8c455b04198f0dfc68c61",
+      "settlement": {
+        "reward": {
+          "coins": 170,
+          "petCoinPct": 0,
+          "gifts": 0,
+          "missions": [],
+          "stars": 0,
+          "first": false,
+          "partActivity": [
+            {
+              "id": "PART_F1",
+              "active": true
+            },
+            {
+              "id": "PART_W1",
+              "active": false
+            },
+            {
+              "id": "PART_L1",
+              "active": false
+            }
+          ],
+          "stageGift": null,
+          "difficulty": "normal",
+          "goal": false,
+          "notes": []
+        },
+        "charged": 0,
+        "cleared": false,
+        "stage": "CH20"
+      }
+    },
+    {
+      "stage": "CH20",
+      "seed": 10809,
+      "weapon": "melee",
+      "crowd": "stress",
+      "quality": 5,
+      "god": false,
+      "equal": true,
+      "checkpoints": 54,
+      "seconds": 271.50000000008174,
+      "kills": 2257,
+      "canvasHash": null,
+      "finalEnemyState": {
+        "tick": 16290,
+        "seconds": 271.50000000008174,
+        "count": 1,
+        "types": [
+          ""
+        ],
+        "randomCalls": 37948,
+        "randomState": 3098698661,
+        "sha256": "b1576bfa3f66a0ca2c17855f0b8ca19490b4698a41dc7ac3f70277cae39b3dee"
+      },
+      "inputHash": 4096851999,
+      "inputSha256": "b6baabfd3e1f0ee5c3fa1f2b4b981e024c72cbfe18936dd2e48a9039631e1d0d",
+      "settlement": {
+        "reward": {
+          "coins": 400,
+          "petCoinPct": 0,
+          "gifts": 1,
+          "missions": [
+            {
+              "id": "win1",
+              "name": "도전 1번 성공하기",
+              "gifts": 2
+            },
+            {
+              "id": "goal1",
+              "name": "환경 목표 1번 해내기",
+              "gifts": 2
+            }
+          ],
+          "stars": 2,
+          "first": false,
+          "partActivity": [
+            {
+              "id": "PART_F1",
+              "active": true
+            },
+            {
+              "id": "PART_W1",
+              "active": false
+            },
+            {
+              "id": "PART_L1",
+              "active": false
+            }
+          ],
+          "stageGift": {
+            "left": 1,
+            "capped": false,
+            "limit": 2
+          },
+          "difficulty": "normal",
+          "goal": true,
+          "notes": []
+        },
+        "charged": 1,
+        "cleared": true,
+        "stage": "CH20"
+      }
+    }
+  ],
+  "responsiveUI1": {
+    "sizes": [
+      "1280x720",
+      "1024x768",
+      "820x1180",
+      "768x1024",
+      "375x667",
+      "360x640"
+    ],
+    "issues": 0,
+    "pageErrors": 0
+  },
+  "responsiveUI2": {
+    "sizes": [
+      "1280x720",
+      "1024x768",
+      "820x1180",
+      "768x1024",
+      "375x667",
+      "360x640"
+    ],
+    "issues": 0,
+    "pageErrors": 0
+  }
+}
