@@ -27,16 +27,23 @@ def script_top(path):
             totals[f"{cf['functionName'] or '(anonymous)'} {cf['url'].split('/')[-1]}:{cf['lineNumber']+1}"] += dt/1000
     return [{'function':k,'selfMs':round(v,2)} for k,v in sorted(totals.items(),key=lambda x:-x[1])[:10]]
 
+def has_errors(value):
+    if isinstance(value,dict):
+        return bool(value.get('errors')) or any(has_errors(v) for v in value.values())
+    return isinstance(value,list) and any(has_errors(v) for v in value)
+
 
 data = {'scope':'Loopback QA only. Chromium software rendering, synthetic CPU throttling; not physical tablet results.',
         'low1Definition':'1000 / mean duration of slowest ceil(1% of sampled frames). Includes profiling/QA overhead.', 'sets':{}}
 for side in ('before','after'):
-    for suite in ('screen','deep','bulki','foam','threat','layers-warm','repeat','lobby'):
+    for suite in ('screen','deep','bulki','foam','threat','worst-trace','layers-warm','repeat','lobby'):
         label = f'{side}-{suite}'
         path = folder/f'{label}.json'
         if not path.exists():
             raise FileNotFoundError(path)
         raw = json.loads(path.read_text(encoding='utf-8'))
+        if not raw['records'] or has_errors(raw['records']):
+            raise AssertionError(f'Incomplete/browser errors in {label}')
         conditions = {k:v for k,v in raw['conditions'].items() if k not in ('out','reference','source','label','url')}
         conditions.setdefault('foam',False)
         conditions.setdefault('stress',False)
@@ -51,14 +58,14 @@ for side in ('before','after'):
                 if r['errors']:
                     raise AssertionError(f'Browser errors in {label}')
         data['sets'][label] = record
-for suite in ('screen','deep','bulki','foam','threat','layers-warm','repeat','lobby'):
+for suite in ('screen','deep','bulki','foam','threat','worst-trace','layers-warm','repeat','lobby'):
     b,a = [data['sets'][f'{s}-{suite}'] for s in ('before','after')]
     if b['conditions'] != a['conditions'] or b['browser'] != a['browser']:
         raise AssertionError(f'Comparison conditions differ: {suite}')
     if isinstance(b['records'],list) and len(b['records']) != len(a['records']):
         raise AssertionError(f'Comparison row count differs: {suite}')
 replay = json.loads((folder/'invariant.json').read_text(encoding='utf-8'))
-if not replay['records'] or not all(r['equal'] for r in replay['records']):
+if len(replay['records'])!=8 or has_errors(replay['records']) or not all(r['equal'] for r in replay['records']):
     raise AssertionError('Invariant replay has not passed')
 data['replay'] = [{'stage':r['stage'],'seed':r['seed'],'equal':r['equal'],'inputHash':r['after']['inputHash'],
                    'device':r['device'],'quality':r['quality'],'god':r['god'],'canvasHash':r['after']['canvasHash'],
@@ -71,7 +78,7 @@ for ui in (1,2):
     if len(rec)!=6 or issues or any(r.get('_error') or r.get('_pageErrors') for r in rec.values()):
         raise AssertionError(f'Responsive UI{ui} incomplete/failed')
     data[f'responsiveUI{ui}'] = rec
-Path(args.output).write_text(json.dumps(data,ensure_ascii=False,indent=2),encoding='utf-8')
+Path(args.output).write_text(json.dumps(data,ensure_ascii=False,indent=2)+'\n',encoding='utf-8',newline='\n')
 
 import matplotlib
 matplotlib.use('Agg')
@@ -111,7 +118,7 @@ def pairs(suite):
     if suite=='repeat':
         b,a=b['rounds'],a['rounds']
     return zip(b,a)
-for suite,title in [('screen','자연 후반 8장면: iPad급 ×4'),('deep','합성 군중: 3기기 ×2 CPU 배율'),('bulki','4-4 합성 군중'),('foam','3-3 연속 거품'),('threat','4장 자국·불 공 합성 시각 부하')]:
+for suite,title in [('screen','자연 후반 8장면: iPad급 ×4'),('deep','합성 군중: 3기기 ×2 CPU 배율'),('bulki','4-4 합성 군중'),('foam','3-3 연속 거품'),('threat','4장 자국·불 공 합성 시각 부하'),('worst-trace','CPU ×6 군중 대표 장면: 추가 trace 포함')]:
     lines.extend([f'### {title}','', '각 칸은 **전 → 후**. FPS는 높을수록, 긴 프레임 비율과 ms는 낮을수록 좋다.',''])
     rows=[]
     for b,a in pairs(suite):
@@ -129,11 +136,11 @@ table(['판','평균 FPS','heap MiB','리스너','DOM 노드','interval/timeout'
 lines.extend(['### 로비: UI 1·UI 2, iPad급 CPU ×4',''])
 table(['UI','탭 중앙값 ms','탭 최대 ms','스크롤 프레임 중앙값 ms','스크롤 프레임 최대 ms'],[[b['ui'],*[f"{b[k]:.1f} → {a[k]:.1f}" for k in ('tabMedian','tabMax','scrollFrameMedian','scrollFrameMax')]] for b,a in pairs('lobby')])
 lines.extend(['### 느린 장면의 함수 상위 10개','', 'CPU sampling의 JS 자기 시간(self ms). 네이티브·유휴는 제외한 **게임 JS 함수** 순위다. 전후 순위가 달라 별도 열로 표시한다. 합계는 전체 프레임 계산/그리기 시간과 같지 않다. raw timeline·CPU profile은 ignored out 폴더에 보관했다.',''])
-for suite,stage in [('threat','CH18'),('bulki','CH19'),('screen','CH20')]:
+for suite,stage in [('worst-trace','CH18'),('bulki','CH19'),('worst-trace','CH20')]:
     b,a=next((b,a) for b,a in pairs(suite) if b['stage']==stage)
-    lines.extend([f"#### {stage_name(stage)} / {suite} / iPad급 ×4",''])
+    lines.extend([f"#### {stage_name(stage)} / {suite} / iPad급 ×{b['rate']:g}",''])
     bt,at=b['perf']['scriptTop10'],a['perf']['scriptTop10']
     table(['순위','전 함수','self ms','후 함수','self ms'],[[i+1,bt[i]['function'],bt[i]['selfMs'],at[i]['function'],at[i]['selfMs']] for i in range(min(10,len(bt),len(at)))])
 lines.extend(['## 검증 결과','', '- `node --test "tests/*.test.mjs"`: **175/175 통과**, 실패·스킵 0. 새 4개 검사는 10,000개 적 배열의 정렬/동점/penalty 순서와 캐시 중복 작업·LRU·늦은 완료 닫기·미지원 복귀를 검증한다.', '- 동일 시드·동일 60Hz 틱·동일 draw 순서의 브라우저 전후 검사 **8/8 일치**. 조작 해시, 처치·시간·체력·쓰레기·스킬/피해 통계·원소 상태·판 종료 상태·실제 격리 서버 정산 응답(보상·충전·성공·장면)이 모두 같다. 게임에 별도 점수 필드는 없어 전체 판 통계와 보상을 비교했다.', '- PC 전체 화질 시드 10808의 4장면은 PNG SHA-256도 일치한다. 시드 10809는 iPad급 최소 화질, 무적 없이 정상 생존으로 비교했다.', '- `responsive-audit.py`: UI 1·UI 2 각각 1280×720, 1024×768, 820×1180, 768×1024, 375×667, 360×640 **total issues 0**, page error 0. 로비 6탭·도움말/장비 창·레벨업·전투·멈춤·결과 포함.', '- Windows의 기존 `perf.py` 4-4 태블릿 3초 smoke, `bench.py` 4-4 PC 1회 smoke도 브라우저 오류 0. 이 숫자는 조건이 다른 도구 동작 확인이라 전후 표에 섞지 않았다.', '- `powershell -ExecutionPolicy Bypass -File game/tools/build-single.ps1`: 단일 HTML 생성 성공. 단일 파일판의 실기기 플레이까지 확인한 것은 아니다.', ''])
 table(['장면','시드','기기·화질','시간 s','처치','전후 결과·보상','PC 픽셀'],[[stage_name(r['stage']),r['seed'],f"{r['device']} / {r['quality']}",f"{r['seconds']:.3f}",r['kills'],'동일','동일' if r['canvasHash'] else '대상 아님'] for r in data['replay']])
-(folder/'report-tables.md').write_text('\n'.join(lines),encoding='utf-8')
+(folder/'report-tables.md').write_text('\n'.join(lines),encoding='utf-8',newline='\n')
