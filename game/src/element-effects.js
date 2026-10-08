@@ -3,6 +3,7 @@
 import { createSpriteScaleCache } from './runtime-performance.js';
 const COLORS = { fire: '#FF6A2A', water: '#2AA8FF', wind: '#3ED88A', earth: '#C48A3F', lightning: '#FFD83A' };
 const scaledSkills = createSpriteScaleCache(96);
+let spriteDeviceScale=1;
 const cache = new Map();
 export const skillSpriteURL = name => `./assets/sprites/skills/${name}.png`;
 export function sprite(name) {
@@ -16,8 +17,7 @@ function img(ctx, name, x, y, w, { angle = 0, alpha = 1, h = null, flip = false,
   const im = sprite(name); if (!im) return false;
   const hh = h ?? w * im.naturalHeight / im.naturalWidth;
   // Fast PCs keep their original images. Slow devices reuse a physical-pixel-sized bitmap.
-  const transform = effectQuality >= 1 ? ctx.getTransform() : null;
-  const source = transform ? scaledSkills.get(im, hh * Math.hypot(transform.c, transform.d)) : im;
+  const source = effectQuality >= 1 ? scaledSkills.get(im, hh * spriteDeviceScale) : im;
   ctx.save(); ctx.translate(x, y); ctx.rotate(angle); if (flip) ctx.scale(-1, 1); ctx.globalAlpha *= alpha; ctx.imageSmoothingEnabled = true;
   ctx.drawImage(source, -w / 2, -hh * anchorY, w, hh); ctx.restore(); return true;
 }
@@ -51,7 +51,10 @@ function trail(ctx, s, toScreen, color, width) {
 // 2026-09-23: 불 웅덩이·용암은 반투명(0.5)·작게(반지름 1.4·1.7칸, 범위 보너스 절반) — 주인공과 바닥이 가려지지 않게(사용자 지적). 큰 폭발 그림도 ×2.8~3 → ×2.4~2.6
 export function drawElementScene(ctx, { shots, fields, effects, orbits, mines, bees, beams, clock, U, player }, toScreen, layer = 'all') {
   const ground = layer !== 'air', air = layer !== 'ground';
-  const scale = effectQuality >= 1 ? (Math.hypot(ctx.getTransform().a,ctx.getTransform().b)||1) : 1;
+  // This layer only rotates/translates individual images: sample its scale once, not per sprite.
+  const transform=effectQuality>=1?ctx.getTransform():null;
+  const scale=transform?(Math.hypot(transform.a,transform.b)||1):1;
+  spriteDeviceScale=transform?(Math.hypot(transform.c,transform.d)||1):1;
   const W=ctx.canvas.width/scale,H=ctx.canvas.height/scale;
   const outside=(s,pad)=>effectQuality>=1&&(s.x+pad<0||s.y+pad<0||s.x-pad>W||s.y-pad>H);
   // 주인공 몸(발에서 0.8칸 위가 몸 가운데)과 겹치는지: 겹치는 투사체·이펙트는 반투명으로 그려 주인공이 늘 보이게

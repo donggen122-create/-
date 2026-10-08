@@ -47,11 +47,11 @@ export function createThemeEffects(sprites) {
       // 2026-09-24 최적화: 캔버스를 매번 그리면 GPU로 다시 올려(측정: 같은 수의 스프라이트보다 약 100배 느림) → 한 번 ImageBitmap으로 바꿔 둔다
       if (typeof createImageBitmap === "function") createImageBitmap(texture).then((bm) => textures.set(key, bm)).catch(() => {});
     }
-    c.save(); c.translate(x, y); c.rotate(angle); c.globalAlpha *= fxClamp(alpha);
-    c.imageSmoothingEnabled = true;
     const h = size * texture.height / texture.width;
     const t=quality>=1?c.getTransform():null;
     const source=t?scaledTextures.get(texture,h*Math.hypot(t.c,t.d)):texture;
+    c.save(); c.translate(x, y); c.rotate(angle); c.globalAlpha *= fxClamp(alpha);
+    c.imageSmoothingEnabled = true;
     c.drawImage(source, -size / 2, -h / 2, size, h); c.restore(); return true;
   }
   // 반짝이 모양 하나를 경로에 더한다(칠하기는 부른 쪽에서 한 번에 — 반짝이 6개를 한 번에 칠해 그리기 명령을 줄인다, 2026-09-24 최적화)

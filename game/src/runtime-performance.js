@@ -49,7 +49,7 @@ export function setWidth(node,value){if(!node)return;const width=String(value);i
 // Presentation only. Bound native bitmap memory, coalesce async resizing and close stale results.
 // Failed/unsupported resizing retains the original. Never changes simulation data or random calls.
 export function createSpriteScaleCache(limit=96,makeBitmap=globalThis.createImageBitmap?.bind(globalThis)){
- const entries=new Map(),sources=new WeakMap();let nextSource=0;
+ const entries=new Map(),sources=new WeakMap();let newest=null;
  const capacity=Math.max(1,limit|0),close=e=>e.bitmap?.close?.();
  return {
   get(source,deviceHeight){
@@ -58,16 +58,17 @@ export function createSpriteScaleCache(limit=96,makeBitmap=globalThis.createImag
    if(!h||!w)return source;
    const bucket=Math.max(16,Math.ceil(deviceHeight/16)*16);
    if(h<=bucket*1.25)return source;
-   let id=sources.get(source);if(!id){id=++nextSource;sources.set(source,id);}
-   const key=id+'/'+bucket;let entry=entries.get(key);
-   if(entry){entries.delete(key);entries.set(key,entry);return entry.bitmap||source;}
-   entry={bitmap:null};entries.set(key,entry);
-   while(entries.size>capacity){const [old,e]=entries.entries().next().value;entries.delete(old);close(e);}
+   // Nested numeric maps avoid allocating a string key on every sprite draw.
+   let sizes=sources.get(source);if(!sizes){sizes=new Map();sources.set(source,sizes);}
+   let entry=sizes.get(bucket);
+   if(entry){if(entry!==newest){entries.delete(entry);entries.set(entry,true);newest=entry;}return entry.bitmap||source;}
+   entry={bitmap:null,sizes,bucket};sizes.set(bucket,entry);entries.set(entry,true);newest=entry;
+   while(entries.size>capacity){const e=entries.keys().next().value;entries.delete(e);e.sizes.delete(e.bucket);close(e);}
    try{Promise.resolve(makeBitmap(source,{resizeHeight:bucket,resizeWidth:Math.max(1,Math.round(bucket*w/h)),resizeQuality:'high'}))
-    .then(bitmap=>{if(entries.get(key)===entry)entry.bitmap=bitmap;else bitmap.close?.();}).catch(()=>{});}catch{/* Original remains usable. */}
+    .then(bitmap=>{if(sizes.get(bucket)===entry)entry.bitmap=bitmap;else bitmap.close?.();}).catch(()=>{});}catch{/* Original remains usable. */}
    return source;
   },
-  clear(){for(const e of entries.values())close(e);entries.clear();},
+  clear(){for(const e of entries.keys()){e.sizes.delete(e.bucket);close(e);}entries.clear();newest=null;},
   get size(){return entries.size;}
  };
 }
