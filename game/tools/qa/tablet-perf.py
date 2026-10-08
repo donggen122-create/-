@@ -19,10 +19,15 @@ import subprocess
 import time
 import hashlib
 import base64
+import os
 from pathlib import Path
 from urllib.parse import urlsplit
 from playwright.sync_api import sync_playwright
 from browser import chrome_path, local_url
+import importlib.util
+cpu_spec=importlib.util.spec_from_file_location('cpu_watch',Path(__file__).with_name('cpu-watch.py'))
+cpu_watch=importlib.util.module_from_spec(cpu_spec)
+cpu_spec.loader.exec_module(cpu_watch)
 
 ROOT = Path(__file__).resolve().parents[3]
 DEVICES = {'ipad': (1180, 820, 2), 'android': (1280, 800, 1.5), 'portrait': (820, 1180, 2), 'pc': (1280, 720, 1)}
@@ -44,6 +49,9 @@ ap.add_argument('--stress', action='store_true', help='QA adds 160 durable enemi
 ap.add_argument('--threat-effects', action='store_true', help='Every 2 game seconds inject 8 native tracks or 1 native fireball (damage 0); synthetic visual load')
 ap.add_argument('--reference', help='Read JS/CSS from this local git commit for before/after replay; no checkout')
 ap.add_argument('--source', help='Read JS/CSS from this local git commit for performance measurement')
+ap.add_argument('--paired', help='Alternate this baseline and the working tree for each repetition/condition')
+ap.add_argument('--weapons', default='ranged,melee', help='Replay weapon modes')
+ap.add_argument('--replay-crowds', default='natural,stress', help='Replay both natural and synthetic crowd paths')
 ap.add_argument('--out', default=str(ROOT / 'game/tools/qa/out/tablet'))
 args = ap.parse_args()
 BASE = local_url(args.url)
@@ -79,10 +87,32 @@ def source_routes(ctx, ref):
             ctx.route(BASE + '/' + name.removeprefix('game/') + '*', lambda route, request, body=content, n=name: route.fulfill(body=body, content_type='text/css' if n.endswith('.css') else 'application/javascript'))
 
 
+# Identical read-only instrumentation is appended to BOTH replay sources. Float64
+# bytes retain negative zero and exact coordinate/HP/knockback bits; no RNG calls.
+REPLAY_PROBE = """
+if (SG_LOCAL) {
+  window.__qaCheckpoints=[];
+  const qaState=()=>{
+    const all=[...enemies,...(boss?[boss]:[])], bytes=new Uint8Array(all.length*7*8), dv=new DataView(bytes.buffer);
+    all.forEach((e,i)=>[e.x,e.y,e.hp,e.hpMax,e.kbVx??0,e.kbVy??0,e.radiusU??0].forEach((v,j)=>dv.setFloat64((i*7+j)*8,v,true)));
+    let str='';for(const b of bytes)str+=String.fromCharCode(b);
+    return {tick:simTickNo,seconds:runTime,count:all.length,types:all.map(e=>e.typeId??e.id??''),bits:btoa(str)};
+  };
+  window.__qaEnemyState=qaState;
+  const qaTick=simTick;let qaBucket=0;
+  simTick=dt=>{qaTick(dt);const bucket=Math.floor(runTime/5);if(bucket>qaBucket){qaBucket=bucket;window.__qaCheckpoints.push(qaState());}};
+}
+"""
+
+
 def context(b, dev, ref=None, replay=False):
     w, h, dsf = DEVICES[dev]
     ctx = b.new_context(viewport={'width': w, 'height': h}, device_scale_factor=dsf, has_touch=dev != 'pc')
     source_routes(ctx, ref)
+    if replay:
+        body = (subprocess.check_output(['git','show',f'{ref}:game/src/main.js'],cwd=ROOT).decode('utf-8')
+                if ref else (ROOT/'game/src/main.js').read_text(encoding='utf-8')) + REPLAY_PROBE
+        ctx.route(BASE+'/src/main.js*', lambda route: route.fulfill(body=body,content_type='application/javascript'))
     # Reject every off-host request, including future API endpoints / external fonts.
     ctx.route('**/*', lambda route: route.fallback() if urlsplit(route.request.url).hostname in ('localhost', '127.0.0.1') else route.abort())
     if replay:
@@ -111,8 +141,10 @@ def context(b, dev, ref=None, replay=False):
     return ctx, page, errors
 
 
-def reset_profile(page):
-    assert page.request.post(BASE + '/_qa/profile', data={'id': 'qa', 'profile': profile()}).ok
+def reset_profile(page, weapon='ranged'):
+    p = profile()
+    p['weaponMode'] = weapon
+    assert page.request.post(BASE + '/_qa/profile', data={'id': 'qa', 'profile': p}).ok
     page.reload(wait_until='networkidle')
     page.wait_for_function("!document.querySelector('#btn-title-start').disabled")
 
@@ -182,9 +214,11 @@ def measure(page, cdp, name):
         cdp.send('Profiler.setSamplingInterval', {'interval': 1000})
         cdp.send('Profiler.start')
         cdp.send('Tracing.start', {'categories': 'devtools.timeline,v8', 'transferMode': 'ReturnAsStream'})
+    cpu0=cpu_watch.snapshot()
     page.evaluate('window.__qaThreatMax={};window.__debugPerf(true)')
     page.wait_for_timeout(int(args.measure*1000))
     perf = page.evaluate('window.__debugPerf(false)')
+    perf['foreignCpu']=cpu_watch.foreign_cpu(cpu0,cpu_watch.snapshot())
     if args.threat_effects:
         perf['threatSampleMax'] = page.evaluate('window.__qaThreatMax')
         if not perf['threatSampleMax'].get('marks' if 'CH18' in name else 'balls'):
@@ -211,6 +245,18 @@ def measure(page, cdp, name):
     perf['long33Pct'] = 100*perf['long33']/max(1,perf['frames'])
     perf['long50Pct'] = 100*perf['long50']/max(1,perf['frames'])
     return perf
+
+
+def clean_scene(b,stage,dev,rate,rep):
+    for attempt in range(1,7):
+        record=run_scene(b,stage,dev,rate,rep)
+        if not record['perf']['foreignCpu']['busy']:
+            record['attempt']=attempt
+            return record
+        with (OUT/'discarded-samples.jsonl').open('a',encoding='utf-8') as f:
+            f.write(json.dumps({'label':args.label,**record},ensure_ascii=False)+'\n')
+        print(f"DISCARD: other processes used CPU: {record['perf']['foreignCpu']}",flush=True)
+    raise RuntimeError('Six samples contaminated by other processes; close heavy work and rerun')
 
 
 def run_scene(b, stage, dev, rate, rep):
@@ -288,18 +334,30 @@ def lobby(b):
     return records
 
 
+def state_digest(state):
+    bits = state.pop('bits')
+    state['sha256'] = hashlib.sha256(base64.b64decode(bits)).hexdigest()
+    return state
+
+
 def replay(b):
     if not args.reference:
         raise ValueError('--reference measurement commit required')
     results = []
     for stage in args.stages.split(','):
-        for seed in (args.seed, args.seed+1):
+      for seed in (args.seed, args.seed+1):
+       for weapon in args.weapons.split(','):
+        for crowd in args.replay_crowds.split(','):
             god = seed == args.seed
             device, quality = ('pc',0) if god else ('ipad',5)
             pair = []
             for ref in (args.reference, None):
                 ctx, page, errors = context(b, device, ref, replay=True)
                 try:
+                    reset_profile(page, weapon)
+                    page.evaluate("document.getElementById('btn-title-start').click()")
+                    page.locator('#guardian-lobby .sg-nav').wait_for()
+                    quiet(page)
                     rewards = []
                     page.on('response', lambda r: rewards.append(r.json()) if r.url.endswith('/api/play/finish') and r.ok else None)
                     original = args.seed
@@ -307,33 +365,42 @@ def replay(b):
                     start(page, stage)
                     args.seed = original
                     page.evaluate(f"window.__pilotGod={str(god).lower()};window.__pilotAvoid=2;window.__qaInputHash=2166136261;window.__debugQuality({quality})")
-                    page.evaluate('window.__debugPilot(260)')
-                    # Include draw between fixed-tick commands so draw RNG consumption is identical.
+                    # Natural progress first; then exercise crowded mid-game combat,
+                    # including normal (non-durable) kills and all evolved skill kinds.
+                    if crowd == 'stress':
+                        page.evaluate('window.__debugPilot(120)')
+                        types={'CH05':'T1_BAGGY','CH10':'T2_DUST','CH13':'T3_BUBBLE','CH15':'T3_BUBBLE','CH17':'T4_SAW','CH18':'T4_NUTRIA','CH19':'T4_BURNER','CH20':'T4_BURNER'}
+                        page.evaluate("t=>window.__debugSpawn(t,Math.max(0,160-window.__sgSnapshot().enemies),250)",types[stage])
+                        page.evaluate("window.__sgCombatLoad(['EVO_F1','EVO_W1','EVO_L1','EVO_V2','EVO_E1','EVO_P1','EVO_I1','EVO_E2','EVO_V1','EVO_L2'],{},{S5:3,S1:3})")
+                        page.evaluate('window.__debugPilot(140)')
+                    else:
+                        page.evaluate('window.__debugPilot(260)')
                     for _ in range(3):
                         page.evaluate('window.__debugPilot(5)')
                     outcome = page.evaluate('window.__debugOutcome()')
-                    # Full quality must retain the same canvas pixels. Warm both bitmap paths first.
+                    checkpoints = [state_digest(x) for x in page.evaluate('window.__qaCheckpoints')]
+                    final_state = state_digest(page.evaluate('window.__qaEnemyState()'))
                     canvas_hash = None
                     if quality == 0:
                         page.evaluate('window.__debugLayerBench([],1)')
                         page.wait_for_timeout(500)
                         png = page.evaluate("()=>{window.__debugLayerBench([],1);return document.getElementById('game').toDataURL().split(',')[1]}")
                         canvas_hash = hashlib.sha256(base64.b64decode(png)).hexdigest()
-                        (OUT/f'replay-{stage}-{seed}-{"before" if ref else "after"}.png').write_bytes(base64.b64decode(png))
+                        (OUT/f'replay-{stage}-{seed}-{weapon}-{crowd}-{"before" if ref else "after"}.png').write_bytes(base64.b64decode(png))
                     page.evaluate('window.__debugEnd(false)')
                     page.locator('#btn-continue:enabled').wait_for()
-                    # Outcome + visible settlement reward, ignoring random request IDs/account metadata.
                     if not rewards:
                         raise AssertionError('No local settlement response captured')
                     reward = {k: rewards[-1][k] for k in ('reward','charged','cleared','stage')}
-                    pair.append({'outcome': outcome, 'inputHash': page.evaluate('window.__qaInputHash'), 'canvasHash':canvas_hash, 'settlement': reward, 'errors': errors})
+                    pair.append({'outcome': outcome, 'checkpoints':checkpoints, 'finalEnemyState':final_state,
+                                 'inputHash': page.evaluate('window.__qaInputHash'), 'canvasHash':canvas_hash, 'settlement': reward, 'errors': list(errors)})
                 finally:
                     ctx.close()
-            equal = pair[0] == pair[1]
-            results.append({'stage': stage, 'seed': seed, 'device':device, 'quality':quality, 'god':god, 'equal': equal, 'before': pair[0], 'after': pair[1]})
-            print(f'replay {stage} seed {seed}: {"PASS" if equal else "FAIL"}', flush=True)
+            equal = pair[0] == pair[1] and not any(x['errors'] for x in pair)
+            results.append({'stage': stage, 'seed': seed, 'weapon':weapon, 'crowd':crowd, 'device':device, 'quality':quality, 'god':god, 'equal': equal, 'before': pair[0], 'after': pair[1]})
+            (OUT / f'{args.label}-replay.json').write_text(json.dumps(results, ensure_ascii=False, indent=2), encoding='utf-8')
+            print(f'replay {stage} seed {seed} {weapon} {crowd}: {"PASS" if equal else "FAIL"} checkpoints {len(pair[1]["checkpoints"])}', flush=True)
     if not all(r['equal'] for r in results):
-        (OUT / f'{args.label}-replay.json').write_text(json.dumps(results, ensure_ascii=False, indent=2), encoding='utf-8')
         raise AssertionError('Gameplay replay differs')
     return results
 
@@ -375,8 +442,18 @@ def main():
                     for rate in map(float,args.rates.split(',')):
                         for stage in args.stages.split(','):
                             for rep in range(1,args.reps+1):
-                                data['records'].append(run_scene(b, stage, dev, rate, rep))
-                                (OUT / f'{args.label}.json').write_text(json.dumps(data, ensure_ascii=False, indent=2), encoding='utf-8')
+                                for side, ref in ([('before',args.paired),('after',None)] if args.paired else [('source' if args.source else 'working',args.source)]):
+                                    args.source = ref
+                                    old_label=args.label
+                                    args.label=f'{old_label}-{side}' if args.paired else old_label
+                                    try:
+                                        record=clean_scene(b,stage,dev,rate,rep)
+                                    finally:
+                                        args.label=old_label
+                                    record['side']=side
+                                    data['records'].append(record)
+                                    (OUT / f'{args.label}.json').write_text(json.dumps(data, ensure_ascii=False, indent=2), encoding='utf-8')
+
             else:
                 data['records'] = {'repeat': repeat, 'lobby': lobby, 'replay': replay, 'layers': layers}[args.mode](b)
             b.close()
