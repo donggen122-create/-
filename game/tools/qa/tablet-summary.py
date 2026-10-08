@@ -90,12 +90,15 @@ def pass2_summary():
         tables.append('')
     replay=json.loads((folder/'invariant2.json').read_text(encoding='utf-8'))
     records=replay['records']
-    if len(records)!=64 or has_errors(records) or not all(r['equal'] and r['before']==r['after'] for r in records):
+    expected_replays={(s,seed,w,c) for s in ('CH05','CH10','CH13','CH15','CH17','CH18','CH19','CH20')
+                      for seed in (10808,10809) for w in ('ranged','melee') for c in ('natural','stress')}
+    actual_replays={(r['stage'],r['seed'],r['weapon'],r['crowd']) for r in records}
+    if len(records)!=64 or actual_replays!=expected_replays or has_errors(records) or not all(r['equal'] and r['before']==r['after'] for r in records):
         raise AssertionError('Expanded replay incomplete/failed')
     result['replay']=[{k:r[k] for k in ('stage','seed','weapon','crowd','quality','god','equal')}|
                       {'checkpoints':len(r['after']['checkpoints']),'seconds':r['after']['outcome']['seconds'],
                        'kills':r['after']['outcome']['kills'],'canvasHash':r['after']['canvasHash'],
-                       'finalEnemyState':r['after']['finalEnemyState'],'inputHash':r['after']['inputHash'],
+                       'finalEnemyState':r['after']['finalEnemyState'],'inputHash':r['after']['inputHash'],'inputSha256':r['after']['inputSha256'],
                        'settlement':r['after']['settlement']} for r in records]
     for ui in (1,2):
         rec=json.loads((folder/f'responsive-ui{ui}'/'report.json').read_text(encoding='utf-8'))

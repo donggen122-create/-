@@ -112,7 +112,8 @@ if (SG_LOCAL) {
 """
 
 
-def context(b, dev, ref=None, replay=False, weapon='ranged'):
+def context(b, dev, ref=None, replay=False, weapon='ranged', account=None):
+    account = account or args.account
     w, h, dsf = DEVICES[dev]
     ctx = b.new_context(viewport={'width': w, 'height': h}, device_scale_factor=dsf, has_touch=dev != 'pc')
     source_routes(ctx, ref)
@@ -137,24 +138,24 @@ def context(b, dev, ref=None, replay=False, weapon='ranged'):
     page.on('pageerror', lambda e: errors.append(str(e)))
     page.request.post(BASE + '/_qa/reset-attempts')
     page.goto(args.url, wait_until='networkidle')
-    page.locator('#login-id').fill(args.account)
+    page.locator('#login-id').fill(account)
     page.locator('#login-pw').fill('qa_local_1234')
     page.locator('#btn-register').click()
     page.wait_for_timeout(350)
     if page.locator('#btn-title-start').is_hidden():
         page.locator('#btn-login').click()
     page.locator('#btn-title-start').wait_for(state='visible')
-    reset_profile(page,weapon)
+    reset_profile(page,weapon,account)
     page.evaluate("document.getElementById('btn-title-start').click()")
     page.locator('#guardian-lobby .sg-nav').wait_for()
     quiet(page)
     return ctx, page, errors
 
 
-def reset_profile(page, weapon='ranged'):
+def reset_profile(page, weapon='ranged', account=None):
     p = profile()
     p['weaponMode'] = weapon
-    assert page.request.post(BASE + '/_qa/profile', data={'id': args.account, 'profile': p}).ok
+    assert page.request.post(BASE + '/_qa/profile', data={'id': account or args.account, 'profile': p}).ok
     page.reload(wait_until='networkidle')
     page.wait_for_function("!document.querySelector('#btn-title-start').disabled")
 
@@ -380,8 +381,12 @@ def replay(b):
             god = seed == args.seed
             device, quality = ('pc',0) if god else ('ipad',5)
             pair = []
+            # Winning CH05 repeatedly spends real local daily passes. A fresh
+            # account per comparison pair avoids quota exhaustion without changing
+            # server rules, settlement code or the simulation profile.
+            account='qa'+hashlib.sha256(f'{args.account}:{stage}:{seed}:{weapon}:{crowd}'.encode()).hexdigest()[:9]
             for ref in (args.reference, None):
-                ctx, page, errors = context(b, device, ref, replay=True,weapon=weapon)
+                ctx, page, errors = context(b, device, ref, replay=True,weapon=weapon,account=account)
                 try:
                     rewards = []
                     page.on('response', lambda r: rewards.append(r.json()) if r.url.endswith('/api/play/finish') and r.ok else None)
