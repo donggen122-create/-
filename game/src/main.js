@@ -37,7 +37,7 @@ import * as ECOUI from "./ecoui.js";
 import { STAGES_PER_THEME, stageInfo } from "./themes.js";
 import * as R from "./rework-core.js";
 import { GuardianUI, icon as sgIcon } from "./rework-ui.js";
-import { createElementCombat } from "./element-combat.js";
+import { createElementCombat, distanceComparator } from "./element-combat.js";
 import { createWeaponCombat } from "./weapon-effects.js";
 import { ELEMENT_WEAPONS } from "./assets.js";
 import { installReworkContent } from "./rework-content.js";
@@ -5052,7 +5052,7 @@ function simTick(dt) {
   if(mode!=='playing')return;
   updateDecor(dt);
   sgGrowthTick(dt);
-  if(enemies.length>160)enemies.sort((a,b)=>dist(a.x,a.y,player.x,player.y)-dist(b.x,b.y,player.x,player.y)).splice(160);
+  if(enemies.length>160)enemies.sort(distanceComparator(player)).splice(160);
   if(gems.length>300)gems.splice(0,gems.length-300);
 
   updateFxTimers(dt);
@@ -5092,7 +5092,7 @@ function loop(now) {
     if (qaPerf) { qaPerf.sim += performance.now() - t0; qaPerf.steps += steps; }
   }
   // 큰 폭발의 짧은 타격 멈춤(히트스톱) 프레임도 그대로 잰다 — 전에는 그때마다 측정이 처음으로 돌아가 후반 난전에서 화질이 늦게 내려갔다.
-  if(renderQuality.sample(realDt,mode==='playing'&&!debugFast&&!document.hidden)){resize();setEffectQuality(renderQuality.fx);}
+  if(renderQuality.sample(realDt,mode==='playing'&&!debugFast&&!document.hidden)){resize();setEffectQuality(renderQuality.fx);themeFx.setQuality(renderQuality.fx);}
   const t1 = qaPerf && performance.now();
   draw();
   const t2 = qaPerf && performance.now();
@@ -5198,7 +5198,7 @@ window.__debugFreeze = function (seconds) { hitStopT = seconds; return hitStopT;
 // QA 전용(2026-09-24 사용자 "스킬 이펙트 중 과하거나 화면을 가리는 경우"): 같은 순간을 그림층을 끄고 켜며 여러 번 그려 비교한다.
 //  cover = 효과가 바꾼 화면 비율, near = 주인공 둘레(반지름 nearU칸) 중 바뀐 비율, hero = 주인공 그림 중 바뀐 비율(heavy = 거의 덮임),
 //  white = 효과 때문에 하얗게 된 화면 비율(번쩍임). split에 적은 층은 따로(그 층만 켰을 때)도 잰다. step = 몇 픽셀마다 볼지.
-window.__debugQuality = function (level) { renderQuality.force(level); resize(); setEffectQuality(renderQuality.fx); return { level: renderQuality.level, ratio: renderQuality.ratio, fx: renderQuality.fx }; };   // QA: 화질 단계 고정(측정용)
+window.__debugQuality = function (level) { renderQuality.force(level); resize(); setEffectQuality(renderQuality.fx); themeFx.setQuality(renderQuality.fx); return { level: renderQuality.level, ratio: renderQuality.ratio, fx: renderQuality.fx }; };   // QA: 화질 단계 고정(측정용)
 window.__debugNoGhost = function (on) { qaNoGhost = !!on; return qaNoGhost; };
 // QA 전용: 계산·그리기 반복 측정 — simSeconds초 만큼 계산(틱당 ms), 같은 장면을 drawN번 그리기(한 번당 ms). 게임 규칙에는 영향 없음
 window.__debugBench = function (simSeconds = 5, drawN = 60, tank = false, ratio = null) {
@@ -5889,12 +5889,27 @@ function sgDrawT3Threats(){
   }
   ctx.restore();
 }
+let foamOverlay=null;
+function sgPaintFoam(c,a){
+  c.fillStyle=`rgba(235,245,255,${.2*a})`;c.fillRect(0,0,screenW,screenH);
+  const size=Math.min(screenW,screenH)*.55;
+  for(const [x,y] of [[0,0],[.5,0],[1,0],[0,.5],[1,.5],[0,1],[.5,1],[1,1]])themeFx.stamp(c,'t3_fx_foam',x*screenW,y*screenH,size,.85*a,(x+y)*1.3);
+}
 function sgDrawT3Screen(){                     // 거품에 맞은 뒤 잠깐: 화면 가장자리에 거품이 끼어 뿌예진다(가운데는 보이게)
   if(chapter?.theme!==3||!(player?.t3FoamT>0)||qaFxOff?.has('foam'))return;
   const a=Math.min(1,player.t3FoamT/.5);
-  ctx.save();ctx.fillStyle=`rgba(235,245,255,${.2*a})`;ctx.fillRect(0,0,screenW,screenH);
-  const m=Math.min(screenW,screenH),size=m*.55;
-  for(const [x,y] of [[0,0],[.5,0],[1,0],[0,.5],[1,.5],[0,1],[.5,1],[1,1]])themeFx.stamp(ctx,'t3_fx_foam',x*screenW,y*screenH,size,.85*a,(x+y)*1.3);
+  ctx.save();
+  if(renderQuality.fx<1||!SPRITES.t3_fx_foam.complete||!SPRITES.t3_fx_foam.naturalWidth){sgPaintFoam(ctx,a);ctx.restore();return;}
+  // Slow devices compose the eight static edges once. Only opacity changes during the same 1.6s blur.
+  const factor=Math.min(1,viewDpr,1024/Math.max(screenW,screenH)),key=[screenW,screenH,factor].join('/');
+  if(!foamOverlay||foamOverlay.key!==key){
+    foamOverlay?.image.close?.();
+    const image=document.createElement('canvas');image.width=Math.ceil(screenW*factor);image.height=Math.ceil(screenH*factor);
+    const g=image.getContext('2d');g.scale(factor,factor);sgPaintFoam(g,1);
+    const entry={key,image};foamOverlay=entry;
+    if(typeof createImageBitmap==='function')createImageBitmap(image).then(bitmap=>{if(foamOverlay===entry)entry.image=bitmap;else bitmap.close?.();}).catch(()=>{});
+  }
+  ctx.globalAlpha*=a;ctx.imageSmoothingEnabled=true;ctx.drawImage(foamOverlay.image,0,0,screenW,screenH);
   ctx.restore();
 }
 // 4장 적 행동(themes.js T4_ENEMIES, 2026-10-07 학생 숲 몬스터): 버너몬 불꽃 · 톱니몬 회전 · 뉴트몬 이빨 방패 · 와르르 불도저 돌진 · 불키 던지기·점프·터짐.

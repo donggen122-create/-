@@ -45,3 +45,29 @@ export function createRenderQuality(deviceRatio=1){
 }
 export function setText(node,value){if(!node)return false;const text=String(value);if(node.textContent===text)return false;node.textContent=text;return true;}
 export function setWidth(node,value){if(!node)return;const width=String(value);if(node.style.width!==width)node.style.width=width;}
+
+// Presentation only. Bound native bitmap memory, coalesce async resizing and close stale results.
+// Failed/unsupported resizing retains the original. Never changes simulation data or random calls.
+export function createSpriteScaleCache(limit=96,makeBitmap=globalThis.createImageBitmap?.bind(globalThis)){
+ const entries=new Map(),sources=new WeakMap();let nextSource=0;
+ const capacity=Math.max(1,limit|0),close=e=>e.bitmap?.close?.();
+ return {
+  get(source,deviceHeight){
+   if(!source||typeof makeBitmap!=='function'||!Number.isFinite(deviceHeight)||deviceHeight<=0)return source;
+   const h=source.naturalHeight||source.height,w=source.naturalWidth||source.width;
+   if(!h||!w)return source;
+   const bucket=Math.max(16,Math.ceil(deviceHeight/16)*16);
+   if(h<=bucket*1.25)return source;
+   let id=sources.get(source);if(!id){id=++nextSource;sources.set(source,id);}
+   const key=id+'/'+bucket;let entry=entries.get(key);
+   if(entry){entries.delete(key);entries.set(key,entry);return entry.bitmap||source;}
+   entry={bitmap:null};entries.set(key,entry);
+   while(entries.size>capacity){const [old,e]=entries.entries().next().value;entries.delete(old);close(e);}
+   try{Promise.resolve(makeBitmap(source,{resizeHeight:bucket,resizeWidth:Math.max(1,Math.round(bucket*w/h)),resizeQuality:'high'}))
+    .then(bitmap=>{if(entries.get(key)===entry)entry.bitmap=bitmap;else bitmap.close?.();}).catch(()=>{});}catch{/* Original remains usable. */}
+   return source;
+  },
+  clear(){for(const e of entries.values())close(e);entries.clear();},
+  get size(){return entries.size;}
+ };
+}

@@ -15,6 +15,14 @@ export const DEF = { ...SKILLS, ...COMBOS };
 export const SIZE_BONUS_CAP = .35;   // 스킬 크기 보너스 상한(+35%). 넘치는 보너스는 절반만큼 피해로(아래 area·sizeDmg)
 export const COMBAT_TUNING = Object.fromEntries(Object.entries(DEF).map(([id, d]) => [id, d.interval]));
 
+// Same sort comparator and stable tie order, but each distance is calculated once per sort.
+// Cache lifetime ends with the synchronous sort: never reuse coordinates after movement/knockback.
+export function distanceComparator(at,penalty=null){
+  const cache=new Map();
+  const distance=e=>{let d=cache.get(e);if(d===undefined){d=dist(e,at);cache.set(e,d);}return d;};
+  return penalty?(a,b)=>distance(a)+penalty(a)-distance(b)-penalty(b):(a,b)=>distance(a)-distance(b);
+}
+
 export function elementDamageMultiplier(profile, id) { return R.skillDamageMultiplier ? R.skillDamageMultiplier(profile, id) : 1; }
 
 export function createElementCombat({ U = 32, getPlayer, getEnemies, getBoss = () => null, getProfile = () => ({}), damage, projectiles = () => [], getMods = () => ({ dmgMul: 1, areaMul: 1, intervalMul: 1 }), onBlast = null }) {
@@ -29,12 +37,12 @@ export function createElementCombat({ U = 32, getPlayer, getEnemies, getBoss = (
   let aliveCache = null;
   const alive = () => { if (!aliveCache) { const list = getEnemies() || [], b = getBoss(); aliveCache = list.filter(e => e.hp > 0); if (b && b.hp > 0 && !list.includes(b)) aliveCache.push(b); } return aliveCache; };
   // 순수하게 가장 가까운 적(유도 로켓·물풍선 튕김·지뢰 추적용 — 노린 적 기록과 무관)
-  const closest = (at, range, exclude = null) => alive().filter(e => !(exclude && exclude.has(e)) && dist(e, at) <= range + (e.radiusU || .45) * U).sort((a, b) => dist(a, at) - dist(b, at))[0];
+  const closest = (at, range, exclude = null) => alive().filter(e => !(exclude && exclude.has(e)) && dist(e, at) <= range + (e.radiusU || .45) * U).sort(distanceComparator(at))[0];
   // 같은 방향 중복 방지(2026-09-23 사용자: "스킬들이 같은 방향으로 겹쳐 날아가지 않게"): 방금(0.7초 안) 다른 스킬이 노린 적은 3칸 더 먼 것처럼 취급해
   // 다음 스킬은 다른 적·다른 방향을 고른다. 한 스킬이 여러 개를 쏠 때도 pickAngles/spreadSpots로 각각 다른 적을 노린다.
   const claim = e => { if (e) claimed.set(e, clock); return e; };
   const penalty = e => { const t = claimed.get(e); return t !== undefined && clock - t < .7 ? 3 * U : 0; };
-  const rank = at => (a, b) => dist(a, at) + penalty(a) - dist(b, at) - penalty(b);
+  const rank = at => distanceComparator(at,penalty);
   // 스킬이 적을 찾는 거리: 원거리 장비 6세트 효과(searchRangePct)만큼 넓어진다(docs/34)
   const sr = () => mods().searchMul || 1;
   const nearest = (at = player(), range = 13 * U * sr(), exclude = null) => alive().filter(e => !(exclude && exclude.has(e)) && dist(e, at) <= range + (e.radiusU || .45) * U).sort(rank(at))[0];

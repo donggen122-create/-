@@ -1,6 +1,8 @@
 // 원소 스킬 그림 v3 — 사용자 Gemini 시트를 자른 스프라이트(assets/sprites/skills/*.png)로 그린다. 규칙(docs/22 §5):
 // 투사체는 적 크기만큼, 폭발·장판은 지름 2~4칸, 원소 색 빛 번짐 + 그림. 코드 도형은 보조(궤적·빛)만.
+import { createSpriteScaleCache } from './runtime-performance.js';
 const COLORS = { fire: '#FF6A2A', water: '#2AA8FF', wind: '#3ED88A', earth: '#C48A3F', lightning: '#FFD83A' };
+const scaledSkills = createSpriteScaleCache(96);
 const cache = new Map();
 export const skillSpriteURL = name => `./assets/sprites/skills/${name}.png`;
 export function sprite(name) {
@@ -13,8 +15,11 @@ const TAU = Math.PI * 2;
 function img(ctx, name, x, y, w, { angle = 0, alpha = 1, h = null, flip = false, anchorY = .5 } = {}) {
   const im = sprite(name); if (!im) return false;
   const hh = h ?? w * im.naturalHeight / im.naturalWidth;
+  // Fast PCs keep their original images. Slow devices reuse a physical-pixel-sized bitmap.
+  const transform = effectQuality >= 1 ? ctx.getTransform() : null;
+  const source = transform ? scaledSkills.get(im, hh * Math.hypot(transform.c, transform.d)) : im;
   ctx.save(); ctx.translate(x, y); ctx.rotate(angle); if (flip) ctx.scale(-1, 1); ctx.globalAlpha *= alpha; ctx.imageSmoothingEnabled = true;
-  ctx.drawImage(im, -w / 2, -hh * anchorY, w, hh); ctx.restore(); return true;
+  ctx.drawImage(source, -w / 2, -hh * anchorY, w, hh); ctx.restore(); return true;
 }
 const glowCache = new Map();
 // 효과량(main.js 화질 단계 fx): 1 이상이면 장식용 빛 번짐('lighter' 합성, 화면 넓게 칠함)을 그리지 않는다 — 판정·피해와 무관(2026-09-28 태블릿)
@@ -46,12 +51,16 @@ function trail(ctx, s, toScreen, color, width) {
 // 2026-09-23: 불 웅덩이·용암은 반투명(0.5)·작게(반지름 1.4·1.7칸, 범위 보너스 절반) — 주인공과 바닥이 가려지지 않게(사용자 지적). 큰 폭발 그림도 ×2.8~3 → ×2.4~2.6
 export function drawElementScene(ctx, { shots, fields, effects, orbits, mines, bees, beams, clock, U, player }, toScreen, layer = 'all') {
   const ground = layer !== 'air', air = layer !== 'ground';
+  const scale = effectQuality >= 1 ? (Math.hypot(ctx.getTransform().a,ctx.getTransform().b)||1) : 1;
+  const W=ctx.canvas.width/scale,H=ctx.canvas.height/scale;
+  const outside=(s,pad)=>effectQuality>=1&&(s.x+pad<0||s.y+pad<0||s.x-pad>W||s.y-pad>H);
   // 주인공 몸(발에서 0.8칸 위가 몸 가운데)과 겹치는지: 겹치는 투사체·이펙트는 반투명으로 그려 주인공이 늘 보이게
   const nearHero = (x, y, r) => !!player && Math.hypot(x - player.x, y - (player.y - .8 * U)) < r + .7 * U;
   ctx.save(); ctx.lineCap = 'round'; ctx.lineJoin = 'round';
   // 장판(바닥)
   for (const f of fields) {
     const s = toScreen(f.x, f.y), c = COLORS[f.element], fade = Math.min(1, f.life * 2, f.age * 4 + .2);
+    if(outside(s,f.r*3+4*U))continue;
     if (f.kind === 'puddle' || f.kind === 'lava') {
       if (!ground) continue;
       glow(ctx, s.x, s.y, f.r, c, .16 * fade);
@@ -113,6 +122,7 @@ export function drawElementScene(ctx, { shots, fields, effects, orbits, mines, b
   // 회오리·태풍
   for (const o of orbits) {
     const s = toScreen(o.x, o.y), big = o.kind === 'typhoon';
+    if(outside(s,o.r*4+4*U))continue;
     img(ctx, big ? cycle(['wind_typhoon_1', 'wind_typhoon_2', 'wind_typhoon_3'], clock * 12) : cycle(['wind_top_1', 'wind_top_2', 'wind_top_3'], clock * 14), s.x, s.y, o.r * (big ? 2.4 : 2.3), { anchorY: .75 });
   }
   // 벌
@@ -127,10 +137,18 @@ export function drawElementScene(ctx, { shots, fields, effects, orbits, mines, b
   // 2026-09-24 둘째(사용자 "두더지 폭발이 무식하게 크다"): 그림 배율도 2.4~3배 → 2~2.2배(가장 클 때 지름 ≈ 맞는 범위 지름 × 1.15). 크기 보너스 상한은 element-combat.js SIZE_BONUS_CAP.
   for (const e of effects) {
     const s = toScreen(e.x, e.y), c = COLORS[e.element] || '#fff', p = 1 - e.life / e.maxLife, fade = 1 - p * p, grow = .8 + .35 * p;
+    if(outside(s,e.r*3+4*U))continue;
     const A = nearHero(e.x, e.y, e.r * 1.2) ? .5 : 1, skyA = (dy) => nearHero(e.x, e.y + dy, 1.2 * U) ? .4 : 1;
     ctx.save(); ctx.globalAlpha = A;
     switch (e.kind) {
       case 'sparks': {   // 사방으로 튀는 밝은 파편 + 바깥으로 퍼지는 충격파 고리
+        if(effectQuality>=1){
+          // Decorative sparks only; retain the ring and every collision/damage effect.
+          const n=effectQuality>=2?4:6;
+          ctx.save();ctx.globalCompositeOperation='lighter';ctx.strokeStyle=c;ctx.lineCap='round';ctx.globalAlpha=A*fade*.9;ctx.lineWidth=3*(1-p)+1;ctx.beginPath();
+          for(let i=0;i<n;i++){const a=i/n*TAU+e.x*.01,r0=e.r*(.3+p*.8),r1=r0+e.r*.3*(1-p);ctx.moveTo(s.x+Math.cos(a)*r0,s.y+Math.sin(a)*r0*.7);ctx.lineTo(s.x+Math.cos(a)*r1,s.y+Math.sin(a)*r1*.7);}
+          ctx.stroke();ctx.globalAlpha=A*fade*.45;ctx.lineWidth=3.5*(1-p)+1;ctx.strokeStyle='#ffffff';ctx.beginPath();ctx.ellipse(s.x,s.y,e.r*(.35+p*.7),e.r*(.35+p*.7)*.7,0,0,TAU);ctx.stroke();ctx.restore();break;
+        }
         ctx.save(); ctx.globalCompositeOperation = 'lighter'; ctx.strokeStyle = c; ctx.lineCap = 'round';
         for (let i = 0; i < 10; i++) { const a = i / 10 * TAU + (e.x * .01), r0 = e.r * (.3 + p * .8), r1 = r0 + e.r * .3 * (1 - p); ctx.globalAlpha = A * fade * .9; ctx.lineWidth = 3 * (1 - p) + 1; ctx.beginPath(); ctx.moveTo(s.x + Math.cos(a) * r0, s.y + Math.sin(a) * r0 * .7); ctx.lineTo(s.x + Math.cos(a) * r1, s.y + Math.sin(a) * r1 * .7); ctx.stroke(); }
         // 충격파 고리: 맞는 범위(반지름 e.r)까지만 퍼진다(2026-09-24 효과 점검 — 전에는 1.6배까지)

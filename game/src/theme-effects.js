@@ -1,5 +1,6 @@
 // Theme presentation only (1장~4장 모양은 SKINS). No damage, random gameplay calls, saves or timers here.
 // All positions/radii use the same world pixels as main.js. Warnings never shrink the hit area.
+import { createSpriteScaleCache } from './runtime-performance.js';
 const FX_TAU = Math.PI * 2;
 const fxClamp = (n) => Math.max(0, Math.min(1, n));
 const fxEase = (n) => 1 - Math.pow(1 - fxClamp(n), 3);
@@ -20,6 +21,8 @@ export function createThemeEffects(sprites) {
   let skin = SKINS[1];
   const marks = [];   // 바닥 자국(대왕 내려찍기·착지 금, 박치기 끌린 자국): 캐릭터 아래에 그린다
   const textures = new Map();
+  const scaledTextures = createSpriteScaleCache(64);
+  let quality=0;
   const motion = typeof matchMedia === "function" ? matchMedia("(prefers-reduced-motion: reduce)") : null;
   let sequence = 0;
   // 움직임 줄이기 설정: 효과마다 matchMedia를 묻지 않고 한 번 읽어 두고 바뀔 때만 고친다(2026-09-24 최적화)
@@ -47,7 +50,9 @@ export function createThemeEffects(sprites) {
     c.save(); c.translate(x, y); c.rotate(angle); c.globalAlpha *= fxClamp(alpha);
     c.imageSmoothingEnabled = true;
     const h = size * texture.height / texture.width;
-    c.drawImage(texture, -size / 2, -h / 2, size, h); c.restore(); return true;
+    const t=quality>=1?c.getTransform():null;
+    const source=t?scaledTextures.get(texture,h*Math.hypot(t.c,t.d)):texture;
+    c.drawImage(source, -size / 2, -h / 2, size, h); c.restore(); return true;
   }
   // 반짝이 모양 하나를 경로에 더한다(칠하기는 부른 쪽에서 한 번에 — 반짝이 6개를 한 번에 칠해 그리기 명령을 줄인다, 2026-09-24 최적화)
   function sparklePath(c, x, y, size) {
@@ -409,6 +414,6 @@ export function createThemeEffects(sprites) {
     }
   }
   function setTheme(n) { skin = SKINS[n] || SKINS[1]; }
-  return { emit, update, draw, hit, purify, smog, beacon, projectile, telegraph, blast, stamp, mark, ground, setTheme,
+  return { emit, update, draw, hit, purify, smog, beacon, projectile, telegraph, blast, stamp, mark, ground, setTheme, setQuality(n){quality=n|0;},
     reset() { events.length = 0; marks.length = 0; sequence = 0; }, get count() { return events.length; }, get reducedMotion() { return quiet(); } };
 }
