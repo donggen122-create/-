@@ -157,7 +157,9 @@ def reset_profile(page, weapon='ranged', account=None):
     p['weaponMode'] = weapon
     assert page.request.post(BASE + '/_qa/profile', data={'id': account or args.account, 'profile': p}).ok
     page.reload(wait_until='networkidle')
-    page.wait_for_function("!document.querySelector('#btn-title-start').disabled")
+    # Replay disables rAF to fix draw/RNG order; Playwright's default rAF polling
+    # must not be used to wait for asynchronous account initialization.
+    page.wait_for_function("!document.querySelector('#btn-title-start').disabled",polling=50)
 
 
 def quiet(page):

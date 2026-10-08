@@ -6,16 +6,19 @@ Requires matplotlib in the external QA venv. Raw traces remain in ignored out/.
 import argparse
 import json
 import statistics
+import hashlib
 from pathlib import Path
 from collections import defaultdict
 
 ROOT = Path(__file__).resolve().parents[3]
 ap = argparse.ArgumentParser()
 ap.add_argument('--input', default=str(ROOT/'game/tools/qa/out/tablet'))
-ap.add_argument('--output', default=str(ROOT/'docs/codex/2026-10-08_태블릿_측정.json'))
+ap.add_argument('--output')
 ap.add_argument('--chart', default=str(ROOT/'docs/codex/preview/perf_before_after.png'))
 ap.add_argument('--pass2', action='store_true', help='Require interleaved three-pair simulation suites and 64 expanded replays')
+ap.add_argument('--replay-labels', default='invariant2', help='Completed expanded replay labels, comma-separated')
 args = ap.parse_args()
+args.output=args.output or str(ROOT/('docs/codex/2026-10-08_태블릿_측정_2차.json' if args.pass2 else 'docs/codex/2026-10-08_태블릿_측정.json'))
 folder = Path(args.input)
 
 
@@ -88,8 +91,14 @@ def pass2_summary():
             out.append(rec)
         result['suites'][suite]={'conditions':{k:v for k,v in raw['conditions'].items() if k not in ('out','url')},'browser':raw['browser'],'records':out}
         tables.append('')
-    replay=json.loads((folder/'invariant2.json').read_text(encoding='utf-8'))
-    records=replay['records']
+    records=[]
+    fingerprint=hashlib.sha256(b''.join(p.read_bytes() for p in sorted((ROOT/'game/src').glob('*')) if p.suffix in ('.js','.css'))).hexdigest()
+    for label in args.replay_labels.split(','):
+        replay=json.loads((folder/f'{label}.json').read_text(encoding='utf-8'))
+        meta=json.loads((folder/f'{label}-replay-meta.json').read_text(encoding='utf-8'))
+        if replay['conditions']['reference']!='9b313a0' or meta['sourceSha256']!=fingerprint:raise AssertionError('Replay source mismatch')
+        records.extend(replay['records'])
+    result['workingSourceSha256']=fingerprint
     expected_replays={(s,seed,w,c) for s in ('CH05','CH10','CH13','CH15','CH17','CH18','CH19','CH20')
                       for seed in (10808,10809) for w in ('ranged','melee') for c in ('natural','stress')}
     actual_replays={(r['stage'],r['seed'],r['weapon'],r['crowd']) for r in records}
