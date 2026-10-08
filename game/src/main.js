@@ -38,6 +38,7 @@ import { STAGES_PER_THEME, stageInfo } from "./themes.js";
 import * as R from "./rework-core.js";
 import { GuardianUI, icon as sgIcon } from "./rework-ui.js";
 import { createElementCombat, distanceComparator } from "./element-combat.js";
+import { createOrderedGrid, visitMovingObstacles } from "./simulation-search.js";
 import { createWeaponCombat } from "./weapon-effects.js";
 import { ELEMENT_WEAPONS } from "./assets.js";
 import { installReworkContent } from "./rework-content.js";
@@ -1126,16 +1127,24 @@ function updateDecor(dt) {
 }
 // 장애물(solid) 밀어내기: 플레이어·적이 소품 안으로 못 들어간다. 타이어(bumper)는 적을 튕겨 내고 조금 다치게 한다(0.5초에 한 번).
 // 2026-09-24 최적화: 적 수 × 소품 수만큼 돌던 것을, 단단한 소품만 틱마다 한 번 추리고 먼 것은 제곱근 없이 넘긴다(결과 같음)
-let solidDecor = [], solidDecorTick = -1;
+let solidDecor = [];
+const obstacleGrid = createOrderedGrid();
+let obstacleDecor = null;
 function resolveObstacles(ent, r, enemy) {
-  if (solidDecorTick !== simTickNo) { solidDecor = decor.filter((d) => d.solid && !d.opened); solidDecorTick = simTickNo; }
-  for (const d of solidDecor) {
-    if (d.opened) continue;
+  // Decor centers never move. Later additions are non-solid boss litter; opening
+  // a bin only removes its solid radius. Keep these harmless extras until new run.
+  if (obstacleDecor !== decor) {
+    obstacleDecor = decor;
+    solidDecor = decor.filter(d => d.solid && !d.opened);
+    obstacleGrid.rebuild(solidDecor, d => d.solid);
+  }
+  visitMovingObstacles(obstacleGrid, ent, r, d => {
+    if (d.opened) return false;
     const dx = ent.x - d.x, dy = ent.y - d.y;
     const min = d.solid + r;
-    if (dx >= min || dx <= -min || dy >= min || dy <= -min || dx * dx + dy * dy >= min * min) continue;
+    if (dx >= min || dx <= -min || dy >= min || dy <= -min || dx * dx + dy * dy >= min * min) return false;
     const dd = Math.hypot(dx, dy);
-    if (dd >= min || dd === 0) continue;
+    if (dd >= min || dd === 0) return false;
     const nx = dx / dd, ny = dy / dd;
     ent.x = d.x + nx * min; ent.y = d.y + ny * min;
     if (enemy && d.bumper && (!enemy.bumpT || runTime - enemy.bumpT > 0.5)) {
@@ -1145,7 +1154,8 @@ function resolveObstacles(ent, r, enemy) {
       hitFx.push({ x: enemy.x, y: enemy.y, life: 0.25, maxLife: 0.25, color: "#ffd06a", vfxKind: "bump" });
       floatingTexts.push({ x: enemy.x, y: enemy.y - 14, text: "튕!", life: 0.5, vy: -30, color: "#ffd06a", scale: 0 });
     }
-  }
+    return true;
+  });
 }
 function mulberry32(seed) {
   return function () {

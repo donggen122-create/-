@@ -4,6 +4,7 @@
 import * as R from './rework-core.js';
 import { SKILLS, COMBOS, LEVEL_DAMAGE, RUN_RULES } from './element-content.js';
 import { drawElementScene } from './element-effects.js';
+import { createOrderedGrid, createTickValueCache } from './simulation-search.js';
 
 const TAU = Math.PI * 2;
 const dist = (a, b) => Math.hypot(a.x - b.x, a.y - b.y);
@@ -26,9 +27,12 @@ export function distanceComparator(at,penalty=null){
 export function elementDamageMultiplier(profile, id) { return R.skillDamageMultiplier ? R.skillDamageMultiplier(profile, id) : 1; }
 
 export function createElementCombat({ U = 32, getPlayer, getEnemies, getBoss = () => null, getProfile = () => ({}), damage, projectiles = () => [], getMods = () => ({ dmgMul: 1, areaMul: 1, intervalMul: 1 }), onBlast = null }) {
+  const damageCache = createTickValueCache(elementDamageMultiplier);
+  const enemyGrid = createOrderedGrid(4 * U);
+  let gridValid = false;
   // claimed: 같은 방향 중복 방지용 "방금 노린 적" 기록(아래 설명)
   let clock = 0, shots = [], fields = [], effects = [], scheduled = [], orbits = [], mines = [], bees = [], beams = [], seen = new Set(), claimed = new Map(), stats;
-  function reset() { clock = 0; shots = []; fields = []; effects = []; scheduled = []; orbits = []; mines = []; bees = []; beams = []; seen = new Set(); claimed = new Map(); stats = { casts: {}, hits: {}, damage: {}, parts: {} }; }
+  function reset() { gridValid = false; damageCache.begin(null); clock = 0; shots = []; fields = []; effects = []; scheduled = []; orbits = []; mines = []; bees = []; beams = []; seen = new Set(); claimed = new Map(); stats = { casts: {}, hits: {}, damage: {}, parts: {} }; }
   reset();
   const player = () => getPlayer();
   const mods = () => getMods() || {};
@@ -36,8 +40,12 @@ export function createElementCombat({ U = 32, getPlayer, getEnemies, getBoss = (
   // 이 모듈의 공격으로 적이 쓰러지면(hit) 다시 만든다. 결과는 같다(쓰러진 적은 늘 빠진다). 받은 배열은 고치지 말 것(filter·sort는 새 배열).
   let aliveCache = null;
   const alive = () => { if (!aliveCache) { const list = getEnemies() || [], b = getBoss(); aliveCache = list.filter(e => e.hp > 0); if (b && b.hp > 0 && !list.includes(b)) aliveCache.push(b); } return aliveCache; };
+  const nearby = (at, range) => {
+    if (!gridValid) { enemyGrid.rebuild(alive(), e => (e.radiusU || .45) * U); gridValid = true; }
+    return enemyGrid.candidates(at.x, at.y, range).map(i => enemyGrid.items[i]);
+  };
   // 순수하게 가장 가까운 적(유도 로켓·물풍선 튕김·지뢰 추적용 — 노린 적 기록과 무관)
-  const closest = (at, range, exclude = null) => alive().filter(e => !(exclude && exclude.has(e)) && dist(e, at) <= range + (e.radiusU || .45) * U).sort(distanceComparator(at))[0];
+  const closest = (at, range, exclude = null) => nearby(at, range).filter(e => !(exclude && exclude.has(e)) && dist(e, at) <= range + (e.radiusU || .45) * U).sort(distanceComparator(at))[0];
   // 같은 방향 중복 방지(2026-09-23 사용자: "스킬들이 같은 방향으로 겹쳐 날아가지 않게"): 방금(0.7초 안) 다른 스킬이 노린 적은 3칸 더 먼 것처럼 취급해
   // 다음 스킬은 다른 적·다른 방향을 고른다. 한 스킬이 여러 개를 쏠 때도 pickAngles/spreadSpots로 각각 다른 적을 노린다.
   const claim = e => { if (e) claimed.set(e, clock); return e; };
@@ -45,16 +53,16 @@ export function createElementCombat({ U = 32, getPlayer, getEnemies, getBoss = (
   const rank = at => distanceComparator(at,penalty);
   // 스킬이 적을 찾는 거리: 원거리 장비 6세트 효과(searchRangePct)만큼 넓어진다(docs/34)
   const sr = () => mods().searchMul || 1;
-  const nearest = (at = player(), range = 13 * U * sr(), exclude = null) => alive().filter(e => !(exclude && exclude.has(e)) && dist(e, at) <= range + (e.radiusU || .45) * U).sort(rank(at))[0];
+  const nearest = (at = player(), range = 13 * U * sr(), exclude = null) => nearby(at, range).filter(e => !(exclude && exclude.has(e)) && dist(e, at) <= range + (e.radiusU || .45) * U).sort(rank(at))[0];
   function groupTarget(at = player(), range = 12 * U * sr()) {
-    const c = alive().filter(e => dist(e, at) <= range).sort(rank(at)); let best = c[0], score = -Infinity;
+    const c = nearby(at, range).filter(e => dist(e, at) <= range).sort(rank(at)); let best = c[0], score = -Infinity;
     for (const x of c.slice(0, 24)) { const n = c.reduce((k, e) => k + (dist(e, x) <= 2 * U ? 1 : 0), 0) - (penalty(x) ? 2 : 0); if (n > score) { best = x; score = n; } }
     return best;
   }
   // n발을 쏠 각도: 가까운 순으로 서로 다른 적(각도 차 0.3 이상)을 고르고, 적이 모자라면 base 좌우로 step씩 벌린다
   function pickAngles(n, at, base, step, range = 14 * U * sr()) {
     const angles = [], min = Math.min(step, .3), ok = a => angles.every(b => Math.abs(turn(a - b)) >= min);
-    for (const e of alive().filter(e => dist(e, at) <= range).sort(rank(at))) { if (angles.length >= n) break; const a = angleTo(at, e); if (ok(a)) { angles.push(a); claim(e); } }
+    for (const e of nearby(at, range).filter(e => dist(e, at) <= range).sort(rank(at))) { if (angles.length >= n) break; const a = angleTo(at, e); if (ok(a)) { angles.push(a); claim(e); } }
     for (let k = 0; angles.length < n && k < 16; k++) { const a = base + Math.ceil(k / 2) * step * (k % 2 ? -1 : 1); if (ok(a)) angles.push(a); }
     while (angles.length < n) angles.push(base + angles.length * step);
     return angles;
@@ -65,7 +73,7 @@ export function createElementCombat({ U = 32, getPlayer, getEnemies, getBoss = (
     const p = player(), land = t => pull && dist(t, p) < 1.5 * U ? { x: p.x, y: p.y } : { x: t.x + (p.x - t.x) * pull, y: t.y + (p.y - t.y) * pull };
     const g = groupTarget() || fallback; if (!g) return [];
     const spots = [land(claim(g))], ga = angleTo(p, g);
-    for (const t of alive().filter(x => x !== g && dist(x, p) <= 12 * U * sr()).sort(rank(p))) { if (spots.length >= n) break; const s = land(t); if (spots.every(q => dist(q, s) >= gap)) { spots.push(s); claim(t); } }
+    for (const t of nearby(p, 12 * U * sr()).filter(x => x !== g && dist(x, p) <= 12 * U * sr()).sort(rank(p))) { if (spots.length >= n) break; const s = land(t); if (spots.every(q => dist(q, s) >= gap)) { spots.push(s); claim(t); } }
     for (let k = 1; spots.length < n; k++) { const off = Math.ceil(k / 2) * gap * .75 * (k % 2 ? 1 : -1); spots.push({ x: spots[0].x + Math.cos(ga + Math.PI / 2) * off, y: spots[0].y + Math.sin(ga + Math.PI / 2) * off }); }
     return spots;
   }
@@ -97,13 +105,15 @@ export function createElementCombat({ U = 32, getPlayer, getEnemies, getBoss = (
   function after(delay, fn) { if (scheduled.length < 260) scheduled.push({ at: clock + delay, fn }); }
   function hit(id, e, coef, at = player(), knock = 0) {
     if (!e || e.hp <= 0 || coef <= 0) return;
-    const amount = Math.max(0, player().atk || 30) * coef * level(id) * elementDamageMultiplier(getProfile(), id) * (mods().dmgMul || 1) * sizeDmg(id);
+    const amount = Math.max(0, player().atk || 30) * coef * level(id) * damageCache.get(getProfile(), id) * (mods().dmgMul || 1) * sizeDmg(id);
+    const x = e.x, y = e.y;
     damage(e, amount, { x: e.x - at.x, y: e.y - at.y }, knock, element(id));   // 5번째 인자 = 원소(어려움의 저항 적 판정)
-    if (e.hp <= 0) aliveCache = null;
+    if (e.hp <= 0) { aliveCache = null; gridValid = false; }
+    else if (e.x !== x || e.y !== y) gridValid = false;
     stats.hits[id] = (stats.hits[id] || 0) + 1; stats.damage[id] = (stats.damage[id] || 0) + amount;
   }
   function slow(e, mul = .7, seconds = 1.5) { if (e === getBoss()) return; e.v2SlowT = Math.max(e.v2SlowT || 0, seconds); e.v2SlowMul = Math.min(e.v2SlowMul || 1, mul); }
-  const within = (at, r) => alive().filter(e => dist(e, at) <= r + (e.radiusU || .45) * U);
+  const within = (at, r) => nearby(at, r).filter(e => dist(e, at) <= r + (e.radiusU || .45) * U);
   function blast(id, at, r, coef, { knock = .2, kind = 'boom', extra = {}, big = false } = {}) {
     fx(kind, at, r, id, extra); fx('sparks', at, r, id, { life: .45, maxLife: .45 });
     onBlast?.(at, r, big || r >= 1.8 * U);
@@ -192,7 +202,7 @@ export function createElementCombat({ U = 32, getPlayer, getEnemies, getBoss = (
       case 'boomerang': case 'mboomerang': {
         const n = kind === 'mboomerang' ? 4 : count(id, 1);
         for (const ang of pickAngles(n, p, a, .55)) {
-          const s = shot(id, p, ang, d.dmgCoef, { kind, speed: 9 * U, r: (kind === 'mboomerang' ? .6 : .5) * U, life: 2.4, returnAt: .55, maxHits: 99, knock: .15, onHit: (t, s2) => { if (kind === 'mboomerang' && s2.returning && t !== getBoss()) { const pl = player(), l = dist(t, pl); if (l > U) { t.x += (pl.x - t.x) / l * .8 * U; t.y += (pl.y - t.y) / l * .8 * U; } fx('pull', t, .5 * U, id, { x0: pl.x, y0: pl.y, life: .25, maxLife: .25 }); } } });
+          const s = shot(id, p, ang, d.dmgCoef, { kind, speed: 9 * U, r: (kind === 'mboomerang' ? .6 : .5) * U, life: 2.4, returnAt: .55, maxHits: 99, knock: .15, onHit: (t, s2) => { if (kind === 'mboomerang' && s2.returning && t !== getBoss()) { const pl = player(), l = dist(t, pl); if (l > U) { t.x += (pl.x - t.x) / l * .8 * U; t.y += (pl.y - t.y) / l * .8 * U; gridValid = false; } fx('pull', t, .5 * U, id, { x0: pl.x, y0: pl.y, life: .25, maxLife: .25 }); } } });
           s.onReturn = () => { if (feature(id) === 'extraBlade') { markPart(id); shot(id, player(), s.angle + Math.PI, d.dmgCoef * .4, { kind: 'swirl', speed: 13 * U, life: .5, r: .35 * U, maxHits: 3 }); } };
         }
         if (gold(id)) { markPart(id); shot(id, p, a + .45, d.dmgCoef * .5 * gp(id), { kind: 'boomerang', speed: 9 * U, r: .35 * U, life: 2, returnAt: .5, maxHits: 99, knock: .1, small: true }); }
@@ -278,7 +288,7 @@ export function createElementCombat({ U = 32, getPlayer, getEnemies, getBoss = (
       let remove = s.life <= 0;
       if (!s.noContact) {
         const reach = s.r + 3 * U + Math.abs(s.x - old.x) + Math.abs(s.y - old.y);   // 이 거리 밖은 닿을 수 없음(계산 줄이기)
-        const touched = alive().filter(e => Math.abs(e.x - s.x) < reach && Math.abs(e.y - s.y) < reach && !s.hit.has(e) && segmentDistance(e, old, s) <= s.r + (e.radiusU || .45) * U).sort((a, b) => dist(a, old) - dist(b, old));
+        const touched = nearby(s, reach).filter(e => Math.abs(e.x - s.x) < reach && Math.abs(e.y - s.y) < reach && !s.hit.has(e) && segmentDistance(e, old, s) <= s.r + (e.radiusU || .45) * U).sort((a, b) => dist(a, old) - dist(b, old));
         for (const e of touched) {
           s.hit.add(e);
           if (!s.noDirect) hit(s.id, e, s.coef, old, s.knock || 0);
@@ -325,7 +335,7 @@ export function createElementCombat({ U = 32, getPlayer, getEnemies, getBoss = (
     }
   }
   function update(dt) {
-    if (!player()) return; dt = clamp(Number(dt) || 0, 0, .1); clock += dt; aliveCache = null;   // 틱마다 새 목록(그 사이 생기고 쓰러진 적 반영)
+    if (!player()) return; dt = clamp(Number(dt) || 0, 0, .1); clock += dt; aliveCache = null; gridValid = false; damageCache.begin(getProfile());   // 틱마다 새 목록(그 사이 생기고 쓰러진 적 반영)
     if (claimed.size > 150) for (const [e, t] of claimed) if (clock - t > .7 || e.hp <= 0) claimed.delete(e);   // 오래된 기록 정리
     const im = mods().intervalMul || 1;
     for (const [id, st] of Object.entries(player().skills || {})) {
