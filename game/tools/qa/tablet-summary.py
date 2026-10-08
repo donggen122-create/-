@@ -96,3 +96,44 @@ fig.savefig(target,dpi=130)
 if target.stat().st_size>400*1024:
     raise AssertionError('Comparison chart exceeds 400KB')
 print(f'Aggregate {args.output}; chart {target.stat().st_size} bytes')
+
+# Reviewable tables from the exact checked pairs; never copy figures by hand.
+lines=['## 같은 조건의 전후 결과','', '[익명 QA 측정 JSON](2026-10-08_태블릿_측정.json) · [하위 1% FPS 그림](preview/perf_before_after.png)', '']
+def table(headers,rows):
+    lines.extend(['|'+'|'.join(headers)+'|','|'+'|'.join(['---']*len(headers))+'|'])
+    lines.extend('|'+'|'.join(map(str,row))+'|' for row in rows)
+    lines.append('')
+def stage_name(stage):
+    n=int(stage[2:])-1
+    return f'{n//5+1}-{n%5+1}'
+def pairs(suite):
+    b,a=[data['sets'][f'{s}-{suite}']['records'] for s in ('before','after')]
+    if suite=='repeat':
+        b,a=b['rounds'],a['rounds']
+    return zip(b,a)
+for suite,title in [('screen','자연 후반 8장면: iPad급 ×4'),('deep','합성 군중: 3기기 ×2 CPU 배율'),('bulki','4-4 합성 군중'),('foam','3-3 연속 거품'),('threat','4장 자국·불 공 합성 시각 부하')]:
+    lines.extend([f'### {title}','', '각 칸은 **전 → 후**. FPS는 높을수록, 긴 프레임 비율과 ms는 낮을수록 좋다.',''])
+    rows=[]
+    for b,a in pairs(suite):
+        bp,ap=b['perf'],a['perf']
+        metrics=[f'{bp[k]:.1f} → {ap[k]:.1f}' for k in ('fps','low1','long50Pct','simMs','drawMs')]
+        rows.append([stage_name(b['stage']),f"{b['device']} ×{b['rate']:g}",*metrics,f"{bp['ratio']:g} → {ap['ratio']:g}"])
+    table(['장면','기기·CPU','평균 FPS','하위 1% FPS','>50ms %','계산 ms','그림 제출 ms','최종 해상도 배율'],rows)
+lines.extend(['### 고정 그림층: raster 완료 포함, CPU throttle 없음','', 'iPad급, 해상도 0.7배·효과 최소, 같은 고정 장면을 12번씩 그려 3회 중앙값. 각 칸 전 → 후(ms). `off`는 해당 층만 끈 결과다.',''])
+table(['장면','전체','원소 off','거품 off','불 구역 off','4장 바닥 off'],[[stage_name(b['stage']),*[f"{b['medianMs'][k]:.2f} → {a['medianMs'][k]:.2f}" for k in ('all','skills','foam','zones','t4ground')]] for b,a in pairs('layers-warm')])
+lines.extend(['### 같은 탭 연속 5판: GC 후 JS heap과 잔여 객체','', '전 → 후. native bitmap/GPU 메모리는 포함되지 않는다.',''])
+repeat_rows=[]
+for b,a in pairs('repeat'):
+    repeat_rows.append([b['round'],f"{b['perf']['fps']:.1f} → {a['perf']['fps']:.1f}",f"{b['memory']['heapUsed']/1048576:.2f} → {a['memory']['heapUsed']/1048576:.2f}",f"{b['memory']['jsEventListeners']} → {a['memory']['jsEventListeners']}",f"{b['memory']['nodes']} → {a['memory']['nodes']}",f"{b['timers']} → {a['timers']}"])
+table(['판','평균 FPS','heap MiB','리스너','DOM 노드','interval/timeout'],repeat_rows)
+lines.extend(['### 로비: UI 1·UI 2, iPad급 CPU ×4',''])
+table(['UI','탭 중앙값 ms','탭 최대 ms','스크롤 프레임 중앙값 ms','스크롤 프레임 최대 ms'],[[b['ui'],*[f"{b[k]:.1f} → {a[k]:.1f}" for k in ('tabMedian','tabMax','scrollFrameMedian','scrollFrameMax')]] for b,a in pairs('lobby')])
+lines.extend(['### 느린 장면의 함수 상위 10개','', 'CPU sampling의 JS 자기 시간(self ms). 네이티브·유휴는 제외한 **게임 JS 함수** 순위다. 전후 순위가 달라 별도 열로 표시한다. 합계는 전체 프레임 계산/그리기 시간과 같지 않다. raw timeline·CPU profile은 ignored out 폴더에 보관했다.',''])
+for suite,stage in [('threat','CH18'),('bulki','CH19'),('screen','CH20')]:
+    b,a=next((b,a) for b,a in pairs(suite) if b['stage']==stage)
+    lines.extend([f"#### {stage_name(stage)} / {suite} / iPad급 ×4",''])
+    bt,at=b['perf']['scriptTop10'],a['perf']['scriptTop10']
+    table(['순위','전 함수','self ms','후 함수','self ms'],[[i+1,bt[i]['function'],bt[i]['selfMs'],at[i]['function'],at[i]['selfMs']] for i in range(min(10,len(bt),len(at)))])
+lines.extend(['## 검증 결과','', '- `node --test "tests/*.test.mjs"`: **175/175 통과**, 실패·스킵 0. 새 4개 검사는 10,000개 적 배열의 정렬/동점/penalty 순서와 캐시 중복 작업·LRU·늦은 완료 닫기·미지원 복귀를 검증한다.', '- 동일 시드·동일 60Hz 틱·동일 draw 순서의 브라우저 전후 검사 **8/8 일치**. 조작 해시, 처치·시간·체력·쓰레기·스킬/피해 통계·원소 상태·판 종료 상태·실제 격리 서버 정산 응답(보상·충전·성공·장면)이 모두 같다. 게임에 별도 점수 필드는 없어 전체 판 통계와 보상을 비교했다.', '- PC 전체 화질 시드 10808의 4장면은 PNG SHA-256도 일치한다. 시드 10809는 iPad급 최소 화질, 무적 없이 정상 생존으로 비교했다.', '- `responsive-audit.py`: UI 1·UI 2 각각 1280×720, 1024×768, 820×1180, 768×1024, 375×667, 360×640 **total issues 0**, page error 0. 로비 6탭·도움말/장비 창·레벨업·전투·멈춤·결과 포함.', '- Windows의 기존 `perf.py` 4-4 태블릿 3초 smoke, `bench.py` 4-4 PC 1회 smoke도 브라우저 오류 0. 이 숫자는 조건이 다른 도구 동작 확인이라 전후 표에 섞지 않았다.', '- `powershell -ExecutionPolicy Bypass -File game/tools/build-single.ps1`: 단일 HTML 생성 성공. 단일 파일판의 실기기 플레이까지 확인한 것은 아니다.', ''])
+table(['장면','시드','기기·화질','시간 s','처치','전후 결과·보상','PC 픽셀'],[[stage_name(r['stage']),r['seed'],f"{r['device']} / {r['quality']}",f"{r['seconds']:.3f}",r['kills'],'동일','동일' if r['canvasHash'] else '대상 아님'] for r in data['replay']])
+(folder/'report-tables.md').write_text('\n'.join(lines),encoding='utf-8')
