@@ -67,7 +67,8 @@ data['replay'] = [{'stage':r['stage'],'seed':r['seed'],'equal':r['equal'],'input
 for ui in (1,2):
     path = folder/f'responsive-ui{ui}'/'report.json'
     rec = json.loads(path.read_text(encoding='utf-8'))
-    if len(rec)!=6 or any(r.get('_error') or r.get('_pageErrors') for r in rec.values()):
+    issues = sum(len(v) for r in rec.values() for screen in r.values() if isinstance(screen,dict) for v in screen.values() if isinstance(v,list))
+    if len(rec)!=6 or issues or any(r.get('_error') or r.get('_pageErrors') for r in rec.values()):
         raise AssertionError(f'Responsive UI{ui} incomplete/failed')
     data[f'responsiveUI{ui}'] = rec
 Path(args.output).write_text(json.dumps(data,ensure_ascii=False,indent=2),encoding='utf-8')

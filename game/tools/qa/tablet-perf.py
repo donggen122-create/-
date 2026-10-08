@@ -76,7 +76,7 @@ def source_routes(ctx, ref):
     for name in names:
         if name.endswith(('.js', '.css')):
             content = subprocess.check_output(['git', 'show', f'{ref}:{name}'], cwd=ROOT)
-            ctx.route(BASE + '/' + name.removeprefix('game/') + '*', lambda route, body=content, n=name: route.fulfill(body=body, content_type='text/css' if n.endswith('.css') else 'application/javascript'))
+            ctx.route(BASE + '/' + name.removeprefix('game/') + '*', lambda route, request, body=content, n=name: route.fulfill(body=body, content_type='text/css' if n.endswith('.css') else 'application/javascript'))
 
 
 def context(b, dev, ref=None, replay=False):
