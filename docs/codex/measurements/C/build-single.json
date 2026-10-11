@@ -1,0 +1,7 @@
+{
+  "command": "powershell -NoProfile -ExecutionPolicy Bypass -File game/tools/build-single.ps1",
+  "exitCode": 0,
+  "path": "dist_single/LUMEN.html",
+  "bytes": 80048659,
+  "sha256": "c718f6541950653ecbbf0648dfe1e8b5712150e60e89d9fd9f6f9b928f03d721"
+}

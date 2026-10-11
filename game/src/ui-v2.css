@@ -8,17 +8,12 @@
    ========================================================================================== */
 @font-face{font-family:"JuaUI";src:url('../assets/ui/jua-ui.woff2?v=20261011b1') format('woff2');font-display:swap}
 
-/* Keep the map above the briefing. A duplicate action appears only when the normal action is below the nav. */
-html.ui2 #guardian-lobby #sg-start-dock{position:fixed!important;z-index:20;left:16px!important;right:16px!important;transform:none!important;width:calc(100% - 32px)!important;max-width:520px!important;min-height:48px!important;margin:0 auto!important;font-size:24px!important}
+/* Keep the map above the briefing; the narrow-screen action has an opaque footer. */
+html.ui2 #guardian-lobby .sg-departure-band{position:fixed;z-index:20;left:0;right:0;padding:10px 16px 12px;background:#091030;box-shadow:0 -6px 16px rgba(0,0,0,.5)}
+html.ui2 #guardian-lobby #sg-start-dock{display:block;transform:none!important;width:100%!important;max-width:520px!important;min-height:48px!important;margin:0 auto!important;font-size:24px!important}
+@media(min-width:761px){html.ui2 #guardian-lobby .sg-departure-band{display:none}}
 html.ui2 #guardian-lobby .sg-news{flex-shrink:0;width:36px;height:36px;min-height:36px!important;padding:2px!important;border:0!important;background:none!important;box-shadow:none!important}
 html.ui2 #guardian-lobby .sg-news .sg-icon{width:30px;height:30px}
-@media (max-height:850px) and (min-width:761px){
- html.ui2 #guardian-lobby .sg-stage-map{padding:12px 12px 10px!important}
- html.ui2 #guardian-lobby .sg-stage>img{width:82px!important;height:82px!important;padding:8px}
- html.ui2 #guardian-lobby .sg-hero-scene{max-height:260px;min-height:0!important}
- html.ui2 #guardian-lobby .sg-brief{padding:12px 16px!important}
- html.ui2 #guardian-lobby .sg-departure{margin-top:14px!important}
-}
 
 html.ui2{
   --ink:#151a3d;
@@ -326,7 +321,7 @@ html.ui2 :is(#pause,#result) button:first-of-type,html.ui2 #btn-continue{color:#
   html.ui2 #guardian-lobby .sg-stage strong{font-size:12px!important}
   html.ui2 #guardian-lobby .sg-stars{font-size:13px!important}
   html.ui2 #guardian-lobby .sg-brief{padding:14px 14px 14px!important}
-  html.ui2 #guardian-lobby .sg-brief h2{font-size:26px!important}
+  html.ui2 #guardian-lobby .sg-brief h2{font-size:22px!important}
   html.ui2 #guardian-lobby .sg-start{min-height:62px!important;font-size:27px!important}
   html.ui2 #guardian-lobby .sg-nav{gap:2px!important;padding:6px 6px max(6px,env(safe-area-inset-bottom))!important}
   html.ui2 #guardian-lobby .sg-nav>button{width:auto!important;flex:1 1 0;min-height:56px!important;font-size:13px!important}
@@ -554,4 +549,48 @@ html.ui2 #guardian-lobby .sg-training-body>button:disabled{background:linear-gra
   html.ui2 #guardian-lobby .sg-training-body{padding:12px 16px 14px}
   html.ui2 #guardian-lobby .sg-training-numbers{margin:6px 0}
   html.ui2 #guardian-lobby .sg-training-body>.sg-meter{margin:7px 0 12px!important}
+}
+
+/* Wide, short screens keep the original departure action on the first screen. */
+@media (max-height:850px) and (min-width:761px), (min-width:761px) and (max-width:920px){
+ html.ui2 #guardian-lobby[data-tab="adventure"] .sg-main{padding-top:8px!important}
+ html.ui2 #guardian-lobby .sg-chapter-chip{min-height:48px!important;padding:4px 10px!important}
+ html.ui2 #guardian-lobby .sg-chapter-bar{margin-bottom:8px!important}
+ html.ui2 #guardian-lobby .sg-titlebar{margin:8px 0!important}
+ html.ui2 #guardian-lobby .sg-titlebar h1{font-size:24px!important}
+ html.ui2 #guardian-lobby .sg-mission-btn{min-height:36px!important;padding:3px 10px!important}
+ html.ui2 #guardian-lobby .sg-mission-btn .sg-icon{width:24px;height:24px}
+ html.ui2 #guardian-lobby .sg-stage-map{padding:10px 12px 6px!important;margin-bottom:8px!important}
+ html.ui2 #guardian-lobby .sg-stage>img,html.ui2 #guardian-lobby .sg-stage:last-child>img{width:48px!important;height:48px!important;padding:4px}
+ html.ui2 #guardian-lobby .sg-stage strong{font-size:13px!important}
+ html.ui2 #guardian-lobby .sg-stars{font-size:16px!important}
+ html.ui2 #guardian-lobby .sg-next-task{padding:4px 10px!important;margin-bottom:6px!important;min-height:34px!important;font-size:14px!important}
+ html.ui2 #guardian-lobby .sg-next-task .sg-icon{width:28px;height:28px}
+ html.ui2 #guardian-lobby .sg-next-task strong{font-size:14px}
+ html.ui2 #guardian-lobby .sg-progress{font-size:14px!important;line-height:1.2!important;padding:4px 12px!important}
+ html.ui2 #guardian-lobby .sg-mission-btn{line-height:1.15!important}
+ html.ui2 #guardian-lobby .sg-stage-tag{font-size:16px!important}
+ html.ui2 #guardian-lobby .sg-adventure .sg-stage-map .sg-stage:not(:last-child)::before{top:24px;left:calc(50% + 24px);width:calc(100% - 44px);height:6px}
+ html.ui2 #guardian-lobby .sg-hero-scene{display:none!important}
+ html.ui2 #guardian-lobby .sg-departure{grid-template-columns:1fr!important;margin-top:10px!important;gap:0!important}
+ html.ui2 #guardian-lobby .sg-brief{padding:8px 14px!important;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);column-gap:14px;grid-template-areas:"title title" "story story" "goal goal" "diff weapon" "hard hard" "reward start" "hint hint"}
+ html.ui2 #guardian-lobby .sg-brief-title{grid-area:title}
+ html.ui2 #guardian-lobby .sg-story{grid-area:story}
+ html.ui2 #guardian-lobby .sg-goal{grid-area:goal}
+ html.ui2 #guardian-lobby .sg-diff-row{grid-area:diff}
+ html.ui2 #guardian-lobby #sg-hard-ready{grid-area:hard}
+ html.ui2 #guardian-lobby :is(.sg-weapon-select,.sg-weapon-chip){grid-area:weapon}
+ html.ui2 #guardian-lobby .sg-brief-row.sg-reward-row{grid-area:reward;padding:4px 8px!important}
+ html.ui2 #guardian-lobby .sg-start{grid-area:start}
+ html.ui2 #guardian-lobby .sg-pass-hint{grid-area:hint;margin-top:4px!important;font-size:12px!important}
+ html.ui2 #guardian-lobby .sg-brief h2{font-size:22px!important}
+ html.ui2 #guardian-lobby .sg-story{font-size:14px!important;margin:6px 0!important}
+ html.ui2 #guardian-lobby .sg-brief-row{margin-top:6px!important}
+ html.ui2 #guardian-lobby .sg-goal{font-size:16px!important;padding:4px 10px!important}
+ html.ui2 #guardian-lobby .sg-goal .sg-icon{width:24px;height:24px}
+ html.ui2 #guardian-lobby .sg-diff{padding:2px!important}
+ html.ui2 #guardian-lobby .sg-diff-btn{min-height:36px!important;font-size:14px!important;padding:3px!important}
+ html.ui2 #guardian-lobby .sg-reward-row{padding:4px 8px!important}
+ html.ui2 #guardian-lobby .sg-brief .sg-info-btn{width:26px!important;height:26px!important;min-height:26px!important}
+ html.ui2 #guardian-lobby .sg-start{min-height:48px!important;font-size:26px!important;padding:4px 12px!important;margin-top:8px!important}
 }

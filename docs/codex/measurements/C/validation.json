@@ -1,0 +1,209 @@
+{
+  "base": "fdc0b66",
+  "implementationCommit": "e2b905d",
+  "handoffCommit": "da1c98f",
+  "branch": "codex/2026-10-12-C",
+  "unit": {
+    "command": "node --test \"tests/*.test.mjs\"",
+    "tests": 194,
+    "passed": 194,
+    "failed": 0,
+    "skipped": 0,
+    "exitCode": 0
+  },
+  "responsive": {
+    "1": {
+      "sizes": [
+        "1280x720",
+        "1280x800",
+        "1024x768",
+        "820x1180",
+        "768x1024",
+        "375x667",
+        "360x640"
+      ],
+      "issues": 0,
+      "pageErrors": 0,
+      "exitCode": 0
+    },
+    "2": {
+      "sizes": [
+        "1280x720",
+        "1280x800",
+        "1024x768",
+        "820x1180",
+        "768x1024",
+        "375x667",
+        "360x640"
+      ],
+      "issues": 0,
+      "pageErrors": 0,
+      "exitCode": 0
+    }
+  },
+  "replay": {
+    "samples": 16,
+    "gameplayExact": true,
+    "settlementExact": true,
+    "exitCode": 0,
+    "imageSamples": 8,
+    "exactImageHashes": 7,
+    "nonexactImage": {
+      "stage": "CH05",
+      "seed": 10808,
+      "pixels": 18,
+      "maxChannelDelta": 9,
+      "equivalent": true
+    }
+  },
+  "recordsResults": {
+    "passed": 9,
+    "exitCode": 0
+  },
+  "loading": {
+    "devices": 3,
+    "thresholdsPassed": true,
+    "exitCode": 0
+  },
+  "distParity": {
+    "files": 600,
+    "bytes": 106334530,
+    "differences": 0
+  },
+  "unchangedProtectedPaths": [
+    "server/src",
+    "game/admin",
+    "CLAUDE.md",
+    "game/src/main.js",
+    "game/src/rework-core.js",
+    "game/src/assets.js"
+  ],
+  "enemyCapEnabled": false,
+  "qaPort": 8797,
+  "qaPortClosed": true,
+  "push": false,
+  "deploy": false,
+  "productionAccess": false,
+  "captures": [
+    {
+      "path": "docs/codex/preview/C_admin_devices.png",
+      "bytes": 63018,
+      "sha256": "4f6d9931fae9dde0c591336ece57b914ccde2b52c2a9e95db461dbe5d4761952"
+    },
+    {
+      "path": "docs/codex/preview/C_admin_stages.png",
+      "bytes": 85030,
+      "sha256": "0eb117296fb95c7c4eae5918fd7f3b777df0f7f995c22f37ef2646e3a6d371c4"
+    },
+    {
+      "path": "docs/codex/preview/C_lobby_1024x768.png",
+      "bytes": 91691,
+      "sha256": "11e8e3958c7fe3b1d4ce1c741419964870cc462c8d8552a0614f0df126dbbeb9"
+    },
+    {
+      "path": "docs/codex/preview/C_lobby_1024x768_before.png",
+      "bytes": 116395,
+      "sha256": "9f02c7dfa14f9e03f3bd7d4f5a89ceb2c3b706f7828b0efb471f3039d53a7a37"
+    },
+    {
+      "path": "docs/codex/preview/C_lobby_1280x720.png",
+      "bytes": 100966,
+      "sha256": "b0346987e27db3a36eaaf258ddc77b30010e10a75817b46f9fe696ed845338cd"
+    },
+    {
+      "path": "docs/codex/preview/C_lobby_1280x720_before.png",
+      "bytes": 127377,
+      "sha256": "83f767e9069c2d298ab968eb59e18bd6bae8fc7df9c713448ea7de30747d95c6"
+    },
+    {
+      "path": "docs/codex/preview/C_lobby_1280x800.png",
+      "bytes": 109890,
+      "sha256": "ce36d2207f27266e7588b666cfcce86c0d75419dd70b99879ed7531f19d07fb9"
+    },
+    {
+      "path": "docs/codex/preview/C_lobby_1280x800_before.png",
+      "bytes": 138076,
+      "sha256": "92c037686e67a30391c041fa290d7112c99d348d747a4d824bdd6627a2f82438"
+    },
+    {
+      "path": "docs/codex/preview/C_lobby_360x640.png",
+      "bytes": 48044,
+      "sha256": "6b980ed7a1f4560c13efe613ed12a2075ec4eb05504b167acdf59f3eb722df7d"
+    },
+    {
+      "path": "docs/codex/preview/C_lobby_360x640_before.png",
+      "bytes": 48916,
+      "sha256": "d81bd90c695ebffe4d850000ee16f2c050bb6d8faed5b5695842786621672aa7"
+    },
+    {
+      "path": "docs/codex/preview/C_lobby_375x667.png",
+      "bytes": 49770,
+      "sha256": "d9f01721c28a7ae0ad5f07eec872f8c3eb35faa7e15c5ecaa2de0656d65381df"
+    },
+    {
+      "path": "docs/codex/preview/C_lobby_375x667_before.png",
+      "bytes": 50809,
+      "sha256": "01c0a30bf7d9355bb551e69439c605394c877668283ea0b115951b8ab8f1c35f"
+    },
+    {
+      "path": "docs/codex/preview/C_lobby_768x1024.png",
+      "bytes": 100975,
+      "sha256": "ace8c9ba3adc53644b2e2635d99d8f2a77d996d0988eda910f90b75f9ddf63f0"
+    },
+    {
+      "path": "docs/codex/preview/C_lobby_768x1024_before.png",
+      "bytes": 118087,
+      "sha256": "88d457bb0278dfc5df5989793a9385105b30d237bc083d73132d86db5fc46f22"
+    },
+    {
+      "path": "docs/codex/preview/C_lobby_820x1180.png",
+      "bytes": 116704,
+      "sha256": "9180fff9608a5d48b1ea9c728acfcb48c29b71dea4ea8bef4cd69b92fd518ef1"
+    },
+    {
+      "path": "docs/codex/preview/C_lobby_820x1180_before.png",
+      "bytes": 137588,
+      "sha256": "898f1e66072ef60f5f87a0e6d419780e063482a387f5987aef47cfc6c74d570c"
+    },
+    {
+      "path": "docs/codex/preview/C_result_ui1_1280_failure.png",
+      "bytes": 302283,
+      "sha256": "1ec7896271e7dba3c78f75e5d8664ff7cad5945fa55e757d8f13559f1055a369"
+    },
+    {
+      "path": "docs/codex/preview/C_result_ui1_1280_success.png",
+      "bytes": 305918,
+      "sha256": "7031260f425c14aadfa5ef11f54c265e9513c6e8efc91fb234a054a25d0c7c23"
+    },
+    {
+      "path": "docs/codex/preview/C_result_ui1_375_failure.png",
+      "bytes": 104453,
+      "sha256": "bc33befca9aa7d50d47e3147aad99e9cb0ef031722c034627924cbe51d7e8eba"
+    },
+    {
+      "path": "docs/codex/preview/C_result_ui1_375_success.png",
+      "bytes": 105097,
+      "sha256": "ec56458fd698671e49764878e9244e561d922d23b2cd2937118a9da892312bbf"
+    },
+    {
+      "path": "docs/codex/preview/C_result_ui2_1280_failure.png",
+      "bytes": 261435,
+      "sha256": "db03e2332766d08c35be2c56ec6d97a069fa80a14c9ecfc09037cfc54cdcb226"
+    },
+    {
+      "path": "docs/codex/preview/C_result_ui2_1280_success.png",
+      "bytes": 264468,
+      "sha256": "54c4bce9da296c8619e0afe5b84dc51b648a233c69be7c7088373b824279822d"
+    },
+    {
+      "path": "docs/codex/preview/C_result_ui2_375_failure.png",
+      "bytes": 127955,
+      "sha256": "a930aca51c6d27c44efd03d9b4918e72fe1d71f23f106f3ea1ef00db4247a782"
+    },
+    {
+      "path": "docs/codex/preview/C_result_ui2_375_success.png",
+      "bytes": 121439,
+      "sha256": "5add5ddc827bd5ec8485ec1caafb2c925171b0d4ac73f14944099706d71d354d"
+    }
+  ]
+}

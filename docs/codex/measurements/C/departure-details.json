@@ -1,0 +1,95 @@
+{
+  "1280x720": {
+    "originalVisibility": "visible",
+    "dock": false,
+    "band": null,
+    "briefBottom": 579.71875,
+    "navTop": 627.25,
+    "departureAction": "sg-start",
+    "departureCount": 1
+  },
+  "1280x800": {
+    "originalVisibility": "visible",
+    "dock": false,
+    "band": null,
+    "briefBottom": 579.71875,
+    "navTop": 707.25,
+    "departureAction": "sg-start",
+    "departureCount": 1
+  },
+  "1024x768": {
+    "originalVisibility": "visible",
+    "dock": false,
+    "band": null,
+    "briefBottom": 579.71875,
+    "navTop": 675.25,
+    "departureAction": "sg-start",
+    "departureCount": 1
+  },
+  "820x1180": {
+    "originalVisibility": "visible",
+    "dock": false,
+    "band": null,
+    "briefBottom": 579.71875,
+    "navTop": 1087.25,
+    "departureAction": "sg-start",
+    "departureCount": 1
+  },
+  "768x1024": {
+    "originalVisibility": "visible",
+    "dock": false,
+    "band": null,
+    "briefBottom": 579.71875,
+    "navTop": 931.25,
+    "departureAction": "sg-start",
+    "departureCount": 1
+  },
+  "375x667": {
+    "originalVisibility": "hidden",
+    "dock": true,
+    "band": "rgb(9, 16, 48)",
+    "briefBottom": 1141.046875,
+    "navTop": 581.15625,
+    "departureAction": "sg-start-dock",
+    "departureCount": 1
+  },
+  "360x640": {
+    "originalVisibility": "hidden",
+    "dock": true,
+    "band": "rgb(9, 16, 48)",
+    "briefBottom": 1141.046875,
+    "navTop": 554.15625,
+    "departureAction": "sg-start-dock",
+    "departureCount": 1
+  },
+  "760x850": {
+    "originalVisibility": "hidden",
+    "dock": true,
+    "band": "rgb(9, 16, 48)",
+    "briefBottom": 1061.296875,
+    "navTop": 764.15625,
+    "departureAction": "sg-start-dock",
+    "departureCount": 1
+  },
+  "761x850": {
+    "originalVisibility": "visible",
+    "dock": false,
+    "band": null,
+    "briefBottom": 579.71875,
+    "navTop": 757.25,
+    "departureAction": "sg-start",
+    "departureCount": 1
+  },
+  "scrollRestore": {
+    "action": "sg-start",
+    "count": 1,
+    "dockRemoved": true
+  },
+  "duplicateNegativeControl": {
+    "count": 2,
+    "caught": [
+      "Original and dock departure actions are visible together",
+      "Exactly one departure action must be fully visible above the menu on first screen"
+    ]
+  }
+}

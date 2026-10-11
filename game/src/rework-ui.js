@@ -75,6 +75,7 @@ export class GuardianUI {
     this.dialog.addEventListener('cancel',e=>{if(this.dialog.dataset.lock)e.preventDefault();});
     this.root.addEventListener('click',e=>this.click(e));
     window.addEventListener('resize',()=>this.updateDepartureDock());
+    this.root.addEventListener('scroll',()=>this.updateDepartureDock(),true);
     document.fonts?.ready.then(()=>this.updateDepartureDock());
     this.root.addEventListener('change',e=>{
       if(e.target.id==='sg-difficulty')this.setDifficulty(e.target.value);
@@ -83,14 +84,16 @@ export class GuardianUI {
   state(){return this.c.getState();}
   loadingProgress(percent){this.root.querySelectorAll('[data-do="start"]').forEach(b=>{b.disabled=true;b.textContent=`불러오는 중 ${percent}%`;});}
   updateDepartureDock(){
-    if(!ui2())return;
-    this.root.querySelector('#sg-start-dock')?.remove();
+    this.root.querySelector('.sg-departure-band')?.remove();
     const source=this.root.querySelector('#sg-start'),nav=this.root.querySelector('.sg-nav');
-    if(!source||!nav||this.tab!=='adventure')return;
+    source?.style.removeProperty('visibility');
+    if(!ui2()||innerWidth>760||!source||!nav||this.tab!=='adventure')return;
     const r=source.getBoundingClientRect(),n=nav.getBoundingClientRect();
-    if(r.top>=0&&r.bottom<=n.top-8)return;
+    if(r.top>=0&&r.bottom<=Math.min(innerHeight,n.top)-8)return;
     const dock=source.cloneNode(true);dock.id='sg-start-dock';dock.classList.add('sg-departure-dock');
-    dock.style.bottom=`${Math.max(0,innerHeight-n.top)+10}px`;this.root.append(dock);
+    const band=document.createElement('div');band.className='sg-departure-band';
+    band.style.bottom=`${Math.max(0,innerHeight-n.top)}px`;band.append(dock);this.root.append(band);
+    source.style.visibility='hidden';
   }
   // UI v2(ui-v2.css): 지금 탭·장을 root에 적어 두면 화면 뒤 장 그림을 CSS가 고른다(장 5단계를 정화했으면 맑은 그림)
   markRoot(p){const ch=CHAPTERS.find(c=>c.n===String(this.chapter))||CHAPTERS[0];this.root.dataset.tab=this.tab;this.root.dataset.chapter=ch.n;this.root.dataset.cleared=p?.stages?.[chapterStages(ch)[4].id]?.cleared?'1':'0';}

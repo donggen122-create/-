@@ -20,11 +20,24 @@ export function latestDeployment(text) {
 // deploy.ps1과 같은 정규식: wrangler deploy 출력의 새 버전 번호
 export function deployedVersion(text) { return text.match(/Current Version ID:\s*([0-9a-f-]{36})/)?.[1] || null; }
 
-function mirror(from, to) { fs.rmSync(to, {recursive: true, force: true}); fs.cpSync(from, to, {recursive: true}); }
+function copyTree(from, to) {
+  fs.mkdirSync(to, {recursive: true});
+  for (const entry of fs.readdirSync(from, {withFileTypes: true})) {
+    const source = path.join(from, entry.name), target = path.join(to, entry.name);
+    if (entry.isDirectory()) copyTree(source, target);
+    else fs.copyFileSync(source, target);
+  }
+}
+// Explicit traversal also works on Windows paths where Node 24 cpSync can exit natively.
+function mirror(from, to) { fs.rmSync(to, {recursive: true, force: true}); copyTree(from, to); }
 export function sync() {
   const g = at('game'), d = at('dist_web');
+  // Use the same source and generated-copy stamping as sync-dist.ps1, on every OS.
+  const stamp = (...args) => execFileSync(process.execPath, [at('game', 'tools', 'version-assets.mjs'), ...args], {stdio: 'inherit'});
+  stamp();
   for (const sub of ['src', 'assets', 'admin']) mirror(path.join(g, sub), path.join(d, sub));
   for (const f of ['index.html', 'ASSET_CREDITS.md']) fs.copyFileSync(path.join(g, f), path.join(d, f));
+  stamp('--dist');
   for (const f of fs.readdirSync(d)) if (/^zz_.*\.html$/.test(f)) fs.rmSync(path.join(d, f));
   // 공유 폴더(/share/) 사본 — sync-dist.ps1 -Share와 같은 목록
   const s = path.join(d, 'share'), ss = path.join(s, 'server');
