@@ -16,5 +16,6 @@ async function apply(db){
     db.prepare('CREATE TABLE IF NOT EXISTS settings (key TEXT PRIMARY KEY,value TEXT NOT NULL)'),
     db.prepare('CREATE INDEX IF NOT EXISTS play_settled ON play_runs(settled_at)'),
     db.prepare('CREATE INDEX IF NOT EXISTS play_flagged ON play_runs(flagged,settled_at)'),
+    db.prepare('CREATE INDEX IF NOT EXISTS play_hall ON play_runs(status,stage,user_id)'),
   ]);
 }

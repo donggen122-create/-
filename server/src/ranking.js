@@ -36,13 +36,14 @@ export function titlesFor({bosses=[],runs=0,winner=false}){
 }
 const caches=new WeakMap();
 export function invalidateRanking(db){caches.delete(db);}
-async function settings(db){
- const rows=(await db.prepare("SELECT key,value FROM settings WHERE key IN ('weekly_stage','weekly_goal') OR key LIKE 'weekly_stage:%'").all()).results;
+async function settings(db,now=Date.now()){
+ const current=weekInfo(now),previous=weekInfo(current.start-1);
+ const rows=(await db.prepare("SELECT key,value FROM settings WHERE key IN ('weekly_stage','weekly_goal',?,?)").bind('weekly_stage:'+current.key,'weekly_stage:'+previous.key).all()).results;
  return Object.fromEntries(rows.map(r=>[r.key,r.value]));
 }
 function pickedStage(config,week,now){
  try{const override=JSON.parse(config.weekly_stage||'null');if(override?.week===week.key&&WEEKLY_STAGES.includes(override.stage))return override.stage;}catch{}
- return config['weekly_stage:'+week.key]||defaultWeeklyStage(now);
+ const stored=config['weekly_stage:'+week.key];return WEEKLY_STAGES.includes(stored)?stored:defaultWeeklyStage(now);
 }
 async function aggregate(db,week,stage,config,now){
  let cache=caches.get(db);if(!cache){cache=new Map();caches.set(db,cache);}
@@ -59,20 +60,21 @@ async function aggregate(db,week,stage,config,now){
  cache.clear();cache.set(key,{at:now,data});return data;
 }
 export async function rankingData(db,id,now=Date.now()){
- const week=weekInfo(now),config=await settings(db),stage=pickedStage(config,week,now),data=await aggregate(db,week,stage,config,now);
+ const week=weekInfo(now),config=await settings(db,now),stage=pickedStage(config,week,now),data=await aggregate(db,week,stage,config,now);
  // Refresh names/title selection even on a cache hit (revoked names disappear immediately).
  const users=(await db.prepare("SELECT u.id,u.nickname,u.nickname_status,u.title,COALESCE(json_extract(g.state,'$.runs'),0) runs FROM users u LEFT JOIN guardian_profiles g ON g.user_id=u.id").all()).results;
  const names=new Map(await Promise.all(users.map(async u=>[u.id,{...u,name:await displayName(u)}])));
  const earned=user=>titlesFor({bosses:data.hall.filter(r=>r.user_id===user.id).map(r=>r.stage),runs:user.runs,winner:data.winner===user.id});
  const publicRow=r=>{const u=names.get(r.id);return {rank:r.rank,name:u.name,title:earned(u).find(t=>t.id===u.title)?.name||null,kills:r.kills,litter:r.litter};};
- const me=names.get(id),myRow=data.ranks.find(r=>r.id===id);
+ const ranks=data.ranks.filter(r=>names.has(r.id)).map((r,i)=>({...r,rank:i+1}));
+ const me=names.get(id),myRow=ranks.find(r=>r.id===id);
  const hall=TITLES.filter(t=>t.stage).map(t=>{
   const students=data.hall.filter(r=>r.stage===t.stage).map(r=>names.get(r.user_id)).filter(Boolean);
   return {stage:t.stage,label:stageLabel(t.stage),names:students.filter(u=>u.nickname_status==='approved').map(u=>u.name).sort((a,b)=>a.localeCompare(b,'ko')),others:students.filter(u=>u.nickname_status!=='approved').length};
  });
  const goal=Number(config.weekly_goal)||WEEKLY_GOAL;
  return {week:week.key,stage,label:stageLabel(stage),stageName:STAGES.find(s=>s.id===stage).name,endsAt:week.end,
-  top:data.ranks.slice(0,10).map(publicRow),me:myRow?publicRow(myRow):{rank:null,name:me.name,title:null,kills:null,litter:null},hall,titles:earned(me),member:await member(db,id),cooperation:{successes:data.successes,goal},cacheSeconds:60};
+  top:ranks.slice(0,10).map(publicRow),me:myRow?publicRow(myRow):{rank:null,name:me.name,title:null,kills:null,litter:null},hall,titles:earned(me),member:await member(db,id),cooperation:{successes:data.successes,goal},cacheSeconds:60};
 }
 const reply=(data,status=200)=>Response.json(data,{status,headers:{'Cache-Control':'no-store'}});
 export async function rankingAPI(request,db,id,path,method,now=Date.now()){
@@ -88,7 +90,7 @@ export async function rankingAPI(request,db,id,path,method,now=Date.now()){
 }
 export async function rankingAdmin(request,db,method,now=Date.now()){
  if(method==='GET'){
-  const week=weekInfo(now),config=await settings(db);return reply({week:week.key,stage:pickedStage(config,week,now),stages:WEEKLY_STAGES.map(s=>({id:s,label:stageLabel(s)})),goal:Number(config.weekly_goal)||WEEKLY_GOAL});
+  const week=weekInfo(now),config=await settings(db,now);return reply({week:week.key,stage:pickedStage(config,week,now),stages:WEEKLY_STAGES.map(s=>({id:s,label:stageLabel(s)})),goal:Number(config.weekly_goal)||WEEKLY_GOAL});
  }
  if(method!=='POST')return reply({error:'없는 주소예요.'},404);
  let b;try{b=await request.json();}catch{return reply({error:'입력을 확인해 주세요.'},400);}

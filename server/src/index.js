@@ -7,6 +7,7 @@ import { guardianAPI, guardianAdmin, getProfile, migrate as migrateGuardian, day
 import { nicknameAPI, nicknamesAdmin, member } from './nickname.js';
 import { anomaliesAdmin } from './anomaly.js';
 import { rankingAPI, rankingAdmin, invalidateRanking } from './ranking.js';
+import { qaRanking } from './qa-ranking.js';
 import { stageStats } from './stage-stats.js';
 const guardianSchemas=new WeakMap();
 async function ensureGuardian(env) { if(!guardianSchemas.has(env.DB))guardianSchemas.set(env.DB,migrateGuardian(env.DB).catch(e=>{guardianSchemas.delete(env.DB);throw e;}));await guardianSchemas.get(env.DB); }
@@ -52,6 +53,10 @@ const PRESENCE_JS = `(function(){
 export default {
   async fetch(request, env) {
     const url = new URL(request.url);
+    if(url.pathname==='/_qa/runs'&&request.method==='POST'){
+      if(env.LOCAL_TEST_CLOCK!=='true'||!['localhost','127.0.0.1'].includes(url.hostname)||request.headers.get('X-Admin-Key')!==env.ADMIN_KEY)return new Response('Not found',{status:404});
+      await ensureGuardian(env);const response=await qaRanking(request,env);if(response)return response;
+    }
     if (url.pathname.startsWith("/api/")) {
       try {
         return withCors(await api(request, env, url));

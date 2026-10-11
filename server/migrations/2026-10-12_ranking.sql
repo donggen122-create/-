@@ -9,3 +9,4 @@ ALTER TABLE play_runs ADD COLUMN flagged INTEGER NOT NULL DEFAULT 0;
 CREATE TABLE IF NOT EXISTS settings (key TEXT PRIMARY KEY,value TEXT NOT NULL);
 CREATE INDEX IF NOT EXISTS play_settled ON play_runs(settled_at);
 CREATE INDEX IF NOT EXISTS play_flagged ON play_runs(flagged,settled_at);
+CREATE INDEX IF NOT EXISTS play_hall ON play_runs(status,stage,user_id);

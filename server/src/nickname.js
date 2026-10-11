@@ -12,7 +12,7 @@ export async function member(db,id){
 export async function nicknameAPI(request,db,id,now=Date.now()){
  let b;try{b=await request.json();}catch{return reply({error:'입력을 확인해 주세요.'},400);}
  const v=validateNickname(b.nickname,id);if(v.error)return reply(v,400);
- await db.prepare("UPDATE users SET nickname=?,nickname_status='pending',nickname_set_at=?,nickname_note=NULL WHERE id=?").bind(v.nickname,now,id).run();
+ await db.prepare("UPDATE users SET nickname=?,nickname_status='pending',nickname_set_at=MAX(?,COALESCE(nickname_set_at,0)+1),nickname_note=NULL WHERE id=?").bind(v.nickname,now,id).run();
  return reply({ok:true,...(v.warning?{warning:v.warning}:{}),member:await member(db,id)});
 }
 export async function nicknamesAdmin(request,db,sub,method,now=Date.now()){
