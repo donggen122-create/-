@@ -26,3 +26,7 @@ test('120 students / 5,000 diverse runs: response remains under 50 KB with or wi
 test('invalid period/stage rejected without DB access',async()=>{
  for(const query of ['days=0','days=NaN','days=50000','days=-1','stage=CH21'])assert.ok((await stageStats(null,new URL('http://local/?'+query))).error);
 });
+test('50ms proportions retain four decimal places in medians',()=>{
+ const rows=[run('u','CH01','lost',{perf:{...perf,long50:.0123}}),run('u','CH01','lost',{perf:{...perf,long50:.0125}})];
+ const stats=aggregateStageStats(rows,[profile('u',0)],{now});assert.equal(stats.stages[0].perf.long50,.0124);assert.equal(stats.devices[0].long50,.0124);
+});

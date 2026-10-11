@@ -1,8 +1,23 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
+import fs from 'node:fs';
+import vm from 'node:vm';
 import {validatePerf,validateCause} from '../server/src/run-telemetry.js';
 import {perfDevice,perfSummary,freshProfile,nextRunAdvice} from '../game/src/rework-core.js';
 const perf={v:'guardian-2-test',fps:60,p1:30,long33:.02,long50:.01,q:2,qmax:3,ratio:.85,dev:'tablet',w:1024,h:768,dpr:1.5,sec:180};
+test('always-on collector excludes pauses/hidden-tab transitions and stays bounded over 100,000 frames',()=>{
+ const source=fs.readFileSync(new URL('../game/src/main.js',import.meta.url),'utf8');
+ const snippet=source.slice(source.indexOf('let sgFramePerf='),source.indexOf('function sgDamageSource'));
+ let visibility;
+ const ctx={renderQuality:{level:0},document:{addEventListener(name,fn){assert.equal(name,'visibilitychange');visibility=fn;}}};vm.createContext(ctx);vm.runInContext(snippet+";globalThis.reset=()=>{sgFramePerf={n:0,ms:0,long33:0,long50:0,qmax:0,hist:new Uint32Array(2049)};sgPerfActive=false};globalThis.sample=sgPerfSample;globalThis.state=()=>sgFramePerf;",ctx);
+ ctx.reset();ctx.sample(10000,true);assert.equal(ctx.state().n,0,'first active interval skipped');
+ ctx.sample(16,true);ctx.sample(10000,false);ctx.sample(10000,true);assert.equal(ctx.state().n,1,'hidden and resume intervals skipped');
+ ctx.renderQuality.level=4;ctx.sample(80,true);assert.equal(ctx.state().qmax,4);assert.equal(ctx.state().long50,1);
+ for(let i=0;i<100000;i++)ctx.sample(16,true);
+ assert.equal(ctx.state().n,100002);assert.equal(ctx.state().hist.length,2049);assert.ok(ctx.state().hist.byteLength<9000);
+ ctx.sample(NaN,true);ctx.sample(Infinity,true);ctx.sample(-1,true);assert.equal(ctx.state().n,100002);
+ visibility();ctx.sample(60000,true);assert.equal(ctx.state().n,100002,'resume is skipped even if no RAF ran while hidden');
+});
 test('perf: all fields validated; bounded JSON; no identifying fields',()=>{
  assert.deepEqual(validatePerf(perf),perf);assert.ok(Buffer.byteLength(JSON.stringify(perf))<600);
  for(const [key,val] of Object.entries(perf)){

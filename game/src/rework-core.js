@@ -673,7 +673,7 @@ export function perfSummary(s,{w,h,dpr,dev,q,ratio,sec}){
  const rank=Math.ceil(s.n*.99);let n=0,i=0;
  for(;i<s.hist.length;i++){n+=s.hist[i];if(n>=rank)break;}
  const round=x=>Math.round(x*100)/100,bucket=x=>PERF_BUCKETS.filter(b=>b<=x).at(-1)||320;
- return {v:PERF_VERSION,fps:round(1000*s.n/s.ms),p1:round(Math.min(1000*s.n/s.ms,1000/Math.max(1,i<=1024?i:1024+(i-1024)*64))),long33:round(s.long33/s.n*10000)/10000,long50:round(s.long50/s.n*10000)/10000,q,ratio,qmax:Math.max(q,s.qmax),dev,w:bucket(w),h:bucket(h),dpr:round(dpr),sec:round(Math.min(360,Math.max(0,sec)))};
+ return {v:PERF_VERSION,fps:round(1000*s.n/s.ms),p1:round(Math.min(1000*s.n/s.ms,1000/Math.max(1,i<=1024?i:1024+(i-1024)*64))),long33:Math.round(s.long33/s.n*10000)/10000,long50:Math.round(s.long50/s.n*10000)/10000,q,ratio,qmax:Math.max(q,s.qmax),dev,w:bucket(w),h:bucket(h),dpr:round(dpr),sec:round(Math.min(360,Math.max(0,sec)))};
 }
 export function nextRunAdvice(profile,cause=null){
  if(cause?.kind==='boss')return '대왕 기술은 빨간 표시 밖으로 피해요';

@@ -2,10 +2,10 @@ import {STAGES,TEST_ACCOUNT_RE,stageLabel} from '../../game/src/rework-core.js';
 import {validatePerf,validateCause} from './run-telemetry.js';
 const parse = x => {try {return typeof x === 'string'?JSON.parse(x):x||{};}catch{return {};}};
 const round = x => Math.round(x*100)/100;
-export function median(values){if(!values.length)return null;const a=[...values].sort((a,b)=>a-b),m=a.length>>1;return round(a.length%2?a[m]:(a[m-1]+a[m])/2);}
+export function median(values,precision=2){if(!values.length)return null;const a=[...values].sort((a,b)=>a-b),m=a.length>>1;const n=a.length%2?a[m]:(a[m-1]+a[m])/2;return Math.round(n*10**precision)/10**precision;}
 const samples=()=>({fps:[],p1:[],long50:[],quality:Array(9).fill(0)});
 const add=(s,p)=>{s.fps.push(p.fps);s.p1.push(p.p1);s.long50.push(p.long50);s.quality[p.q]++;};
-const summary=s=>({n:s.fps.length,fps:median(s.fps),p1:median(s.p1),long50:median(s.long50),quality:s.quality});
+const summary=s=>({n:s.fps.length,fps:median(s.fps),p1:median(s.p1),long50:median(s.long50,4),quality:s.quality});
 export function aggregateStageStats(runs,profiles,{days=30,now=Date.now(),stage=null}={}){
  const cutoff=days==='all'?0:now-days*86400000;
  const stages=STAGES.map(s=>({stage:s.id,label:stageLabel(s.id),attempts:0,wins:0,students:new Set(),stopped:0,difficulty:{easy:[0,0],normal:[0,0],hard:[0,0],unknown:[0,0]},causes:new Map(),perf:samples()}));

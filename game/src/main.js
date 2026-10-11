@@ -1016,6 +1016,7 @@ let qaNoGhost = false;                     // QA 전용: 효과 위 주인공 �
 let qaPerf = null;                         // QA 전용(성능 측정 __debugPerf): 계산·그리기·HUD 시간 누적. 실제 플레이는 늘 null
 let runId = null;
 let sgFramePerf=null,sgPerfActive=false,sgLastHit=null;
+document.addEventListener('visibilitychange',()=>{sgPerfActive=false;});
 // 2,049 fixed bins: 1 ms through 1024 ms, then 64 ms; <9 KB per run.
 function sgPerfSample(ms,active){
  if(active&&sgPerfActive&&sgFramePerf&&Number.isFinite(ms)&&ms>0){

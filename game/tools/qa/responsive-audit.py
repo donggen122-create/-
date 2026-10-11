@@ -16,6 +16,7 @@ ap.add_argument('--url', default='http://localhost:8797')
 ap.add_argument('--out', default=str(ROOT / 'game/tools/qa/out/responsive'))
 ap.add_argument('--sizes', default='320x568,360x640,375x667,390x844,412x915,667x375,844x390,768x1024,1024x768,820x1180,1180x820,1280x720,1366x768,1920x1080')
 ap.add_argument('--shots', default='adventure,levelup,battle,result')
+ap.add_argument('--result-cause', action='store_true', help='Inject anonymous lethal-result metadata in local settlement, to audit the extra cause/advice rows')
 args = ap.parse_args()
 from urllib.parse import urlsplit
 BASE = local_url(args.url)   # Reject production; query strings belong only to the page URL.
@@ -138,7 +139,16 @@ def audit_size(b, W, H, report):
     page.evaluate("window.__debugFreeze(5)"); page.wait_for_timeout(200); check('battle', 'battle'); page.evaluate("window.__debugFreeze(0)")
     page.locator('#btn-pause').click(); page.wait_for_timeout(250); check('pause', 'pause')
     page.locator('#btn-resume').click(); page.wait_for_timeout(150)
+    if args.result_cause:
+        def lethal_metadata(route):
+            data=route.request.post_data_json
+            data.update(hpFraction=0,cause={'id':'T2_BOSS:p0:follow','kind':'boss','at':192})
+            route.continue_(post_data=json.dumps(data))
+        page.route('**/api/play/finish',lethal_metadata)
     page.evaluate("window.__debugEnd(false)"); page.locator('#result:not(.hidden) #btn-continue:enabled').wait_for(timeout=30000); page.wait_for_timeout(300); check('result', 'result')
+    if args.result_cause:
+        assert page.locator('#sg-result-cause').count()==1
+        assert '대왕 기술은 빨간 표시 밖으로 피해요' in page.locator('#sg-result-next').inner_text()
     rec['_pageErrors'] = errs
     ctx.close()
 
