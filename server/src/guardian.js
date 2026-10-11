@@ -1,3 +1,4 @@
+import { validatePerf, validateCause } from './run-telemetry.js';
 import { VERSION, SKILLS, COMBOS, SUPPORTS, runParts, action, completeRun, stageUnlocked, difficultyOf, hardGate, hardGateText, durationFor, superTestProfile, testModeProfile, gearTestProfile, testGrade, testInfo, stageLabel, STAGES, PETS, TEST_ACCOUNT_RE, needsPetMigration, migratePets } from '../../game/src/rework-core.js';
 import { migrateLegacy } from './legacy-migration.js';
 import { migrateProfileV2, needsPartsRepair, repairObsoleteParts, PARTS_FIX_SNAPSHOT } from './profile-migration-v2.js';
@@ -144,7 +145,7 @@ export async function guardianAPI(request,env,user,path,now=Date.now()){
     await grantPassEvent(db,id,now);
     const duration=durationFor(profile,b.stage),day=dayKey(now);
     if(profile.testMode){
-      const t=profile.testMode,info=testInfo(profile),loadout=JSON.stringify({loadout:{equippedParts:runParts(profile),pet:profile.activePet??null},test:info});
+      const t=profile.testMode,info=testInfo(profile),loadout=JSON.stringify({loadout:{equippedParts:runParts(profile),pet:profile.activePet??null,difficulty:difficultyOf(profile)},test:info});
       if(t.perType){   // 세트마다 정해진 판 수까지만(근거리 10판 · 원거리 10판) — 기록이 한쪽에 몰리지 않게
         const ps=await testPassStatus(db,id,profile,now),name=info.type==='melee'?'근거리':'원거리';
         if((ps.byType?.[info.type]?.n||0)>=Number(t.perType))return reply({error:`${name} ${Number(t.perType)}판을 모두 했어요. 다른 장비로 바꿔 주세요.`,code:'TEST_TYPE_DONE',passes:ps},409);
@@ -159,7 +160,7 @@ export async function guardianAPI(request,env,user,path,now=Date.now()){
     const r=await db.batch([
       db.prepare("UPDATE play_runs SET status='expired',settled_at=? WHERE user_id=? AND status='active' AND started_at<?").bind(now,id,now-1800000),
       db.prepare('INSERT OR IGNORE INTO play_days(user_id,day) VALUES(?,?)').bind(id,day),
-      db.prepare("INSERT INTO play_runs(id,user_id,stage,started_at,duration,result) SELECT ?,?,?,?,?,? FROM play_days WHERE user_id=? AND day=? AND base_used+bonus_used<10+bonus_granted AND NOT EXISTS(SELECT 1 FROM play_runs WHERE user_id=? AND status='active')").bind(b.requestId,id,b.stage,now,duration,JSON.stringify({loadout:{equippedParts:runParts(profile),pet:profile.activePet??null}}),id,day,id),
+      db.prepare("INSERT INTO play_runs(id,user_id,stage,started_at,duration,result) SELECT ?,?,?,?,?,? FROM play_days WHERE user_id=? AND day=? AND base_used+bonus_used<10+bonus_granted AND NOT EXISTS(SELECT 1 FROM play_runs WHERE user_id=? AND status='active')").bind(b.requestId,id,b.stage,now,duration,JSON.stringify({loadout:{equippedParts:runParts(profile),pet:profile.activePet??null,difficulty:difficultyOf(profile)}}),id,day,id),
     ]);
     if(!r[2].meta.changes){const active=await db.prepare("SELECT id,stage FROM play_runs WHERE user_id=? AND status='active'").bind(id).first();return reply({error:active?'진행 중인 도전이 있어요. 먼저 마무리해 주세요.':'오늘 이용권을 다 썼어요. 내일 아침 8시에 다시 만나요!',code:active?'ACTIVE_RUN':'NO_PASSES',active,passes:await passStatus(db,id,now)},409);}
     return reply({runId:b.requestId,duration,...await status(db,id,now)});
@@ -186,6 +187,9 @@ export async function guardianAPI(request,env,user,path,now=Date.now()){
       const result=completeRun(profile,{day:dayKey(now),equippedPartIds,pet,stage:run.stage,cleared,seconds,litter:Math.max(0,Math.min(99,Math.floor(Number(b.litter)||0))),hpFraction:Math.max(0,Math.min(1,Number(b.hpFraction)||0)),bossSeconds:Number.isFinite(b.bossSeconds)&&b.bossSeconds>=0?b.bossSeconds:Infinity,skillIds,fusionIds,supportIds});
       const started=run.result?JSON.parse(run.result):null;
       const event={reward:result.reward,cleared,stage:run.stage,runId,charged:profile.testMode?1:cleared?1:0,...(started?.test?{test:started.test}:{})};   // test = 출동할 때의 시험 조건(등급)
+      if(started?.loadout)event.loadout=started.loadout;
+      const perf=validatePerf(b.perf),cause=!cleared&&b.hpFraction<=0?validateCause(b.cause):null;
+      if(perf)event.perf=perf;if(cause)event.cause=cause;
       try{
         const r=await db.batch([
           db.prepare('INSERT OR IGNORE INTO play_days(user_id,day) VALUES(?,?)').bind(id,dayKey(now)),

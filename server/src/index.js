@@ -4,6 +4,7 @@
 // 2026-09-22 Codex "Guardian v2" 개편: 성장·이용권·판 시작/결과 API는 guardian.js(/api/guardian*, /api/play/*, 관리자 passes·grant-passes).
 //   옛 저장(saves)은 읽기 전용 보관(PUT /save → 410), 옛 선물(grants) 지급도 종료(→ 관리자 이용권 지급). 회원·세션·관리자 인증·접속 신호는 이 파일.
 import { guardianAPI, guardianAdmin, migrate as migrateGuardian, dayKey, nextReset } from "./guardian.js";
+import { stageStats } from './stage-stats.js';
 let guardianSchema;
 async function ensureGuardian(env) { guardianSchema ||= migrateGuardian(env.DB).catch((e) => { guardianSchema = null; throw e; }); await guardianSchema; }
 
@@ -228,6 +229,7 @@ async function admin(request, env, sub, method) {
   if (sub.startsWith("upload/")) return uploads(request, env, sub.slice(7), method);
 
   await ensureGuardian(env);
+  if(sub==='stage-stats'&&method==='GET'){const stats=await stageStats(env.DB,new URL(request.url));return json(stats,stats.error?400:200);}
   // Codex 개편: 이용권 현황·지급 기록(passes), 이용권·코인 지급(grant-passes, requestId로 중복 방지), 표 만들기(migrate-v1)
   if (["passes", "grant-passes", "migrate-v1", "migrate-v2", "test-profile", "set-hero"].includes(sub)) {
     await ensureGuardian(env);

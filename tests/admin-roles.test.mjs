@@ -23,11 +23,28 @@ async function call(env, path, { body, token, key, method, ip, cookie } = {}) {
   if (token) headers['X-Admin-Token'] = token;
   if (key) headers['X-Admin-Key'] = key;
   if (cookie) headers.Authorization = 'Bearer ' + cookie;   // cookie = 로그인 토큰(시험 계정 검사)
-  const res = await worker.fetch(new Request('http://local/api' + path, { method: method || (body ? 'POST' : 'GET'), headers, body: body ? JSON.stringify(body) : undefined }), env);
+  const res = await worker.fetch(new Request('http://localhost/api' + path, { method: method || (body ? 'POST' : 'GET'), headers, body: body ? JSON.stringify(body) : undefined }), env);
   let data = {}; try { data = await res.json(); } catch {}
   return { status: res.status, ...data };
 }
 const uid = () => 'req_' + crypto.randomUUID().replace(/-/g, '');
+
+test('optional telemetry survives settlement/retry; invalid telemetry never rejects play and success omits cause',async()=>{
+ const env=await makeEnv({LOCAL_TEST_CLOCK:'true'}),id='qarecord';
+ const token=(await call(env,'/register',{body:{id,pw:'qa-local-only'}})).token;
+ const perf={v:'guardian-2-test',fps:60,p1:30,long33:.02,long50:.01,q:2,qmax:3,ratio:.85,dev:'tablet',w:1024,h:768,dpr:1.5,sec:180},cause={id:'T1_BOTTLE',kind:'enemy',at:60};
+ assert.equal((await call(env,'/admin/stage-stats')).status,401);
+ for(const scenario of ['valid','invalid','success']){
+  const start=await call(env,'/play/start',{cookie:token,body:{requestId:uid(),stage:'CH01',clientVersion:2}});assert.equal(start.status,200);
+  const b={requestId:uid(),runId:start.runId,cleared:scenario==='success',seconds:180,hpFraction:0,perf:scenario==='invalid'?{...perf,ua:'forbidden'}:perf,cause:scenario==='invalid'?{...cause,at:-1}:cause};
+  const finish=await call(env,'/play/finish',{cookie:token,body:b});assert.equal(finish.status,200);
+  const stored=JSON.parse(env.DB.sql.prepare('SELECT result FROM play_runs WHERE id=?').get(start.runId).result);
+  assert.equal(stored.loadout.difficulty,'easy');assert.deepEqual(finish.reward,stored.reward);
+  if(scenario==='invalid'){assert.ok(!stored.perf);assert.ok(!stored.cause);}else{assert.deepEqual(stored.perf,perf);assert.deepEqual(stored.cause,scenario==='success'?undefined:cause);}
+  const retry=await call(env,'/play/finish',{cookie:token,body:{...b,perf:{...perf,fps:20},cause:null}});assert.deepEqual(retry.reward,finish.reward);assert.deepEqual(retry.perf,finish.perf);
+ }
+ const stats=await call(env,'/admin/stage-stats?days=all',{key:env.ADMIN_KEY});assert.equal(stats.status,200);assert.equal(stats.stages[0].attempts,0,'qa account excluded');assert.ok(!JSON.stringify(stats).includes(id));
+});
 
 test('같은 아이디라도 비밀번호에 따라 관리자·선생님으로 들어가고, 틀리면 거절', async () => {
   const env = await makeEnv();
@@ -45,7 +62,7 @@ test('선생님 계정: 통계·접속·비번·잠금·선물은 되고, 삭제
   const env = await makeEnv();
   const reg = await call(env, '/register', { body: { id: '학생하나', pw: '1234' } }); assert.equal(reg.status, 200);
   const t = (await call(env, '/admin/login', { body: TEACHER })).token;
-  for (const p of ['stats', 'online', 'passes']) assert.equal((await call(env, '/admin/' + p, { token: t })).status, 200, p);
+  for (const p of ['stats', 'online', 'passes', 'stage-stats?days=30']) assert.equal((await call(env, '/admin/' + p, { token: t })).status, 200, p);
   assert.equal((await call(env, '/admin/lock', { token: t, body: { id: '학생하나', locked: true } })).status, 200);
   assert.equal((await call(env, '/admin/lock', { token: t, body: { id: '학생하나', locked: false } })).status, 200);
   assert.equal((await call(env, '/admin/reset-password', { token: t, body: { id: '학생하나', pw: '5678' } })).status, 200);
