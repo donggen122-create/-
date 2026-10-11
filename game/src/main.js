@@ -6146,6 +6146,12 @@ async function sgSettle(pending,leaving=false){
       if(top){top.className='ui2-res-top';top.removeAttribute('style');
         top.innerHTML=`<div class="ui2-stars">${[0,1,2].map(i=>`<i class="${i<w.stars?'on':''}">${art2('cur_star')}</i>`).join('')}</div>${dn?`<div class="ui2-res-sub">${dn} 난이도${r.cleared?' 성공':' 도전'}</div>`:''}<div class="ui2-res-tiles"><span><img src="./assets/ui2/icons/cur_coin.png" alt=""/><b>+${w.coins}</b><small>코인</small></span><span><img src="./assets/ui2/icons/cur_gift.png" alt=""/><b>+${w.gifts}</b><small>보급권</small></span><span><img src="./assets/ui2/icons/cur_pass.png" alt=""/><b>${r.passes.remaining}</b><small>이용권 남음</small></span></div>`;}
     }
+    if(!r.cleared){
+      const row=document.createElement('tr'),cell=document.createElement('td');cell.colSpan=2;
+      cell.style.cssText='white-space:normal;overflow-wrap:anywhere;text-align:left;font:13px/1.6 "Malgun Gothic",sans-serif';
+      if(r.cause){const c=document.createElement('div'),at=Math.floor(r.cause.at);c.id='sg-result-cause';c.textContent=`쓰러진 까닭: ${sgCauseName(r.cause,r.stage)} (${Math.floor(at/60)}분 ${at%60}초)`;cell.append(c);}
+      const advice=document.createElement('div');advice.id='sg-result-next';advice.textContent=`다음 할 일: ${R.nextRunAdvice({...r.profile,difficulty:w.difficulty},r.cause)}`;cell.append(advice);row.append(cell);elResultTable.append(row);
+    }
     for(const activity of w.partActivity||[]){
       const d=R.PARTS[activity.id];if(!d)continue;
       const times=Object.entries(pending.partEffects||{}).filter(([id])=>(R.COMBOS[id]?.skill||id)===d.skill).reduce((n,[,v])=>n+(Number.isFinite(v)?Math.max(0,Math.floor(v)):0),0);

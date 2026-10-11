@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {validatePerf,validateCause} from '../server/src/run-telemetry.js';
-import {perfDevice,perfSummary,freshProfile} from '../game/src/rework-core.js';
+import {perfDevice,perfSummary,freshProfile,nextRunAdvice} from '../game/src/rework-core.js';
 const perf={v:'guardian-2-test',fps:60,p1:30,long33:.02,long50:.01,q:2,qmax:3,ratio:.85,dev:'tablet',w:1024,h:768,dpr:1.5,sec:180};
 test('perf: all fields validated; bounded JSON; no identifying fields',()=>{
  assert.deepEqual(validatePerf(perf),perf);assert.ok(Buffer.byteLength(JSON.stringify(perf))<600);
@@ -27,4 +27,13 @@ test('read-only perf summary: average, percentile, ratios, bucket/DPR privacy an
 });
 test('device categories use UA/coarse/size without retaining UA',()=>{
  for(const [input,expected] of [[{ua:'iPad'},'tablet'],[{ua:'Android',w:800},'tablet'],[{ua:'Android Mobile'},'phone'],[{ua:'Macintosh',coarse:true},'tablet'],[{coarse:true,w:375,h:667},'phone'],[{coarse:true,w:1024,h:768},'tablet'],[{},'pc']])assert.equal(perfDevice(input),expected);
+});
+test('failure advice is prioritized and leaves profile unchanged',()=>{
+ const p=freshProfile(),before=structuredClone(p);
+ assert.equal(nextRunAdvice(p,{kind:'boss'}),'대왕 기술은 빨간 표시 밖으로 피해요');assert.equal(nextRunAdvice(p),'친구 꼬북이 끼기');
+ assert.equal(nextRunAdvice({...p,coins:50}),'훈련 공격력 올리기(코인 OK)');
+ assert.equal(nextRunAdvice({...p,coins:100,training:{attack:5,hp:2}}),'훈련 체력 올리기(코인 OK)');
+ for(const difficulty of ['normal','hard'])assert.equal(nextRunAdvice({...p,difficulty}),'쉬움으로 한 번');
+ assert.equal(nextRunAdvice({...p,coins:49,difficulty:'normal'}),'쉬움으로 한 번');
+ assert.equal(nextRunAdvice({...p,coins:99999,training:{attack:100,hp:100},activePet:'turtle'}),'빨간 표시를 피해 다시 도전해요');assert.deepEqual(p,before);
 });
