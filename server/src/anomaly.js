@@ -6,7 +6,9 @@ const BASE_DENSITY = [1.05,1.10,1.20,1.30,1.40,1.12,1.18,1.26,1.34,1.42,1.16,1.2
 export const ANOMALY_RULES = Object.fromEntries(STAGES.map((s,i) => {
   const duration = isBossStage(s.id) ? 360 : 300;
   const rate = BASE_DENSITY[i]*s.density*PACE.density*2.1*DIFFICULTIES.hard.density*(i<5?2:1)*1.6;
-  return [s.id, { kills:Math.ceil(rate*duration*1.5), litter:s.target*2, storedLitter:99, seconds:360, bossSeconds:120, hpFraction:1, rate, duration }];
+  // Litter keeps respawning every 12 s after the goal is met (main.js), so normal runs collect 22-38;
+  // the only defensible bound is the storage clamp (99). Litter is a weak cheat signal: flag > 99, hold > 198.
+  return [s.id, { kills:Math.ceil(rate*duration*1.5), litter:99, storedLitter:99, seconds:360, bossSeconds:120, hpFraction:1, rate, duration }];
 }));
 
 export function inspectRun(stage, input, duration) {
