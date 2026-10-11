@@ -41,6 +41,8 @@ ap.add_argument('--seed', type=int, default=10808)
 ap.add_argument('--trace', action='store_true')
 ap.add_argument('--foam', action='store_true', help='QA holds the foam overlay on CH13; synthetic worst overlay')
 ap.add_argument('--stress', action='store_true', help='QA adds 160 durable enemies, including the stage-specific threat; synthetic maximum crowd')
+ap.add_argument('--enemy-cap', type=int, default=0, help='Local QA only: enable spawn cap; 0 keeps production default OFF')
+ap.add_argument('--quality', type=int, help='Force same rendering tier across cap comparison rows')
 ap.add_argument('--threat-effects', action='store_true', help='Every 2 game seconds inject 8 native tracks or 1 native fireball (damage 0); synthetic visual load')
 ap.add_argument('--reference', help='Read JS/CSS from this local git commit for before/after replay; no checkout')
 ap.add_argument('--source', help='Read JS/CSS from this local git commit for performance measurement')
@@ -134,6 +136,10 @@ def start(page, stage):
 
 
 def prepare(page, stage):
+    if args.quality is not None:
+        page.evaluate('level=>window.__debugQuality(level)',args.quality)
+    if args.enemy_cap:
+        page.evaluate('cap=>{window.__debugQuality(99);window.__debugEnemyCap(true,cap)}',args.enemy_cap)
     seconds = 305 if int(stage[2:]) % 5 == 0 else 265
     # Evolved skills at end of a natural pilot, no extra enemies or immortal enemies.
     result = page.evaluate(f"""()=>{{window.__pilotGod=true;window.__pilotAvoid=2;
@@ -218,6 +224,8 @@ def run_scene(b, stage, dev, rate, rep):
     try:
         start(page, stage)
         prepared = prepare(page, stage)
+        if args.stress:
+            prepared['stressEnemies'] = page.evaluate('window.__sgSnapshot().enemies')
         cdp = ctx.new_cdp_session(page)
         cdp.send('Performance.enable')
         cdp.send('Emulation.setCPUThrottlingRate', {'rate': rate})
