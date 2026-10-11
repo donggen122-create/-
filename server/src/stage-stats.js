@@ -1,6 +1,6 @@
 import {STAGES,TEST_ACCOUNT_RE,stageLabel} from '../../game/src/rework-core.js';
 import {validatePerf,validateCause} from './run-telemetry.js';
-const parse = x => {try {return typeof x === 'string'?JSON.parse(x):x||{};}catch{return {};}};
+const parse = x => {try {const p=typeof x==='string'?JSON.parse(x):x;return p&&typeof p==='object'&&!Array.isArray(p)?p:{};}catch{return {};}};
 const round = x => Math.round(x*100)/100;
 export function median(values,precision=2){if(!values.length)return null;const a=[...values].sort((a,b)=>a-b),m=a.length>>1;const n=a.length%2?a[m]:(a[m-1]+a[m])/2;return Math.round(n*10**precision)/10**precision;}
 const samples=()=>({fps:[],p1:[],long50:[],quality:Array(9).fill(0)});

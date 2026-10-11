@@ -14,8 +14,9 @@ test('stage stats: deduplicated students, current stopped students, won rate, ol
  assert.ok(!JSON.stringify(stats).includes('user_id'));
 });
 test('unknown malformed diagnostics do not affect attempt totals; causes bounded to top three',()=>{
- const rows=Array.from({length:10},(_,i)=>run('u','CH01','lost',{cause:{id:'enemy'+i,kind:'enemy',at:2},perf:{...perf,dev:'invalid'}}));rows.push(run('u','CH01','lost','invalid-json'));
- const s=aggregateStageStats(rows,[profile('u',0)],{now}).stages[0];assert.equal(s.attempts,11);assert.equal(s.perf.n,0);assert.equal(s.causes.length,3);assert.equal(s.stopped,1);
+ const rows=Array.from({length:10},(_,i)=>run('u','CH01','lost',{cause:{id:'enemy'+i,kind:'enemy',at:2},perf:{...perf,dev:'invalid'}}));
+ for(const result of ['invalid-json',null,[],42])rows.push(run('u','CH01','lost',result));
+ const s=aggregateStageStats(rows,[{user_id:'u',state:'null'}],{now}).stages[0];assert.equal(s.attempts,14);assert.equal(s.perf.n,0);assert.equal(s.causes.length,3);assert.equal(s.stopped,1);
 });
 test('120 students / 5,000 diverse runs: response remains under 50 KB with or without stage filter',()=>{
  const profiles=Array.from({length:120},(_,i)=>profile('u'+i,i%20));
