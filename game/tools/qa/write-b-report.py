@@ -8,7 +8,7 @@ before=read('loading-before-wire.json');after=read('loading-after.json')
 caps=read('cap-study/summary.json')
 replay=read('replay-final/B-replay-final-replay.json')
 lines=[
-f"첫 화면 다운로드를 {min(v['title']['bytes'] for v in before.values())/1e6:.2f}~{max(v['title']['bytes'] for v in before.values())/1e6:.2f}MB에서 {max(v['title']['bytes'] for v in after.values())/1e6:.2f}MB로 줄였고, 다시 접속하면 {max(v['reload']['bytes'] for v in after.values())/1e6:.3f}MB만 받습니다.",
+f"첫 화면 다운로드를 {max(v['title']['bytes'] for v in before.values())/1e6:.2f}MB에서 {max(v['title']['bytes'] for v in after.values())/1e6:.2f}MB로 줄였고, 다시 접속하면 {max(v['reload']['bytes'] for v in after.values())/1e6:.3f}MB만 받습니다.",
 "출동 단추는 화면 7가지에서 스크롤 없이 보이고, 공지는 계정·기기마다 한 번 닫으면 다시 자동으로 뜨지 않습니다.",
 "적 수 상한은 꺼 두었습니다. 아래 모의 측정 표를 보고 선생님이 켤지와 숫자를 정하면 됩니다.",
 "", "# B 로딩·화면 작업 보고", "", "작업 날짜: 2026-10-11~12. 브랜치 `codex/2026-10-11-B`, 이 worktree만 수정·커밋. push·배포·실서버 및 실제 D1 접속 없음. 격리 서버 `http://localhost:8797`, SQLite 메모리 DB, `qa` 및 `qa` 접두 시험 계정만 사용.",
@@ -49,6 +49,7 @@ for r in caps:
     lines.append(f"| {r['device']} ×6 | {'4-3' if r['stage']=='CH18' else '4-5'} | {r['cap'] or '없음'} | {r['fps']:.1f} | {r['low1']:.1f} | {r['stressEnemies']} | {r['sampleEnemies']} |")
 qualifying=[cap for cap in [0,120,100,80] if all(r['low1']>=20 for r in caps if r['cap']==cap)]
 lines += ["", "네 조건 모두 하위 1% 20 이상인 설정: "+(', '.join('상한 없음' if c==0 else str(c) for c in qualifying) or '없음')+". 원시 FPS·화질 변화·메모리·오류는 [측정 자료](measurements/B/cap-study/summary.json) 및 같은 폴더의 4개 JSON에 있다.",
+"", "측정 제한: B의 성능 브라우저는 순차 실행했지만, 같은 PC에서 다른 headless Chrome·story 검사 프로세스가 CPU를 사용하고 있었다. 읽기 전용 [프로세스 기록](measurements/B/perf-process-snapshot.json)을 남겼으며 다른 세션의 프로세스는 건드리지 않았다. 표는 이 환경에서 관측한 값이고, 상한 변화의 인과 효과나 실제 학생 기기의 FPS를 보장하지 않는다.",
 "", "제안: 기본 꺼짐을 유지한다. 이 ×6 합성 표본만으로 학생 기기에 켜지 않는다. 실제 느린 태블릿에서 먼저 확인하고, 표의 20 FPS 통과 값 중 게임 밀도를 가장 덜 줄이는 값부터 선생님이 시험/선택한다. 특정 기기에서 모두 20 미만이면 상한 하나만으로 목표 달성을 주장할 수 없다.",
 "", "## ⑤ 실서버 캐시 적용 근거", "",
 "Cloudflare 공식 [Workers Static Assets Headers](https://developers.cloudflare.com/workers/static-assets/headers/)는 정적 자산 디렉터리의 `_headers`와 Cache-Control override/immutable를 지원한다고 설명한다. Worker 코드가 직접 만든 응답에는 적용되지 않는다는 제한도 명시한다. 저장소 `server/wrangler.toml`은 `assets.directory='../dist_web'`, `run_worker_first=['/']`로 `/assets/*`는 정적 자산 대상이다. 루트 HTML·API·Worker 업로드 응답에 이 규칙이 적용된다고 주장하지 않는다. 배포 후 실제 응답 헤더 확인은 Claude의 통합/배포 단계에서 해야 한다.",
@@ -56,7 +57,7 @@ lines += ["", "네 조건 모두 하위 1% 20 이상인 설정: "+(', '.join('�
 "", "## ⑥ 검사·남은 위험·다음 단계", "",
 "- `node --test \"tests/*.test.mjs\"`: 181/181 통과.",
 f"- `tablet-perf.py --mode replay`: 6단계 × 2시드 {sum(r['equal'] for r in replay)}/{len(replay)} 통과. 모든 게임 상태·조작 해시·서버 정산은 완전히 일치. [재생 기록](measurements/B/replay-final/B-replay-final-replay.json).",
-"- PC 캡처 비교는 동일 이미지 품질을 확인하면서 decode/합성 반올림을 분리한다. 최초 엄격 PNG 해시 비교에서 CH05 한 표본의 17픽셀(전체의 0.00185%)에서 파란색 채널 최대 9 차이만 있었고 게임 값은 동일했다. 새 도구는 게임 값은 완전 일치, 이미지 차이는 전체 0.0025% 이하·채널 10 이하만 허용하며 모든 숫자를 남긴다. 픽셀 단위 완전 동일라고 주장하지 않는다.",
+"- 최초 엄격 PNG 해시 비교에서 CH05 한 표본의 17픽셀(전체의 0.00185%)에서 파란색 채널 최대 9 차이만 있었고 게임 값은 동일했다. decode/합성 반올림이 원인인지는 확정하지 않았다. 새 도구는 게임 값은 완전 일치, 이미지 차이는 전체 0.0025% 이하·채널 10 이하만 허용하며 모든 숫자를 남긴다. 나머지 11표본은 PNG 해시도 일치했고, 에셋 원본은 변경하지 않았다. 픽셀 단위 완전 동일라고 주장하지 않는다.",
 "- 장별 자동 조종 4/4: 그림 준비 누락 0, 예상 밖 404 0, 빈 그림 draw 0. 일부 대왕 판은 제한 시간 실패였으며 클리어 성능/밸런스 검증을 뜻하지 않는다. 의도적인 404 1건으로 실패→재시도 및 판 시작 전 차단도 검사했다. [장별 검사](measurements/B/chapter-loading.json).",
 "- 실제 iOS Safari의 소리/손 조작, 실제 학교 태블릿 성능은 미검증. 실서버 캐시·압축·네트워크 시간도 미검증. CPU ×4/×6는 실물 기기와 같다는 뜻이 아니다.",
 "- 첫 출동에는 공용 PNG 효과/무기/아이콘을 한 번 받으므로 여전히 크다. 다음에는 아래 큰 파일과 실제 사용 목록을 근거로 WebP 후보를 시각 비교하고 장별 스프라이트 시트를 시험한다. 이번에는 PNG/JPG/오디오를 바꾸지 않았다. 별도 디바이스 측정 후 선택 친구/무기의 세분화 로딩도 고려한다.",
