@@ -6,9 +6,9 @@ from playwright.sync_api import sync_playwright
 from PIL import Image
 from browser import local_url,chrome_path
 ROOT=Path(__file__).resolve().parents[3]
-ap=argparse.ArgumentParser();ap.add_argument('--url',default='http://localhost:8798');ap.add_argument('--admin-only',action='store_true');args=ap.parse_args();BASE=local_url(args.url)
+ap=argparse.ArgumentParser();ap.add_argument('--url',default='http://localhost:8797');ap.add_argument('--admin-only',action='store_true');ap.add_argument('--prefix',default='A');args=ap.parse_args();BASE=local_url(args.url)
 OUT=ROOT/'docs/codex/preview';OUT.mkdir(parents=True,exist_ok=True)
-LOG=ROOT/'game/tools/qa/out/A-e2e.json'
+LOG=ROOT/f'game/tools/qa/out/{args.prefix}-e2e.json'
 fresh=json.loads(subprocess.check_output(['node','--input-type=module','-e',"import {freshProfile} from './game/src/rework-core.js';console.log(JSON.stringify(freshProfile()));"],cwd=ROOT))
 secrets=dict(line.split('=',1) for line in (ROOT/'game/tools/qa/.dev.vars').read_text().splitlines() if '=' in line)
 results=[r for r in json.loads(LOG.read_text(encoding='utf-8')) if not r.get('admin')] if args.admin_only and LOG.exists() else []
@@ -35,7 +35,7 @@ with sync_playwright() as pw:
     page.reload(wait_until='networkidle');page.wait_for_function("!document.querySelector('#btn-title-start').disabled")
     page.evaluate("document.getElementById('btn-title-start').click()");page.locator('#guardian-lobby .sg-nav').wait_for()
     for _ in range(4):page.wait_for_timeout(150);page.evaluate("document.querySelectorAll('dialog[open]').forEach(d=>d.close())")
-    page.locator('[data-stage="CH01"]').click();page.locator('#sg-start').click();page.locator('#levelup:not(.hidden)').wait_for()
+    page.locator('[data-stage="CH01"]').click();page.locator('[data-do="start"]:visible').click();page.locator('#levelup:not(.hidden)').wait_for()
     page.evaluate("window.__pilotGod=true;window.__debugPilot(.5)")
     page.wait_for_timeout(600)  # Real RAF samples before accelerated QA simulation.
     outcome=page.evaluate("window.__pilotGod=true;window.__pilotAvoid=2;window.__debugPilot(305)" if cleared else "window.__debugGod=false;window.__debugSpawn('T1_BAGGY',8,20);window.__debugBench(0,0,true);window.__debugAutoPlay(305)")
@@ -52,7 +52,7 @@ with sync_playwright() as pw:
      for sel in ('#sg-result-cause','#sg-result-next'):
       bounds=page.locator(sel).evaluate('(e)=>({width:e.clientWidth,scroll:e.scrollWidth,left:e.getBoundingClientRect().left,right:e.getBoundingClientRect().right})')
       assert bounds['scroll']<=bounds['width']+1 and bounds['left']>=0 and bounds['right']<=size[0]+1,bounds
-    capture=shot(page.locator('#result'),f'A_result_ui{ui}_{size[0]}_{"success" if cleared else "failure"}.png')
+    capture=shot(page.locator('#result'),f'{args.prefix}_result_ui{ui}_{size[0]}_{"success" if cleared else "failure"}.png')
     results.append({'ui':ui,'width':size[0],'outcome':outcome,'stored':event,'capture':capture,'errors':list(errors)})
     LOG.write_text(json.dumps(results,ensure_ascii=False,indent=2),encoding='utf-8')
     print(f'UI {ui} width {size[0]} cleared={cleared}: PASS',flush=True)
@@ -68,9 +68,9 @@ with sync_playwright() as pw:
  page.wait_for_function("document.querySelectorAll('#stage-stats-body tr').length===20")
  assert '선생님' in page.locator('#role-badge').inner_text()
  assert page.locator('#stage-stats-body tr').count()==20
- captures=[shot(page.locator('#stage-stats-panel'),'A_admin_stages.png')]
+ captures=[shot(page.locator('#stage-stats-panel'),f'{args.prefix}_admin_stages.png')]
  page.locator('#perf-stage').select_option('CH01');page.wait_for_function("document.querySelector('#device-stats-body tr td:nth-child(3)')?.textContent==='1-1'")
- captures.append(shot(page.locator('#device-stats-panel'),'A_admin_devices.png'))
+ captures.append(shot(page.locator('#device-stats-panel'),f'{args.prefix}_admin_devices.png'))
  for days in ('7','all','30'):
   page.locator('#stats-days').select_option(days);page.wait_for_function("!document.querySelector('#stage-stats-note').textContent.includes('읽는 중')")
  response=page.request.get(BASE+'/api/admin/stage-stats?days=30',headers={'X-Admin-Key':secrets['ADMIN_KEY']});data=response.json();size=len(response.body())

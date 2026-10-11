@@ -11,9 +11,11 @@ ap = argparse.ArgumentParser()
 ap.add_argument('--url', default='http://localhost:8797/?ui=2')
 ap.add_argument('--label', required=True)
 ap.add_argument('--shots', action='store_true')
+ap.add_argument('--out', default=str(ROOT / 'docs/codex/measurements/B'))
+ap.add_argument('--prefix', default='B', help='Screenshot/report family, e.g. C')
 args = ap.parse_args()
 BASE = local_url(args.url)
-OUT = ROOT / 'docs/codex/measurements/B'
+OUT = Path(args.out)
 OUT.mkdir(parents=True, exist_ok=True)
 PREVIEW = ROOT / 'docs/codex/preview'
 PREVIEW.mkdir(parents=True, exist_ok=True)
@@ -26,7 +28,7 @@ def close_notices(page):
         page.evaluate("document.querySelectorAll('dialog[open] [data-close]').forEach(b=>b.click())")
 
 def shot(page, size):
-    dest = PREVIEW / f'B_lobby_{size}_{args.label}.png'
+    dest = PREVIEW / f'{args.prefix}_lobby_{size}_{args.label}.png'
     page.screenshot(path=str(dest))
     with Image.open(dest) as im:
         im.quantize(colors=128).save(dest, optimize=True)
@@ -72,7 +74,7 @@ def run(browser, name, w, h, rate):
     measure('lobby',login)
     if args.shots: shot(page,f'{w}x{h}')
     def depart():
-        page.locator('#sg-start').click(); page.locator('#levelup:not(.hidden)').wait_for()
+        page.locator('[data-do="start"]:visible').click(); page.locator('#levelup:not(.hidden)').wait_for()
         page.locator('#card-row button').first.click()
         page.wait_for_function("window.__sgSnapshot().mode==='playing'")
         page.evaluate('()=>new Promise(r=>requestAnimationFrame(()=>requestAnimationFrame(r)))')

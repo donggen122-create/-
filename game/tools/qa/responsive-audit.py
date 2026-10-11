@@ -74,7 +74,12 @@ AUDIT_JS = r"""(kind)=>{
       const buttons=[...document.querySelectorAll('#guardian-lobby [data-do="start"]')].filter(vis);
       out.departureVisible=[];
       const nav=document.querySelector('#guardian-lobby .sg-nav')?.getBoundingClientRect();
-      if(!buttons.some(e=>{const r=e.getBoundingClientRect(),at=document.elementFromPoint(r.left+r.width/2,r.top+r.height/2);return r.top>=0&&r.bottom<=Math.min(H,nav?.top??H)&&r.left>=0&&r.right<=W&&(at===e||e.contains(at));}))out.departureVisible.push('Departure action is not visible above the menu on first screen');
+      const shown=buttons.filter(e=>{const r=e.getBoundingClientRect();return r.bottom>0&&r.top<Math.min(H,nav?.top??H)&&r.right>0&&r.left<W;});
+      out.departureCount=shown.length;
+      out.departureAction=shown.length===1?shown[0].id:null;
+      if(shown.length>1)out.departureVisible.push('Original and dock departure actions are visible together');
+      if(shown.length!==1||!shown.every(e=>{const r=e.getBoundingClientRect();return r.top>=0&&r.bottom<=Math.min(H,nav?.top??H)&&r.left>=0&&r.right<=W&&[.15,.5,.85].every(x=>{const at=document.elementFromPoint(r.left+r.width*x,r.top+r.height/2);return at===e||e.contains(at);});}))out.departureVisible.push('Exactly one departure action must be fully visible above the menu on first screen');
+      if(W>760&&document.querySelector('#sg-start-dock'))out.departureVisible.push('Wide screens must use the original action');
     }
     const slots=[...document.querySelectorAll('#guardian-lobby [data-gear-slot]')].filter(vis);
     if(kind==='lobby-gear'){
@@ -142,7 +147,7 @@ def audit_size(b, W, H, report):
     page.locator('.sg-nav [data-tab="adventure"]').click(); page.wait_for_timeout(200); quiet(page)
     # 3장부터 로비는 가장 최근 장을 연다 — 2장으로 넘긴 뒤 2-5 대왕(CH10)을 고른다(좁은 화면은 장 단추가 2개씩이라 보이는 단추로)
     page.locator('[data-chapter="2"]:visible').first.click(); page.wait_for_timeout(200)
-    page.locator('[data-stage="CH10"]').click(); page.wait_for_timeout(200); page.locator('#sg-start').click(); page.locator('#levelup:not(.hidden)').wait_for()
+    page.locator('[data-stage="CH10"]').click(); page.wait_for_timeout(200); page.locator('[data-do="start"]:visible').click(); page.locator('#levelup:not(.hidden)').wait_for()
     page.wait_for_timeout(300); check('levelup', 'levelup')
     page.evaluate("window.__sgCombatLoad(['F1','W1','E1','L2'])"); page.evaluate("window.__debugGod=true;window.__debugForceBoss()")
     page.evaluate("window.__debugSim(2.5)"); page.evaluate("window.__debugBossPattern('파이프 휘두르기')"); page.evaluate("window.__debugSim(0.3)")
