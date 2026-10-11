@@ -1035,7 +1035,7 @@ function sgCauseName(c,stage){
  if(c.kind==='boss'){const m=c.id.match(/:p(\d+)(:follow)?$/),p=m&&bd?.patterns?.[Number(m[1])];return (m?.[2]?p?.follow?.name:p?.name)||bd?.name||'대왕';}
  const hazards={zone:THEME_SKIN[theme]?.zone,fire:'불길',stink:'악취 구름',oil:'기름 웅덩이',acid:'산성비',explosion:'폭발'};
  const name=ENEMIES[c.id]?.name||hazards[c.id]||'날아오는 공격';
- return c.id==='T4_SAW'?'톱니몬의 회전':name;
+  return name;
 }
 
 function addShake(mag, t = 0.18) {
