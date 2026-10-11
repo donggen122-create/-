@@ -39,6 +39,7 @@ ap.add_argument('--warm', type=float, default=12)
 ap.add_argument('--measure', type=float, default=15)
 ap.add_argument('--seed', type=int, default=10808)
 ap.add_argument('--account', default='qa', help='Separate qa-prefixed account for concurrent isolated audits')
+ap.add_argument('--sample-frames', action='store_true', help='Replay only: exercise actual collector with fixed synthetic RAF intervals, without advancing simulation')
 ap.add_argument('--trace', action='store_true')
 ap.add_argument('--foam', action='store_true', help='QA holds the foam overlay on CH13; synthetic worst overlay')
 ap.add_argument('--stress', action='store_true', help='QA adds 160 durable enemies, including the stage-specific threat; synthetic maximum crowd')
@@ -47,6 +48,8 @@ ap.add_argument('--reference', help='Read JS/CSS from this local git commit for 
 ap.add_argument('--source', help='Read JS/CSS from this local git commit for performance measurement')
 ap.add_argument('--out', default=str(ROOT / 'game/tools/qa/out/tablet'))
 args = ap.parse_args()
+if args.sample_frames and args.mode != 'replay':
+    ap.error('--sample-frames is only allowed with --mode replay')
 if not __import__('re').fullmatch(r'qa[a-z0-9_]{0,10}',args.account):
     raise ValueError('--account must be a qa-prefixed test ID, max 12 characters')
 BASE = local_url(args.url)
@@ -86,6 +89,10 @@ def context(b, dev, ref=None, replay=False):
     w, h, dsf = DEVICES[dev]
     ctx = b.new_context(viewport={'width': w, 'height': h}, device_scale_factor=dsf, has_touch=dev != 'pc')
     source_routes(ctx, ref)
+    if args.sample_frames:
+        body=subprocess.check_output(['git','show',f'{ref}:game/src/main.js'],cwd=ROOT) if ref else (ROOT/'game/src/main.js').read_bytes()
+        body+=b"\nwindow.__qaRecordFrames=(n=60)=>{if(typeof sgPerfSample==='function')for(let i=0;i<n;i++)sgPerfSample(1000/60,mode==='playing');};\n"
+        ctx.route(BASE+'/src/main.js*',lambda route:route.fulfill(body=body,content_type='application/javascript'))
     # Reject every off-host request, including future API endpoints / external fonts.
     ctx.route('**/*', lambda route: route.fallback() if urlsplit(route.request.url).hostname in ('localhost', '127.0.0.1') else route.abort())
     if replay:
@@ -300,6 +307,7 @@ def replay(b):
             god = seed == args.seed
             device, quality = ('pc',0) if god else ('ipad',5)
             pair = []
+            recorded_perf = None
             for ref in (args.reference, None):
                 ctx, page, errors = context(b, device, ref, replay=True)
                 try:
@@ -310,10 +318,14 @@ def replay(b):
                     start(page, stage)
                     args.seed = original
                     page.evaluate(f"window.__pilotGod={str(god).lower()};window.__pilotAvoid=2;window.__qaInputHash=2166136261;window.__debugQuality({quality})")
+                    if args.sample_frames:
+                        page.evaluate('window.__debugPilot(1);window.__qaRecordFrames(60)')
                     page.evaluate('window.__debugPilot(260)')
                     # Include draw between fixed-tick commands so draw RNG consumption is identical.
                     for _ in range(3):
                         page.evaluate('window.__debugPilot(5)')
+                        if args.sample_frames:
+                            page.evaluate('window.__qaRecordFrames(60)')
                     outcome = page.evaluate('window.__debugOutcome()')
                     # Full quality must retain the same canvas pixels. Warm both bitmap paths first.
                     canvas_hash = None
@@ -329,11 +341,15 @@ def replay(b):
                     if not rewards:
                         raise AssertionError('No local settlement response captured')
                     reward = {k: rewards[-1][k] for k in ('reward','charged','cleared','stage')}
+                    if args.sample_frames and ref is None:
+                        recorded_perf=rewards[-1].get('perf')
+                        if not recorded_perf:
+                            raise AssertionError('Collector was not exercised / saved during replay')
                     pair.append({'outcome': outcome, 'inputHash': page.evaluate('window.__qaInputHash'), 'canvasHash':canvas_hash, 'settlement': reward, 'errors': errors})
                 finally:
                     ctx.close()
             equal = pair[0] == pair[1]
-            results.append({'stage': stage, 'seed': seed, 'device':device, 'quality':quality, 'god':god, 'equal': equal, 'before': pair[0], 'after': pair[1]})
+            results.append({'stage': stage, 'seed': seed, 'device':device, 'quality':quality, 'god':god, 'equal': equal, 'collector':recorded_perf, 'before': pair[0], 'after': pair[1]})
             print(f'replay {stage} seed {seed}: {"PASS" if equal else "FAIL"}', flush=True)
     if not all(r['equal'] for r in results):
         (OUT / f'{args.label}-replay.json').write_text(json.dumps(results, ensure_ascii=False, indent=2), encoding='utf-8')
