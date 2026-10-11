@@ -40,4 +40,10 @@ def save_webp(image, path):
     dest = Path(path).with_suffix('.webp')
     data, _ = encode_webp(image)
     dest.write_bytes(data)
+    # Some runtime paths deliberately retain PNG/JPG for compositing or size. Recutting
+    # must refresh those existing companions too, rather than leave stale art in the game.
+    png = dest.with_suffix('.png')
+    jpg = dest.with_suffix('.jpg')
+    if png.exists(): image.save(png, format='PNG', optimize=True)
+    if jpg.exists(): image.convert('RGB').save(jpg, format='JPEG', quality=100, optimize=True)
     return dest

@@ -49,11 +49,13 @@ elif args.mode=='remove':
 else:
     conversion=json.loads((ROOT/'docs/codex/measurements/D/convert.json').read_text(encoding='utf-8'))
     rows=conversion['files']; mapping={r['source'].removeprefix('game/assets/'):r['target'].removeprefix('game/assets/') for r in rows if r['status']=='converted'}
+    restored={r['initialDecision']['target'].removeprefix('game/assets/'):r['source'].removeprefix('game/assets/') for r in rows if r['status']=='retained' and r.get('initialDecision',{}).get('status')=='converted'}
     sources=['assets.js','ui2-art.js','element-content.js','element-effects.js','main.js','rework-ui.js']
     files=[ROOT/'game/src'/n for n in sources]+[ROOT/'game/src/rework.css',ROOT/'game/src/ui-v2.css',ROOT/'game/index.html']+list((ROOT/'game/admin').glob('*'))
     for p in files:
         if not p.is_file(): continue
         text=p.read_text(encoding='utf-8')
+        for old,new in restored.items(): text=text.replace('assets/'+old,'assets/'+new)
         for old,new in mapping.items():
             text=text.replace('assets/'+old,'assets/'+new)
             if p.name == 'assets.js':

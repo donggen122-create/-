@@ -62,6 +62,10 @@ elif args.mode == 'chapter':
     source = source.replace('t1/floor_dirt.png', 't1/floor_dirt.'+ext)
     sys.argv = [str(file)]
 elif args.mode.startswith('responsive'):
+    source=source.replace('try: audit_size(b, W, H, report)', "try: audit_size(b, W, H, report); print('checked size',s,flush=True)")
+    # Persist completed screen records even if the driver disconnects during teardown.
+    # Original per-size/page-error/issue checks still reject any incomplete or failed screen.
+    source=source.replace('        b.close()', "        try: b.close()\n        except Exception as e: (OUT/'driver-close-warning.json').write_text(json.dumps({'warning':str(e),'sizesRecorded':list(report)}),encoding='utf-8')")
     sys.argv=[str(file),'--url','http://localhost:8797'+('/?ui=2' if args.mode=='responsive2' else ''),'--out',str(OUT/args.mode),'--sizes','1280x720,1280x800,1024x768,820x1180,768x1024,375x667,360x640','--shots','']
 elif args.mode=='single':
     source=source.replace('measurements/B/single-smoke.json','measurements/D/single-smoke.json')
