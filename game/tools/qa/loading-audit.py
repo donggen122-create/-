@@ -59,11 +59,11 @@ def run(browser, name, w, h, rate):
     measure('title',lambda:page.goto(args.url,wait_until='networkidle'))
     def login():
         page.request.post(BASE+'/_qa/reset-attempts')
-        page.locator('#login-id').fill('qa'); page.locator('#login-pw').fill('qa_local_1234'); page.locator('#btn-register').click()
+        page.locator('#login-id').fill('qaload'); page.locator('#login-pw').fill('qa_local_1234'); page.locator('#btn-register').click()
         page.wait_for_timeout(300)
         if page.locator('#btn-title-start').is_hidden(): page.locator('#btn-login').click()
         page.locator('#btn-title-start').wait_for(state='visible')
-        assert page.request.post(BASE+'/_qa/profile',data={'id':'qa','profile':fresh}).ok
+        assert page.request.post(BASE+'/_qa/profile',data={'id':'qaload','profile':fresh},max_retries=2).ok
         page.evaluate("import('./src/main.js').then(()=>{})")
         # Refresh profile through the UI callback without page reload/cache pollution.
         page.evaluate('window.__sgUI.c.refresh()')

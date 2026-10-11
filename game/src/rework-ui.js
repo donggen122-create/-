@@ -4,7 +4,7 @@ const versionMarkup=html=>html.replace(/(?:\.\/|\.\.\/)assets\/[^\s"'<>]+/g,asse
 import { isUI2, art2, preloadUI2, symbol2, skillAsset } from './ui2-art.js';
 const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const entries=o=>Object.entries(o||{}),modern=id=>/^(element_|skill_|part_|combo_|mode_)/.test(id);
-const legacyIcon=(id,cls='')=>`<img class="sg-icon ${cls}" src="./assets/${modern(id)?'elements_v2':'seoho_v1'}/icons/${esc(id)}.svg" alt="" />`;
+const legacyIcon=(id,cls='')=>`<img class="sg-icon ${cls}" src="${assetURL(`./assets/${modern(id)?'elements_v2':'seoho_v1'}/icons/${esc(id)}.svg`)}" alt="" />`;
 export const icon2=(name,fallbackSvgId,cls='')=>isUI2()?art2(name,cls):legacyIcon(fallbackSvgId,cls);
 export const icon=(id,cls='')=>{
   const name={pass:'cur_pass',coin:'cur_coin',gift:'cur_gift'}[id] || (/^element_(fire|water|earth|wind|lightning)$/.test(id)?id.replace('element_','el_'):null);

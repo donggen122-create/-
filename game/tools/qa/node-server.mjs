@@ -5,6 +5,7 @@ import {DatabaseSync} from 'node:sqlite';
 import fs from 'node:fs';
 import path from 'node:path';
 import {createHash} from 'node:crypto';
+import {versionStaticContent} from '../version-assets.mjs';
 import {fileURLToPath,pathToFileURL} from 'node:url';
 const root=process.env.SEOHO_QA_ROOT||path.resolve(path.dirname(fileURLToPath(import.meta.url)),'../../..');
 const port=Number(process.env.PORT||8797);
@@ -22,7 +23,12 @@ const env={DB,LOCAL_TEST_CLOCK:'true',ASSETS:{async fetch(request){
  let name=decodeURIComponent(new URL(request.url).pathname);if(name.endsWith('/'))name+='index.html';
  const file=path.resolve(assetRoot,'.'+name);
  if(!file.startsWith(assetRoot+path.sep)||!fs.existsSync(file)||!fs.statSync(file).isFile())return new Response('Not found',{status:404});
- const body=fs.readFileSync(file),etag='"'+createHash('sha256').update(body).digest('hex')+'"';
+ let body=fs.readFileSync(file);
+ if(/\.(js|css|html)$/.test(file)){
+  const version=fs.readFileSync(path.join(assetRoot,'src/assets.js'),'utf8').match(/ASSET_VERSION = "([^"]+)"/)[1];
+  body=Buffer.from(versionStaticContent(body.toString('utf8'),version));
+ }
+ const etag='"'+createHash('sha256').update(body).digest('hex')+'"';
  // Emulate Workers static-assets defaults and the repository _headers; no live Worker/D1.
  const rules=fs.existsSync(path.join(root,'dist_web/_headers'))?fs.readFileSync(path.join(root,'dist_web/_headers'),'utf8'):'';
  const immutable=name.startsWith('/assets/')&&/\/assets\/\*\s+Cache-Control: public, max-age=31536000, immutable/.test(rules);

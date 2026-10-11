@@ -9,7 +9,7 @@
 @font-face{font-family:"JuaUI";src:url('../assets/ui/jua-ui.woff2?v=20261011b1') format('woff2');font-display:swap}
 
 /* Keep the map above the briefing. A duplicate action appears only when the normal action is below the nav. */
-html.ui2 #guardian-lobby .sg-departure-dock{position:fixed;z-index:20;left:50%;transform:translateX(-50%)!important;width:min(520px,calc(100% - 32px));min-height:48px!important;margin:0!important}
+html.ui2 #guardian-lobby #sg-start-dock{position:fixed!important;z-index:20;left:16px!important;right:16px!important;transform:none!important;width:calc(100% - 32px)!important;max-width:520px!important;min-height:48px!important;margin:0 auto!important;font-size:24px!important}
 html.ui2 #guardian-lobby .sg-news{flex-shrink:0;width:36px;height:36px;min-height:36px!important;padding:2px!important;border:0!important;background:none!important;box-shadow:none!important}
 html.ui2 #guardian-lobby .sg-news .sg-icon{width:30px;height:30px}
 @media (max-height:850px) and (min-width:761px){

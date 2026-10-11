@@ -5546,7 +5546,7 @@ function sgApplyServer(data) {
   sgState={...sgState,...data,error:null,user:cloud.user};
   if(data.profile) {
     save.hero=data.profile.hero;
-    loadHeroAssets(save.hero).catch(()=>{});
+    if(R.heroLocked(data.profile))loadHeroAssets(save.hero).catch(()=>{});
     if(data.profile.activePet) readyImage(sgPetImages[data.profile.activePet]).catch(()=>{});
   }
   refreshMenuMeta();

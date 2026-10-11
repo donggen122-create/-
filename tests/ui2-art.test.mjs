@@ -12,8 +12,8 @@ function mode(value, fn) {
   try { fn(); } finally { if (old === undefined) delete globalThis.document; else globalThis.document = old; }
 }
 test('UI 1 keeps legacy SVG markup and does not preload UI 2 art', () => mode(false, () => {
-  assert.equal(icon('coin'), '<img class="sg-icon " src="./assets/seoho_v1/icons/coin.svg" alt="" />');
-  assert.equal(icon2('nav_training','mode_melee'), '<img class="sg-icon " src="./assets/elements_v2/icons/mode_melee.svg" alt="" />');
+  assert.equal(icon('coin'), `<img class="sg-icon " src="${assetURL('./assets/seoho_v1/icons/coin.svg')}" alt="" />`);
+  assert.equal(icon2('nav_training','mode_melee'), `<img class="sg-icon " src="${assetURL('./assets/elements_v2/icons/mode_melee.svg')}" alt="" />`);
   let requests = 0; const old = globalThis.Image;
   globalThis.Image = class { set src(_) { requests++; } };
   try { preloadUI2(); assert.equal(requests, 0); } finally { if (old === undefined) delete globalThis.Image; else globalThis.Image = old; }

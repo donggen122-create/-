@@ -120,7 +120,8 @@ def audit_size(b, W, H, report):
     page.goto(args.url, wait_until='networkidle'); check('title')
     page.locator('#login-id').fill(uid); page.locator('#login-pw').fill('qa_local_1234'); page.locator('#btn-register').click()
     page.locator('#btn-title-start').wait_for(state='visible')
-    assert page.request.post(BASE + '/_qa/profile', data={'id': uid, 'profile': super_profile()}).ok
+    # Profile assignment is idempotent; tolerate an expired local keep-alive socket.
+    assert page.request.post(BASE + '/_qa/profile', data={'id': uid, 'profile': super_profile()}, max_retries=2).ok
     page.reload(wait_until='networkidle')   # 바꾼 시험 프로필을 다시 읽는다(안 하면 새 가입 프로필 그대로 — 캐릭터 고르기 창·1장만 열림)
     page.wait_for_function("!document.querySelector('#btn-title-start').disabled")
     page.evaluate("document.getElementById('btn-title-start').click()"); page.locator('#guardian-lobby .sg-nav').wait_for(); quiet(page)

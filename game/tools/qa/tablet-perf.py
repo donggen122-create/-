@@ -89,6 +89,8 @@ def context(b, dev, ref=None, replay=False):
     ctx.route('**/*', lambda route: route.fallback() if urlsplit(route.request.url).hostname in ('localhost', '127.0.0.1') else route.abort())
     if replay:
         ctx.add_init_script('window.requestAnimationFrame=(cb)=>0;')
+        # Canvas->bitmap conversion finishes asynchronously; fix that QA-only path in both sources.
+        ctx.add_init_script('window.createImageBitmap=undefined;')
         ctx.add_init_script("localStorage.setItem('lumen_muted','1');")
     ctx.add_init_script("""(()=>{const intervals=new Set(),timeouts=new Set(),si=window.setInterval,ci=window.clearInterval,st=window.setTimeout,ct=window.clearTimeout;
       window.setInterval=(...a)=>{const id=si(...a);intervals.add(id);return id;};window.clearInterval=id=>{intervals.delete(id);ci(id);};
@@ -114,7 +116,7 @@ def context(b, dev, ref=None, replay=False):
 
 
 def reset_profile(page):
-    assert page.request.post(BASE + '/_qa/profile', data={'id': 'qa', 'profile': profile()}).ok
+    assert page.request.post(BASE + '/_qa/profile', data={'id': 'qa', 'profile': profile()}, max_retries=2).ok
     page.reload(wait_until='networkidle')
     page.wait_for_function("!document.querySelector('#btn-title-start').disabled")
 
