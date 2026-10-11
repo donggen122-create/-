@@ -4,8 +4,9 @@
 // 2026-09-22 Codex "Guardian v2" 개편: 성장·이용권·판 시작/결과 API는 guardian.js(/api/guardian*, /api/play/*, 관리자 passes·grant-passes).
 //   옛 저장(saves)은 읽기 전용 보관(PUT /save → 410), 옛 선물(grants) 지급도 종료(→ 관리자 이용권 지급). 회원·세션·관리자 인증·접속 신호는 이 파일.
 import { guardianAPI, guardianAdmin, getProfile, migrate as migrateGuardian, dayKey, nextReset } from "./guardian.js";
-import { nicknameAPI, nicknamesAdmin } from './nickname.js';
+import { nicknameAPI, nicknamesAdmin, member } from './nickname.js';
 import { anomaliesAdmin } from './anomaly.js';
+import { rankingAPI, rankingAdmin, invalidateRanking } from './ranking.js';
 import { stageStats } from './stage-stats.js';
 const guardianSchemas=new WeakMap();
 async function ensureGuardian(env) { if(!guardianSchemas.has(env.DB))guardianSchemas.set(env.DB,migrateGuardian(env.DB).catch(e=>{guardianSchemas.delete(env.DB);throw e;}));await guardianSchemas.get(env.DB); }
@@ -149,11 +150,14 @@ async function api(request, env, url) {
   if (user.locked) return json({ error: LOCKED_MSG }, 403);
 
   if(path==='/nickname'&&method==='POST'){await ensureGuardian(env);return nicknameAPI(request,env.DB,user.id);}
+  if(['/ranking','/title'].includes(path)){await ensureGuardian(env);return rankingAPI(request,env.DB,user.id,path,method);}
 
   // Codex 개편 API(성장·이용권·판 시작/결과). 표는 첫 호출 때 guardian.js가 만든다
   if (path === "/guardian" || path.startsWith("/guardian/") || path.startsWith("/play/")) {
     await ensureGuardian(env);
-    return guardianAPI(request, env, user, path);
+    const response=await guardianAPI(request, env, user, path);
+    if(path==='/guardian'&&method==='GET'&&response.ok)return json({...await response.json(),member:await member(env.DB,user.id)});
+    return response;
   }
 
   if (path === "/me" && method === "GET") return json({ id: user.display_id }, 200, sessionCookies(url, user.token));
@@ -234,7 +238,8 @@ async function admin(request, env, sub, method) {
 
   await ensureGuardian(env);
   if(['nicknames','nicknames/decide'].includes(sub))return await nicknamesAdmin(request,env.DB,sub,method)||json({error:'없는 주소예요.'},404);
-  if(['anomalies','anomalies/release'].includes(sub))return await anomaliesAdmin(request,env.DB,sub,method,getProfile)||json({error:'없는 주소예요.'},404);
+  if(['anomalies','anomalies/release'].includes(sub)){const response=await anomaliesAdmin(request,env.DB,sub,method,getProfile);if(sub==='anomalies/release'&&response?.ok)invalidateRanking(env.DB);return response||json({error:'없는 주소예요.'},404);}
+  if(sub==='ranking-settings')return rankingAdmin(request,env.DB,method);
   if(sub==='stage-stats'&&method==='GET'){const stats=await stageStats(env.DB,new URL(request.url));return json(stats,stats.error?400:200);}
   // Codex 개편: 이용권 현황·지급 기록(passes), 이용권·코인 지급(grant-passes, requestId로 중복 방지), 표 만들기(migrate-v1)
   if (["passes", "grant-passes", "migrate-v1", "migrate-v2", "test-profile", "set-hero"].includes(sub)) {
