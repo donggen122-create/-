@@ -1,4 +1,6 @@
 import { validatePerf, validateCause } from './run-telemetry.js';
+import { inspectRun } from './anomaly.js';
+import { ensureRankingSchema } from './ranking-schema.js';
 import { VERSION, SKILLS, COMBOS, SUPPORTS, runParts, action, completeRun, stageUnlocked, difficultyOf, hardGate, hardGateText, durationFor, superTestProfile, testModeProfile, gearTestProfile, testGrade, testInfo, stageLabel, STAGES, PETS, TEST_ACCOUNT_RE, needsPetMigration, migratePets } from '../../game/src/rework-core.js';
 import { migrateLegacy } from './legacy-migration.js';
 import { migrateProfileV2, needsPartsRepair, repairObsoleteParts, PARTS_FIX_SNAPSHOT } from './profile-migration-v2.js';
@@ -68,7 +70,7 @@ export const SCHEMA = [
     UPDATE guardian_profiles SET state=json_set(state,'$.gifts',COALESCE(json_extract(state,'$.gifts'),0)+NEW.gifts), revision=revision+1 WHERE user_id=NEW.user_id;
   END`,
 ];
-export async function migrate(db){await db.batch(SCHEMA.map(sql=>db.prepare(sql)));return {ok:true,version:VERSION};}
+export async function migrate(db){await db.batch(SCHEMA.map(sql=>db.prepare(sql)));await ensureRankingSchema(db);return {ok:true,version:VERSION};}
 export async function getProfile(db,id){
   let row=await db.prepare('SELECT state,revision FROM guardian_profiles WHERE user_id=?').bind(id).first();
   if(!row){const legacy=await db.prepare('SELECT data FROM saves WHERE user_id=?').bind(id).first();
@@ -187,6 +189,16 @@ export async function guardianAPI(request,env,user,path,now=Date.now()){
       const result=completeRun(profile,{day:dayKey(now),equippedPartIds,pet,stage:run.stage,cleared,seconds,litter:Math.max(0,Math.min(99,Math.floor(Number(b.litter)||0))),hpFraction:Math.max(0,Math.min(1,Number(b.hpFraction)||0)),bossSeconds:Number.isFinite(b.bossSeconds)&&b.bossSeconds>=0?b.bossSeconds:Infinity,skillIds,fusionIds,supportIds});
       const started=run.result?JSON.parse(run.result):null;
       const event={reward:result.reward,cleared,stage:run.stage,runId,charged:profile.testMode?1:cleared?1:0,...(started?.test?{test:started.test}:{})};   // test = 출동할 때의 시험 조건(등급)
+      const inspection=inspectRun(run.stage,b,run.duration);
+      if(Number.isInteger(b.kills)&&b.kills>=0)event.kills=b.kills;
+      event.litter=Math.max(0,Math.min(99,Math.floor(Number(b.litter)||0)));
+      if(inspection.flags.length)event.flags=inspection.flags;
+      if(inspection.held){
+        event.held=true;event.heldReward=structuredClone(result.reward);
+        event.heldAmounts={coins:result.profile.coins-profile.coins,gifts:result.profile.gifts-profile.gifts};
+        result.profile.coins=profile.coins;result.profile.gifts=profile.gifts;
+        event.reward={...result.reward,coins:0,gifts:0,missions:[],stars:0,notes:[]};
+      }
       if(started?.loadout)event.loadout=started.loadout;
       const perf=validatePerf(b.perf),cause=!cleared&&b.hpFraction<=0?validateCause(b.cause):null;
       if(perf)event.perf=perf;if(cause)event.cause=cause;
@@ -194,7 +206,7 @@ export async function guardianAPI(request,env,user,path,now=Date.now()){
         const r=await db.batch([
           db.prepare('INSERT OR IGNORE INTO play_days(user_id,day) VALUES(?,?)').bind(id,dayKey(now)),
           db.prepare("UPDATE guardian_profiles SET state=?,revision=revision+1 WHERE user_id=? AND revision=? AND EXISTS(SELECT 1 FROM play_runs WHERE id=? AND user_id=? AND status='active')").bind(JSON.stringify(result.profile),id,revision,runId,id),
-          db.prepare("UPDATE play_runs SET status=?,settled_at=?,settlement_day=?,result=? WHERE id=? AND user_id=? AND status='active' AND changes()=1").bind(cleared?(profile.testMode?'test_won':'won'):'lost',now,dayKey(now),JSON.stringify(event),runId,id),
+          db.prepare("UPDATE play_runs SET status=?,settled_at=?,settlement_day=?,result=?,flagged=? WHERE id=? AND user_id=? AND status='active' AND changes()=1").bind(cleared?(profile.testMode?'test_won':'won'):'lost',now,dayKey(now),JSON.stringify(event),inspection.flags.length?1:0,runId,id),
         ]);
         if(r[2].meta.changes)return reply({...event,...await status(db,id,now)});
       }catch(e){if(String(e).includes('NO_PLAY_PASSES'))return reply({error:'오늘 이용권이 없어요.',code:'NO_PASSES'},409);throw e;}
