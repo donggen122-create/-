@@ -53,7 +53,7 @@ with sync_playwright() as pw:
     context=browser.new_context(**kwargs)
     context.route('**/*',lambda r:r.fallback() if urlsplit(r.request.url).hostname in ('localhost','127.0.0.1') else r.abort())
     if self.reference:
-     for name,body in sources.items():context.route(BASE+'/'+name+'*',lambda r,body=body,name=name:r.fulfill(body=body,content_type='text/css' if name.endswith('.css') else 'application/javascript'))
+     for name,body in sources.items():context.route(BASE+'/'+name+'*',lambda r,req,body=body,name=name:r.fulfill(body=body,content_type='text/css' if name.endswith('.css') else 'application/javascript'))
     return context
   comparisons={}
   for label,reference in [('before',True),('after',False)]:
