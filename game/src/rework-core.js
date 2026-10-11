@@ -192,9 +192,9 @@ export const STAGES = [
   //    3-1~3-4는 체력·공격 × 2 더(= 2장 × 3), 3-5는 공격만 × 2(대왕 체력이 단계 체력을 따라가 제한 시간 안에 못 잡는 판이 너무 늘지 않게, 체력은 2장 × 1.5 그대로).
   // 단계 배율은 그 판의 모든 적(중간 보스·대왕 포함) 체력과 내가 받는 모든 피해에 곱해진다(main.js spawnEnemyAt·spawnBoss·takeDamage). 이동 속도·마릿수는 그대로.
   { id:'CH11', name:'징검다리 개울', goal:'비닐에 걸린 물고기 3마리 구하기', target:3, enemyHp:3.45, enemyAtk:3.6, density:2.05, tip:'', story:'개울에 세제 거품이 둥둥! 거품몬을 정화하고 걸린 물고기를 구해 주자.', unlock:'' },
-  { id:'CH12', name:'빨래터', goal:'비닐에 걸린 물고기 4마리 구하기', target:4, enemyHp:3.75, enemyAtk:3.78, density:2.15, tip:'', story:'식용유 통 페트리가 떼로 몰려와! 뚜껑이 들썩이면 옆으로 피하자.', unlock:'' },
-  { id:'CH13', name:'하수구 옆', goal:'비닐에 걸린 물고기 5마리 구하기', target:5, enemyHp:4.05, enemyAtk:3.96, density:2.2, tip:'', story:'버려진 그물이 뭉친 유령그물 대장이 나타났어! 그물에 걸리지 않게 조심해.', unlock:'' },
-  { id:'CH14', name:'갈대 여울', goal:'비닐에 걸린 물고기 6마리 구하기', target:6, enemyHp:4.35, enemyAtk:4.14, density:2.25, tip:'', story:'버려진 그물이 뭉친 그물몬이 졸졸 따라와! 그물 몸을 펼치면 옆으로 피하자.', unlock:'' },
+  { id:'CH12', name:'빨래터', goal:'비닐에 걸린 물고기 4마리 구하기', target:4, enemyHp:3.75, enemyAtk:3.78, density:2.15, tip:'', story:'도전해 보자! 기름은 내가 닦을게.', unlock:'' },
+  { id:'CH13', name:'하수구 옆', goal:'비닐에 걸린 물고기 5마리 구하기', target:5, enemyHp:4.05, enemyAtk:3.96, density:2.2, tip:'', story:'유령그물이다! 물고기를 풀어 주자.', unlock:'' },
+  { id:'CH14', name:'갈대 여울', goal:'비닐에 걸린 물고기 6마리 구하기', target:6, enemyHp:4.35, enemyAtk:4.14, density:2.25, tip:'', story:'갈대숲은 내가 잘 알아. 따라와!', unlock:'' },
   { id:'CH15', name:'오수 배출구', goal:'비닐에 걸린 물고기 5마리 구하기', target:5, enemyHp:2.25, enemyAtk:4.26, density:2.25, tip:'', story:'오수 배출구에서 구정물 대왕이 솟아올랐어! 물고기를 구해 대왕을 약하게 만들자.', unlock:'' },
   // 4장 「불타는 숲」(2026-10-07, themes.js T4_*·학생 숲 몬스터): 목표는 불씨 끄기(불씨 옆에 서면 꺼지고 새싹이 돋음). 3-5를 성공하면 열린다.
   // 적 체력·공격은 시안: 같은 자리 3장 단계 × 1.15(모의 전). 4-5는 3-5처럼 체력은 낮게 두고 공격만 올린다.
