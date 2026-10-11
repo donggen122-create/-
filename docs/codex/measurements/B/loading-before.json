@@ -1,0 +1,452 @@
+{
+  "pc": {
+    "title": {
+      "ms": 16853.7,
+      "requests": 270,
+      "bytes": 23151715,
+      "groups": {
+        "other": {
+          "requests": 3,
+          "bytes": 64268
+        },
+        "src": {
+          "requests": 25,
+          "bytes": 1283961
+        },
+        "assets/sprites": {
+          "requests": 177,
+          "bytes": 10264013
+        },
+        "assets/ui": {
+          "requests": 10,
+          "bytes": 1547883
+        },
+        "assets/ui2": {
+          "requests": 46,
+          "bytes": 3797931
+        },
+        "assets/elements_v2": {
+          "requests": 5,
+          "bytes": 2925620
+        },
+        "assets/seoho_v1": {
+          "requests": 4,
+          "bytes": 3268039
+        }
+      }
+    },
+    "lobby": {
+      "ms": 1434.6,
+      "requests": 19,
+      "bytes": 341104,
+      "groups": {
+        "assets/audio": {
+          "requests": 10,
+          "bytes": 118368
+        },
+        "other": {
+          "requests": 5,
+          "bytes": 3971
+        },
+        "assets/seoho_v1": {
+          "requests": 1,
+          "bytes": 472
+        },
+        "assets/sprites": {
+          "requests": 2,
+          "bytes": 356
+        },
+        "assets/ui": {
+          "requests": 1,
+          "bytes": 217937
+        }
+      }
+    },
+    "battle": {
+      "ms": 842.8,
+      "requests": 5,
+      "bytes": 113784,
+      "groups": {
+        "other": {
+          "requests": 2,
+          "bytes": 2084
+        },
+        "assets/ui2": {
+          "requests": 3,
+          "bytes": 111700
+        }
+      }
+    },
+    "reload": {
+      "ms": 16439.9,
+      "requests": 275,
+      "bytes": 23155175,
+      "groups": {
+        "other": {
+          "requests": 6,
+          "bytes": 67078
+        },
+        "src": {
+          "requests": 25,
+          "bytes": 1283961
+        },
+        "assets/sprites": {
+          "requests": 178,
+          "bytes": 10264191
+        },
+        "assets/ui": {
+          "requests": 10,
+          "bytes": 1547883
+        },
+        "assets/ui2": {
+          "requests": 46,
+          "bytes": 3797931
+        },
+        "assets/elements_v2": {
+          "requests": 5,
+          "bytes": 2925620
+        },
+        "assets/seoho_v1": {
+          "requests": 5,
+          "bytes": 3268511
+        }
+      }
+    },
+    "errors": [],
+    "failures": [
+      {
+        "requestId": "40204.298",
+        "timestamp": 259800.685853,
+        "encodedDataLength": 178,
+        "url": "http://localhost:8797/favicon.ico",
+        "status": 404
+      },
+      {
+        "requestId": "40204.311",
+        "timestamp": 259816.660247,
+        "encodedDataLength": 178,
+        "url": "http://localhost:8797/favicon.ico",
+        "status": 404
+      },
+      {
+        "requestId": "40204.369",
+        "timestamp": 259816.683176,
+        "encodedDataLength": 178,
+        "url": "http://localhost:8797/assets/sprites/t1/card_clean.jpg",
+        "status": 404
+      },
+      {
+        "requestId": "40204.434",
+        "timestamp": 259817.035409,
+        "encodedDataLength": 178,
+        "url": "http://localhost:8797/assets/sprites/t1/card_clean.jpg",
+        "status": 404
+      },
+      {
+        "requestId": "40204.859",
+        "timestamp": 259819.523462,
+        "encodedDataLength": 178,
+        "url": "http://localhost:8797/assets/sprites/t1/card_clean.jpg",
+        "status": 404
+      }
+    ]
+  },
+  "phone": {
+    "title": {
+      "ms": 16429.2,
+      "requests": 269,
+      "bytes": 23151537,
+      "groups": {
+        "other": {
+          "requests": 2,
+          "bytes": 64090
+        },
+        "src": {
+          "requests": 25,
+          "bytes": 1283961
+        },
+        "assets/sprites": {
+          "requests": 177,
+          "bytes": 10264013
+        },
+        "assets/ui": {
+          "requests": 10,
+          "bytes": 1547883
+        },
+        "assets/ui2": {
+          "requests": 46,
+          "bytes": 3797931
+        },
+        "assets/elements_v2": {
+          "requests": 5,
+          "bytes": 2925620
+        },
+        "assets/seoho_v1": {
+          "requests": 4,
+          "bytes": 3268039
+        }
+      }
+    },
+    "lobby": {
+      "ms": 1493.0,
+      "requests": 20,
+      "bytes": 341553,
+      "groups": {
+        "assets/audio": {
+          "requests": 10,
+          "bytes": 118368
+        },
+        "other": {
+          "requests": 6,
+          "bytes": 4420
+        },
+        "assets/seoho_v1": {
+          "requests": 1,
+          "bytes": 472
+        },
+        "assets/sprites": {
+          "requests": 2,
+          "bytes": 356
+        },
+        "assets/ui": {
+          "requests": 1,
+          "bytes": 217937
+        }
+      }
+    },
+    "battle": {
+      "ms": 809.1,
+      "requests": 9,
+      "bytes": 219609,
+      "groups": {
+        "other": {
+          "requests": 2,
+          "bytes": 2084
+        },
+        "assets/ui2": {
+          "requests": 3,
+          "bytes": 88297
+        },
+        "assets/sprites": {
+          "requests": 4,
+          "bytes": 129228
+        }
+      }
+    },
+    "reload": {
+      "ms": 16453.5,
+      "requests": 275,
+      "bytes": 23155175,
+      "groups": {
+        "other": {
+          "requests": 6,
+          "bytes": 67078
+        },
+        "src": {
+          "requests": 25,
+          "bytes": 1283961
+        },
+        "assets/sprites": {
+          "requests": 178,
+          "bytes": 10264191
+        },
+        "assets/ui": {
+          "requests": 10,
+          "bytes": 1547883
+        },
+        "assets/ui2": {
+          "requests": 46,
+          "bytes": 3797931
+        },
+        "assets/elements_v2": {
+          "requests": 5,
+          "bytes": 2925620
+        },
+        "assets/seoho_v1": {
+          "requests": 5,
+          "bytes": 3268511
+        }
+      }
+    },
+    "errors": [],
+    "failures": [
+      {
+        "requestId": "44636.310",
+        "timestamp": 259852.127599,
+        "encodedDataLength": 178,
+        "url": "http://localhost:8797/favicon.ico",
+        "status": 404
+      },
+      {
+        "requestId": "44636.367",
+        "timestamp": 259852.484101,
+        "encodedDataLength": 178,
+        "url": "http://localhost:8797/assets/sprites/t1/card_clean.jpg",
+        "status": 404
+      },
+      {
+        "requestId": "44636.432",
+        "timestamp": 259852.601187,
+        "encodedDataLength": 178,
+        "url": "http://localhost:8797/assets/sprites/t1/card_clean.jpg",
+        "status": 404
+      },
+      {
+        "requestId": "44636.861",
+        "timestamp": 259854.976577,
+        "encodedDataLength": 178,
+        "url": "http://localhost:8797/assets/sprites/t1/card_clean.jpg",
+        "status": 404
+      }
+    ]
+  },
+  "ipad": {
+    "title": {
+      "ms": 18097.2,
+      "requests": 269,
+      "bytes": 23151537,
+      "groups": {
+        "src": {
+          "requests": 25,
+          "bytes": 1283961
+        },
+        "assets/sprites": {
+          "requests": 177,
+          "bytes": 10264013
+        },
+        "assets/ui": {
+          "requests": 10,
+          "bytes": 1547883
+        },
+        "other": {
+          "requests": 2,
+          "bytes": 64090
+        },
+        "assets/ui2": {
+          "requests": 46,
+          "bytes": 3797931
+        },
+        "assets/elements_v2": {
+          "requests": 5,
+          "bytes": 2925620
+        },
+        "assets/seoho_v1": {
+          "requests": 4,
+          "bytes": 3268039
+        }
+      }
+    },
+    "lobby": {
+      "ms": 2172.3,
+      "requests": 20,
+      "bytes": 341553,
+      "groups": {
+        "assets/audio": {
+          "requests": 10,
+          "bytes": 118368
+        },
+        "other": {
+          "requests": 6,
+          "bytes": 4420
+        },
+        "assets/seoho_v1": {
+          "requests": 1,
+          "bytes": 472
+        },
+        "assets/sprites": {
+          "requests": 2,
+          "bytes": 356
+        },
+        "assets/ui": {
+          "requests": 1,
+          "bytes": 217937
+        }
+      }
+    },
+    "battle": {
+      "ms": 1245.7,
+      "requests": 7,
+      "bytes": 176741,
+      "groups": {
+        "other": {
+          "requests": 2,
+          "bytes": 2084
+        },
+        "assets/ui2": {
+          "requests": 3,
+          "bytes": 104336
+        },
+        "assets/sprites": {
+          "requests": 2,
+          "bytes": 70321
+        }
+      }
+    },
+    "reload": {
+      "ms": 17689.4,
+      "requests": 275,
+      "bytes": 23155175,
+      "groups": {
+        "other": {
+          "requests": 6,
+          "bytes": 67078
+        },
+        "src": {
+          "requests": 25,
+          "bytes": 1283961
+        },
+        "assets/sprites": {
+          "requests": 178,
+          "bytes": 10264191
+        },
+        "assets/ui": {
+          "requests": 10,
+          "bytes": 1547883
+        },
+        "assets/ui2": {
+          "requests": 46,
+          "bytes": 3797931
+        },
+        "assets/elements_v2": {
+          "requests": 5,
+          "bytes": 2925620
+        },
+        "assets/seoho_v1": {
+          "requests": 5,
+          "bytes": 3268511
+        }
+      }
+    },
+    "errors": [],
+    "failures": [
+      {
+        "requestId": "19924.310",
+        "timestamp": 259889.405091,
+        "encodedDataLength": 178,
+        "url": "http://localhost:8797/favicon.ico",
+        "status": 404
+      },
+      {
+        "requestId": "19924.367",
+        "timestamp": 259889.851415,
+        "encodedDataLength": 178,
+        "url": "http://localhost:8797/assets/sprites/t1/card_clean.jpg",
+        "status": 404
+      },
+      {
+        "requestId": "19924.432",
+        "timestamp": 259890.253633,
+        "encodedDataLength": 178,
+        "url": "http://localhost:8797/assets/sprites/t1/card_clean.jpg",
+        "status": 404
+      },
+      {
+        "requestId": "19924.859",
+        "timestamp": 259894.655432,
+        "encodedDataLength": 178,
+        "url": "http://localhost:8797/assets/sprites/t1/card_clean.jpg",
+        "status": 404
+      }
+    ]
+  }
+}
