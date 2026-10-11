@@ -5,6 +5,7 @@
 import sys
 from pathlib import Path
 import numpy as np
+from cut_webp import save_webp
 from PIL import Image
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
@@ -49,65 +50,65 @@ def cut(col, alpha, box, out_h, mode, min_frac):
 SHEETS = [
     # 위 줄 평소(버너몬·톱니몬·뉴트몬) · 아래 줄 공격(불꽃 키우기·회전·이빨 방어)
     ("적_04_숲3종.png", (35, 150), [
-        ("en_burner.png",      G32(0, 0), 160, "all", 0.004),
-        ("en_saw.png",         G32(1, 0), 150, "all", 0.004),
-        ("en_nutria.png",      G32(2, 0), 130, "all", 0.004),
-        ("en_burner_big.png",  G32(0, 1), 160, "all", 0.002),
-        ("en_saw_spin.png",    G32(1, 1), 160, "all", 0.001),
-        ("en_nutria_guard.png", G32(2, 1), 130, "all", 0.002),
+        ("en_burner.webp",      G32(0, 0), 160, "all", 0.004),
+        ("en_saw.webp",         G32(1, 0), 150, "all", 0.004),
+        ("en_nutria.webp",      G32(2, 0), 130, "all", 0.004),
+        ("en_burner_big.webp",  G32(0, 1), 160, "all", 0.002),
+        ("en_saw_spin.webp",    G32(1, 1), 160, "all", 0.001),
+        ("en_nutria_guard.webp", G32(2, 1), 130, "all", 0.002),
     ]),
     # 버너몬 불꽃: 작음 · 중간 · 최대 · 꺼진 불씨(약한 때)
     ("적_04b_버너몬_불꽃.png", (35, 150), [
-        ("en_burner_s.png",   G41(0, 0), 160, "all", 0.004),
-        ("en_burner_m.png",   G41(1, 0), 160, "all", 0.004),
-        ("en_burner_l.png",   G41(2, 0), 160, "all", 0.004),
-        ("en_burner_out.png", G41(3, 0), 160, "all", 0.004),
+        ("en_burner_s.webp",   G41(0, 0), 160, "all", 0.004),
+        ("en_burner_m.webp",   G41(1, 0), 160, "all", 0.004),
+        ("en_burner_l.webp",   G41(2, 0), 160, "all", 0.004),
+        ("en_burner_out.webp", G41(3, 0), 160, "all", 0.004),
     ]),
     # 중간 보스 와르르 불도저: 평소 · 돌진 직전(흙먼지까지)
     ("적_04c_불도저.png", (35, 150), [
-        ("en_dozer.png",        G21(0, 0), 230, "all", 0.002),
-        ("en_dozer_charge.png", G21(1, 0), 230, "all", 0.002),
+        ("en_dozer.webp",        G21(0, 0), 230, "all", 0.002),
+        ("en_dozer_charge.webp", G21(1, 0), 230, "all", 0.002),
     ]),
     # 불키: 평소 · 쓰레기 공 던지기 · 점프 내려찍기
     ("적_04d_불키.png", (35, 150), [
-        ("en_bulki.png",       BULKI[0], 200, "all", 0.002),
-        ("en_bulki_throw.png", BULKI[1], 200, "all", 0.002),
-        ("en_bulki_jump.png",  BULKI[2], 200, "all", 0.002),
+        ("en_bulki.webp",       BULKI[0], 200, "all", 0.002),
+        ("en_bulki_throw.webp", BULKI[1], 200, "all", 0.002),
+        ("en_bulki_jump.webp",  BULKI[2], 200, "all", 0.002),
     ]),
     # 대왕 산불 거인: 평소 · 내려찍기 · 화남 · 정화 후
     ("보스_04_산불거인.png", (35, 150), [
-        ("boss_calm.png",  G22(0, 0), 300, "all", 0.002),
-        ("boss_slam.png",  G22(1, 0), 300, "all", 0.002),
-        ("boss_angry.png", G22(0, 1), 300, "all", 0.002),
-        ("boss_clean.png", G22(1, 1), 300, "all", 0.002),
+        ("boss_calm.webp",  G22(0, 0), 300, "all", 0.002),
+        ("boss_slam.webp",  G22(1, 0), 300, "all", 0.002),
+        ("boss_angry.webp", G22(0, 1), 300, "all", 0.002),
+        ("boss_clean.webp", G22(1, 1), 300, "all", 0.002),
     ]),
     ("효과_04_숲.png", (35, 150), [
-        ("fx_flames.png", G32(0, 0), 150, "all", 0.002),
-        ("fx_tracks.png", G32(1, 0), 200, "all", 0.002),
-        ("fx_trashball.png", G32(2, 0), 110, "all", 0.002),
-        ("fx_slam.png",   G32(0, 1), 190, "all", 0.002),
-        ("fx_dust.png",   G32(1, 1), 120, "all", 0.002),
-        ("fx_puff.png",   G32(2, 1), 130, "all", 0.002),
+        ("fx_flames.webp", G32(0, 0), 150, "all", 0.002),
+        ("fx_tracks.webp", G32(1, 0), 200, "all", 0.002),
+        ("fx_trashball.webp", G32(2, 0), 110, "all", 0.002),
+        ("fx_slam.webp",   G32(0, 1), 190, "all", 0.002),
+        ("fx_dust.webp",   G32(1, 1), 120, "all", 0.002),
+        ("fx_puff.webp",   G32(2, 1), 130, "all", 0.002),
     ]),
     # 계곡 웅덩이는 옆 칸까지 넓게 그려져 상자를 넓힌다
     ("소품_04_숲.png", (35, 150), [
-        ("prop_pond.png",   (6, 6, 535, 620), 190, "all", 0.002),
-        ("prop_stump.png",  G32(1, 0), 120, "all", 0.002),
-        ("prop_burnt.png",  G32(2, 0), 190, "all", 0.002),
-        ("prop_camptrash.png", G32(0, 1), 110, "all", 0.002),
-        ("prop_ember.png",  G32(1, 1), 100, "all", 0.002),
-        ("prop_sprout.png", G32(2, 1), 90, "all", 0.002),
+        ("prop_pond.webp",   (6, 6, 535, 620), 190, "all", 0.002),
+        ("prop_stump.webp",  G32(1, 0), 120, "all", 0.002),
+        ("prop_burnt.webp",  G32(2, 0), 190, "all", 0.002),
+        ("prop_camptrash.webp", G32(0, 1), 110, "all", 0.002),
+        ("prop_ember.webp",  G32(1, 1), 100, "all", 0.002),
+        ("prop_sprout.webp", G32(2, 1), 90, "all", 0.002),
     ]),
 ]
 # (파일, 출력 이름, 밝기 배율, 대비(1 = 그대로))
 # 1~3장 바닥은 밝기 180~210·표준편차 5~21. 4장 원본은 어두워(숲길 125·그을린 숲 68) 갈색·검은 몬스터가 묻혀 보여서 밝게 올리고 무늬는 옅게.
 TILES = [
-    ("바닥_04_숲길.png", "floor_trail.png", 1.32, 0.7),
-    ("바닥_04b_벌목장.png", "floor_logging.png", 1.12, 0.75),
-    ("바닥_04c_그을린숲.png", "floor_burnt.png", 1.75, 0.8),
+    ("바닥_04_숲길.png", "floor_trail.webp", 1.32, 0.7),
+    ("바닥_04b_벌목장.png", "floor_logging.webp", 1.12, 0.75),
+    ("바닥_04c_그을린숲.png", "floor_burnt.webp", 1.75, 0.8),
 ]
 # 로비 마을 카드(마젠타 아님): 왼쪽 불타는 숲 · 오른쪽 되살아난 숲
-CARDS = [("마을카드_04_숲.png", [("card_polluted.png", (20, 20, 818, 918)), ("card_clean.png", (853, 20, 1652, 918))], 520)]
+CARDS = [("마을카드_04_숲.png", [("card_polluted.webp", (20, 20, 818, 918)), ("card_clean.webp", (853, 20, 1652, 918))], 520)]
 
 
 def make_tile(name, out_name, gain, contrast):
@@ -123,7 +124,7 @@ def make_tile(name, out_name, gain, contrast):
         m = out.reshape(-1, 3).mean(axis=0)
         out = m + (out - m) * contrast
     im = Image.fromarray(np.clip(out, 0, 255).astype(np.uint8)).resize((TILE, TILE), Image.LANCZOS)
-    im.save(OUT / out_name, optimize=True)
+    save_webp(im, OUT / out_name)
     lum = np.asarray(im.convert("L")).astype(np.float32)
     print(out_name, im.size, round((OUT / out_name).stat().st_size / 1024), "KB", "밝기", round(lum.mean()), "표준편차", round(lum.std()))
 
@@ -139,14 +140,14 @@ def main():
         col, alpha = chroma_key(rgb, "magenta", band, strict_magenta=True)
         for out_name, box, out_h, mode, min_frac in cuts:
             im = cut(col, alpha, box, out_h, mode, min_frac)
-            im.save(OUT / out_name, optimize=True); made.append((out_name, im))
+            save_webp(im, OUT / out_name); made.append((out_name, im))
             print(out_name, im.size, round((OUT / out_name).stat().st_size / 1024), "KB")
     for name, out_name, gain, contrast in TILES: make_tile(name, out_name, gain, contrast)
     for name, crops, width in CARDS:
         src = Image.open(SRC / name).convert("RGB")
         for out_name, box in crops:
             im = src.crop(box); im = im.resize((width, round(im.height * width / im.width)), Image.LANCZOS)
-            im.save(OUT / out_name.replace('.png', '.jpg'), quality=86); print(out_name, im.size)
+            save_webp(im, OUT / out_name); print(out_name, im.size)
     cellw = 170; cols = 6
     rows = (len(made) + cols - 1) // cols
     pv = Image.new("RGBA", (cols * cellw, rows * cellw + TILE // 2 + 10), (90, 90, 100, 255))

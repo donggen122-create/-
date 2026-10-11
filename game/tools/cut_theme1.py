@@ -6,6 +6,7 @@
 import sys
 from pathlib import Path
 import numpy as np
+from cut_webp import save_webp
 from PIL import Image
 from scipy import ndimage
 
@@ -22,39 +23,39 @@ TILE = 448
 # 모드 largest = 상자 안에서 가장 큰 덩어리 하나(번호·글자·잡티 제거), all = 최소 비율 이상 덩어리 전부(연기·흩어진 조각 유지)
 SHEETS = [
     ("테마 1단계 소품.jpg", (35, 150), [(870, 870, 960, 960)], [
-        ("prop_bins.png",       (30, 40, 630, 580),  200, "largest", 0),
-        ("prop_bin_fallen.png", (650, 50, 1000, 350), 150, "all", 0.02),
-        ("prop_bags.png",       (660, 370, 1000, 650), 140, "largest", 0),
-        ("prop_tire.png",       (30, 680, 330, 960), 120, "largest", 0),
-        ("prop_bench.png",      (330, 620, 680, 970), 150, "largest", 0),
-        ("prop_litter.png",     (700, 700, 1000, 960), 120, "all", 0.03),
+        ("prop_bins.webp",       (30, 40, 630, 580),  200, "largest", 0),
+        ("prop_bin_fallen.webp", (650, 50, 1000, 350), 150, "all", 0.02),
+        ("prop_bags.webp",       (660, 370, 1000, 650), 140, "largest", 0),
+        ("prop_tire.webp",       (30, 680, 330, 960), 120, "largest", 0),
+        ("prop_bench.webp",      (330, 620, 680, 970), 150, "largest", 0),
+        ("prop_litter.webp",     (700, 700, 1000, 960), 120, "all", 0.03),
     ]),
     ("테마 1단계 적.jpg", (35, 150), [(870, 870, 960, 960)], [
-        ("en_snackbag.png",  (30, 60, 360, 440),  160, "largest", 0),
-        ("en_buttbug.png",   (365, 60, 700, 440), 160, "largest", 0),
-        ("en_bottle.png",    (700, 60, 1000, 440), 160, "largest", 0),
-        ("en_baggy.png",     (30, 560, 360, 905), 160, "largest", 0),
-        ("en_foodwaste.png", (365, 560, 740, 905), 160, "largest", 0),
-        ("en_fly.png",       (740, 560, 1000, 900), 160, "largest", 0),
+        ("en_snackbag.webp",  (30, 60, 360, 440),  160, "largest", 0),
+        ("en_buttbug.webp",   (365, 60, 700, 440), 160, "largest", 0),
+        ("en_bottle.webp",    (700, 60, 1000, 440), 160, "largest", 0),
+        ("en_baggy.webp",     (30, 560, 360, 905), 160, "largest", 0),
+        ("en_foodwaste.webp", (365, 560, 740, 905), 160, "largest", 0),
+        ("en_fly.webp",       (740, 560, 1000, 900), 160, "largest", 0),
     ]),
     ("테마 1단계 보스.jpg", (35, 150), [], [
-        ("boss_calm.png",  (10, 20, 500, 566),  300, "all", 0.02),
-        ("boss_angry.png", (500, 20, 1014, 566), 300, "all", 0.02),
+        ("boss_calm.webp",  (10, 20, 500, 566),  300, "all", 0.02),
+        ("boss_angry.webp", (500, 20, 1014, 566), 300, "all", 0.02),
     ]),
     ("아이템. 공용.jpg", (20, 90), [], [
-        ("item_sprout.png",     (55, 55, 340, 340),  64, "largest", 0),
-        ("item_sprout_big.png", (375, 55, 655, 340), 64, "largest", 0),
-        ("item_recycle.png",    (690, 55, 975, 340), 64, "largest", 0),
-        ("item_heart.png",      (55, 370, 340, 655), 64, "largest", 0),
-        ("item_orb.png",        (375, 370, 655, 655), 64, "largest", 0),
-        ("item_star.png",       (690, 370, 975, 655), 64, "largest", 0),
+        ("item_sprout.webp",     (55, 55, 340, 340),  64, "largest", 0),
+        ("item_sprout_big.webp", (375, 55, 655, 340), 64, "largest", 0),
+        ("item_recycle.webp",    (690, 55, 975, 340), 64, "largest", 0),
+        ("item_heart.webp",      (55, 370, 340, 655), 64, "largest", 0),
+        ("item_orb.webp",        (375, 370, 655, 655), 64, "largest", 0),
+        ("item_star.webp",       (690, 370, 975, 655), 64, "largest", 0),
     ]),
 ]
 # (파일, 출력 이름, 별 표식 덮기 [(덮을 상자, 가져올 위치)])
 TILES = [
-    ("테마 1단계 흙.jpg", "floor_dirt.png", [((860, 860, 960, 960), (300, 300))]),
-    ("바닥 타일.jpg", "floor_concrete.png", [((860, 860, 960, 960), (300, 300))]),
-    ("쓰레기산.jpg", "floor_trash.png", [((860, 860, 960, 960), (300, 300))]),
+    ("테마 1단계 흙.jpg", "floor_dirt.webp", [((860, 860, 960, 960), (300, 300))]),
+    ("바닥 타일.jpg", "floor_concrete.webp", [((860, 860, 960, 960), (300, 300))]),
+    ("쓰레기산.jpg", "floor_trash.webp", [((860, 860, 960, 960), (300, 300))]),
 ]
 
 
@@ -90,7 +91,7 @@ def make_tile(name, out_name, patches):
     wgt = (1 - np.clip(np.minimum(dx, dy), 0, 1))[..., None]
     out = arr * (1 - wgt) + sh * wgt
     im = Image.fromarray(np.clip(out, 0, 255).astype(np.uint8)).resize((TILE, TILE), Image.LANCZOS)
-    im.save(OUT / out_name, optimize=True)
+    save_webp(im, OUT / out_name)
     print(out_name, im.size, round((OUT / out_name).stat().st_size / 1024), "KB")
 
 
@@ -103,7 +104,7 @@ def main():
         for x0, y0, x1, y1 in erase: alpha[y0:y1, x0:x1] = 0
         for out_name, box, out_h, mode, min_frac in cuts:
             im = cut(col, alpha, box, out_h, mode, min_frac)
-            im.save(OUT / out_name, optimize=True)
+            save_webp(im, OUT / out_name)
             made.append((out_name, im))
             print(out_name, im.size, round((OUT / out_name).stat().st_size / 1024), "KB")
     for name, out_name, patches in TILES: make_tile(name, out_name, patches)

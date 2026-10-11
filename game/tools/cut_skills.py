@@ -4,6 +4,7 @@
 # 사용: python game/tools/cut_skills.py   (미리보기: game/assets_src/skills/preview_<이름>.png)
 from pathlib import Path
 import numpy as np
+from cut_webp import save_webp
 from PIL import Image
 
 ROOT = Path(__file__).resolve().parents[2]
@@ -68,8 +69,8 @@ def main():
             by0, by1 = max(0, ys.min() - m), min(cell.shape[0], ys.max() + 1 + m)
             bx0, bx1 = max(0, xs.min() - m), min(cell.shape[1], xs.max() + 1 + m)
             frame = Image.fromarray(cell[by0:by1, bx0:bx1].copy(), "RGBA")
-            fn = f"{group}_{name}.png"
-            frame.save(OUT / fn); manifest.append(fn); cells.append((name, frame))
+            fn = f"{group}_{name}.webp"
+            save_webp(frame, OUT / fn); manifest.append(fn); cells.append((name, frame))
             print(f"  {fn}: {frame.width}x{frame.height}")
         # 미리보기: 칸을 한 줄로
         cw = max(f.width for _, f in cells) + 8; ch = max(f.height for _, f in cells) + 8

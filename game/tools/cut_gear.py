@@ -7,6 +7,7 @@
 import sys
 from pathlib import Path
 import numpy as np
+from cut_webp import save_webp
 from PIL import Image
 from scipy import ndimage
 
@@ -32,23 +33,23 @@ C3 = [(8, 333), (349, 675), (691, 1016)]
 SHEETS = [
     # 3×3(아래 줄은 같은 물건) → 윗 두 줄
     ("장비_호야_야구복.png", (False, (35, 150)), [WATERMARK],
-     list(zip([f"gear_hoya_ranged_{s}.png" for s in SLOTS], grid([(20, 335), (345, 672)], C3), ["all"] * 6, [0.02] * 6))),
+     list(zip([f"gear_hoya_ranged_{s}.webp" for s in SLOTS], grid([(20, 335), (345, 672)], C3), ["all"] * 6, [0.02] * 6))),
     # 물건 아래 영어 글자 → 글자 위까지만. 칸 사이 밝은 선은 키로 지워진다
     ("장비_민지_피구복.png", (True, (100, 180)), [WATERMARK],
-     list(zip([f"gear_minji_ranged_{s}.png" for s in SLOTS], grid([(30, 312), (392, 636)], [(12, 338), (352, 674), (688, 1012)]), ["all"] * 6, [0.01] * 6))),
+     list(zip([f"gear_minji_ranged_{s}.webp" for s in SLOTS], grid([(30, 312), (392, 636)], [(12, 338), (352, 674), (688, 1012)]), ["all"] * 6, [0.01] * 6))),
     # 연분홍 칸 3×3(아래 줄은 같은 물건) → 윗 두 줄
     ("장비_호야_교복.png", (False, (20, 100)), [WATERMARK],
-     list(zip([f"gear_hoya_melee_{s}.png" for s in SLOTS], grid([(40, 336), (364, 660)], [(40, 336), (364, 660), (688, 984)]), ["all"] * 6, [0.02] * 6))),
+     list(zip([f"gear_hoya_melee_{s}.webp" for s in SLOTS], grid([(40, 336), (364, 660)], [(40, 336), (364, 660), (688, 984)]), ["all"] * 6, [0.02] * 6))),
     # 글자 아래(분홍 하트가 있어 min(R,B)-G 키)
     ("장비_민지_교복.png", (True, (60, 130)), [WATERMARK],
-     list(zip([f"gear_minji_melee_{s}.png" for s in SLOTS], grid([(30, 348), (515, 805)], [(12, 338), (352, 674), (688, 1012)]), ["all"] * 6, [0.02] * 6))),
+     list(zip([f"gear_minji_melee_{s}.webp" for s in SLOTS], grid([(30, 348), (515, 805)], [(12, 338), (352, 674), (688, 1012)]), ["all"] * 6, [0.02] * 6))),
     # 2×2: 닫힌 상자 · 뚜껑 / (같은 상자) · 열린 상자. 열린 상자 위 분홍 빛은 키로 지운다
     ("보급상자_파츠.png", (True, (40, 100)), [WATERMARK],
-     [("supply_part_closed.png", (20, 40, 505, 505), "largest", 0), ("supply_part_lid.png", (525, 110, 1000, 460), "largest", 0),
-      ("supply_part_open.png", (525, 470, 1000, 965), "largest", 0)]),
+     [("supply_part_closed.webp", (20, 40, 505, 505), "largest", 0), ("supply_part_lid.webp", (525, 110, 1000, 460), "largest", 0),
+      ("supply_part_open.webp", (525, 470, 1000, 965), "largest", 0)]),
     ("보급상자_장비.png", (True, (40, 100)), [WATERMARK],
-     [("supply_gear_closed.png", (60, 60, 470, 480), "largest", 0), ("supply_gear_lid.png", (560, 160, 960, 420), "largest", 0),
-      ("supply_gear_open.png", (560, 460, 980, 900), "largest", 0)]),
+     [("supply_gear_closed.webp", (60, 60, 470, 480), "largest", 0), ("supply_gear_lid.webp", (560, 160, 960, 420), "largest", 0),
+      ("supply_gear_open.webp", (560, 460, 980, 900), "largest", 0)]),
 ]
 
 def cut(col, alpha, box, fit, mode, min_frac):
@@ -78,7 +79,7 @@ def main():
             im = cut(col, alpha, box, BOX if ui else ICON, mode, frac)
             path = (UI if ui else GEAR) / out
             # 256색으로 줄여 저장(화질 차이 없이 약 1/5 크기 — 학교 와이파이·태블릿)
-            im.quantize(colors=256, method=Image.Quantize.FASTOCTREE, dither=Image.Dither.FLOYDSTEINBERG).save(path, optimize=True); made.append((out, im))
+            save_webp(im.quantize(colors=256, method=Image.Quantize.FASTOCTREE, dither=Image.Dither.FLOYDSTEINBERG), path); made.append((out, im))
             print(out, im.size, round(path.stat().st_size / 1024), "KB")
     # 미리보기: 체크 무늬 위에 전부
     cell = 190; cols = 6; rows = (len(made) + cols - 1) // cols

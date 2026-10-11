@@ -6,6 +6,7 @@
 import sys
 from pathlib import Path
 import numpy as np
+from cut_webp import save_webp
 from PIL import Image
 from scipy import ndimage
 
@@ -151,8 +152,8 @@ def main():
         for anim, n, im in fl:
             canvas = Image.new("RGBA", (canvas_w, canvas_h), (0, 0, 0, 0))
             canvas.paste(im, ((canvas_w - im.width) // 2, canvas_h - FOOT_PAD - im.height))   # 발바닥 정렬·가운데
-            fn = f"{hero}_{anim}_{n}.png"
-            canvas.save(OUT / fn)
+            fn = f"{hero}_{anim}_{n}.webp"
+            save_webp(canvas, OUT / fn)
             manifest.append(fn)
             preview_cells.append(canvas)
         # 미리보기(회색 바탕)
