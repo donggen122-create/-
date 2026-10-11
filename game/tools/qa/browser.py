@@ -16,6 +16,6 @@ def chrome_path():
 
 def local_url(url):
     u = urlsplit(url)
-    if u.scheme != 'http' or u.hostname not in ('localhost', '127.0.0.1') or u.port not in (8797, 8798):
-        raise ValueError('This tool only permits the isolated HTTP QA server on loopback:8797 or :8798')
+    if u.scheme != 'http' or u.hostname not in ('localhost', '127.0.0.1') or u.port not in range(8791, 8800):
+        raise ValueError('This tool only permits the isolated HTTP QA server on loopback:8791-8799')
     return f'{u.scheme}://{u.netloc}'
