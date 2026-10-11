@@ -17,6 +17,7 @@ import {
 } from "./meta.js";
 import { SPRITES, UI_IMAGES, HEROES, loadImage, readyImage, loadHeroAssets, loadBattleAssets, ELEMENT_SKILL_NAMES, assetURL, tintedSprite, playSfx, playSynth, isMuted, toggleMuted } from "./assets.js";
 import { music } from "./music.js";
+import { playStory } from './story.js';
 import { createFrameClock, createRenderQuality, qualityLevels, setText, setWidth } from "./runtime-performance.js";
 import { createThemeEffects } from "./theme-effects.js";
 import { sprite as loadEffectSprite, setEffectQuality } from "./element-effects.js";
@@ -1529,11 +1530,12 @@ let pendingCollectibles = 0;     // 판 중 획득한 수집품(결과 화면에
 
 document.getElementById("btn-start").addEventListener("click", () => sgStart(selectedChapterId).catch(e=>log(e.message)));
 
-document.getElementById("btn-continue").addEventListener("click", () => {
+document.getElementById("btn-continue").addEventListener("click", async () => {
   if(sgSettling)return;
   if(sgState.profile&&R.pendingPet(sgState.profile))sgUI.tab='friends';
   playSfx("uiClick", 0.5);
   elResult.classList.add("hidden");
+  if(chapter?.id==='CH15' && sgState.cleared)await playStory('CH15', 'after-clear', sgStorageKey);
   refreshMenuMeta();
   elMenu.classList.remove("hidden");
   mode = "menu";
@@ -5668,6 +5670,8 @@ async function sgTidyLeftRun(){
   await sgAbandon();
 }
 async function sgStart(stage){
+  if(stage==='CH11')await playStory(stage, 'before-start', sgStorageKey);
+  if(stage==='CH15')await playStory(stage, 'before-start', sgStorageKey);
   // Prepare before /play/start: missing art must not consume a pass/start the clock.
   const theme = chapterById(stage)?.theme || Math.ceil(Number(stage.slice(2))/5);
   await loadBattleAssets(theme, sgState.profile?.hero || save.hero, {
