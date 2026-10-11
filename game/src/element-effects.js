@@ -1,11 +1,11 @@
-// 원소 스킬 그림 v3 — 사용자 Gemini 시트를 자른 스프라이트(assets/sprites/skills/*.png)로 그린다. 규칙(docs/22 §5):
+// 원소 스킬 그림 v3 — 사용자 Gemini 시트를 자른 스프라이트(assets/sprites/skills/*.webp)로 그린다. 규칙(docs/22 §5):
 // 투사체는 적 크기만큼, 폭발·장판은 지름 2~4칸, 원소 색 빛 번짐 + 그림. 코드 도형은 보조(궤적·빛)만.
 import { createSpriteScaleCache } from './runtime-performance.js';
 const COLORS = { fire: '#FF6A2A', water: '#2AA8FF', wind: '#3ED88A', earth: '#C48A3F', lightning: '#FFD83A' };
 const scaledSkills = createSpriteScaleCache(96);
 let spriteDeviceScale=1;
 const cache = new Map();
-export const skillSpriteURL = name => `./assets/sprites/skills/${name}.png`;
+export const skillSpriteURL = name => `./assets/sprites/skills/${name}.webp`;
 export function sprite(name) {
   if (typeof Image === 'undefined') return null;
   if (!cache.has(name)) { const im = new Image(); im.src = skillSpriteURL(name); cache.set(name, im); }

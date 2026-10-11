@@ -10,16 +10,16 @@ export const UI2_ICONS = [
   'btn_help','btn_close','btn_prev','btn_next','btn_check','btn_reroll',
   'supply_closed','supply_open','hud_weapon_ranged','fn_pause',
 ];
-export const art2 = (name, cls = '') => `<img class="sg-icon sg-ui2-icon ${cls}" src="${assetURL(`./assets/ui2/icons/${name}.png`)}" alt="" />`;
+export const art2 = (name, cls = '') => `<img class="sg-icon sg-ui2-icon ${cls}" src="${assetURL(`./assets/ui2/icons/${name}.webp`)}" alt="" />`;
 export const symbol2 = (name, legacy) => isUI2() ? art2(name, 'sg-ui2-symbol') : legacy;
-export const skillAsset = name => assetURL(`./assets/${isUI2() ? 'ui2' : 'sprites'}/skills/${name}.png`);
+export const skillAsset = name => assetURL(`./assets/${isUI2() ? 'ui2' : 'sprites'}/skills/${name}.webp`);
 let preloaded = false;
 const images = [];
 export function preloadUI2() {
   if (!isUI2() || preloaded || typeof Image === 'undefined') return;
   preloaded = true;
   // Markup fetches only its visible icons. Supply/gear icons wait for those tabs.
-  for (const path of ['emblem.png']) {
+  for (const path of ['emblem.webp']) {
     const image = new Image(); image.src = `./assets/ui2/${path}`; images.push(image);
   }
 }
