@@ -1,6 +1,7 @@
 # 서호팡팡수호대 — Claude 작업 안내 (모든 PC 공통)
 
-서호초등학교 학생용 브라우저 게임. 실서버 https://seoho-pangpang.seoho-pangpang-server.workers.dev (Cloudflare Workers + D1 `seoho-pangpang-db`, 게임 파일과 API가 한 주소). 자세한 인수인계는 `HANDOFF.md`, 작업 기록은 `game/STATUS.md`(최신이 위).
+서호초등학교 학생용 브라우저 게임. 실서버 https://seoho-pangpang.seoho-pangpang-server.workers.dev (Cloudflare Workers + D1 `seoho-pangpang-db`, 게임 파일과 API가 한 주소).
+문서 지도: [HANDOFF.md](HANDOFF.md) = 구조·명령·모듈 지도·함정, [game/STATUS.md](game/STATUS.md) = 작업 기록(맨 위가 최신), [docs/47](docs/47_현황_진단_개발계획.md) = 진단·계획, [docs/48](docs/48_CLAUDE_md_날짜_기록_보관.md) = 옛 날짜 기록, [docs/codex/](docs/codex/) = Codex 지시서·보고서.
 
 ## 사용자
 - 비개발자 선생님. 한국어, 쉬운 말로 결과부터. 결과는 실서버·화면 캡처(PC 1280, 휴대폰 375)로 확인해서 보여 준다.
@@ -19,12 +20,14 @@
 ## 작업 순서
 - 시작: `git pull` → `powershell -NoProfile -ExecutionPolicy Bypass -File game\tools\check-live.ps1`. "주의"면 다른 PC에서 배포한 것(git pull 다시)인지 Codex 배포인지 확인하고, Codex면 `-Pull`로 받아 먼저 합친다(HANDOFF.md).
 - 원본은 `game/`. `dist_web/`은 배포 사본으로 src·assets·admin·index.html은 `game/tools/sync-dist.ps1`이 만든다(git 제외). `dist_web/share/`(Codex와 공유하는 공개 자료)와 `robots.txt`만 원본.
-- 로컬 확인: `.claude/launch.json`의 "wrangler"(= `game/tools/dev-server.ps1`, http://localhost:8797). 로컬 테스트 계정 `테스트`/`1234`(없으면 게임 화면에서 가입). 1-3 이상 시험은 테스트 계정이 앞 단계를 성공해 있어야 한다.
-- 캡처·밸런스: `game/tools/qa/capture.ps1`(게임), `admin-capture.ps1`(관리 페이지), `sim.ps1`(난이도 자동 조종). 헤드리스 Edge는 스크립트가 정리한다.
-- 검사: `node --test "tests/*.test.mjs"`.
-- 배포: `powershell -NoProfile -ExecutionPolicy Bypass -File game\tools\deploy.ps1 -Message "what changed"` → 끝나면 `git add -A; git commit; git push origin seoho-game` (`server/.last_deploy_version` 포함).
-- 휴대폰·원격 배포(2026-09-23): `seoho-game` 최신 커밋으로 `deploy/YYYYMMDD-HHMM` 브랜치를 올리면(휴대폰 GitHub 웹에서 브랜치 만들기도 가능) GitHub Actions(`.github/workflows/seoho-deploy.yml`)가 검사 → check-live → dist_web 동기화 → wrangler deploy → `server/.last_deploy_version`·share 기록 커밋까지 한다. Codex 배포를 합친 뒤 기록과 다를 때만 `deploy-force/…` 브랜치. 끝나면 배포 브랜치는 지워진다. 저장소 비밀값 `CLOUDFLARE_API_TOKEN`(Workers 편집) 필요(값은 어디에도 쓰지 않는다). 기본 브랜치 main은 다른 프로젝트라 Run workflow 버튼 대신 브랜치를 쓰고, Claude 작업 환경은 태그 올리기가 막혀 있다.
-- GitHub 올리기(git push)가 Claude의 명령 창에서 막힐 때: `error: cannot spawn git: Permission denied`가 나면 보호 모드(sandbox) 밖에서, PATH에 `C:\Program Files\Git\cmd;C:\Program Files\Git\mingw64\bin;C:\Program Files\Git\usr\bin`을 붙이고 `$env:GCM_INTERACTIVE='always'`로 push한다. 그래도 가끔 같은 오류가 나면 몇 초 뒤 다시 시도하면 된다(새로 설치된 Git을 백신이 검사하는 중으로 보임). 로그인이 없으면 `git credential-manager github login --browser --no-ui`(브라우저가 GitHub에 로그인돼 있으면 자동 완료). 저장소 설정 `credential.credentialStore=dpapi`.
+- `dist_web/_headers`도 원본(그림 1년 캐시); 그림 주소 버전 꼬리표는 `ASSET_VERSION`·`game/tools/version-assets.mjs`.
+- 로컬 확인: 격리 QA 서버 `node game/tools/qa/node-server.mjs`(기본 8797, `PORT`로 변경, 메모리 DB, `qa` 계정). Playwright는 `%LOCALAPPDATA%\seoho-qa-venv`, 도구는 `game/tools/qa/`의 `responsive-audit.py`·`tablet-perf.py --mode replay`·`loading-audit.py`·`records-results.py`. 1-3 이상은 앞 단계 성공 필요.
+- 기존 도구: `.claude/launch.json`의 "wrangler" = `game/tools/dev-server.ps1`(localhost:8797), `game/tools/qa/capture.ps1`(게임)·`admin-capture.ps1`(관리)·`sim.ps1`(밸런스 자동 조종); 헤드리스 Edge는 스크립트가 정리.
+- 검사: `node --test "tests/*.test.mjs"`. 규칙·밸런스를 건드리면 같은 시드 재생 검사.
+- 배포 기본: 선생님이 "배포해"라고 한 뒤에만 `seoho-game` 최신 커밋으로 `deploy/<날짜>` 브랜치를 올린다(휴대폰 GitHub 웹도 가능). `.github/workflows/seoho-deploy.yml`: 검사 → check-live → 동기화 → wrangler → `server/.last_deploy_version`·share 기록 커밋 → 브랜치 삭제. Codex 배포 병합 뒤 기록 불일치 때만 `deploy-force/`. 비밀값 `CLOUDFLARE_API_TOKEN`(Workers 편집) 필요. main은 다른 프로젝트라 Run workflow 대신 브랜치 사용; Claude 환경은 태그 올리기 불가.
+- 예비 로컬 배포: `powershell -NoProfile -ExecutionPolicy Bypass -File game\tools\deploy.ps1 -Message "what changed"` → `git add -A; git commit; git push origin seoho-game` (`server/.last_deploy_version` 포함).
+- push가 `error: cannot spawn git: Permission denied`면 sandbox 밖에서 PATH에 `C:\Program Files\Git\cmd;C:\Program Files\Git\mingw64\bin;C:\Program Files\Git\usr\bin` 추가, `$env:GCM_INTERACTIVE='always'`; 같은 오류는 몇 초 뒤 재시도(백신 검사로 추정). 로그인 없으면 `git credential-manager github login --browser --no-ui`(브라우저 로그인 시 자동 완료), `credential.credentialStore=dpapi`.
+- 큰 작업은 작업트리 `../seoho-codex-X`(브랜치 `codex/<날짜>-X`) + 지시서 `docs/codex/<날짜>_작업지시_X_*.md` → Codex 구현·보고 → Claude 검토 뒤 합침.
 - 단일 파일판: `game/tools/build-single.ps1` → `dist_single/LUMEN.html`(git 제외).
 
 ## 지킬 것
@@ -34,3 +37,6 @@
 - 관리 페이지 `/admin/`: 관리자 비밀번호 = 전부, 선생님 계정 비밀번호 = 학생 계정 삭제·진행 초기화·그림 보내기 없음(서버가 403). 이 구분을 없애지 않는다.
 - PowerShell 5.1: 한글이 든 `.ps1`은 UTF-8 BOM으로 저장, `&&` 대신 `;`, 네이티브 명령의 `2>&1`은 오류로 바뀌니 주의.
 - claude.ai 아티팩트로 게임을 올리지 않는다(서버 통신이 안 됨).
+- UI 2가 기본(`?ui=1`로 예전 화면), 화면을 고치면 UI 2를 먼저 확인.
+- 날짜별 작업 기록은 `game/STATUS.md`에만 쓴다. `CLAUDE.md`에 로그를 쌓지 않는다.
+- `main` 브랜치는 다른 프로젝트.
