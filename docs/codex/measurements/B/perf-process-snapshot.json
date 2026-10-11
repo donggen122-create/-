@@ -1,0 +1,55 @@
+﻿{
+    "sampleAt":  "2026-10-11T15:48:33.5481881Z",
+    "processes":  [
+                      {
+                          "Name":  "_Total",
+                          "IDProcess":  0,
+                          "PercentProcessorTime":  1596
+                      },
+                      {
+                          "Name":  "Idle",
+                          "IDProcess":  0,
+                          "PercentProcessorTime":  564
+                      },
+                      {
+                          "Name":  "chrome-headless-shell#4",
+                          "IDProcess":  16652,
+                          "PercentProcessorTime":  191
+                      },
+                      {
+                          "Name":  "chrome#22",
+                          "IDProcess":  33000,
+                          "PercentProcessorTime":  116
+                      },
+                      {
+                          "Name":  "check-story-companion",
+                          "IDProcess":  548,
+                          "PercentProcessorTime":  98
+                      },
+                      {
+                          "Name":  "check-story-105001",
+                          "IDProcess":  40176,
+                          "PercentProcessorTime":  98
+                      },
+                      {
+                          "Name":  "check-story-branch-401",
+                          "IDProcess":  5928,
+                          "PercentProcessorTime":  93
+                      },
+                      {
+                          "Name":  "check-story-branch-301",
+                          "IDProcess":  36528,
+                          "PercentProcessorTime":  93
+                      },
+                      {
+                          "Name":  "python#5",
+                          "IDProcess":  31716,
+                          "PercentProcessorTime":  60
+                      },
+                      {
+                          "Name":  "powershell#20",
+                          "IDProcess":  6356,
+                          "PercentProcessorTime":  51
+                      }
+                  ]
+}

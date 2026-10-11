@@ -1,0 +1,393 @@
+{
+  "label": "B-cap-120",
+  "mode": "scenes",
+  "conditions": {
+    "url": "http://localhost:8797/?ui=2",
+    "label": "B-cap-120",
+    "mode": "scenes",
+    "devices": "ipad,android",
+    "stages": "CH18,CH20",
+    "rates": "6",
+    "reps": 1,
+    "warm": 8.0,
+    "measure": 15.0,
+    "seed": 10808,
+    "trace": false,
+    "foam": false,
+    "stress": true,
+    "enemy_cap": 120,
+    "quality": 99,
+    "threat_effects": false,
+    "reference": null,
+    "source": null,
+    "out": "C:\\Users\\강동근\\Documents\\Codex\\2026-10-07\\github-git-pull-4-md-1\\seoho-codex-B\\docs\\codex\\measurements\\B\\cap-study"
+  },
+  "commit": "1c06a1fe4a006b4831cb1e7f1055e94b7e196849",
+  "records": [
+    {
+      "stage": "CH18",
+      "device": "ipad",
+      "viewport": [
+        1180,
+        820,
+        2
+      ],
+      "rate": 6.0,
+      "rep": 1,
+      "prepared": {
+        "runTime": 264.600000000088,
+        "mode": "playing",
+        "hp": 715,
+        "maxHp": 715,
+        "kills": 2140,
+        "litter": 21,
+        "choices": 24,
+        "bossHp": null,
+        "bossMax": null,
+        "bossHurt": 0,
+        "bossDmg": 0,
+        "stressEnemies": 121
+      },
+      "perf": {
+        "frames": 141,
+        "steps": 905,
+        "simMs": 30.590070920633085,
+        "drawMs": 14.3602836886619,
+        "hudMs": 0.4872340422572819,
+        "fps": 9.348458830315527,
+        "p50": 100,
+        "p95": 166.6999999999971,
+        "long50": 138,
+        "ratio": 0.7,
+        "fx": 2,
+        "low1": 5.216484089723506,
+        "p99": 183.40000000000146,
+        "long33": 141,
+        "max": {
+          "enemies": 121,
+          "projectiles": 24,
+          "effects": 255,
+          "texts": 90,
+          "fires": 12,
+          "tracks": 0,
+          "fields": 43
+        },
+        "quality": [
+          {
+            "frame": 1,
+            "level": 5,
+            "ratio": 0.7,
+            "fx": 2
+          }
+        ],
+        "canvas": {
+          "width": 826,
+          "height": 574,
+          "pixels": 474124
+        },
+        "gameSeconds": 15.083333333319615,
+        "mode": "playing",
+        "enemies": 121,
+        "texts": 90,
+        "hitFx": 120,
+        "deathFx": 0,
+        "gems": 0,
+        "long33Pct": 100.0,
+        "long50Pct": 97.87234042553192
+      },
+      "memoryBefore": {
+        "heapUsed": 7502140,
+        "heapTotal": 9822208,
+        "documents": 74,
+        "nodes": 2220,
+        "jsEventListeners": 116,
+        "layoutCount": 8,
+        "taskDuration": 8.521924
+      },
+      "memoryAfter": {
+        "heapUsed": 7500976,
+        "heapTotal": 8511488,
+        "documents": 74,
+        "nodes": 2221,
+        "jsEventListeners": 111,
+        "layoutCount": 24,
+        "taskDuration": 23.747119
+      },
+      "errors": []
+    },
+    {
+      "stage": "CH20",
+      "device": "ipad",
+      "viewport": [
+        1180,
+        820,
+        2
+      ],
+      "rate": 6.0,
+      "rep": 1,
+      "prepared": {
+        "runTime": 304.60000000005164,
+        "mode": "playing",
+        "hp": 421,
+        "maxHp": 421,
+        "kills": 2117,
+        "litter": 40,
+        "choices": 24,
+        "bossHp": 818155391,
+        "bossMax": 2000000000,
+        "bossHurt": 0,
+        "bossDmg": 1844609,
+        "stressEnemies": 120
+      },
+      "perf": {
+        "frames": 219,
+        "steps": 900,
+        "simMs": 11.309132421397727,
+        "drawMs": 11.387671231951343,
+        "hudMs": 0.3305936077414038,
+        "fps": 14.600584023360938,
+        "p50": 66.59999999999854,
+        "p95": 116.70000000000073,
+        "long50": 127,
+        "ratio": 0.7,
+        "fx": 2,
+        "low1": 5.806077027288554,
+        "p99": 150,
+        "long33": 219,
+        "max": {
+          "enemies": 120,
+          "projectiles": 48,
+          "effects": 207,
+          "texts": 90,
+          "fires": 28,
+          "tracks": 0,
+          "fields": 38
+        },
+        "quality": [
+          {
+            "frame": 1,
+            "level": 5,
+            "ratio": 0.7,
+            "fx": 2
+          }
+        ],
+        "canvas": {
+          "width": 826,
+          "height": 574,
+          "pixels": 474124
+        },
+        "gameSeconds": 14.999999999986358,
+        "mode": "playing",
+        "enemies": 120,
+        "texts": 90,
+        "hitFx": 61,
+        "deathFx": 0,
+        "gems": 0,
+        "long33Pct": 100.0,
+        "long50Pct": 57.990867579908674
+      },
+      "memoryBefore": {
+        "heapUsed": 7249832,
+        "heapTotal": 9560064,
+        "documents": 74,
+        "nodes": 2224,
+        "jsEventListeners": 117,
+        "layoutCount": 37,
+        "taskDuration": 8.507999
+      },
+      "memoryAfter": {
+        "heapUsed": 7233972,
+        "heapTotal": 8773632,
+        "documents": 74,
+        "nodes": 2229,
+        "jsEventListeners": 107,
+        "layoutCount": 163,
+        "taskDuration": 23.716266
+      },
+      "errors": []
+    },
+    {
+      "stage": "CH18",
+      "device": "android",
+      "viewport": [
+        1280,
+        800,
+        1.5
+      ],
+      "rate": 6.0,
+      "rep": 1,
+      "prepared": {
+        "runTime": 264.6333333334213,
+        "mode": "playing",
+        "hp": 421,
+        "maxHp": 421,
+        "kills": 2124,
+        "litter": 16,
+        "choices": 22,
+        "bossHp": null,
+        "bossMax": null,
+        "bossHurt": 0,
+        "bossDmg": 0,
+        "stressEnemies": 121
+      },
+      "perf": {
+        "frames": 167,
+        "steps": 906,
+        "simMs": 24.14191616812866,
+        "drawMs": 12.42514970077726,
+        "hudMs": 0.4419161672006824,
+        "fps": 11.060115369586667,
+        "p50": 83.30000000000291,
+        "p95": 133.40000000000146,
+        "long50": 166,
+        "ratio": 0.7,
+        "fx": 2,
+        "low1": 4.285408185129627,
+        "p99": 216.70000000000073,
+        "long33": 167,
+        "max": {
+          "enemies": 121,
+          "projectiles": 26,
+          "effects": 249,
+          "texts": 90,
+          "fires": 24,
+          "tracks": 0,
+          "fields": 37
+        },
+        "quality": [
+          {
+            "frame": 1,
+            "level": 4,
+            "ratio": 0.7,
+            "fx": 2
+          }
+        ],
+        "canvas": {
+          "width": 896,
+          "height": 560,
+          "pixels": 501760
+        },
+        "gameSeconds": 15.099999999986267,
+        "mode": "playing",
+        "enemies": 121,
+        "texts": 90,
+        "hitFx": 97,
+        "deathFx": 0,
+        "gems": 0,
+        "long33Pct": 100.0,
+        "long50Pct": 99.40119760479043
+      },
+      "memoryBefore": {
+        "heapUsed": 7140644,
+        "heapTotal": 11132928,
+        "documents": 74,
+        "nodes": 2229,
+        "jsEventListeners": 112,
+        "layoutCount": 8,
+        "taskDuration": 8.629735
+      },
+      "memoryAfter": {
+        "heapUsed": 7380808,
+        "heapTotal": 7987200,
+        "documents": 74,
+        "nodes": 2229,
+        "jsEventListeners": 114,
+        "layoutCount": 24,
+        "taskDuration": 23.804721
+      },
+      "errors": []
+    },
+    {
+      "stage": "CH20",
+      "device": "android",
+      "viewport": [
+        1280,
+        800,
+        1.5
+      ],
+      "rate": 6.0,
+      "rep": 1,
+      "prepared": {
+        "runTime": 304.60000000005164,
+        "mode": "playing",
+        "hp": 715,
+        "maxHp": 715,
+        "kills": 2147,
+        "litter": 40,
+        "choices": 24,
+        "bossHp": 759672422,
+        "bossMax": 2000000000,
+        "bossHurt": 0,
+        "bossDmg": 327578,
+        "stressEnemies": 120
+      },
+      "perf": {
+        "frames": 217,
+        "steps": 905,
+        "simMs": 12.412903225504309,
+        "drawMs": 10.95990783401898,
+        "hudMs": 0.3152073739860464,
+        "fps": 14.387344440982053,
+        "p50": 66.59999999999854,
+        "p95": 133.29999999999927,
+        "long50": 136,
+        "ratio": 0.7,
+        "fx": 2,
+        "low1": 6.429489927132468,
+        "p99": 150,
+        "long33": 217,
+        "max": {
+          "enemies": 120,
+          "projectiles": 51,
+          "effects": 210,
+          "texts": 90,
+          "fires": 28,
+          "tracks": 0,
+          "fields": 34
+        },
+        "quality": [
+          {
+            "frame": 1,
+            "level": 4,
+            "ratio": 0.7,
+            "fx": 2
+          }
+        ],
+        "canvas": {
+          "width": 896,
+          "height": 560,
+          "pixels": 501760
+        },
+        "gameSeconds": 15.083333333319615,
+        "mode": "playing",
+        "enemies": 120,
+        "texts": 90,
+        "hitFx": 120,
+        "deathFx": 0,
+        "gems": 0,
+        "long33Pct": 100.0,
+        "long50Pct": 62.672811059907836
+      },
+      "memoryBefore": {
+        "heapUsed": 7919836,
+        "heapTotal": 10084352,
+        "documents": 74,
+        "nodes": 2242,
+        "jsEventListeners": 122,
+        "layoutCount": 51,
+        "taskDuration": 8.458702
+      },
+      "memoryAfter": {
+        "heapUsed": 7644592,
+        "heapTotal": 8511488,
+        "documents": 74,
+        "nodes": 2226,
+        "jsEventListeners": 103,
+        "layoutCount": 172,
+        "taskDuration": 23.858101
+      },
+      "errors": []
+    }
+  ],
+  "browser": "154.0.8037.99"
+}
