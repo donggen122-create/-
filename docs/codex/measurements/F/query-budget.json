@@ -1,0 +1,14 @@
+{
+  "students": 100,
+  "dailyRuns": 1000,
+  "fixtureRuns": 14000,
+  "cold": {
+    "queries": 6,
+    "returnedRows": 7471
+  },
+  "hot": {
+    "queries": 3,
+    "returnedRows": 101
+  },
+  "plan": "SEARCH play_runs USING INDEX play_settled (settled_at>? AND settled_at<?)"
+}

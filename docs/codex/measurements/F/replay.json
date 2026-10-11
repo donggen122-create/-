@@ -1,0 +1,1648 @@
+[
+  {
+    "stage": "CH05",
+    "seed": 10808,
+    "equal": true,
+    "gameplayExact": true,
+    "canvasCheck": {
+      "exact": true,
+      "equivalent": true
+    },
+    "before": {
+      "outcome": {
+        "seconds": 259.95000000009225,
+        "kills": 2288,
+        "litter": 23,
+        "hp": 421,
+        "hpMax": 421,
+        "choices": 24,
+        "bossHp": -202
+      },
+      "fullOutcomeSHA256": "133d4e9704d26d4a44d9427563404dc3080875acaa0ada20de9f24c18e47cc30",
+      "inputHash": 1709885624,
+      "settlement": {
+        "reward": {
+          "coins": 0,
+          "petCoinPct": 0,
+          "gifts": 0,
+          "missions": [],
+          "stars": 0,
+          "first": false,
+          "partActivity": [
+            {
+              "id": "PART_F1",
+              "active": true
+            },
+            {
+              "id": "PART_W1",
+              "active": false
+            },
+            {
+              "id": "PART_L1",
+              "active": true
+            }
+          ],
+          "stageGift": {
+            "left": 1,
+            "capped": false,
+            "limit": 2
+          },
+          "difficulty": "normal",
+          "goal": true,
+          "notes": []
+        },
+        "charged": 1,
+        "cleared": true,
+        "stage": "CH05"
+      },
+      "errors": []
+    },
+    "after": {
+      "outcome": {
+        "seconds": 259.95000000009225,
+        "kills": 2288,
+        "litter": 23,
+        "hp": 421,
+        "hpMax": 421,
+        "choices": 24,
+        "bossHp": -202
+      },
+      "fullOutcomeSHA256": "133d4e9704d26d4a44d9427563404dc3080875acaa0ada20de9f24c18e47cc30",
+      "inputHash": 1709885624,
+      "settlement": {
+        "reward": {
+          "coins": 0,
+          "petCoinPct": 0,
+          "gifts": 0,
+          "missions": [],
+          "stars": 0,
+          "first": false,
+          "partActivity": [
+            {
+              "id": "PART_F1",
+              "active": true
+            },
+            {
+              "id": "PART_W1",
+              "active": false
+            },
+            {
+              "id": "PART_L1",
+              "active": true
+            }
+          ],
+          "stageGift": {
+            "left": 1,
+            "capped": false,
+            "limit": 2
+          },
+          "difficulty": "normal",
+          "goal": true,
+          "notes": []
+        },
+        "charged": 1,
+        "cleared": true,
+        "stage": "CH05"
+      },
+      "errors": []
+    }
+  },
+  {
+    "stage": "CH05",
+    "seed": 10809,
+    "equal": true,
+    "gameplayExact": true,
+    "canvasCheck": {
+      "exact": true,
+      "equivalent": true
+    },
+    "before": {
+      "outcome": {
+        "seconds": 252.75000000009328,
+        "kills": 2289,
+        "litter": 20,
+        "hp": 375.0943864130265,
+        "hpMax": 421,
+        "choices": 24,
+        "bossHp": -263
+      },
+      "fullOutcomeSHA256": "6e1370f970478f6f408a9848ed7ad8f26bbb596454de1b4a5ef8971269d8aa4a",
+      "inputHash": 3581649370,
+      "settlement": {
+        "reward": {
+          "coins": 250,
+          "petCoinPct": 0,
+          "gifts": 1,
+          "missions": [
+            {
+              "id": "win1",
+              "name": "도전 1번 성공하기",
+              "gifts": 2
+            },
+            {
+              "id": "goal1",
+              "name": "환경 목표 1번 해내기",
+              "gifts": 2
+            }
+          ],
+          "stars": 2,
+          "first": false,
+          "partActivity": [
+            {
+              "id": "PART_F1",
+              "active": true
+            },
+            {
+              "id": "PART_W1",
+              "active": false
+            },
+            {
+              "id": "PART_L1",
+              "active": false
+            }
+          ],
+          "stageGift": {
+            "left": 1,
+            "capped": false,
+            "limit": 2
+          },
+          "difficulty": "normal",
+          "goal": true,
+          "notes": []
+        },
+        "charged": 1,
+        "cleared": true,
+        "stage": "CH05"
+      },
+      "errors": []
+    },
+    "after": {
+      "outcome": {
+        "seconds": 252.75000000009328,
+        "kills": 2289,
+        "litter": 20,
+        "hp": 375.0943864130265,
+        "hpMax": 421,
+        "choices": 24,
+        "bossHp": -263
+      },
+      "fullOutcomeSHA256": "6e1370f970478f6f408a9848ed7ad8f26bbb596454de1b4a5ef8971269d8aa4a",
+      "inputHash": 3581649370,
+      "settlement": {
+        "reward": {
+          "coins": 250,
+          "petCoinPct": 0,
+          "gifts": 1,
+          "missions": [
+            {
+              "id": "win1",
+              "name": "도전 1번 성공하기",
+              "gifts": 2
+            },
+            {
+              "id": "goal1",
+              "name": "환경 목표 1번 해내기",
+              "gifts": 2
+            }
+          ],
+          "stars": 2,
+          "first": false,
+          "partActivity": [
+            {
+              "id": "PART_F1",
+              "active": true
+            },
+            {
+              "id": "PART_W1",
+              "active": false
+            },
+            {
+              "id": "PART_L1",
+              "active": false
+            }
+          ],
+          "stageGift": {
+            "left": 1,
+            "capped": false,
+            "limit": 2
+          },
+          "difficulty": "normal",
+          "goal": true,
+          "notes": []
+        },
+        "charged": 1,
+        "cleared": true,
+        "stage": "CH05"
+      },
+      "errors": []
+    }
+  },
+  {
+    "stage": "CH10",
+    "seed": 10808,
+    "equal": true,
+    "gameplayExact": true,
+    "canvasCheck": {
+      "exact": true,
+      "equivalent": true
+    },
+    "before": {
+      "outcome": {
+        "seconds": 274.6000000000789,
+        "kills": 1984,
+        "litter": 23,
+        "hp": 421,
+        "hpMax": 421,
+        "choices": 24,
+        "bossHp": 241198.05
+      },
+      "fullOutcomeSHA256": "c50ff6f28eaaff1f711d3de261c996d98b48600772e0a604c9151fb2bde192fe",
+      "inputHash": 2754404115,
+      "settlement": {
+        "reward": {
+          "coins": 0,
+          "petCoinPct": 0,
+          "gifts": 0,
+          "missions": [],
+          "stars": 0,
+          "first": false,
+          "partActivity": [
+            {
+              "id": "PART_F1",
+              "active": false
+            },
+            {
+              "id": "PART_W1",
+              "active": true
+            },
+            {
+              "id": "PART_L1",
+              "active": true
+            }
+          ],
+          "stageGift": null,
+          "difficulty": "normal",
+          "goal": false,
+          "notes": []
+        },
+        "charged": 0,
+        "cleared": false,
+        "stage": "CH10"
+      },
+      "errors": []
+    },
+    "after": {
+      "outcome": {
+        "seconds": 274.6000000000789,
+        "kills": 1984,
+        "litter": 23,
+        "hp": 421,
+        "hpMax": 421,
+        "choices": 24,
+        "bossHp": 241198.05
+      },
+      "fullOutcomeSHA256": "c50ff6f28eaaff1f711d3de261c996d98b48600772e0a604c9151fb2bde192fe",
+      "inputHash": 2754404115,
+      "settlement": {
+        "reward": {
+          "coins": 0,
+          "petCoinPct": 0,
+          "gifts": 0,
+          "missions": [],
+          "stars": 0,
+          "first": false,
+          "partActivity": [
+            {
+              "id": "PART_F1",
+              "active": false
+            },
+            {
+              "id": "PART_W1",
+              "active": true
+            },
+            {
+              "id": "PART_L1",
+              "active": true
+            }
+          ],
+          "stageGift": null,
+          "difficulty": "normal",
+          "goal": false,
+          "notes": []
+        },
+        "charged": 0,
+        "cleared": false,
+        "stage": "CH10"
+      },
+      "errors": []
+    }
+  },
+  {
+    "stage": "CH10",
+    "seed": 10809,
+    "equal": true,
+    "gameplayExact": true,
+    "canvasCheck": {
+      "exact": true,
+      "equivalent": true
+    },
+    "before": {
+      "outcome": {
+        "seconds": 255.10000000009515,
+        "kills": 1967,
+        "litter": 22,
+        "hp": 390.4447347466669,
+        "hpMax": 421,
+        "choices": 24,
+        "bossHp": -100
+      },
+      "fullOutcomeSHA256": "2eec3cf14b63dfc01f5000ddbe0203d22d66bfae5cd3deea081b768e59b762c8",
+      "inputHash": 1713652701,
+      "settlement": {
+        "reward": {
+          "coins": 0,
+          "petCoinPct": 0,
+          "gifts": 0,
+          "missions": [],
+          "stars": 0,
+          "first": false,
+          "partActivity": [
+            {
+              "id": "PART_F1",
+              "active": true
+            },
+            {
+              "id": "PART_W1",
+              "active": false
+            },
+            {
+              "id": "PART_L1",
+              "active": false
+            }
+          ],
+          "stageGift": {
+            "left": 1,
+            "capped": false,
+            "limit": 2
+          },
+          "difficulty": "normal",
+          "goal": true,
+          "notes": []
+        },
+        "charged": 1,
+        "cleared": true,
+        "stage": "CH10"
+      },
+      "errors": []
+    },
+    "after": {
+      "outcome": {
+        "seconds": 255.10000000009515,
+        "kills": 1967,
+        "litter": 22,
+        "hp": 390.4447347466669,
+        "hpMax": 421,
+        "choices": 24,
+        "bossHp": -100
+      },
+      "fullOutcomeSHA256": "2eec3cf14b63dfc01f5000ddbe0203d22d66bfae5cd3deea081b768e59b762c8",
+      "inputHash": 1713652701,
+      "settlement": {
+        "reward": {
+          "coins": 0,
+          "petCoinPct": 0,
+          "gifts": 0,
+          "missions": [],
+          "stars": 0,
+          "first": false,
+          "partActivity": [
+            {
+              "id": "PART_F1",
+              "active": true
+            },
+            {
+              "id": "PART_W1",
+              "active": false
+            },
+            {
+              "id": "PART_L1",
+              "active": false
+            }
+          ],
+          "stageGift": {
+            "left": 1,
+            "capped": false,
+            "limit": 2
+          },
+          "difficulty": "normal",
+          "goal": true,
+          "notes": []
+        },
+        "charged": 1,
+        "cleared": true,
+        "stage": "CH10"
+      },
+      "errors": []
+    }
+  },
+  {
+    "stage": "CH13",
+    "seed": 10808,
+    "equal": true,
+    "gameplayExact": true,
+    "canvasCheck": {
+      "exact": true,
+      "equivalent": true
+    },
+    "before": {
+      "outcome": {
+        "seconds": 274.6000000000789,
+        "kills": 2122,
+        "litter": 26,
+        "hp": 715,
+        "hpMax": 715,
+        "choices": 24,
+        "bossHp": null
+      },
+      "fullOutcomeSHA256": "70782a44c18187b734386902695a951c1a97ac91ad08c1fad9d2c6feeac8c2f3",
+      "inputHash": 318682617,
+      "settlement": {
+        "reward": {
+          "coins": 0,
+          "petCoinPct": 0,
+          "gifts": 0,
+          "missions": [],
+          "stars": 0,
+          "first": false,
+          "partActivity": [
+            {
+              "id": "PART_F1",
+              "active": false
+            },
+            {
+              "id": "PART_W1",
+              "active": false
+            },
+            {
+              "id": "PART_L1",
+              "active": true
+            }
+          ],
+          "stageGift": null,
+          "difficulty": "normal",
+          "goal": false,
+          "notes": []
+        },
+        "charged": 0,
+        "cleared": false,
+        "stage": "CH13"
+      },
+      "errors": []
+    },
+    "after": {
+      "outcome": {
+        "seconds": 274.6000000000789,
+        "kills": 2122,
+        "litter": 26,
+        "hp": 715,
+        "hpMax": 715,
+        "choices": 24,
+        "bossHp": null
+      },
+      "fullOutcomeSHA256": "70782a44c18187b734386902695a951c1a97ac91ad08c1fad9d2c6feeac8c2f3",
+      "inputHash": 318682617,
+      "settlement": {
+        "reward": {
+          "coins": 0,
+          "petCoinPct": 0,
+          "gifts": 0,
+          "missions": [],
+          "stars": 0,
+          "first": false,
+          "partActivity": [
+            {
+              "id": "PART_F1",
+              "active": false
+            },
+            {
+              "id": "PART_W1",
+              "active": false
+            },
+            {
+              "id": "PART_L1",
+              "active": true
+            }
+          ],
+          "stageGift": null,
+          "difficulty": "normal",
+          "goal": false,
+          "notes": []
+        },
+        "charged": 0,
+        "cleared": false,
+        "stage": "CH13"
+      },
+      "errors": []
+    }
+  },
+  {
+    "stage": "CH13",
+    "seed": 10809,
+    "equal": true,
+    "gameplayExact": true,
+    "canvasCheck": {
+      "exact": true,
+      "equivalent": true
+    },
+    "before": {
+      "outcome": {
+        "seconds": 274.6166666667456,
+        "kills": 2138,
+        "litter": 18,
+        "hp": 244.20156753219592,
+        "hpMax": 421,
+        "choices": 23,
+        "bossHp": null
+      },
+      "fullOutcomeSHA256": "5c2138593a258de55ac4fb8a2bc43d6e1c6d7fbd9c39ba2b4384528647463035",
+      "inputHash": 185733491,
+      "settlement": {
+        "reward": {
+          "coins": 131,
+          "petCoinPct": 0,
+          "gifts": 0,
+          "missions": [],
+          "stars": 0,
+          "first": false,
+          "partActivity": [
+            {
+              "id": "PART_F1",
+              "active": true
+            },
+            {
+              "id": "PART_W1",
+              "active": false
+            },
+            {
+              "id": "PART_L1",
+              "active": false
+            }
+          ],
+          "stageGift": null,
+          "difficulty": "normal",
+          "goal": false,
+          "notes": []
+        },
+        "charged": 0,
+        "cleared": false,
+        "stage": "CH13"
+      },
+      "errors": []
+    },
+    "after": {
+      "outcome": {
+        "seconds": 274.6166666667456,
+        "kills": 2138,
+        "litter": 18,
+        "hp": 244.20156753219592,
+        "hpMax": 421,
+        "choices": 23,
+        "bossHp": null
+      },
+      "fullOutcomeSHA256": "5c2138593a258de55ac4fb8a2bc43d6e1c6d7fbd9c39ba2b4384528647463035",
+      "inputHash": 185733491,
+      "settlement": {
+        "reward": {
+          "coins": 131,
+          "petCoinPct": 0,
+          "gifts": 0,
+          "missions": [],
+          "stars": 0,
+          "first": false,
+          "partActivity": [
+            {
+              "id": "PART_F1",
+              "active": true
+            },
+            {
+              "id": "PART_W1",
+              "active": false
+            },
+            {
+              "id": "PART_L1",
+              "active": false
+            }
+          ],
+          "stageGift": null,
+          "difficulty": "normal",
+          "goal": false,
+          "notes": []
+        },
+        "charged": 0,
+        "cleared": false,
+        "stage": "CH13"
+      },
+      "errors": []
+    }
+  },
+  {
+    "stage": "CH15",
+    "seed": 10808,
+    "equal": true,
+    "gameplayExact": true,
+    "canvasCheck": {
+      "exact": true,
+      "equivalent": true
+    },
+    "before": {
+      "outcome": {
+        "seconds": 274.6000000000789,
+        "kills": 2013,
+        "litter": 30,
+        "hp": 715,
+        "hpMax": 715,
+        "choices": 24,
+        "bossHp": 455489.56
+      },
+      "fullOutcomeSHA256": "e413febba6c4c9551c140044f2682ca2f45d305ddf568d1ed52e934ace98b331",
+      "inputHash": 1745860868,
+      "settlement": {
+        "reward": {
+          "coins": 0,
+          "petCoinPct": 0,
+          "gifts": 0,
+          "missions": [],
+          "stars": 0,
+          "first": false,
+          "partActivity": [
+            {
+              "id": "PART_F1",
+              "active": false
+            },
+            {
+              "id": "PART_W1",
+              "active": false
+            },
+            {
+              "id": "PART_L1",
+              "active": true
+            }
+          ],
+          "stageGift": null,
+          "difficulty": "normal",
+          "goal": false,
+          "notes": []
+        },
+        "charged": 0,
+        "cleared": false,
+        "stage": "CH15"
+      },
+      "errors": []
+    },
+    "after": {
+      "outcome": {
+        "seconds": 274.6000000000789,
+        "kills": 2013,
+        "litter": 30,
+        "hp": 715,
+        "hpMax": 715,
+        "choices": 24,
+        "bossHp": 455489.56
+      },
+      "fullOutcomeSHA256": "e413febba6c4c9551c140044f2682ca2f45d305ddf568d1ed52e934ace98b331",
+      "inputHash": 1745860868,
+      "settlement": {
+        "reward": {
+          "coins": 0,
+          "petCoinPct": 0,
+          "gifts": 0,
+          "missions": [],
+          "stars": 0,
+          "first": false,
+          "partActivity": [
+            {
+              "id": "PART_F1",
+              "active": false
+            },
+            {
+              "id": "PART_W1",
+              "active": false
+            },
+            {
+              "id": "PART_L1",
+              "active": true
+            }
+          ],
+          "stageGift": null,
+          "difficulty": "normal",
+          "goal": false,
+          "notes": []
+        },
+        "charged": 0,
+        "cleared": false,
+        "stage": "CH15"
+      },
+      "errors": []
+    }
+  },
+  {
+    "stage": "CH15",
+    "seed": 10809,
+    "equal": true,
+    "gameplayExact": true,
+    "canvasCheck": {
+      "exact": true,
+      "equivalent": true
+    },
+    "before": {
+      "outcome": {
+        "seconds": 274.6000000000789,
+        "kills": 2037,
+        "litter": 33,
+        "hp": 715,
+        "hpMax": 715,
+        "choices": 24,
+        "bossHp": 170175.12
+      },
+      "fullOutcomeSHA256": "3fb35bd0930f4ec2466b4373e6417c82c88b3cf0687c326289a856bad9eef36f",
+      "inputHash": 250856047,
+      "settlement": {
+        "reward": {
+          "coins": 0,
+          "petCoinPct": 0,
+          "gifts": 0,
+          "missions": [],
+          "stars": 0,
+          "first": false,
+          "partActivity": [
+            {
+              "id": "PART_F1",
+              "active": true
+            },
+            {
+              "id": "PART_W1",
+              "active": true
+            },
+            {
+              "id": "PART_L1",
+              "active": false
+            }
+          ],
+          "stageGift": null,
+          "difficulty": "normal",
+          "goal": false,
+          "notes": []
+        },
+        "charged": 0,
+        "cleared": false,
+        "stage": "CH15"
+      },
+      "errors": []
+    },
+    "after": {
+      "outcome": {
+        "seconds": 274.6000000000789,
+        "kills": 2037,
+        "litter": 33,
+        "hp": 715,
+        "hpMax": 715,
+        "choices": 24,
+        "bossHp": 170175.12
+      },
+      "fullOutcomeSHA256": "3fb35bd0930f4ec2466b4373e6417c82c88b3cf0687c326289a856bad9eef36f",
+      "inputHash": 250856047,
+      "settlement": {
+        "reward": {
+          "coins": 0,
+          "petCoinPct": 0,
+          "gifts": 0,
+          "missions": [],
+          "stars": 0,
+          "first": false,
+          "partActivity": [
+            {
+              "id": "PART_F1",
+              "active": true
+            },
+            {
+              "id": "PART_W1",
+              "active": true
+            },
+            {
+              "id": "PART_L1",
+              "active": false
+            }
+          ],
+          "stageGift": null,
+          "difficulty": "normal",
+          "goal": false,
+          "notes": []
+        },
+        "charged": 0,
+        "cleared": false,
+        "stage": "CH15"
+      },
+      "errors": []
+    }
+  },
+  {
+    "stage": "CH17",
+    "seed": 10808,
+    "equal": true,
+    "gameplayExact": true,
+    "canvasCheck": {
+      "exact": true,
+      "equivalent": true
+    },
+    "before": {
+      "outcome": {
+        "seconds": 274.6000000000789,
+        "kills": 1959,
+        "litter": 29,
+        "hp": 715,
+        "hpMax": 715,
+        "choices": 24,
+        "bossHp": null
+      },
+      "fullOutcomeSHA256": "d2e32634d3fb183f343cf32df0811ca9fc29b25590e9bf0214745e040bc97567",
+      "inputHash": 1898481092,
+      "settlement": {
+        "reward": {
+          "coins": 0,
+          "petCoinPct": 0,
+          "gifts": 0,
+          "missions": [],
+          "stars": 0,
+          "first": false,
+          "partActivity": [
+            {
+              "id": "PART_F1",
+              "active": false
+            },
+            {
+              "id": "PART_W1",
+              "active": false
+            },
+            {
+              "id": "PART_L1",
+              "active": true
+            }
+          ],
+          "stageGift": null,
+          "difficulty": "normal",
+          "goal": false,
+          "notes": []
+        },
+        "charged": 0,
+        "cleared": false,
+        "stage": "CH17"
+      },
+      "errors": []
+    },
+    "after": {
+      "outcome": {
+        "seconds": 274.6000000000789,
+        "kills": 1959,
+        "litter": 29,
+        "hp": 715,
+        "hpMax": 715,
+        "choices": 24,
+        "bossHp": null
+      },
+      "fullOutcomeSHA256": "d2e32634d3fb183f343cf32df0811ca9fc29b25590e9bf0214745e040bc97567",
+      "inputHash": 1898481092,
+      "settlement": {
+        "reward": {
+          "coins": 0,
+          "petCoinPct": 0,
+          "gifts": 0,
+          "missions": [],
+          "stars": 0,
+          "first": false,
+          "partActivity": [
+            {
+              "id": "PART_F1",
+              "active": false
+            },
+            {
+              "id": "PART_W1",
+              "active": false
+            },
+            {
+              "id": "PART_L1",
+              "active": true
+            }
+          ],
+          "stageGift": null,
+          "difficulty": "normal",
+          "goal": false,
+          "notes": []
+        },
+        "charged": 0,
+        "cleared": false,
+        "stage": "CH17"
+      },
+      "errors": []
+    }
+  },
+  {
+    "stage": "CH17",
+    "seed": 10809,
+    "equal": true,
+    "gameplayExact": true,
+    "canvasCheck": {
+      "exact": true,
+      "equivalent": true
+    },
+    "before": {
+      "outcome": {
+        "seconds": 274.6166666667456,
+        "kills": 2065,
+        "litter": 22,
+        "hp": 421,
+        "hpMax": 421,
+        "choices": 23,
+        "bossHp": null
+      },
+      "fullOutcomeSHA256": "f4dec61175f76f477b9159255d647ae348d77e29f7c8fcaa1916385855bf2028",
+      "inputHash": 2530241665,
+      "settlement": {
+        "reward": {
+          "coins": 0,
+          "petCoinPct": 0,
+          "gifts": 0,
+          "missions": [],
+          "stars": 0,
+          "first": false,
+          "partActivity": [
+            {
+              "id": "PART_F1",
+              "active": true
+            },
+            {
+              "id": "PART_W1",
+              "active": true
+            },
+            {
+              "id": "PART_L1",
+              "active": false
+            }
+          ],
+          "stageGift": null,
+          "difficulty": "normal",
+          "goal": false,
+          "notes": []
+        },
+        "charged": 0,
+        "cleared": false,
+        "stage": "CH17"
+      },
+      "errors": []
+    },
+    "after": {
+      "outcome": {
+        "seconds": 274.6166666667456,
+        "kills": 2065,
+        "litter": 22,
+        "hp": 421,
+        "hpMax": 421,
+        "choices": 23,
+        "bossHp": null
+      },
+      "fullOutcomeSHA256": "f4dec61175f76f477b9159255d647ae348d77e29f7c8fcaa1916385855bf2028",
+      "inputHash": 2530241665,
+      "settlement": {
+        "reward": {
+          "coins": 0,
+          "petCoinPct": 0,
+          "gifts": 0,
+          "missions": [],
+          "stars": 0,
+          "first": false,
+          "partActivity": [
+            {
+              "id": "PART_F1",
+              "active": true
+            },
+            {
+              "id": "PART_W1",
+              "active": true
+            },
+            {
+              "id": "PART_L1",
+              "active": false
+            }
+          ],
+          "stageGift": null,
+          "difficulty": "normal",
+          "goal": false,
+          "notes": []
+        },
+        "charged": 0,
+        "cleared": false,
+        "stage": "CH17"
+      },
+      "errors": []
+    }
+  },
+  {
+    "stage": "CH18",
+    "seed": 10808,
+    "equal": true,
+    "gameplayExact": true,
+    "canvasCheck": {
+      "exact": true,
+      "equivalent": true
+    },
+    "before": {
+      "outcome": {
+        "seconds": 274.6333333334122,
+        "kills": 2225,
+        "litter": 20,
+        "hp": 715,
+        "hpMax": 715,
+        "choices": 22,
+        "bossHp": null
+      },
+      "fullOutcomeSHA256": "1da68716ee37a03b202c49cfef21b56af3548508ec150f70e68050fbcd44d79e",
+      "inputHash": 2367241709,
+      "settlement": {
+        "reward": {
+          "coins": 159,
+          "petCoinPct": 0,
+          "gifts": 0,
+          "missions": [],
+          "stars": 0,
+          "first": false,
+          "partActivity": [
+            {
+              "id": "PART_F1",
+              "active": false
+            },
+            {
+              "id": "PART_W1",
+              "active": true
+            },
+            {
+              "id": "PART_L1",
+              "active": true
+            }
+          ],
+          "stageGift": null,
+          "difficulty": "normal",
+          "goal": false,
+          "notes": []
+        },
+        "charged": 0,
+        "cleared": false,
+        "stage": "CH18"
+      },
+      "errors": []
+    },
+    "after": {
+      "outcome": {
+        "seconds": 274.6333333334122,
+        "kills": 2225,
+        "litter": 20,
+        "hp": 715,
+        "hpMax": 715,
+        "choices": 22,
+        "bossHp": null
+      },
+      "fullOutcomeSHA256": "1da68716ee37a03b202c49cfef21b56af3548508ec150f70e68050fbcd44d79e",
+      "inputHash": 2367241709,
+      "settlement": {
+        "reward": {
+          "coins": 159,
+          "petCoinPct": 0,
+          "gifts": 0,
+          "missions": [],
+          "stars": 0,
+          "first": false,
+          "partActivity": [
+            {
+              "id": "PART_F1",
+              "active": false
+            },
+            {
+              "id": "PART_W1",
+              "active": true
+            },
+            {
+              "id": "PART_L1",
+              "active": true
+            }
+          ],
+          "stageGift": null,
+          "difficulty": "normal",
+          "goal": false,
+          "notes": []
+        },
+        "charged": 0,
+        "cleared": false,
+        "stage": "CH18"
+      },
+      "errors": []
+    }
+  },
+  {
+    "stage": "CH18",
+    "seed": 10809,
+    "equal": true,
+    "gameplayExact": true,
+    "canvasCheck": {
+      "exact": true,
+      "equivalent": true
+    },
+    "before": {
+      "outcome": {
+        "seconds": 274.6000000000789,
+        "kills": 2198,
+        "litter": 28,
+        "hp": 78.34144524997677,
+        "hpMax": 421,
+        "choices": 24,
+        "bossHp": null
+      },
+      "fullOutcomeSHA256": "5871bd36a24d50cbb0eb04655cb9ed1e86a62293d3f18a96c9756f81ee825fc7",
+      "inputHash": 4198384522,
+      "settlement": {
+        "reward": {
+          "coins": 0,
+          "petCoinPct": 0,
+          "gifts": 0,
+          "missions": [],
+          "stars": 0,
+          "first": false,
+          "partActivity": [
+            {
+              "id": "PART_F1",
+              "active": true
+            },
+            {
+              "id": "PART_W1",
+              "active": false
+            },
+            {
+              "id": "PART_L1",
+              "active": false
+            }
+          ],
+          "stageGift": null,
+          "difficulty": "normal",
+          "goal": false,
+          "notes": []
+        },
+        "charged": 0,
+        "cleared": false,
+        "stage": "CH18"
+      },
+      "errors": []
+    },
+    "after": {
+      "outcome": {
+        "seconds": 274.6000000000789,
+        "kills": 2198,
+        "litter": 28,
+        "hp": 78.34144524997677,
+        "hpMax": 421,
+        "choices": 24,
+        "bossHp": null
+      },
+      "fullOutcomeSHA256": "5871bd36a24d50cbb0eb04655cb9ed1e86a62293d3f18a96c9756f81ee825fc7",
+      "inputHash": 4198384522,
+      "settlement": {
+        "reward": {
+          "coins": 0,
+          "petCoinPct": 0,
+          "gifts": 0,
+          "missions": [],
+          "stars": 0,
+          "first": false,
+          "partActivity": [
+            {
+              "id": "PART_F1",
+              "active": true
+            },
+            {
+              "id": "PART_W1",
+              "active": false
+            },
+            {
+              "id": "PART_L1",
+              "active": false
+            }
+          ],
+          "stageGift": null,
+          "difficulty": "normal",
+          "goal": false,
+          "notes": []
+        },
+        "charged": 0,
+        "cleared": false,
+        "stage": "CH18"
+      },
+      "errors": []
+    }
+  },
+  {
+    "stage": "CH19",
+    "seed": 10808,
+    "equal": true,
+    "gameplayExact": true,
+    "canvasCheck": {
+      "exact": true,
+      "equivalent": true
+    },
+    "before": {
+      "outcome": {
+        "seconds": 274.6000000000789,
+        "kills": 2348,
+        "litter": 29,
+        "hp": 715,
+        "hpMax": 715,
+        "choices": 24,
+        "bossHp": null
+      },
+      "fullOutcomeSHA256": "a9eefbbe0e698351dab8c6a3ba290f9ac5753ac8f8d20ae2738b198818ec8893",
+      "inputHash": 1329619409,
+      "settlement": {
+        "reward": {
+          "coins": 0,
+          "petCoinPct": 0,
+          "gifts": 0,
+          "missions": [],
+          "stars": 0,
+          "first": false,
+          "partActivity": [
+            {
+              "id": "PART_F1",
+              "active": false
+            },
+            {
+              "id": "PART_W1",
+              "active": false
+            },
+            {
+              "id": "PART_L1",
+              "active": true
+            }
+          ],
+          "stageGift": null,
+          "difficulty": "normal",
+          "goal": false,
+          "notes": []
+        },
+        "charged": 0,
+        "cleared": false,
+        "stage": "CH19"
+      },
+      "errors": []
+    },
+    "after": {
+      "outcome": {
+        "seconds": 274.6000000000789,
+        "kills": 2348,
+        "litter": 29,
+        "hp": 715,
+        "hpMax": 715,
+        "choices": 24,
+        "bossHp": null
+      },
+      "fullOutcomeSHA256": "a9eefbbe0e698351dab8c6a3ba290f9ac5753ac8f8d20ae2738b198818ec8893",
+      "inputHash": 1329619409,
+      "settlement": {
+        "reward": {
+          "coins": 0,
+          "petCoinPct": 0,
+          "gifts": 0,
+          "missions": [],
+          "stars": 0,
+          "first": false,
+          "partActivity": [
+            {
+              "id": "PART_F1",
+              "active": false
+            },
+            {
+              "id": "PART_W1",
+              "active": false
+            },
+            {
+              "id": "PART_L1",
+              "active": true
+            }
+          ],
+          "stageGift": null,
+          "difficulty": "normal",
+          "goal": false,
+          "notes": []
+        },
+        "charged": 0,
+        "cleared": false,
+        "stage": "CH19"
+      },
+      "errors": []
+    }
+  },
+  {
+    "stage": "CH19",
+    "seed": 10809,
+    "equal": true,
+    "gameplayExact": true,
+    "canvasCheck": {
+      "exact": true,
+      "equivalent": true
+    },
+    "before": {
+      "outcome": {
+        "seconds": 274.6166666667456,
+        "kills": 2419,
+        "litter": 20,
+        "hp": 715,
+        "hpMax": 715,
+        "choices": 23,
+        "bossHp": null
+      },
+      "fullOutcomeSHA256": "f73ad857bac81e9190b6d14bb5d80af7dcb7468608c824eb6887bf02ce2b9785",
+      "inputHash": 1520050547,
+      "settlement": {
+        "reward": {
+          "coins": 164,
+          "petCoinPct": 0,
+          "gifts": 0,
+          "missions": [],
+          "stars": 0,
+          "first": false,
+          "partActivity": [
+            {
+              "id": "PART_F1",
+              "active": true
+            },
+            {
+              "id": "PART_W1",
+              "active": false
+            },
+            {
+              "id": "PART_L1",
+              "active": true
+            }
+          ],
+          "stageGift": null,
+          "difficulty": "normal",
+          "goal": false,
+          "notes": []
+        },
+        "charged": 0,
+        "cleared": false,
+        "stage": "CH19"
+      },
+      "errors": []
+    },
+    "after": {
+      "outcome": {
+        "seconds": 274.6166666667456,
+        "kills": 2419,
+        "litter": 20,
+        "hp": 715,
+        "hpMax": 715,
+        "choices": 23,
+        "bossHp": null
+      },
+      "fullOutcomeSHA256": "f73ad857bac81e9190b6d14bb5d80af7dcb7468608c824eb6887bf02ce2b9785",
+      "inputHash": 1520050547,
+      "settlement": {
+        "reward": {
+          "coins": 164,
+          "petCoinPct": 0,
+          "gifts": 0,
+          "missions": [],
+          "stars": 0,
+          "first": false,
+          "partActivity": [
+            {
+              "id": "PART_F1",
+              "active": true
+            },
+            {
+              "id": "PART_W1",
+              "active": false
+            },
+            {
+              "id": "PART_L1",
+              "active": true
+            }
+          ],
+          "stageGift": null,
+          "difficulty": "normal",
+          "goal": false,
+          "notes": []
+        },
+        "charged": 0,
+        "cleared": false,
+        "stage": "CH19"
+      },
+      "errors": []
+    }
+  },
+  {
+    "stage": "CH20",
+    "seed": 10808,
+    "equal": true,
+    "gameplayExact": true,
+    "canvasCheck": {
+      "exact": true,
+      "equivalent": true
+    },
+    "before": {
+      "outcome": {
+        "seconds": 274.6000000000789,
+        "kills": 2031,
+        "litter": 34,
+        "hp": 421,
+        "hpMax": 421,
+        "choices": 24,
+        "bossHp": 602245.82
+      },
+      "fullOutcomeSHA256": "58b75aaff75ebc12cac4857ca9cbc9e0bb2803a31c61d917e170c8a15626103c",
+      "inputHash": 3392902672,
+      "settlement": {
+        "reward": {
+          "coins": 0,
+          "petCoinPct": 0,
+          "gifts": 0,
+          "missions": [],
+          "stars": 0,
+          "first": false,
+          "partActivity": [
+            {
+              "id": "PART_F1",
+              "active": false
+            },
+            {
+              "id": "PART_W1",
+              "active": false
+            },
+            {
+              "id": "PART_L1",
+              "active": true
+            }
+          ],
+          "stageGift": null,
+          "difficulty": "normal",
+          "goal": false,
+          "notes": []
+        },
+        "charged": 0,
+        "cleared": false,
+        "stage": "CH20"
+      },
+      "errors": []
+    },
+    "after": {
+      "outcome": {
+        "seconds": 274.6000000000789,
+        "kills": 2031,
+        "litter": 34,
+        "hp": 421,
+        "hpMax": 421,
+        "choices": 24,
+        "bossHp": 602245.82
+      },
+      "fullOutcomeSHA256": "58b75aaff75ebc12cac4857ca9cbc9e0bb2803a31c61d917e170c8a15626103c",
+      "inputHash": 3392902672,
+      "settlement": {
+        "reward": {
+          "coins": 0,
+          "petCoinPct": 0,
+          "gifts": 0,
+          "missions": [],
+          "stars": 0,
+          "first": false,
+          "partActivity": [
+            {
+              "id": "PART_F1",
+              "active": false
+            },
+            {
+              "id": "PART_W1",
+              "active": false
+            },
+            {
+              "id": "PART_L1",
+              "active": true
+            }
+          ],
+          "stageGift": null,
+          "difficulty": "normal",
+          "goal": false,
+          "notes": []
+        },
+        "charged": 0,
+        "cleared": false,
+        "stage": "CH20"
+      },
+      "errors": []
+    }
+  },
+  {
+    "stage": "CH20",
+    "seed": 10809,
+    "equal": true,
+    "gameplayExact": true,
+    "canvasCheck": {
+      "exact": true,
+      "equivalent": true
+    },
+    "before": {
+      "outcome": {
+        "seconds": 274.6000000000789,
+        "kills": 2116,
+        "litter": 30,
+        "hp": 421,
+        "hpMax": 421,
+        "choices": 24,
+        "bossHp": 29381.820000000007
+      },
+      "fullOutcomeSHA256": "1c7484c21c991591bd7acb7ae2d59e534f67d2d0c4a74815599ee5a680ae056c",
+      "inputHash": 4079286096,
+      "settlement": {
+        "reward": {
+          "coins": 0,
+          "petCoinPct": 0,
+          "gifts": 0,
+          "missions": [],
+          "stars": 0,
+          "first": false,
+          "partActivity": [
+            {
+              "id": "PART_F1",
+              "active": true
+            },
+            {
+              "id": "PART_W1",
+              "active": true
+            },
+            {
+              "id": "PART_L1",
+              "active": true
+            }
+          ],
+          "stageGift": null,
+          "difficulty": "normal",
+          "goal": false,
+          "notes": []
+        },
+        "charged": 0,
+        "cleared": false,
+        "stage": "CH20"
+      },
+      "errors": []
+    },
+    "after": {
+      "outcome": {
+        "seconds": 274.6000000000789,
+        "kills": 2116,
+        "litter": 30,
+        "hp": 421,
+        "hpMax": 421,
+        "choices": 24,
+        "bossHp": 29381.820000000007
+      },
+      "fullOutcomeSHA256": "1c7484c21c991591bd7acb7ae2d59e534f67d2d0c4a74815599ee5a680ae056c",
+      "inputHash": 4079286096,
+      "settlement": {
+        "reward": {
+          "coins": 0,
+          "petCoinPct": 0,
+          "gifts": 0,
+          "missions": [],
+          "stars": 0,
+          "first": false,
+          "partActivity": [
+            {
+              "id": "PART_F1",
+              "active": true
+            },
+            {
+              "id": "PART_W1",
+              "active": true
+            },
+            {
+              "id": "PART_L1",
+              "active": true
+            }
+          ],
+          "stageGift": null,
+          "difficulty": "normal",
+          "goal": false,
+          "notes": []
+        },
+        "charged": 0,
+        "cleared": false,
+        "stage": "CH20"
+      },
+      "errors": []
+    }
+  }
+]

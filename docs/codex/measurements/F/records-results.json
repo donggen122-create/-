@@ -1,0 +1,766 @@
+[
+  {
+    "ui": 2,
+    "width": 1280,
+    "outcome": {
+      "advanced": 11.750000000000163,
+      "runTime": 12.883333333333553,
+      "mode": "result",
+      "killCount": 5,
+      "playerHp": -4.835479568333493,
+      "playerLvl": 2,
+      "enemyCount": 43,
+      "bossHp": null,
+      "bossHpMax": null,
+      "bossPhase": null,
+      "playerPos": {
+        "x": 0,
+        "y": 43
+      }
+    },
+    "stored": {
+      "reward": {
+        "coins": 3,
+        "petCoinPct": 0,
+        "gifts": 0,
+        "missions": [],
+        "stars": 0,
+        "first": false,
+        "partActivity": [],
+        "stageGift": null,
+        "difficulty": "normal",
+        "goal": false,
+        "notes": []
+      },
+      "cleared": false,
+      "stage": "CH01",
+      "runId": "f5652331-e84c-439f-ab39-629b83202ef1",
+      "charged": 0,
+      "kills": 5,
+      "litter": 0,
+      "flags": [
+        {
+          "code": "hpFraction",
+          "value": -0.018597998339744203,
+          "limit": 1
+        }
+      ],
+      "loadout": {
+        "equippedParts": [],
+        "pet": null,
+        "difficulty": "normal"
+      },
+      "perf": {
+        "v": "guardian-2-2026-10-11-A",
+        "fps": 52.11,
+        "p1": 14.93,
+        "long33": 0.0909,
+        "long50": 0.0303,
+        "q": 0,
+        "ratio": 1,
+        "qmax": 0,
+        "dev": "pc",
+        "w": 1280,
+        "h": 768,
+        "dpr": 1,
+        "sec": 12.88
+      },
+      "cause": {
+        "id": "T1_SNACKBAG",
+        "kind": "enemy",
+        "at": 12.88
+      }
+    },
+    "capture": {
+      "file": "F_result_ui2_1280_failure.png",
+      "bytes": 266899
+    },
+    "errors": []
+  },
+  {
+    "ui": 2,
+    "width": 1280,
+    "outcome": {
+      "runTime": 180.00000000003539,
+      "mode": "result",
+      "hp": 442,
+      "maxHp": 442,
+      "kills": 642,
+      "litter": 20,
+      "choices": 16,
+      "bossHp": null,
+      "bossMax": null,
+      "bossHurt": 0,
+      "bossDmg": 0
+    },
+    "stored": {
+      "reward": {
+        "coins": 0,
+        "petCoinPct": 0,
+        "gifts": 0,
+        "missions": [],
+        "stars": 0,
+        "first": true,
+        "partActivity": [],
+        "stageGift": {
+          "left": 1,
+          "capped": false,
+          "limit": 2
+        },
+        "difficulty": "normal",
+        "goal": true,
+        "notes": []
+      },
+      "cleared": true,
+      "stage": "CH01",
+      "runId": "664ee6d6-c97c-4126-b159-df67443ca26e",
+      "charged": 1,
+      "kills": 642,
+      "litter": 20,
+      "flags": [
+        {
+          "code": "litter",
+          "value": 20,
+          "limit": 6
+        }
+      ],
+      "held": true,
+      "heldReward": {
+        "coins": 222,
+        "petCoinPct": 0,
+        "gifts": 1,
+        "missions": [
+          {
+            "id": "win1",
+            "name": "도전 1번 성공하기",
+            "gifts": 2
+          },
+          {
+            "id": "goal1",
+            "name": "환경 목표 1번 해내기",
+            "gifts": 2
+          }
+        ],
+        "stars": 2,
+        "first": true,
+        "partActivity": [],
+        "stageGift": {
+          "left": 1,
+          "capped": false,
+          "limit": 2
+        },
+        "difficulty": "normal",
+        "goal": true,
+        "notes": [
+          "첫 파츠 1개 선택 + 파츠·친구 보급 열림"
+        ]
+      },
+      "heldAmounts": {
+        "coins": 222,
+        "gifts": 5
+      },
+      "loadout": {
+        "equippedParts": [],
+        "pet": null,
+        "difficulty": "normal"
+      },
+      "perf": {
+        "v": "guardian-2-2026-10-11-A",
+        "fps": 56.76,
+        "p1": 20,
+        "long33": 0.0286,
+        "long50": 0,
+        "q": 0,
+        "ratio": 1,
+        "qmax": 0,
+        "dev": "pc",
+        "w": 1280,
+        "h": 768,
+        "dpr": 1,
+        "sec": 180
+      }
+    },
+    "capture": {
+      "file": "F_result_ui2_1280_success.png",
+      "bytes": 269979
+    },
+    "errors": []
+  },
+  {
+    "ui": 2,
+    "width": 375,
+    "outcome": {
+      "advanced": 12.950000000000223,
+      "runTime": 14.083333333333613,
+      "mode": "result",
+      "killCount": 22,
+      "playerHp": -3.0241591766669256,
+      "playerLvl": 2,
+      "enemyCount": 29,
+      "bossHp": null,
+      "bossHpMax": null,
+      "bossPhase": null,
+      "playerPos": {
+        "x": 31,
+        "y": 31
+      }
+    },
+    "stored": {
+      "reward": {
+        "coins": 3,
+        "petCoinPct": 0,
+        "gifts": 0,
+        "missions": [],
+        "stars": 0,
+        "first": false,
+        "partActivity": [],
+        "stageGift": null,
+        "difficulty": "normal",
+        "goal": false,
+        "notes": []
+      },
+      "cleared": false,
+      "stage": "CH01",
+      "runId": "1941480e-09ac-4b51-b709-f3bab97b1c2c",
+      "charged": 0,
+      "kills": 22,
+      "litter": 0,
+      "flags": [
+        {
+          "code": "hpFraction",
+          "value": -0.011631381448718945,
+          "limit": 1
+        }
+      ],
+      "loadout": {
+        "equippedParts": [],
+        "pet": null,
+        "difficulty": "normal"
+      },
+      "perf": {
+        "v": "guardian-2-2026-10-11-A",
+        "fps": 58.41,
+        "p1": 29.41,
+        "long33": 0.027,
+        "long50": 0,
+        "q": 0,
+        "ratio": 1,
+        "qmax": 0,
+        "dev": "phone",
+        "w": 375,
+        "h": 375,
+        "dpr": 1,
+        "sec": 14.08
+      },
+      "cause": {
+        "id": "T1_BAGGY",
+        "kind": "enemy",
+        "at": 14.08
+      }
+    },
+    "capture": {
+      "file": "F_result_ui2_375_failure.png",
+      "bytes": 128163
+    },
+    "errors": []
+  },
+  {
+    "ui": 2,
+    "width": 375,
+    "outcome": {
+      "runTime": 180.00000000003539,
+      "mode": "result",
+      "hp": 390,
+      "maxHp": 390,
+      "kills": 669,
+      "litter": 18,
+      "choices": 16,
+      "bossHp": null,
+      "bossMax": null,
+      "bossHurt": 0,
+      "bossDmg": 0
+    },
+    "stored": {
+      "reward": {
+        "coins": 0,
+        "petCoinPct": 0,
+        "gifts": 0,
+        "missions": [],
+        "stars": 0,
+        "first": true,
+        "partActivity": [],
+        "stageGift": {
+          "left": 1,
+          "capped": false,
+          "limit": 2
+        },
+        "difficulty": "normal",
+        "goal": true,
+        "notes": []
+      },
+      "cleared": true,
+      "stage": "CH01",
+      "runId": "30aa32e6-f442-4970-be56-4549b25775f8",
+      "charged": 1,
+      "kills": 669,
+      "litter": 18,
+      "flags": [
+        {
+          "code": "litter",
+          "value": 18,
+          "limit": 6
+        }
+      ],
+      "held": true,
+      "heldReward": {
+        "coins": 222,
+        "petCoinPct": 0,
+        "gifts": 1,
+        "missions": [
+          {
+            "id": "win1",
+            "name": "도전 1번 성공하기",
+            "gifts": 2
+          },
+          {
+            "id": "goal1",
+            "name": "환경 목표 1번 해내기",
+            "gifts": 2
+          }
+        ],
+        "stars": 2,
+        "first": true,
+        "partActivity": [],
+        "stageGift": {
+          "left": 1,
+          "capped": false,
+          "limit": 2
+        },
+        "difficulty": "normal",
+        "goal": true,
+        "notes": [
+          "첫 파츠 1개 선택 + 파츠·친구 보급 열림"
+        ]
+      },
+      "heldAmounts": {
+        "coins": 222,
+        "gifts": 5
+      },
+      "loadout": {
+        "equippedParts": [],
+        "pet": null,
+        "difficulty": "normal"
+      },
+      "perf": {
+        "v": "guardian-2-2026-10-11-A",
+        "fps": 58.34,
+        "p1": 29.41,
+        "long33": 0.0286,
+        "long50": 0,
+        "q": 0,
+        "ratio": 1,
+        "qmax": 0,
+        "dev": "phone",
+        "w": 375,
+        "h": 375,
+        "dpr": 1,
+        "sec": 180
+      }
+    },
+    "capture": {
+      "file": "F_result_ui2_375_success.png",
+      "bytes": 126982
+    },
+    "errors": []
+  },
+  {
+    "ui": 1,
+    "width": 1280,
+    "outcome": {
+      "advanced": 11.90000000000017,
+      "runTime": 13.000000000000226,
+      "mode": "result",
+      "killCount": 6,
+      "playerHp": -6.716308568333509,
+      "playerLvl": 2,
+      "enemyCount": 42,
+      "bossHp": null,
+      "bossHpMax": null,
+      "bossPhase": null,
+      "playerPos": {
+        "x": 31,
+        "y": -31
+      }
+    },
+    "stored": {
+      "reward": {
+        "coins": 3,
+        "petCoinPct": 0,
+        "gifts": 0,
+        "missions": [],
+        "stars": 0,
+        "first": false,
+        "partActivity": [],
+        "stageGift": null,
+        "difficulty": "normal",
+        "goal": false,
+        "notes": []
+      },
+      "cleared": false,
+      "stage": "CH01",
+      "runId": "07f34a36-1be0-4c85-b15d-d12d29541cd8",
+      "charged": 0,
+      "kills": 6,
+      "litter": 0,
+      "flags": [
+        {
+          "code": "hpFraction",
+          "value": -0.025831956032051958,
+          "limit": 1
+        }
+      ],
+      "loadout": {
+        "equippedParts": [],
+        "pet": null,
+        "difficulty": "normal"
+      },
+      "perf": {
+        "v": "guardian-2-2026-10-11-A",
+        "fps": 58.38,
+        "p1": 29.41,
+        "long33": 0.0278,
+        "long50": 0,
+        "q": 0,
+        "ratio": 1,
+        "qmax": 0,
+        "dev": "pc",
+        "w": 1280,
+        "h": 768,
+        "dpr": 1,
+        "sec": 13
+      },
+      "cause": {
+        "id": "T1_BAGGY",
+        "kind": "enemy",
+        "at": 13
+      }
+    },
+    "capture": {
+      "file": "F_result_ui1_1280_failure.png",
+      "bytes": 300909
+    },
+    "errors": []
+  },
+  {
+    "ui": 1,
+    "width": 1280,
+    "outcome": {
+      "runTime": 180.00000000003539,
+      "mode": "result",
+      "hp": 260,
+      "maxHp": 260,
+      "kills": 637,
+      "litter": 17,
+      "choices": 16,
+      "bossHp": null,
+      "bossMax": null,
+      "bossHurt": 0,
+      "bossDmg": 0
+    },
+    "stored": {
+      "reward": {
+        "coins": 0,
+        "petCoinPct": 0,
+        "gifts": 0,
+        "missions": [],
+        "stars": 0,
+        "first": true,
+        "partActivity": [],
+        "stageGift": {
+          "left": 1,
+          "capped": false,
+          "limit": 2
+        },
+        "difficulty": "normal",
+        "goal": true,
+        "notes": []
+      },
+      "cleared": true,
+      "stage": "CH01",
+      "runId": "66b98659-b230-4990-8db5-144bceef3ba8",
+      "charged": 1,
+      "kills": 637,
+      "litter": 17,
+      "flags": [
+        {
+          "code": "litter",
+          "value": 17,
+          "limit": 6
+        }
+      ],
+      "held": true,
+      "heldReward": {
+        "coins": 222,
+        "petCoinPct": 0,
+        "gifts": 1,
+        "missions": [
+          {
+            "id": "win1",
+            "name": "도전 1번 성공하기",
+            "gifts": 2
+          },
+          {
+            "id": "goal1",
+            "name": "환경 목표 1번 해내기",
+            "gifts": 2
+          }
+        ],
+        "stars": 2,
+        "first": true,
+        "partActivity": [],
+        "stageGift": {
+          "left": 1,
+          "capped": false,
+          "limit": 2
+        },
+        "difficulty": "normal",
+        "goal": true,
+        "notes": [
+          "첫 파츠 1개 선택 + 파츠·친구 보급 열림"
+        ]
+      },
+      "heldAmounts": {
+        "coins": 222,
+        "gifts": 5
+      },
+      "loadout": {
+        "equippedParts": [],
+        "pet": null,
+        "difficulty": "normal"
+      },
+      "perf": {
+        "v": "guardian-2-2026-10-11-A",
+        "fps": 58.33,
+        "p1": 29.41,
+        "long33": 0.0286,
+        "long50": 0,
+        "q": 0,
+        "ratio": 1,
+        "qmax": 0,
+        "dev": "pc",
+        "w": 1280,
+        "h": 768,
+        "dpr": 1,
+        "sec": 180
+      }
+    },
+    "capture": {
+      "file": "F_result_ui1_1280_success.png",
+      "bytes": 315946
+    },
+    "errors": []
+  },
+  {
+    "ui": 1,
+    "width": 375,
+    "outcome": {
+      "advanced": 12.533333333333536,
+      "runTime": 13.616666666666923,
+      "mode": "result",
+      "killCount": 23,
+      "playerHp": -4.554917376666853,
+      "playerLvl": 2,
+      "enemyCount": 27,
+      "bossHp": null,
+      "bossHpMax": null,
+      "bossPhase": null,
+      "playerPos": {
+        "x": -43,
+        "y": 0
+      }
+    },
+    "stored": {
+      "reward": {
+        "coins": 3,
+        "petCoinPct": 0,
+        "gifts": 0,
+        "missions": [],
+        "stars": 0,
+        "first": false,
+        "partActivity": [],
+        "stageGift": null,
+        "difficulty": "normal",
+        "goal": false,
+        "notes": []
+      },
+      "cleared": false,
+      "stage": "CH01",
+      "runId": "d78882ab-8bd7-4631-97e0-f8a3e4ce9aa7",
+      "charged": 0,
+      "kills": 23,
+      "litter": 0,
+      "flags": [
+        {
+          "code": "hpFraction",
+          "value": -0.017518912987180203,
+          "limit": 1
+        }
+      ],
+      "loadout": {
+        "equippedParts": [],
+        "pet": null,
+        "difficulty": "normal"
+      },
+      "perf": {
+        "v": "guardian-2-2026-10-11-A",
+        "fps": 58.33,
+        "p1": 29.41,
+        "long33": 0.0286,
+        "long50": 0,
+        "q": 0,
+        "ratio": 1,
+        "qmax": 0,
+        "dev": "phone",
+        "w": 375,
+        "h": 375,
+        "dpr": 1,
+        "sec": 13.62
+      },
+      "cause": {
+        "id": "T1_BAGGY",
+        "kind": "enemy",
+        "at": 13.62
+      }
+    },
+    "capture": {
+      "file": "F_result_ui1_375_failure.png",
+      "bytes": 103646
+    },
+    "errors": []
+  },
+  {
+    "ui": 1,
+    "width": 375,
+    "outcome": {
+      "runTime": 180.00000000003539,
+      "mode": "result",
+      "hp": 260,
+      "maxHp": 260,
+      "kills": 672,
+      "litter": 18,
+      "choices": 16,
+      "bossHp": null,
+      "bossMax": null,
+      "bossHurt": 0,
+      "bossDmg": 0
+    },
+    "stored": {
+      "reward": {
+        "coins": 0,
+        "petCoinPct": 0,
+        "gifts": 0,
+        "missions": [],
+        "stars": 0,
+        "first": true,
+        "partActivity": [],
+        "stageGift": {
+          "left": 1,
+          "capped": false,
+          "limit": 2
+        },
+        "difficulty": "normal",
+        "goal": true,
+        "notes": []
+      },
+      "cleared": true,
+      "stage": "CH01",
+      "runId": "8fe40813-7b97-4718-8608-3bad3269f430",
+      "charged": 1,
+      "kills": 672,
+      "litter": 18,
+      "flags": [
+        {
+          "code": "litter",
+          "value": 18,
+          "limit": 6
+        }
+      ],
+      "held": true,
+      "heldReward": {
+        "coins": 222,
+        "petCoinPct": 0,
+        "gifts": 1,
+        "missions": [
+          {
+            "id": "win1",
+            "name": "도전 1번 성공하기",
+            "gifts": 2
+          },
+          {
+            "id": "goal1",
+            "name": "환경 목표 1번 해내기",
+            "gifts": 2
+          }
+        ],
+        "stars": 2,
+        "first": true,
+        "partActivity": [],
+        "stageGift": {
+          "left": 1,
+          "capped": false,
+          "limit": 2
+        },
+        "difficulty": "normal",
+        "goal": true,
+        "notes": [
+          "첫 파츠 1개 선택 + 파츠·친구 보급 열림"
+        ]
+      },
+      "heldAmounts": {
+        "coins": 222,
+        "gifts": 5
+      },
+      "loadout": {
+        "equippedParts": [],
+        "pet": null,
+        "difficulty": "normal"
+      },
+      "perf": {
+        "v": "guardian-2-2026-10-11-A",
+        "fps": 60,
+        "p1": 58.82,
+        "long33": 0,
+        "long50": 0,
+        "q": 0,
+        "ratio": 1,
+        "qmax": 0,
+        "dev": "phone",
+        "w": 375,
+        "h": 375,
+        "dpr": 1,
+        "sec": 180
+      }
+    },
+    "capture": {
+      "file": "F_result_ui1_375_success.png",
+      "bytes": 130311
+    },
+    "errors": []
+  },
+  {
+    "admin": true,
+    "rows": 20,
+    "bytes": 18766,
+    "captures": [
+      {
+        "file": "F_admin_stages.png",
+        "bytes": 85030
+      },
+      {
+        "file": "F_admin_devices.png",
+        "bytes": 63018
+      }
+    ],
+    "errors": []
+  }
+]

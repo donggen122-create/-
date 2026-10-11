@@ -1,0 +1,79 @@
+{
+  "checks": [
+    "top 10 only and own rank 12",
+    "held/impossible records excluded",
+    "student payload has no IDs",
+    "all four halls and anonymous count",
+    "cooperation success count goal",
+    "test-account excluded",
+    "nickname pending remains anonymous",
+    "approved name shown immediately",
+    "rejected reason and anonymous display",
+    "earned cosmetic title displayed",
+    "anomaly 7 held=False",
+    "anomaly 13 held=True",
+    "release exactly once",
+    "UI 2 1280 own rank shown",
+    "F_rank_1280x720.png <=400KB",
+    "UI 2 1280 hall fits",
+    "UI 2 1280 profile fits",
+    "UI 2 1280 goal fits",
+    "UI 2 1280 nickname form",
+    "UI 2 1280 private names",
+    "UI 2 1280 no script errors",
+    "UI 2 375 own rank shown",
+    "F_rank_375x667.png <=400KB",
+    "UI 2 375 hall fits",
+    "UI 2 375 profile fits",
+    "UI 2 375 goal fits",
+    "UI 2 375 nickname form",
+    "UI 2 375 private names",
+    "UI 2 375 no script errors",
+    "UI 1 1280 own rank shown",
+    "F_rank_ui1_1280x720.png <=400KB",
+    "UI 1 1280 hall fits",
+    "UI 1 1280 profile fits",
+    "UI 1 1280 goal fits",
+    "UI 1 1280 nickname form",
+    "UI 1 1280 private names",
+    "UI 1 1280 no script errors",
+    "student neutral held notice",
+    "F_admin_nicknames.png <=400KB",
+    "F_admin_anomalies.png <=400KB",
+    "admin release button"
+  ],
+  "captures": [
+    {
+      "file": "F_rank_1280x720.png",
+      "bytes": 389863
+    },
+    {
+      "file": "F_rank_375x667.png",
+      "bytes": 72186
+    },
+    {
+      "file": "F_rank_ui1_1280x720.png",
+      "bytes": 103957
+    },
+    {
+      "file": "F_admin_nicknames.png",
+      "bytes": 16954
+    },
+    {
+      "file": "F_admin_anomalies.png",
+      "bytes": 28762
+    }
+  ],
+  "maxKills": {
+    "CH05": 2289,
+    "CH10": 1984,
+    "CH13": 2138,
+    "CH15": 2037,
+    "CH17": 2065,
+    "CH18": 2225,
+    "CH19": 2419,
+    "CH20": 2116
+  },
+  "qaRegistrations": 12,
+  "syntheticAliases": 12
+}
