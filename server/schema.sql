@@ -8,7 +8,12 @@ CREATE TABLE IF NOT EXISTS users (
   salt        TEXT NOT NULL,             -- 사용자별 무작위 소금(hex)
   created_at  INTEGER NOT NULL,          -- epoch ms
   last_login  INTEGER,
-  locked      INTEGER NOT NULL DEFAULT 0 -- 1이면 선생님이 잠근 계정(로그인·저장 불가). 기존 DB는 migrations/2026-09-22_admin.sql
+  locked      INTEGER NOT NULL DEFAULT 0, -- 1이면 선생님이 잠근 계정
+  nickname TEXT,
+  nickname_status TEXT NOT NULL DEFAULT 'none',
+  nickname_set_at INTEGER,
+  nickname_note TEXT,
+  title TEXT
 );
 
 -- 선생님 지급(금화·별가루·에너지). 학생이 다음에 저장본을 내려받을 때(GET /api/save) 합쳐지고 applied_at이 찍힌다
@@ -53,3 +58,14 @@ CREATE TABLE IF NOT EXISTS attempts (
   count       INTEGER NOT NULL,
   window_start INTEGER NOT NULL
 );
+
+CREATE TABLE IF NOT EXISTS play_runs (
+  id TEXT PRIMARY KEY, user_id TEXT NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+  stage TEXT NOT NULL, started_at INTEGER NOT NULL, duration INTEGER NOT NULL,
+  status TEXT NOT NULL DEFAULT 'active', settled_at INTEGER, settlement_day TEXT,
+  result TEXT, flagged INTEGER NOT NULL DEFAULT 0
+);
+CREATE TABLE IF NOT EXISTS settings (key TEXT PRIMARY KEY,value TEXT NOT NULL);
+CREATE INDEX IF NOT EXISTS play_settled ON play_runs(settled_at);
+CREATE INDEX IF NOT EXISTS play_flagged ON play_runs(flagged,settled_at);
+CREATE INDEX IF NOT EXISTS play_hall ON play_runs(status,stage,user_id);

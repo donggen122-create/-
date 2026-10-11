@@ -162,6 +162,7 @@
 
 <script type="module">
 import {installStageStats} from "./stage-stats.js";
+import {installRankingAdmin} from "./ranking.js";
 const $ = (s) => document.querySelector(s);
 const TOKEN_STORE = "seoho_admin_token", ROLE_STORE = "seoho_admin_role";
 let TOKEN = sessionStorage.getItem(TOKEN_STORE) || "";
@@ -213,6 +214,7 @@ function mins(ms) { return Math.max(0, Math.round(ms / 60000)); }
 function esc(s) { return String(s ?? "").replace(/[<>&"]/g, (c) => ({ "<": "&lt;", ">": "&gt;", "&": "&amp;", '"': "&quot;" }[c])); }
 
 const loadStageStats=installStageStats(api);
+const loadRankingAdmin=installRankingAdmin(api,isOwner,toast);
 async function enter() {
   const me = await api("me"); ROLE = me.role; sessionStorage.setItem(ROLE_STORE, ROLE); applyRole();
   await load(); await loadOnline(); checkSignal(); loadTeacherState();
@@ -227,7 +229,7 @@ async function load() {
   const ev = grants.event;
   $("#event-note").textContent = ev ? `🌕 ${ev.title} 진행 중: 학생이 접속하면 하루 이용권 ${10 + ev.bonus}장(기본 10 + 이벤트 ${ev.bonus}장)이 돼요. 이벤트분은 아래 표의 "추가"에 포함되고, 지급 기록에는 나오지 않아요.` : "";
   $("#login").hidden = true; $("#main").hidden = false; $("#btn-refresh").hidden = false; $("#btn-logout").hidden = false; applyRole();
-  render();await loadStageStats();
+  render();await Promise.all([loadStageStats(),loadRankingAdmin()]);
 }
 async function loadOnline() {
   const d = await api("online"); NOW = d.now;

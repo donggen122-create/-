@@ -3,10 +3,14 @@
 // 원칙: 개인정보 없음(아이디·비번만). 비번은 PBKDF2 해시로만 보관. 저장 데이터는 사용자당 1개 JSON.
 // 2026-09-22 Codex "Guardian v2" 개편: 성장·이용권·판 시작/결과 API는 guardian.js(/api/guardian*, /api/play/*, 관리자 passes·grant-passes).
 //   옛 저장(saves)은 읽기 전용 보관(PUT /save → 410), 옛 선물(grants) 지급도 종료(→ 관리자 이용권 지급). 회원·세션·관리자 인증·접속 신호는 이 파일.
-import { guardianAPI, guardianAdmin, migrate as migrateGuardian, dayKey, nextReset } from "./guardian.js";
+import { guardianAPI, guardianAdmin, getProfile, migrate as migrateGuardian, dayKey, nextReset } from "./guardian.js";
+import { nicknameAPI, nicknamesAdmin, member } from './nickname.js';
+import { anomaliesAdmin } from './anomaly.js';
+import { rankingAPI, rankingAdmin, invalidateRanking } from './ranking.js';
+import { qaRanking } from './qa-ranking.js';
 import { stageStats } from './stage-stats.js';
-let guardianSchema;
-async function ensureGuardian(env) { guardianSchema ||= migrateGuardian(env.DB).catch((e) => { guardianSchema = null; throw e; }); await guardianSchema; }
+const guardianSchemas=new WeakMap();
+async function ensureGuardian(env) { if(!guardianSchemas.has(env.DB))guardianSchemas.set(env.DB,migrateGuardian(env.DB).catch(e=>{guardianSchemas.delete(env.DB);throw e;}));await guardianSchemas.get(env.DB); }
 
 const ID_RE = /^[a-zA-Z0-9가-힣_]{2,12}$/;
 const PW_MIN = 4, PW_MAX = 64;
@@ -49,6 +53,10 @@ const PRESENCE_JS = `(function(){
 export default {
   async fetch(request, env) {
     const url = new URL(request.url);
+    if(url.pathname==='/_qa/runs'&&request.method==='POST'){
+      if(env.LOCAL_TEST_CLOCK!=='true'||!['localhost','127.0.0.1'].includes(url.hostname)||request.headers.get('X-Admin-Key')!==env.ADMIN_KEY)return new Response('Not found',{status:404});
+      await ensureGuardian(env);const response=await qaRanking(request,env);if(response)return response;
+    }
     if (url.pathname.startsWith("/api/")) {
       try {
         return withCors(await api(request, env, url));
@@ -146,10 +154,15 @@ async function api(request, env, url) {
   if (!user) return json({ error: "다시 접속해 주세요." }, 401);
   if (user.locked) return json({ error: LOCKED_MSG }, 403);
 
+  if(path==='/nickname'&&method==='POST'){await ensureGuardian(env);return nicknameAPI(request,env.DB,user.id);}
+  if(['/ranking','/title'].includes(path)){await ensureGuardian(env);return rankingAPI(request,env.DB,user.id,path,method);}
+
   // Codex 개편 API(성장·이용권·판 시작/결과). 표는 첫 호출 때 guardian.js가 만든다
   if (path === "/guardian" || path.startsWith("/guardian/") || path.startsWith("/play/")) {
     await ensureGuardian(env);
-    return guardianAPI(request, env, user, path);
+    const response=await guardianAPI(request, env, user, path);
+    if(path==='/guardian'&&method==='GET'&&response.ok)return json({...await response.json(),member:await member(env.DB,user.id)});
+    return response;
   }
 
   if (path === "/me" && method === "GET") return json({ id: user.display_id }, 200, sessionCookies(url, user.token));
@@ -180,7 +193,7 @@ async function api(request, env, url) {
 // TEACHER_ID·TEACHER_PW = 선생님 계정 로그인(같은 관리 페이지, 학생 계정 삭제·진행 초기화·그림 보내기 없음 — 2026-09-23 사용자 요청),
 // ADMIN_KEY = 스크립트용 열쇠(X-Admin-Key) 겸 로그인 토큰 서명 키. 넣는 법: `npx wrangler secret bulk <json>`. 값은 문서에 적지 않는다.
 // 아이디가 같아도 된다: 비밀번호가 관리자 것이면 관리자, 선생님 것이면 선생님으로 들어간다.
-const TEACHER_BLOCKED = new Set(["delete", "reset-save", "migrate-v1", "migrate-v2", "config", "as-teacher", "test-profile"]);   // test-profile: 시험용 슈퍼 계정(관리자만)   // + upload/*
+const TEACHER_BLOCKED = new Set(["delete", "reset-save", "migrate-v1", "migrate-v2", "config", "as-teacher", "test-profile", "anomalies/release"]);   // + upload/*
 async function admin(request, env, sub, method) {
   if (!env.ADMIN_KEY) return json({ error: "관리자 열쇠가 아직 설정되지 않았어요." }, 503);
   const addr = ip(request);
@@ -229,6 +242,9 @@ async function admin(request, env, sub, method) {
   if (sub.startsWith("upload/")) return uploads(request, env, sub.slice(7), method);
 
   await ensureGuardian(env);
+  if(['nicknames','nicknames/decide'].includes(sub))return await nicknamesAdmin(request,env.DB,sub,method)||json({error:'없는 주소예요.'},404);
+  if(['anomalies','anomalies/release'].includes(sub)){const response=await anomaliesAdmin(request,env.DB,sub,method,getProfile);if(sub==='anomalies/release'&&response?.ok)invalidateRanking(env.DB);return response||json({error:'없는 주소예요.'},404);}
+  if(sub==='ranking-settings')return rankingAdmin(request,env.DB,method);
   if(sub==='stage-stats'&&method==='GET'){const stats=await stageStats(env.DB,new URL(request.url));return json(stats,stats.error?400:200);}
   // Codex 개편: 이용권 현황·지급 기록(passes), 이용권·코인 지급(grant-passes, requestId로 중복 방지), 표 만들기(migrate-v1)
   if (["passes", "grant-passes", "migrate-v1", "migrate-v2", "test-profile", "set-hero"].includes(sub)) {
@@ -543,4 +559,3 @@ async function teacherTokenOk(env, tok) {
   const exp = Number(m[1]); if (exp < Date.now()) return false;
   return timingSafeEqual(m[2], await teacherSig(env, exp));
 }
-

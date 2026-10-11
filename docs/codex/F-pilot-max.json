@@ -1,0 +1,802 @@
+[
+  {
+    "stage": "CH01",
+    "seed": 10808,
+    "outcome": {
+      "seconds": 300.0000000000558,
+      "kills": 1622,
+      "litter": 33,
+      "hp": 2020,
+      "choices": 24
+    },
+    "eventKills": 1622,
+    "held": true,
+    "flags": [
+      {
+        "code": "litter",
+        "value": 33,
+        "limit": 6
+      }
+    ]
+  },
+  {
+    "stage": "CH01",
+    "seed": 10809,
+    "outcome": {
+      "seconds": 300.0000000000558,
+      "kills": 1614,
+      "litter": 33,
+      "hp": 2020,
+      "choices": 24
+    },
+    "eventKills": 1614,
+    "held": true,
+    "flags": [
+      {
+        "code": "litter",
+        "value": 33,
+        "limit": 6
+      }
+    ]
+  },
+  {
+    "stage": "CH02",
+    "seed": 10808,
+    "outcome": {
+      "seconds": 300.0000000000558,
+      "kills": 2892,
+      "litter": 32,
+      "hp": 1188,
+      "choices": 24
+    },
+    "eventKills": 2892,
+    "held": true,
+    "flags": [
+      {
+        "code": "litter",
+        "value": 32,
+        "limit": 8
+      }
+    ]
+  },
+  {
+    "stage": "CH02",
+    "seed": 10809,
+    "outcome": {
+      "seconds": 300.0000000000558,
+      "kills": 2854,
+      "litter": 33,
+      "hp": 1188,
+      "choices": 24
+    },
+    "eventKills": 2854,
+    "held": true,
+    "flags": [
+      {
+        "code": "litter",
+        "value": 33,
+        "limit": 8
+      }
+    ]
+  },
+  {
+    "stage": "CH03",
+    "seed": 10808,
+    "outcome": {
+      "seconds": 300.0000000000558,
+      "kills": 3094,
+      "litter": 29,
+      "hp": 2020,
+      "choices": 24
+    },
+    "eventKills": 3094,
+    "held": true,
+    "flags": [
+      {
+        "code": "litter",
+        "value": 29,
+        "limit": 10
+      }
+    ]
+  },
+  {
+    "stage": "CH03",
+    "seed": 10809,
+    "outcome": {
+      "seconds": 300.0000000000558,
+      "kills": 3118,
+      "litter": 33,
+      "hp": 1188,
+      "choices": 24
+    },
+    "eventKills": 3118,
+    "held": true,
+    "flags": [
+      {
+        "code": "litter",
+        "value": 33,
+        "limit": 10
+      }
+    ]
+  },
+  {
+    "stage": "CH04",
+    "seed": 10808,
+    "outcome": {
+      "seconds": 300.0000000000558,
+      "kills": 2668,
+      "litter": 33,
+      "hp": 1188,
+      "choices": 24
+    },
+    "eventKills": 2668,
+    "held": true,
+    "flags": [
+      {
+        "code": "litter",
+        "value": 33,
+        "limit": 12
+      }
+    ]
+  },
+  {
+    "stage": "CH04",
+    "seed": 10809,
+    "outcome": {
+      "seconds": 300.0000000000558,
+      "kills": 2619,
+      "litter": 33,
+      "hp": 1188,
+      "choices": 24
+    },
+    "eventKills": 2619,
+    "held": true,
+    "flags": [
+      {
+        "code": "litter",
+        "value": 33,
+        "limit": 12
+      }
+    ]
+  },
+  {
+    "stage": "CH05",
+    "seed": 10808,
+    "outcome": {
+      "seconds": 252.88333333342672,
+      "kills": 2714,
+      "litter": 30,
+      "hp": 1188,
+      "choices": 24
+    },
+    "eventKills": 2714,
+    "held": true,
+    "flags": [
+      {
+        "code": "litter",
+        "value": 30,
+        "limit": 10
+      }
+    ]
+  },
+  {
+    "stage": "CH05",
+    "seed": 10809,
+    "outcome": {
+      "seconds": 247.01666666675538,
+      "kills": 2670,
+      "litter": 28,
+      "hp": 1188,
+      "choices": 24
+    },
+    "eventKills": 2670,
+    "held": true,
+    "flags": [
+      {
+        "code": "litter",
+        "value": 28,
+        "limit": 10
+      }
+    ]
+  },
+  {
+    "stage": "CH06",
+    "seed": 10808,
+    "outcome": {
+      "seconds": 300.0000000000558,
+      "kills": 2282,
+      "litter": 33,
+      "hp": 1188,
+      "choices": 24
+    },
+    "eventKills": 2282,
+    "held": true,
+    "flags": [
+      {
+        "code": "litter",
+        "value": 33,
+        "limit": 6
+      }
+    ]
+  },
+  {
+    "stage": "CH06",
+    "seed": 10809,
+    "outcome": {
+      "seconds": 300.0000000000558,
+      "kills": 2182,
+      "litter": 29,
+      "hp": 1188,
+      "choices": 24
+    },
+    "eventKills": 2182,
+    "held": true,
+    "flags": [
+      {
+        "code": "litter",
+        "value": 29,
+        "limit": 6
+      }
+    ]
+  },
+  {
+    "stage": "CH07",
+    "seed": 10808,
+    "outcome": {
+      "seconds": 300.0000000000558,
+      "kills": 2444,
+      "litter": 29,
+      "hp": 2020,
+      "choices": 24
+    },
+    "eventKills": 2444,
+    "held": true,
+    "flags": [
+      {
+        "code": "litter",
+        "value": 29,
+        "limit": 8
+      }
+    ]
+  },
+  {
+    "stage": "CH07",
+    "seed": 10809,
+    "outcome": {
+      "seconds": 300.0000000000558,
+      "kills": 2454,
+      "litter": 32,
+      "hp": 2020,
+      "choices": 24
+    },
+    "eventKills": 2454,
+    "held": true,
+    "flags": [
+      {
+        "code": "litter",
+        "value": 32,
+        "limit": 8
+      }
+    ]
+  },
+  {
+    "stage": "CH08",
+    "seed": 10808,
+    "outcome": {
+      "seconds": 300.0000000000558,
+      "kills": 2727,
+      "litter": 33,
+      "hp": 1188,
+      "choices": 24
+    },
+    "eventKills": 2727,
+    "held": true,
+    "flags": [
+      {
+        "code": "litter",
+        "value": 33,
+        "limit": 10
+      }
+    ]
+  },
+  {
+    "stage": "CH08",
+    "seed": 10809,
+    "outcome": {
+      "seconds": 300.0000000000558,
+      "kills": 2731,
+      "litter": 32,
+      "hp": 1188,
+      "choices": 24
+    },
+    "eventKills": 2731,
+    "held": true,
+    "flags": [
+      {
+        "code": "litter",
+        "value": 32,
+        "limit": 10
+      }
+    ]
+  },
+  {
+    "stage": "CH09",
+    "seed": 10808,
+    "outcome": {
+      "seconds": 300.0000000000558,
+      "kills": 2953,
+      "litter": 33,
+      "hp": 2020,
+      "choices": 24
+    },
+    "eventKills": 2953,
+    "held": true,
+    "flags": [
+      {
+        "code": "litter",
+        "value": 33,
+        "limit": 12
+      }
+    ]
+  },
+  {
+    "stage": "CH09",
+    "seed": 10809,
+    "outcome": {
+      "seconds": 300.0000000000558,
+      "kills": 2924,
+      "litter": 32,
+      "hp": 1188,
+      "choices": 24
+    },
+    "eventKills": 2924,
+    "held": true,
+    "flags": [
+      {
+        "code": "litter",
+        "value": 32,
+        "limit": 12
+      }
+    ]
+  },
+  {
+    "stage": "CH10",
+    "seed": 10808,
+    "outcome": {
+      "seconds": 262.4833333334233,
+      "kills": 2322,
+      "litter": 35,
+      "hp": 2020,
+      "choices": 24
+    },
+    "eventKills": 2322,
+    "held": true,
+    "flags": [
+      {
+        "code": "litter",
+        "value": 35,
+        "limit": 10
+      }
+    ]
+  },
+  {
+    "stage": "CH10",
+    "seed": 10809,
+    "outcome": {
+      "seconds": 262.25000000009015,
+      "kills": 2301,
+      "litter": 32,
+      "hp": 1188,
+      "choices": 24
+    },
+    "eventKills": 2301,
+    "held": true,
+    "flags": [
+      {
+        "code": "litter",
+        "value": 32,
+        "limit": 10
+      }
+    ]
+  },
+  {
+    "stage": "CH11",
+    "seed": 10808,
+    "outcome": {
+      "seconds": 300.0000000000558,
+      "kills": 2347,
+      "litter": 33,
+      "hp": 2020,
+      "choices": 24
+    },
+    "eventKills": 2347,
+    "held": true,
+    "flags": [
+      {
+        "code": "litter",
+        "value": 33,
+        "limit": 6
+      }
+    ]
+  },
+  {
+    "stage": "CH11",
+    "seed": 10809,
+    "outcome": {
+      "seconds": 300.0000000000558,
+      "kills": 2375,
+      "litter": 32,
+      "hp": 1188,
+      "choices": 24
+    },
+    "eventKills": 2375,
+    "held": true,
+    "flags": [
+      {
+        "code": "litter",
+        "value": 32,
+        "limit": 6
+      }
+    ]
+  },
+  {
+    "stage": "CH12",
+    "seed": 10808,
+    "outcome": {
+      "seconds": 300.0000000000558,
+      "kills": 2602,
+      "litter": 32,
+      "hp": 1188,
+      "choices": 24
+    },
+    "eventKills": 2602,
+    "held": true,
+    "flags": [
+      {
+        "code": "litter",
+        "value": 32,
+        "limit": 8
+      }
+    ]
+  },
+  {
+    "stage": "CH12",
+    "seed": 10809,
+    "outcome": {
+      "seconds": 300.0000000000558,
+      "kills": 2589,
+      "litter": 32,
+      "hp": 2020,
+      "choices": 24
+    },
+    "eventKills": 2589,
+    "held": true,
+    "flags": [
+      {
+        "code": "litter",
+        "value": 32,
+        "limit": 8
+      }
+    ]
+  },
+  {
+    "stage": "CH13",
+    "seed": 10808,
+    "outcome": {
+      "seconds": 300.0000000000558,
+      "kills": 2833,
+      "litter": 33,
+      "hp": 2020,
+      "choices": 24
+    },
+    "eventKills": 2833,
+    "held": true,
+    "flags": [
+      {
+        "code": "litter",
+        "value": 33,
+        "limit": 10
+      }
+    ]
+  },
+  {
+    "stage": "CH13",
+    "seed": 10809,
+    "outcome": {
+      "seconds": 300.0000000000558,
+      "kills": 2819,
+      "litter": 33,
+      "hp": 1188,
+      "choices": 24
+    },
+    "eventKills": 2819,
+    "held": true,
+    "flags": [
+      {
+        "code": "litter",
+        "value": 33,
+        "limit": 10
+      }
+    ]
+  },
+  {
+    "stage": "CH14",
+    "seed": 10808,
+    "outcome": {
+      "seconds": 300.0000000000558,
+      "kills": 3062,
+      "litter": 27,
+      "hp": 2020,
+      "choices": 24
+    },
+    "eventKills": 3062,
+    "held": true,
+    "flags": [
+      {
+        "code": "litter",
+        "value": 27,
+        "limit": 12
+      }
+    ]
+  },
+  {
+    "stage": "CH14",
+    "seed": 10809,
+    "outcome": {
+      "seconds": 300.0000000000558,
+      "kills": 3079,
+      "litter": 30,
+      "hp": 1188,
+      "choices": 24
+    },
+    "eventKills": 3079,
+    "held": true,
+    "flags": [
+      {
+        "code": "litter",
+        "value": 30,
+        "limit": 12
+      }
+    ]
+  },
+  {
+    "stage": "CH15",
+    "seed": 10808,
+    "outcome": {
+      "seconds": 251.03333333342525,
+      "kills": 2427,
+      "litter": 27,
+      "hp": 1188,
+      "choices": 24
+    },
+    "eventKills": 2427,
+    "held": true,
+    "flags": [
+      {
+        "code": "litter",
+        "value": 27,
+        "limit": 10
+      }
+    ]
+  },
+  {
+    "stage": "CH15",
+    "seed": 10809,
+    "outcome": {
+      "seconds": 247.70000000008926,
+      "kills": 2411,
+      "litter": 22,
+      "hp": 1188,
+      "choices": 24
+    },
+    "eventKills": 2411,
+    "held": true,
+    "flags": [
+      {
+        "code": "litter",
+        "value": 22,
+        "limit": 10
+      }
+    ]
+  },
+  {
+    "stage": "CH16",
+    "seed": 10808,
+    "outcome": {
+      "seconds": 300.0000000000558,
+      "kills": 2446,
+      "litter": 33,
+      "hp": 2020,
+      "choices": 24
+    },
+    "eventKills": 2446,
+    "held": true,
+    "flags": [
+      {
+        "code": "litter",
+        "value": 33,
+        "limit": 6
+      }
+    ]
+  },
+  {
+    "stage": "CH16",
+    "seed": 10809,
+    "outcome": {
+      "seconds": 300.0000000000558,
+      "kills": 2428,
+      "litter": 29,
+      "hp": 2020,
+      "choices": 24
+    },
+    "eventKills": 2428,
+    "held": true,
+    "flags": [
+      {
+        "code": "litter",
+        "value": 29,
+        "limit": 6
+      }
+    ]
+  },
+  {
+    "stage": "CH17",
+    "seed": 10808,
+    "outcome": {
+      "seconds": 300.0000000000558,
+      "kills": 2709,
+      "litter": 33,
+      "hp": 2020,
+      "choices": 24
+    },
+    "eventKills": 2709,
+    "held": true,
+    "flags": [
+      {
+        "code": "litter",
+        "value": 33,
+        "limit": 8
+      }
+    ]
+  },
+  {
+    "stage": "CH17",
+    "seed": 10809,
+    "outcome": {
+      "seconds": 300.0000000000558,
+      "kills": 2687,
+      "litter": 33,
+      "hp": 1188,
+      "choices": 24
+    },
+    "eventKills": 2687,
+    "held": true,
+    "flags": [
+      {
+        "code": "litter",
+        "value": 33,
+        "limit": 8
+      }
+    ]
+  },
+  {
+    "stage": "CH18",
+    "seed": 10808,
+    "outcome": {
+      "seconds": 300.0000000000558,
+      "kills": 2955,
+      "litter": 29,
+      "hp": 2020,
+      "choices": 24
+    },
+    "eventKills": 2955,
+    "held": true,
+    "flags": [
+      {
+        "code": "litter",
+        "value": 29,
+        "limit": 10
+      }
+    ]
+  },
+  {
+    "stage": "CH18",
+    "seed": 10809,
+    "outcome": {
+      "seconds": 300.0000000000558,
+      "kills": 2914,
+      "litter": 33,
+      "hp": 1188,
+      "choices": 24
+    },
+    "eventKills": 2914,
+    "held": true,
+    "flags": [
+      {
+        "code": "litter",
+        "value": 33,
+        "limit": 10
+      }
+    ]
+  },
+  {
+    "stage": "CH19",
+    "seed": 10808,
+    "outcome": {
+      "seconds": 300.0000000000558,
+      "kills": 3162,
+      "litter": 32,
+      "hp": 2020,
+      "choices": 24
+    },
+    "eventKills": 3162,
+    "held": true,
+    "flags": [
+      {
+        "code": "litter",
+        "value": 32,
+        "limit": 12
+      }
+    ]
+  },
+  {
+    "stage": "CH19",
+    "seed": 10809,
+    "outcome": {
+      "seconds": 300.0000000000558,
+      "kills": 3196,
+      "litter": 32,
+      "hp": 1188,
+      "choices": 24
+    },
+    "eventKills": 3196,
+    "held": true,
+    "flags": [
+      {
+        "code": "litter",
+        "value": 32,
+        "limit": 12
+      }
+    ]
+  },
+  {
+    "stage": "CH20",
+    "seed": 10808,
+    "outcome": {
+      "seconds": 276.41666666674394,
+      "kills": 2452,
+      "litter": 38,
+      "hp": 2020,
+      "choices": 24
+    },
+    "eventKills": 2452,
+    "held": true,
+    "flags": [
+      {
+        "code": "litter",
+        "value": 38,
+        "limit": 10
+      }
+    ]
+  },
+  {
+    "stage": "CH20",
+    "seed": 10809,
+    "outcome": {
+      "seconds": 266.00000000008674,
+      "kills": 2453,
+      "litter": 37,
+      "hp": 1188,
+      "choices": 24
+    },
+    "eventKills": 2453,
+    "held": true,
+    "flags": [
+      {
+        "code": "litter",
+        "value": 37,
+        "limit": 10
+      }
+    ]
+  }
+]

@@ -29,6 +29,42 @@ async function call(env, path, { body, token, key, method, ip, cookie } = {}) {
 }
 const uid = () => 'req_' + crypto.randomUUID().replace(/-/g, '');
 
+test('F teacher nickname/settings allowed; anomaly keep/release forbidden; owner release once preserves grants',async()=>{
+ const env=await makeEnv({LOCAL_TEST_CLOCK:'true'}),id='qafhold';
+ const reg=await call(env,'/register',{body:{id,pw:'qa-local-only'}}),cookie=reg.token;
+ const teacher=(await call(env,'/admin/login',{body:TEACHER})).token;
+ assert.equal((await call(env,'/nickname',{cookie,body:{nickname:'맑은바람'}})).status,200);
+ const pending=(await call(env,'/admin/nicknames',{token:teacher})).users[0];
+ assert.equal((await call(env,'/admin/nicknames/decide',{token:teacher,body:{id,nickname:pending.nickname,setAt:pending.nickname_set_at,status:'approved'}})).status,200);
+ assert.equal((await call(env,'/guardian',{cookie})).member.displayName,'맑은바람');
+ assert.equal((await call(env,'/admin/ranking-settings',{token:teacher,body:{stage:'CH03',goal:300}})).status,200);
+ assert.equal((await call(env,'/admin/ranking-settings',{token:teacher,body:{stage:'CH01',goal:0}})).status,400);
+ const start=await call(env,'/play/start',{cookie,body:{requestId:uid(),stage:'CH01',clientVersion:2}});
+ const held=await call(env,'/play/finish',{cookie,body:{requestId:uid(),runId:start.runId,cleared:true,seconds:180,litter:1000,kills:100,hpFraction:1}});
+ assert.equal(held.held,true);assert.equal(held.reward.coins,0);assert.equal(held.reward.gifts,0);assert.equal(held.profile.coins,0);assert.equal(held.profile.gifts,0);
+ assert.equal(env.DB.sql.prepare('SELECT flagged FROM play_runs WHERE id=?').get(start.runId).flagged,1);
+ assert.equal((await call(env,'/admin/anomalies',{token:teacher})).runs[0].held,true);
+ for(const decision of ['release','keep'])assert.equal((await call(env,'/admin/anomalies/release',{token:teacher,body:{runId:start.runId,decision}})).status,403);
+ const old=JSON.parse(env.DB.sql.prepare('SELECT result FROM play_runs WHERE id=?').get(start.runId).result);
+ await call(env,'/admin/grant-passes',{key:env.ADMIN_KEY,body:{requestId:uid(),id,gold:71,gifts:3}});
+ const request={key:env.ADMIN_KEY,body:{runId:start.runId,decision:'release'}};
+ assert.equal((await call(env,'/admin/anomalies/release',request)).status,200);
+ assert.equal((await call(env,'/admin/anomalies/release',request)).already,true);
+ const after=await call(env,'/guardian',{cookie});assert.equal(after.profile.coins,71+old.heldAmounts.coins);assert.equal(after.profile.gifts,3+old.heldAmounts.gifts);
+ const retry=await call(env,'/play/finish',{cookie,body:{requestId:uid(),runId:start.runId}});assert.equal(retry.held,false);assert.deepEqual(retry.reward,old.heldReward);
+ // Nickname edits require review again; stale teacher decisions must fail.
+ await call(env,'/nickname',{cookie,body:{nickname:'푸른바람'}});
+ assert.equal((await call(env,'/admin/nicknames/decide',{token:teacher,body:{id,nickname:pending.nickname,setAt:pending.nickname_set_at,status:'approved'}})).status,409);
+ const next=(await call(env,'/admin/nicknames',{token:teacher})).users[0];
+ assert.equal((await call(env,'/admin/nicknames/decide',{token:teacher,body:{id,nickname:next.nickname,setAt:next.nickname_set_at,status:'rejected',note:'별명을 골라 주세요'}})).status,200);
+ assert.match((await call(env,'/guardian',{cookie})).member.displayName,/수호대원/);
+ assert.equal((await call(env,'/title',{cookie,body:{title:'forest'}})).status,400);
+ assert.equal((await call(env,'/title',{cookie,body:{title:'first'}})).status,200);
+ // Public host cannot inject QA fixture, even with a valid owner key.
+ const qa=new Request('https://production.invalid/_qa/runs',{method:'POST',headers:{'X-Admin-Key':env.ADMIN_KEY},body:'{}'});
+ assert.equal((await worker.fetch(qa,env)).status,404);
+});
+
 test('optional telemetry survives settlement/retry; invalid telemetry never rejects play and success omits cause',async()=>{
  const env=await makeEnv({LOCAL_TEST_CLOCK:'true'}),id='qarecord';
  const token=(await call(env,'/register',{body:{id,pw:'qa-local-only'}})).token;

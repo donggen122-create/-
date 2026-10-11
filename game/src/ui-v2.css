@@ -594,3 +594,6 @@ html.ui2 #guardian-lobby .sg-training-body>button:disabled{background:linear-gra
  html.ui2 #guardian-lobby .sg-brief .sg-info-btn{width:26px!important;height:26px!important;min-height:26px!important}
  html.ui2 #guardian-lobby .sg-start{min-height:48px!important;font-size:26px!important;padding:4px 12px!important;margin-top:8px!important}
 }
+.ui2 .sg-rank-button{background:#fff7de;color:#665130;border:2px solid #d5bd83;box-shadow:0 2px 0 #bba16d;}
+.ui2 .sg-rank-dialog{background:#fff9ee;border:3px solid #b9a479;border-radius:18px;}
+.ui2 .sg-rank-me,.ui2 .sg-rank-hall{background:#eef3df;}
