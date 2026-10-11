@@ -1,12 +1,13 @@
 // Add chapter scripts here; story.js renders the same UI for both game versions.
-export const STORY_FACES = {
-  minji: './assets/story/minji.png',
-  hoya: './assets/story/hoya.png',
-  otter: './assets/story/otter.png',
-  frog: './assets/story/frog.png',
-  'boss-angry': './assets/story/boss-angry.png',
-  'boss-calm': './assets/story/boss-calm.png',
+export const STORY_CHARACTERS = {
+  '민지': { face: 'minji', file: './assets/story/minji.png' },
+  '호야': { face: 'hoya', file: './assets/story/hoya.png' },
+  '수달이': { face: 'otter', file: './assets/story/otter.png' },
+  '개굴이': { face: 'frog', file: './assets/story/frog.png' },
+  '구정물 대왕': { face: 'boss-angry', file: './assets/story/boss-angry.png' },
+  '맑아진 대왕': { face: 'boss-calm', file: './assets/story/boss-calm.png' },
 };
+export const STORY_FACES = Object.fromEntries(Object.values(STORY_CHARACTERS).map(c => [c.face, c.file]));
 // docs/44_학생_활동지_반영_준비.md, section 1: approved polished draft, verbatim.
 export const STORY_SCENES = [
   {

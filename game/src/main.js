@@ -1535,7 +1535,7 @@ document.getElementById("btn-continue").addEventListener("click", async () => {
   if(sgState.profile&&R.pendingPet(sgState.profile))sgUI.tab='friends';
   playSfx("uiClick", 0.5);
   elResult.classList.add("hidden");
-  if(chapter?.id==='CH15' && sgState.cleared)await playStory('CH15', 'after-clear', sgStorageKey);
+  if(sgState.cleared && elResultTitle.textContent==='우리 마을이 반짝반짝!')await playStory(chapter?.id, 'after-clear', sgStorageKey);
   refreshMenuMeta();
   elMenu.classList.remove("hidden");
   mode = "menu";
@@ -5670,8 +5670,7 @@ async function sgTidyLeftRun(){
   await sgAbandon();
 }
 async function sgStart(stage){
-  if(stage==='CH11')await playStory(stage, 'before-start', sgStorageKey);
-  if(stage==='CH15')await playStory(stage, 'before-start', sgStorageKey);
+  await playStory(stage, 'before-start', sgStorageKey);
   // Prepare before /play/start: missing art must not consume a pass/start the clock.
   const theme = chapterById(stage)?.theme || Math.ceil(Number(stage.slice(2))/5);
   await loadBattleAssets(theme, sgState.profile?.hero || save.hero, {
