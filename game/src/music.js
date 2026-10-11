@@ -2,17 +2,18 @@
 // 시작 화면 → 로비는 끊기지 않고 이어서, 전투를 시작하면 멈추고, 전투 뒤 로비로 돌아오면 처음부터 다시(main.js bgmOn/bgmOff).
 // 음소거는 효과음과 같은 상태(assets.js isMuted, localStorage "lumen_muted")를 쓴다.
 // 브라우저가 자동 재생을 막으면(play() 거부) 첫 pointerdown/keydown 때 재생을 시작한다.
-import { isMuted } from "./assets.js";
+import { isMuted, assetURL } from "./assets.js";
 
 const SRC = "./assets/audio/main-theme.mp3";
 const VOLUME = 0.45;
-let audio = null, wanted = false, unlockArmed = false;
+let audio = null, wanted = false, unlockArmed = false, interacted = false;
 
 function el() {
-  if (!audio) { audio = new Audio(SRC); audio.loop = true; audio.preload = "auto"; audio.volume = VOLUME; }
+  if (!audio) { audio = new Audio(assetURL(SRC)); audio.loop = true; audio.preload = "auto"; audio.volume = VOLUME; }
   return audio;
 }
 function tryPlay() {
+  if (!interacted) { armUnlock(); return; }
   const a = el();
   if (!wanted || isMuted()) { a.pause(); return; }
   if (!a.paused) return;
@@ -23,6 +24,7 @@ function armUnlock() {
   if (unlockArmed) return;
   unlockArmed = true;
   const go = () => {
+    interacted = true;
     unlockArmed = false;
     window.removeEventListener("pointerdown", go, true);
     window.removeEventListener("keydown", go, true);
@@ -36,6 +38,7 @@ export const music = {
   // restart: 처음부터(전투 뒤 로비로 돌아올 때). 아니면 재생 중이던 곳에서 이어서.
   play({ restart = false } = {}) {
     wanted = true;
+    if (!interacted) { armUnlock(); return; }
     const a = el();
     if (restart) { try { a.currentTime = 0; } catch (e) { /* 아직 불러오는 중이면 무시 */ } }
     tryPlay();
