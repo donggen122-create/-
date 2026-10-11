@@ -4,6 +4,7 @@ import http from 'node:http';
 import {DatabaseSync} from 'node:sqlite';
 import fs from 'node:fs';
 import path from 'node:path';
+import {createHash} from 'node:crypto';
 import {fileURLToPath,pathToFileURL} from 'node:url';
 const root=process.env.SEOHO_QA_ROOT||path.resolve(path.dirname(fileURLToPath(import.meta.url)),'../../..');
 const port=Number(process.env.PORT||8797);
@@ -17,7 +18,19 @@ class D1 {
 const DB=new D1();await migrate(DB);
 const types={'.html':'text/html','.js':'application/javascript','.css':'text/css','.png':'image/png','.jpg':'image/jpeg','.svg':'image/svg+xml','.woff2':'font/woff2','.mp3':'audio/mpeg','.ogg':'audio/ogg'};
 const assetRoot=path.join(root,'game');
-const env={DB,LOCAL_TEST_CLOCK:'true',ASSETS:{async fetch(request){let name=decodeURIComponent(new URL(request.url).pathname);if(name.endsWith('/'))name+='index.html';const file=path.resolve(assetRoot,'.'+name);if(!file.startsWith(assetRoot+path.sep)||!fs.existsSync(file)||!fs.statSync(file).isFile())return new Response('Not found',{status:404});return new Response(fs.readFileSync(file),{headers:{'content-type':types[path.extname(file)]||'application/octet-stream','cache-control':'no-store'}});}}};
+const env={DB,LOCAL_TEST_CLOCK:'true',ASSETS:{async fetch(request){
+ let name=decodeURIComponent(new URL(request.url).pathname);if(name.endsWith('/'))name+='index.html';
+ const file=path.resolve(assetRoot,'.'+name);
+ if(!file.startsWith(assetRoot+path.sep)||!fs.existsSync(file)||!fs.statSync(file).isFile())return new Response('Not found',{status:404});
+ const body=fs.readFileSync(file),etag='"'+createHash('sha256').update(body).digest('hex')+'"';
+ // Emulate Workers static-assets defaults and the repository _headers; no live Worker/D1.
+ const rules=fs.existsSync(path.join(root,'dist_web/_headers'))?fs.readFileSync(path.join(root,'dist_web/_headers'),'utf8'):'';
+ const immutable=name.startsWith('/assets/')&&/\/assets\/\*\s+Cache-Control: public, max-age=31536000, immutable/.test(rules);
+ const cache=process.env.SEOHO_QA_NO_CACHE==='1'?'no-store':immutable?'public, max-age=31536000, immutable':'public, max-age=0, must-revalidate';
+ const headers={'content-type':types[path.extname(file)]||'application/octet-stream','cache-control':cache,etag};
+ if(cache!=='no-store'&&request.headers.get('if-none-match')===etag)return new Response(null,{status:304,headers});
+ return new Response(body,{headers});
+}}};
 // Browser markup injection is tested against real Workers separately; preserve presence script in this local adapter.
 globalThis.HTMLRewriter=class {on(){return this;} transform(response){return new Response(new ReadableStream({async start(controller){const text=await response.text();controller.enqueue(new TextEncoder().encode(text.replace('</body>','<script src="/presence.js?v=1" defer></script></body>')));controller.close();}}),{headers:response.headers,status:response.status});}};
 http.createServer(async(req,res)=>{

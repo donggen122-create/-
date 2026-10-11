@@ -5,6 +5,8 @@
 param([switch]$Share)
 $ErrorActionPreference = "Stop"
 . "$PSScriptRoot\env.ps1"
+node "$PSScriptRoot\version-assets.mjs"
+if ($LASTEXITCODE -ne 0) { throw "Asset version stamping failed" }
 $g = Join-Path $ProjectRoot "game"; $d = Join-Path $ProjectRoot "dist_web"
 
 # 폴더는 거울처럼 맞춘다(game에서 지운 파일은 dist_web에서도 지워짐)

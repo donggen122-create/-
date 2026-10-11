@@ -3,6 +3,7 @@ import assert from 'node:assert/strict';
 import { existsSync, readFileSync } from 'node:fs';
 import { GuardianUI, icon, icon2 } from '../game/src/rework-ui.js';
 import { UI2_ICONS, preloadUI2, symbol2, skillAsset } from '../game/src/ui2-art.js';
+import { assetURL } from '../game/src/assets.js';
 import { freshProfile, trainingCost, TRAINING_MAX, SKILLS, PARTS, SUPPORTS, COMBOS } from '../game/src/rework-core.js';
 
 function mode(value, fn) {
@@ -33,12 +34,12 @@ test('UI 1 keeps original skill paths and symbol text; UI 2 has every referenced
   mode(false, () => {
     assert.equal(symbol2('btn_help','?'), '?');
     assert.equal(symbol2('btn_close','×'), '×');
-    for (const name of sprites) assert.equal(skillAsset(name), `./assets/sprites/skills/${name}.png`);
+    for (const name of sprites) assert.equal(skillAsset(name), assetURL(`./assets/sprites/skills/${name}.png`));
   });
   mode(true, () => {
     assert.match(symbol2('btn_check','✓'), /btn_check\.png/);
     for (const name of sprites) {
-      assert.equal(skillAsset(name), `./assets/ui2/skills/${name}.png`);
+      assert.equal(skillAsset(name), assetURL(`./assets/ui2/skills/${name}.png`));
       assert.ok(existsSync(new URL(`../game/assets/ui2/skills/${name}.png`, import.meta.url)));
       assert.equal(manifest[name].source, `game/assets/sprites/skills/${name}.png`);
     }
