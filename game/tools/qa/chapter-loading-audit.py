@@ -8,7 +8,7 @@ ROOT=Path(__file__).resolve().parents[3]
 BASE=local_url('http://localhost:8797')
 OUT=ROOT/'docs/codex/measurements/B/chapter-loading.json'
 p=json.loads(subprocess.check_output(['node','--input-type=module','-e',"import {freshProfile} from './game/src/rework-core.js';console.log(JSON.stringify(freshProfile()));"],cwd=ROOT))
-p.update(hero='minji',heroLocked=True,milestones={'firstPart':True,'firstGear':True,'firstPet':True},stages={f'CH{i:02}':{'cleared':True,'stars':3} for i in range(1,21)})
+p.update(hero='minji',heroLocked=True,milestones={'firstPart':True,'firstGear':True,'firstPet':True},stages={f'CH{i:02}':{'cleared':True,'stars':3} for i in range(1,5)})
 def quiet(page):
     for _ in range(4):
         page.wait_for_timeout(150);page.evaluate("document.querySelectorAll('dialog[open] [data-close]').forEach(b=>b.click())")
@@ -16,7 +16,7 @@ def lobby(page):
     page.wait_for_function("!document.querySelector('#btn-title-start').disabled",polling=50)
     page.evaluate("document.getElementById('btn-title-start').click()");page.locator('#guardian-lobby .sg-nav').wait_for();quiet(page)
 def stage(page,ch):
-    page.evaluate('ch=>{window.__sgUI.chapter=String(ch);window.__sgUI.stage="CH"+String(ch*5).padStart(2,"0");window.__sgUI.chapterPicked=true;window.__sgUI.render()}',ch)
+    page.evaluate('ch=>{window.__sgUI.tab="adventure";window.__sgUI.chapter=String(ch);window.__sgUI.stage="CH"+String(ch*5).padStart(2,"0");window.__sgUI.chapterPicked=true;window.__sgUI.render()}',ch)
 def departure(page):
     page.evaluate("(document.querySelector('#sg-start-dock')||document.querySelector('#sg-start')).click()")
     page.locator('#levelup:not(.hidden)').wait_for()
@@ -31,6 +31,8 @@ with sync_playwright() as pw:
     page.on('pageerror',lambda e:errors.append(str(e)))
     page.on('response',lambda r:bad.append(r.url) if r.status>=400 and '/api/register' not in r.url else None)
     page.on('request',lambda r:requests.append(r.url))
+    # Seed before login too: repeated QA must not briefly render an older chapter-4 profile.
+    assert page.request.post(BASE+'/_qa/profile',data={'id':'qachapter','profile':p},max_retries=2).ok
     page.goto(BASE+'/?ui=2',wait_until='networkidle');page.request.post(BASE+'/_qa/reset-attempts')
     page.locator('#login-id').fill('qachapter');page.locator('#login-pw').fill('qa_local_1234');page.locator('#btn-register').click();page.wait_for_timeout(350)
     if page.locator('#btn-title-start').is_hidden():page.locator('#btn-login').click()
@@ -55,16 +57,22 @@ with sync_playwright() as pw:
     ctx.unroute('**/assets/sprites/t1/floor_dirt.png*');quiet(page)
     intentional=bad.copy();bad.clear()
     for ch in range(1,5):
+        if ch==2:
+            p['stages']={f'CH{i:02}':{'cleared':True,'stars':3} for i in range(1,21)}
+            assert page.request.post(BASE+'/_qa/profile',data={'id':'qachapter','profile':p},max_retries=2).ok
+            page.evaluate('window.__sgUI.c.refresh()')
         stage(page,ch);departure(page)
         ready=page.evaluate("""async ch=>{const m=await import('./src/assets.js');return [...m.COMMON_SPRITE_KEYS,...m.CHAPTER_SPRITE_KEYS[ch]].filter(k=>!m.SPRITES[k]?.naturalWidth)}""",ch)
         assert not ready,ready
         if ch==1:
-            assert not any('/assets/sprites/t4/' in u for u in requests), 'Chapter-1 downloaded chapter-4 combat art'
+            foreign=[u for u in requests if '/assets/sprites/t4/' in u]
+            assert not foreign,foreign
             assert not page.evaluate("import('./src/assets.js').then(m=>m.HEROES.hoya.frames.attack.some(i=>i.naturalWidth))")
         result=page.evaluate("()=>{window.__pilotGod=true;window.__pilotAvoid=2;return window.__debugPilot(365)}")
         page.locator('#btn-continue:enabled').wait_for()
         missing=page.evaluate('window.__missingDraw');assert not missing,missing
         records.append({'chapter':ch,'unreadySprites':ready,'missingDraw':missing,'outcome':result})
+        print('chapter',ch,'checked',flush=True)
         page.evaluate("document.getElementById('btn-continue').click()");quiet(page)
     # The cached chapter manifest makes zero new sprite requests on a second departure.
     stage(page,1);n=len(requests);departure(page)

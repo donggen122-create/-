@@ -119,6 +119,9 @@ def audit_size(b, W, H, report):
     page.request.post(BASE + '/_qa/reset-attempts')   # 격리 서버 가입 제한 비우기(여러 크기를 연달아 가입)
     page.goto(args.url, wait_until='networkidle'); check('title')
     page.locator('#login-id').fill(uid); page.locator('#login-pw').fill('qa_local_1234'); page.locator('#btn-register').click()
+    page.wait_for_timeout(350)
+    if page.locator('#btn-title-start').is_hidden():
+        page.locator('#btn-login').click()   # Repeated QA can reuse an existing generated ID.
     page.locator('#btn-title-start').wait_for(state='visible')
     # Profile assignment is idempotent; tolerate an expired local keep-alive socket.
     assert page.request.post(BASE + '/_qa/profile', data={'id': uid, 'profile': super_profile()}, max_retries=2).ok

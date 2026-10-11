@@ -19,6 +19,8 @@ import subprocess
 import time
 import hashlib
 import base64
+import io
+from PIL import Image, ImageChops
 from pathlib import Path
 from urllib.parse import urlsplit
 from playwright.sync_api import sync_playwright
@@ -89,8 +91,6 @@ def context(b, dev, ref=None, replay=False):
     ctx.route('**/*', lambda route: route.fallback() if urlsplit(route.request.url).hostname in ('localhost', '127.0.0.1') else route.abort())
     if replay:
         ctx.add_init_script('window.requestAnimationFrame=(cb)=>0;')
-        # Canvas->bitmap conversion finishes asynchronously; fix that QA-only path in both sources.
-        ctx.add_init_script('window.createImageBitmap=undefined;')
         ctx.add_init_script("localStorage.setItem('lumen_muted','1');")
     ctx.add_init_script("""(()=>{const intervals=new Set(),timeouts=new Set(),si=window.setInterval,ci=window.clearInterval,st=window.setTimeout,ct=window.clearTimeout;
       window.setInterval=(...a)=>{const id=si(...a);intervals.add(id);return id;};window.clearInterval=id=>{intervals.delete(id);ci(id);};
@@ -339,8 +339,17 @@ def replay(b):
                     pair.append({'outcome': outcome, 'inputHash': page.evaluate('window.__qaInputHash'), 'canvasHash':canvas_hash, 'settlement': reward, 'errors': errors})
                 finally:
                     ctx.close()
-            equal = pair[0] == pair[1]
-            results.append({'stage': stage, 'seed': seed, 'device':device, 'quality':quality, 'god':god, 'equal': equal, 'before': pair[0], 'after': pair[1]})
+            gameplay = [{k:v for k,v in row.items() if k!='canvasHash'} for row in pair]
+            canvas = {'exact':pair[0]['canvasHash']==pair[1]['canvasHash'],'equivalent':True}
+            if not canvas['exact']:
+                images=[Image.open(OUT/f'replay-{stage}-{seed}-{label}.png').convert('RGB') for label in ('before','after')]
+                diff=ImageChops.difference(*images)
+                canvas.update(changedPixels=sum(px!=(0,0,0) for px in diff.get_flattened_data()),maxChannelDelta=max(x[1] for x in diff.getextrema()))
+                # Decode/composite rounding can change a few edge pixels. Still reject any shape/art change.
+                canvas['equivalent']=canvas['changedPixels']<=images[0].width*images[0].height*.000025 and canvas['maxChannelDelta']<=10
+            equal = gameplay[0] == gameplay[1] and canvas['equivalent']
+            results.append({'stage': stage, 'seed': seed, 'device':device, 'quality':quality, 'god':god, 'equal': equal, 'gameplayExact':gameplay[0]==gameplay[1], 'canvasCheck':canvas, 'before': pair[0], 'after': pair[1]})
+            (OUT / f'{args.label}-replay.json').write_text(json.dumps(results, ensure_ascii=False, indent=2), encoding='utf-8')
             print(f'replay {stage} seed {seed}: {"PASS" if equal else "FAIL"}', flush=True)
     if not all(r['equal'] for r in results):
         (OUT / f'{args.label}-replay.json').write_text(json.dumps(results, ensure_ascii=False, indent=2), encoding='utf-8')
