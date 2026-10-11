@@ -26,7 +26,7 @@ function DataUri($p) {
 }
 
 # 의존 순서(앞 모듈이 뒤 모듈에 쓰인다). rework-*는 Codex 개편(Guardian v1) 모듈: core ← content·ui ← main
-$order = @("content.data", "themes", "content", "meta", "save", "assets", "cloud", "economy", "ecoui", "runtime-performance", "theme-effects", "element-content", "equipment", "rework-core", "boss-patterns", "rework-content", "element-effects", "element-combat", "weapon-effects", "ui2-art", "rework-ui", "music", "main")
+$order = @("content.data", "themes", "content", "meta", "save", "assets", "cloud", "economy", "ecoui", "runtime-performance", "theme-effects", "element-content", "equipment", "rework-core", "boss-patterns", "rework-content", "element-effects", "element-combat", "weapon-effects", "ui2-art", "rework-ui", "music", "story.data", "story", "main")
 $sb = New-Object System.Text.StringBuilder
 [void]$sb.AppendLine("var __m = {};")
 
@@ -109,7 +109,7 @@ $html = [regex]::Replace($html, '\./assets/((?:[\w\-]+/)+[\w.\-]+\.(?:png|ogg|jp
   param($m) return (DataUri (Join-Path $root ("assets\" + $m.Groups[1].Value.Replace("/", "\"))))
 })
 # Codex 개편 CSS(rework.css)는 <link>로 붙어 있으므로 인라인 <style>로 바꾼다(안의 ../assets/ 경로도 data URI)
-foreach ($stylesheet in @("rework", "ui-v2")) {
+foreach ($stylesheet in @("rework", "ui-v2", "story")) {
   $cssTag = '<link rel="stylesheet" href="./src/' + $stylesheet + '.css" />'
   if (-not $html.Contains($cssTag)) { throw "index.html에서 $stylesheet CSS 태그를 찾지 못함" }
   $css = ReadText (Join-Path $root "src\$stylesheet.css")
