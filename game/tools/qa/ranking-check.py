@@ -63,7 +63,7 @@ with sync_playwright() as pw:
     except Exception as e:report.setdefault(f'{w}x{h}',{})['_error']=str(e)
     print('layout '+label+' '+str(w)+' done',flush=True)
    comparisons[label]=report
-   (ROOT/'docs/codex/F-layout-reference.json').write_text(json.dumps(comparisons,ensure_ascii=False,indent=2),encoding='utf-8')
+   (ROOT/'docs/codex/F-layout-reference.json').write_bytes(json.dumps(comparisons,ensure_ascii=False,indent=2).encode('utf-8'))
   browser.close();request.dispose();raise SystemExit(0)
  if args.pilot_only:
   browser=pw.chromium.launch(headless=True,executable_path=chrome_path())
@@ -94,7 +94,7 @@ with sync_playwright() as pw:
     event=json.loads(stored['result'])
     assert stored['stage']==f'CH{n:02d}',stored
     measurements.append({'stage':f'CH{n:02d}','seed':seed,'outcome':outcome,'eventKills':event.get('kills'),'held':event.get('held',False),'flags':event.get('flags',[])})
-    (ROOT/'docs/codex/F-pilot-max.json').write_text(json.dumps(measurements,ensure_ascii=False,indent=2),encoding='utf-8')
+    (ROOT/'docs/codex/F-pilot-max.json').write_bytes(json.dumps(measurements,ensure_ascii=False,indent=2).encode('utf-8'))
     print(f'pilot CH{n:02d} seed {seed}: kills={outcome["kills"]} held={event.get("held",False)}',flush=True)
   context.close();browser.close();request.dispose();raise SystemExit(0)
  qa=[];aliases=[];tokens=[]
@@ -200,6 +200,6 @@ with sync_playwright() as pw:
   for r in json.loads(replay.read_text(encoding='utf-8')):
    stage=r['stage'];measured[stage]=max(measured.get(stage,0),r['after']['outcome']['kills'])
  report={'checks':checks,'captures':captures,'maxKills':measured,'qaRegistrations':12,'syntheticAliases':12}
- (ROOT/'docs/codex/F-ranking-check.json').write_text(json.dumps(report,ensure_ascii=False,indent=2),encoding='utf-8')
+ (ROOT/'docs/codex/F-ranking-check.json').write_bytes(json.dumps(report,ensure_ascii=False,indent=2).encode('utf-8'))
  print(json.dumps({'passed':len(checks),'captures':len(captures)},ensure_ascii=False),flush=True)
  context.close();browser.close();request.dispose()
