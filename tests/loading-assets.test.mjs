@@ -4,6 +4,8 @@ import fs from 'node:fs';
 import vm from 'node:vm';
 import path from 'node:path';
 import {fileURLToPath} from 'node:url';
+import {versionStaticContent} from '../game/tools/version-assets.mjs';
+import {assetURL,ASSET_VERSION} from '../game/src/assets.js';
 import {T1_ENEMIES,T2_ENEMIES,T3_ENEMIES,T4_ENEMIES,T1_BOSS,T2_BOSS,T3_BOSS,T4_BOSS} from '../game/src/themes.js';
 
 const root=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'..');
@@ -39,4 +41,11 @@ test('HTML/CSS versions match the one asset version and static headers survive s
   assert.match(fs.readFileSync(path.join(root,'dist_web/_headers'),'utf8'),/max-age=31536000, immutable/);
   assert.doesNotMatch(fs.readFileSync(path.join(root,'.gitignore'),'utf8'),/^dist_web\/$|_headers/m);
   assert.doesNotMatch(fs.readFileSync(path.join(root,'game/tools/sync-dist.ps1'),'utf8'),/Remove-Item.*_headers/);
+});
+test('URL stamping is idempotent, keeps data URIs intact and versions generated result literals',()=>{
+  const url=assetURL('./assets/ui/emblem.png');assert.equal(assetURL(url),url);
+  assert.equal(assetURL('data:image/png;base64,AA=='),'data:image/png;base64,AA==');
+  const markup='<img src="./assets/ui2/icons/cur_coin.png" />';
+  assert.equal(versionStaticContent(markup,ASSET_VERSION),`<img src="./assets/ui2/icons/cur_coin.png?v=${ASSET_VERSION}" />`);
+  assert.equal(versionStaticContent(versionStaticContent(markup,ASSET_VERSION),ASSET_VERSION),versionStaticContent(markup,ASSET_VERSION));
 });

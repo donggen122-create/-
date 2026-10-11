@@ -2,6 +2,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import {fileURLToPath} from 'node:url';
+import {createHash} from 'node:crypto';
 const game = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 export function stampAssetVersions(root = game) {
   const version = fs.readFileSync(path.join(root,'src/assets.js'),'utf8').match(/export const ASSET_VERSION = "([^"]+)";/)?.[1];
@@ -17,10 +18,15 @@ export function stampAssetVersions(root = game) {
 export function versionStaticContent(text, version) {
   return text.replace(/((?:\.\/|\.\.\/)assets\/[\w./-]+\.(?:png|jpg|svg|woff2|mp3|ogg))(?:\?v=[\w.-]+)?/g, `$1?v=${version}`);
 }
-if (process.argv[2] === '--dist') {
+const main=process.argv[1] && path.resolve(process.argv[1]) === fileURLToPath(import.meta.url);
+if (main && process.argv[2] === '--hash') {
+  const version=fs.readFileSync(path.join(game,'src/assets.js'),'utf8').match(/ASSET_VERSION = "([^"]+)"/)[1];
+  console.log(createHash('sha256').update(versionStaticContent(fs.readFileSync(process.argv[3],'utf8'),version)).digest('hex'));
+}
+if (main && process.argv[2] === '--dist') {
   const dist=path.resolve(game,'../dist_web');
   const version=fs.readFileSync(path.join(game,'src/assets.js'),'utf8').match(/ASSET_VERSION = "([^"]+)"/)[1];
   const walk=dir=>{for(const e of fs.readdirSync(dir,{withFileTypes:true})){const p=path.join(dir,e.name);if(e.isDirectory())walk(p);else if(/\.(js|css|html)$/.test(p))fs.writeFileSync(p,versionStaticContent(fs.readFileSync(p,'utf8'),version));}};
   walk(path.join(dist,'src')); // Generated game source only; never admin/share/server.
 }
-if (process.argv[1] && path.resolve(process.argv[1]) === fileURLToPath(import.meta.url)) stampAssetVersions();
+if (main && process.argv[2] !== '--hash') stampAssetVersions();
