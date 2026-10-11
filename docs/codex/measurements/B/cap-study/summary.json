@@ -1,0 +1,290 @@
+[
+  {
+    "cap": 0,
+    "stage": "CH18",
+    "device": "ipad",
+    "fps": 8.476442830731443,
+    "low1": 5.217845030002619,
+    "stressEnemies": 160,
+    "sampleEnemies": 159,
+    "quality": [
+      {
+        "frame": 1,
+        "level": 5,
+        "ratio": 0.7,
+        "fx": 2
+      }
+    ],
+    "errors": []
+  },
+  {
+    "cap": 0,
+    "stage": "CH20",
+    "device": "ipad",
+    "fps": 12.583281454892246,
+    "low1": 6.668889629876594,
+    "stressEnemies": 160,
+    "sampleEnemies": 160,
+    "quality": [
+      {
+        "frame": 1,
+        "level": 5,
+        "ratio": 0.7,
+        "fx": 2
+      }
+    ],
+    "errors": []
+  },
+  {
+    "cap": 0,
+    "stage": "CH18",
+    "device": "android",
+    "fps": 9.379552575385661,
+    "low1": 5.712653527563577,
+    "stressEnemies": 160,
+    "sampleEnemies": 160,
+    "quality": [
+      {
+        "frame": 1,
+        "level": 4,
+        "ratio": 0.7,
+        "fx": 2
+      }
+    ],
+    "errors": []
+  },
+  {
+    "cap": 0,
+    "stage": "CH20",
+    "device": "android",
+    "fps": 9.86794177252076,
+    "low1": 3.5292041644608867,
+    "stressEnemies": 160,
+    "sampleEnemies": 157,
+    "quality": [
+      {
+        "frame": 1,
+        "level": 4,
+        "ratio": 0.7,
+        "fx": 2
+      }
+    ],
+    "errors": []
+  },
+  {
+    "cap": 120,
+    "stage": "CH18",
+    "device": "ipad",
+    "fps": 9.348458830315527,
+    "low1": 5.216484089723506,
+    "stressEnemies": 121,
+    "sampleEnemies": 121,
+    "quality": [
+      {
+        "frame": 1,
+        "level": 5,
+        "ratio": 0.7,
+        "fx": 2
+      }
+    ],
+    "errors": []
+  },
+  {
+    "cap": 120,
+    "stage": "CH20",
+    "device": "ipad",
+    "fps": 14.600584023360938,
+    "low1": 5.806077027288554,
+    "stressEnemies": 120,
+    "sampleEnemies": 120,
+    "quality": [
+      {
+        "frame": 1,
+        "level": 5,
+        "ratio": 0.7,
+        "fx": 2
+      }
+    ],
+    "errors": []
+  },
+  {
+    "cap": 120,
+    "stage": "CH18",
+    "device": "android",
+    "fps": 11.060115369586667,
+    "low1": 4.285408185129627,
+    "stressEnemies": 121,
+    "sampleEnemies": 121,
+    "quality": [
+      {
+        "frame": 1,
+        "level": 4,
+        "ratio": 0.7,
+        "fx": 2
+      }
+    ],
+    "errors": []
+  },
+  {
+    "cap": 120,
+    "stage": "CH20",
+    "device": "android",
+    "fps": 14.387344440982053,
+    "low1": 6.429489927132468,
+    "stressEnemies": 120,
+    "sampleEnemies": 120,
+    "quality": [
+      {
+        "frame": 1,
+        "level": 4,
+        "ratio": 0.7,
+        "fx": 2
+      }
+    ],
+    "errors": []
+  },
+  {
+    "cap": 100,
+    "stage": "CH18",
+    "device": "ipad",
+    "fps": 11.707810306864372,
+    "low1": 6.000600060006014,
+    "stressEnemies": 101,
+    "sampleEnemies": 101,
+    "quality": [
+      {
+        "frame": 1,
+        "level": 5,
+        "ratio": 0.7,
+        "fx": 2
+      }
+    ],
+    "errors": []
+  },
+  {
+    "cap": 100,
+    "stage": "CH20",
+    "device": "ipad",
+    "fps": 12.37507859847218,
+    "low1": 7.496251874062887,
+    "stressEnemies": 100,
+    "sampleEnemies": 100,
+    "quality": [
+      {
+        "frame": 1,
+        "level": 5,
+        "ratio": 0.7,
+        "fx": 2
+      }
+    ],
+    "errors": []
+  },
+  {
+    "cap": 100,
+    "stage": "CH18",
+    "device": "android",
+    "fps": 12.066725011271117,
+    "low1": 7.996801279488251,
+    "stressEnemies": 101,
+    "sampleEnemies": 101,
+    "quality": [
+      {
+        "frame": 1,
+        "level": 4,
+        "ratio": 0.7,
+        "fx": 2
+      }
+    ],
+    "errors": []
+  },
+  {
+    "cap": 100,
+    "stage": "CH20",
+    "device": "android",
+    "fps": 12.86233325377251,
+    "low1": 6.000600060006014,
+    "stressEnemies": 100,
+    "sampleEnemies": 100,
+    "quality": [
+      {
+        "frame": 1,
+        "level": 4,
+        "ratio": 0.7,
+        "fx": 2
+      }
+    ],
+    "errors": []
+  },
+  {
+    "cap": 80,
+    "stage": "CH18",
+    "device": "ipad",
+    "fps": 11.934123637520882,
+    "low1": 7.496251874062887,
+    "stressEnemies": 81,
+    "sampleEnemies": 81,
+    "quality": [
+      {
+        "frame": 1,
+        "level": 5,
+        "ratio": 0.7,
+        "fx": 2
+      }
+    ],
+    "errors": []
+  },
+  {
+    "cap": 80,
+    "stage": "CH20",
+    "device": "ipad",
+    "fps": 14.317965383821363,
+    "low1": 7.499999999999863,
+    "stressEnemies": 80,
+    "sampleEnemies": 80,
+    "quality": [
+      {
+        "frame": 1,
+        "level": 5,
+        "ratio": 0.7,
+        "fx": 2
+      }
+    ],
+    "errors": []
+  },
+  {
+    "cap": 80,
+    "stage": "CH18",
+    "device": "android",
+    "fps": 11.707810306864367,
+    "low1": 6.315124723713279,
+    "stressEnemies": 81,
+    "sampleEnemies": 81,
+    "quality": [
+      {
+        "frame": 1,
+        "level": 4,
+        "ratio": 0.7,
+        "fx": 2
+      }
+    ],
+    "errors": []
+  },
+  {
+    "cap": 80,
+    "stage": "CH20",
+    "device": "android",
+    "fps": 13.193836688148087,
+    "low1": 6.666666666666667,
+    "stressEnemies": 80,
+    "sampleEnemies": 80,
+    "quality": [
+      {
+        "frame": 1,
+        "level": 4,
+        "ratio": 0.7,
+        "fx": 2
+      }
+    ],
+    "errors": []
+  }
+]

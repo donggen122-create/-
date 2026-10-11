@@ -70,6 +70,12 @@ AUDIT_JS = r"""(kind)=>{
       if(r.bottom>H+2||r.top<-2)(scroll?out.needsScroll=out.needsScroll||[]:out.vOverflow).push(name(e)+` [${Math.round(r.top)}..${Math.round(r.bottom)}] H=${H}`);}
   }
   if(document.documentElement.classList.contains('ui2')){
+    if(kind==='lobby-adventure'){
+      const buttons=[...document.querySelectorAll('#guardian-lobby [data-do="start"]')].filter(vis);
+      out.departureVisible=[];
+      const nav=document.querySelector('#guardian-lobby .sg-nav')?.getBoundingClientRect();
+      if(!buttons.some(e=>{const r=e.getBoundingClientRect(),at=document.elementFromPoint(r.left+r.width/2,r.top+r.height/2);return r.top>=0&&r.bottom<=Math.min(H,nav?.top??H)&&r.left>=0&&r.right<=W&&(at===e||e.contains(at));}))out.departureVisible.push('Departure action is not visible above the menu on first screen');
+    }
     const slots=[...document.querySelectorAll('#guardian-lobby [data-gear-slot]')].filter(vis);
     if(kind==='lobby-gear'){
       out.gearLayout=[];
@@ -114,8 +120,12 @@ def audit_size(b, W, H, report):
     page.request.post(BASE + '/_qa/reset-attempts')   # 격리 서버 가입 제한 비우기(여러 크기를 연달아 가입)
     page.goto(args.url, wait_until='networkidle'); check('title')
     page.locator('#login-id').fill(uid); page.locator('#login-pw').fill('qa_local_1234'); page.locator('#btn-register').click()
+    page.wait_for_timeout(350)
+    if page.locator('#btn-title-start').is_hidden():
+        page.locator('#btn-login').click()   # Repeated QA can reuse an existing generated ID.
     page.locator('#btn-title-start').wait_for(state='visible')
-    assert page.request.post(BASE + '/_qa/profile', data={'id': uid, 'profile': super_profile()}).ok
+    # Profile assignment is idempotent; tolerate an expired local keep-alive socket.
+    assert page.request.post(BASE + '/_qa/profile', data={'id': uid, 'profile': super_profile()}, max_retries=2).ok
     page.reload(wait_until='networkidle')   # 바꾼 시험 프로필을 다시 읽는다(안 하면 새 가입 프로필 그대로 — 캐릭터 고르기 창·1장만 열림)
     page.wait_for_function("!document.querySelector('#btn-title-start').disabled")
     page.evaluate("document.getElementById('btn-title-start').click()"); page.locator('#guardian-lobby .sg-nav').wait_for(); quiet(page)

@@ -1,8 +1,10 @@
 import * as R from './rework-core.js';
+import { assetURL } from './assets.js';
+const versionMarkup=html=>html.replace(/(?:\.\/|\.\.\/)assets\/[^\s"'<>]+/g,assetURL);
 import { isUI2, art2, preloadUI2, symbol2, skillAsset } from './ui2-art.js';
 const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const entries=o=>Object.entries(o||{}),modern=id=>/^(element_|skill_|part_|combo_|mode_)/.test(id);
-const legacyIcon=(id,cls='')=>`<img class="sg-icon ${cls}" src="./assets/${modern(id)?'elements_v2':'seoho_v1'}/icons/${esc(id)}.svg" alt="" />`;
+const legacyIcon=(id,cls='')=>`<img class="sg-icon ${cls}" src="${assetURL(`./assets/${modern(id)?'elements_v2':'seoho_v1'}/icons/${esc(id)}.svg`)}" alt="" />`;
 export const icon2=(name,fallbackSvgId,cls='')=>isUI2()?art2(name,cls):legacyIcon(fallbackSvgId,cls);
 export const icon=(id,cls='')=>{
   const name={pass:'cur_pass',coin:'cur_coin',gift:'cur_gift'}[id] || (/^element_(fire|water|earth|wind|lightning)$/.test(id)?id.replace('element_','el_'):null);
@@ -66,18 +68,30 @@ const chapterStages=c=>R.STAGES.slice(c.from,c.from+5);
 const ui2=isUI2;   // UI v2 미리 보기(index.html ?ui=2)
 export class GuardianUI {
   constructor(menu,callbacks){
-    preloadUI2();
     this.c=callbacks;this.tab='adventure';this.stage='CH01';this.chapter='1';this.element='fire';this.partFilter='all';this.bookFilter='all';this.bookTab='skills';this.busy=false;
     menu.classList.add('sg-mode');this.root=document.createElement('div');this.root.id='guardian-lobby';menu.append(this.root);
     this.dialog=document.createElement('dialog');this.dialog.className='sg-dialog';document.body.append(this.dialog);
     this.dialog.addEventListener('click',e=>{if(e.target===this.dialog&&!this.dialog.dataset.lock)this.dialog.close();});
     this.dialog.addEventListener('cancel',e=>{if(this.dialog.dataset.lock)e.preventDefault();});
     this.root.addEventListener('click',e=>this.click(e));
+    window.addEventListener('resize',()=>this.updateDepartureDock());
+    document.fonts?.ready.then(()=>this.updateDepartureDock());
     this.root.addEventListener('change',e=>{
       if(e.target.id==='sg-difficulty')this.setDifficulty(e.target.value);
     });
   }
   state(){return this.c.getState();}
+  loadingProgress(percent){this.root.querySelectorAll('[data-do="start"]').forEach(b=>{b.disabled=true;b.textContent=`불러오는 중 ${percent}%`;});}
+  updateDepartureDock(){
+    if(!ui2())return;
+    this.root.querySelector('#sg-start-dock')?.remove();
+    const source=this.root.querySelector('#sg-start'),nav=this.root.querySelector('.sg-nav');
+    if(!source||!nav||this.tab!=='adventure')return;
+    const r=source.getBoundingClientRect(),n=nav.getBoundingClientRect();
+    if(r.top>=0&&r.bottom<=n.top-8)return;
+    const dock=source.cloneNode(true);dock.id='sg-start-dock';dock.classList.add('sg-departure-dock');
+    dock.style.bottom=`${Math.max(0,innerHeight-n.top)+10}px`;this.root.append(dock);
+  }
   // UI v2(ui-v2.css): 지금 탭·장을 root에 적어 두면 화면 뒤 장 그림을 CSS가 고른다(장 5단계를 정화했으면 맑은 그림)
   markRoot(p){const ch=CHAPTERS.find(c=>c.n===String(this.chapter))||CHAPTERS[0];this.root.dataset.tab=this.tab;this.root.dataset.chapter=ch.n;this.root.dataset.cleared=p?.stages?.[chapterStages(ch)[4].id]?.cleared?'1':'0';}
   setDifficulty(id){
@@ -86,25 +100,27 @@ export class GuardianUI {
     const inp=this.root.querySelector('#sg-difficulty');if(inp)inp.value=id;
     const hr=this.root.querySelector('#sg-hard-ready');if(hr)hr.innerHTML=this.hardArea(this.state().profile,this.stage,id);
   }
-  openDialog(markup,lock=false){this.dialog.classList.remove('sg-wide');if(lock)this.dialog.dataset.lock='1';else delete this.dialog.dataset.lock;this.dialog.innerHTML=markup;this.dialog.querySelectorAll('[data-close]').forEach(b=>b.onclick=()=>this.dialog.close());if(!this.dialog.open)this.dialog.showModal();this.dialog.scrollTop=0;}   // 긴 창이 아래 버튼으로 스크롤돼 제목이 잘리지 않게
+  openDialog(markup,lock=false){this.dialog.classList.remove('sg-wide');if(lock)this.dialog.dataset.lock='1';else delete this.dialog.dataset.lock;this.dialog.innerHTML=versionMarkup(markup);this.dialog.querySelectorAll('[data-close]').forEach(b=>b.onclick=()=>this.dialog.close());if(!this.dialog.open)this.dialog.showModal();this.dialog.scrollTop=0;}   // 긴 창이 아래 버튼으로 스크롤돼 제목이 잘리지 않게
   notify(title,text){this.openDialog(`<h2>${esc(title)}</h2><p>${esc(text||'서버에 저장했어요.')}</p><button class="sg-primary" data-close>확인</button>`);}
   render(){
     const {profile:p,passes,user,error}=this.state();
-    if(!p){this.root.innerHTML=`<div class="sg-loading"><h1>수호대 기록을 불러오는 중</h1><p>${esc(error||'잠시만 기다려 주세요.')}</p><button data-do="refresh">다시 확인</button></div>`;return;}
+    if(!p){this.root.innerHTML=versionMarkup(`<div class="sg-loading"><h1>수호대 기록을 불러오는 중</h1><p>${esc(error||'잠시만 기다려 주세요.')}</p><button data-do="refresh">다시 확인</button></div>`);return;}
+    preloadUI2();
     if(p.testMode){this.renderTest(p,passes,user);return;}   // 밸런스 시험 계정: 전용 로비(친구 등급 바꾸기 · 1-5 어려움 출동만)
     if(!R.stageUnlocked(p,this.stage))this.stage='CH01';
     const pendingPet=R.pendingPet(p),pendingPart=R.pendingPart(p);
     this.markRoot(p);
-    this.root.innerHTML=`<header class="sg-header"><div class="sg-brand">${ui2()?'<img class="sg-ui2-emblem" src="./assets/ui2/emblem.png" alt=""/>':icon('element_wind')}<span>서호팡팡<small>수호대</small></span></div><div class="sg-wallet"><button data-do="passes" aria-label="이용권 안내">${icon('pass')}<b>${passes?.remaining??'…'}</b><span>${passes?.event?'추석 2배':'이용권'}</span></button><div>${icon('coin')}<b>${p.coins.toLocaleString()}</b><span>코인</span></div><button data-tab="parts" aria-label="파츠 보급과 보급권">${icon('gift')}<b>${p.gifts}</b><span>보급권</span></button></div><button class="sg-account" data-do="account" aria-label="계정과 캐릭터 선택">${ui2()?`${art2('fn_settings','sg-account-settings')}<img class="sg-ui2-avatar" src="./assets/ui/title_${p.hero==='minji'?'minji':'hoya'}.png" alt=""/><span>${p.hero==='minji'?'민지':'호야'}<small>${esc(user)}</small></span>`:`${esc(user)} 님`}</button></header>
+    this.root.innerHTML=versionMarkup(`<header class="sg-header"><div class="sg-brand">${ui2()?'<img class="sg-ui2-emblem" src="./assets/ui2/emblem.png" alt=""/>':icon('element_wind')}<span>서호팡팡<small>수호대</small></span></div><div class="sg-wallet"><button data-do="passes" aria-label="이용권 안내">${icon('pass')}<b>${passes?.remaining??'…'}</b><span>${passes?.event?'추석 2배':'이용권'}</span></button><div>${icon('coin')}<b>${p.coins.toLocaleString()}</b><span>코인</span></div><button data-tab="parts" aria-label="파츠 보급과 보급권">${icon('gift')}<b>${p.gifts}</b><span>보급권</span></button></div>${ui2()?`<button class="sg-news" data-do="news" aria-label="소식 다시 보기">${art2('fn_news')}</button>`:''}<button class="sg-account" data-do="account" aria-label="계정과 캐릭터 선택">${ui2()?`${art2('fn_settings','sg-account-settings')}<img class="sg-ui2-avatar" src="./assets/ui/title_${p.hero==='minji'?'minji':'hoya'}.png" alt=""/><span>${p.hero==='minji'?'민지':'호야'}<small>${esc(user)}</small></span>`:`${esc(user)} 님`}</button></header>
     <main class="sg-main" aria-live="polite">${this.nextTask(p)}${this[this.tab](p,passes)}</main>
-    <nav class="sg-nav" aria-label="수호대 메뉴">${[['adventure','map','모험'],['training','mode_melee','훈련'],['parts','part_PART_F1','파츠'],['gear','shield','장비'],['friends','heart','친구'],['book','book','도감']].map(([id,im,label])=>`<button data-tab="${id}" class="${this.tab===id?'on':''}" aria-current="${this.tab===id?'page':'false'}">${icon2('nav_'+id,im)}<span>${label}${id==='parts'&&p.gifts>0?` <b class="sg-count-badge" aria-label="보급권 ${p.gifts}장">${p.gifts}</b>`:''}${id==='gear'&&this.gearAlert(p)?' <b class="sg-count-badge" aria-label="장비 할 일">!</b>':''}${id==='friends'&&pendingPet?' <b class="sg-count-badge" aria-label="친구 고르기">!</b>':''}</span></button>`).join('')}</nav>`;
+    <nav class="sg-nav" aria-label="수호대 메뉴">${[['adventure','map','모험'],['training','mode_melee','훈련'],['parts','part_PART_F1','파츠'],['gear','shield','장비'],['friends','heart','친구'],['book','book','도감']].map(([id,im,label])=>`<button data-tab="${id}" class="${this.tab===id?'on':''}" aria-current="${this.tab===id?'page':'false'}">${icon2('nav_'+id,im)}<span>${label}${id==='parts'&&p.gifts>0?` <b class="sg-count-badge" aria-label="보급권 ${p.gifts}장">${p.gifts}</b>`:''}${id==='gear'&&this.gearAlert(p)?' <b class="sg-count-badge" aria-label="장비 할 일">!</b>':''}${id==='friends'&&pendingPet?' <b class="sg-count-badge" aria-label="친구 고르기">!</b>':''}</span></button>`).join('')}</nav>`);
     if(this.busy)this.root.querySelectorAll('button,select').forEach(b=>b.disabled=true);
+    this.updateDepartureDock();
   }
   // 밸런스 시험 계정 로비(2026-09-29): 친구 1마리의 등급만 바꾸고 1-5 어려움만 출동. 다른 조작은 서버도 막는다(rework-core action).
   renderTest(p,passes,user){
     if(p.testMode.kind==='gear'){this.renderGearTest(p,passes,user);return;}
     const pet=p.testMode.pet,d=R.PETS[pet],g=R.testGrade(p),rate=R.PET_GRADE_RATE[Math.max(0,g)];this.stage=p.testMode.stage;
-    this.root.innerHTML=`<header class="sg-header"><div class="sg-brand">${icon('element_wind')}<span>서호팡팡<small>시험 계정</small></span></div><div class="sg-wallet"><button data-do="passes" aria-label="시험 이용권 안내">${icon('pass')}<b>${passes?.remaining??'…'}</b><span>${passes?.test?`/ ${passes.total} 시험 이용권`:'이용권'}</span></button></div><button class="sg-account" data-do="account" aria-label="계정">${esc(user)} 님</button></header>
+    this.root.innerHTML=versionMarkup(`<header class="sg-header"><div class="sg-brand">${icon('element_wind')}<span>서호팡팡<small>시험 계정</small></span></div><div class="sg-wallet"><button data-do="passes" aria-label="시험 이용권 안내">${icon('pass')}<b>${passes?.remaining??'…'}</b><span>${passes?.test?`/ ${passes.total} 시험 이용권`:'이용권'}</span></button></div><button class="sg-account" data-do="account" aria-label="계정">${esc(user)} 님</button></header>
     <main class="sg-main sg-test" aria-live="polite">
       <div class="sg-heading"><div><span class="sg-eyebrow">밸런스팀 시험 계정</span><h1>친구 등급별 성공률 조사</h1><p>1-5 쓰레기 대장 구출 · 어려움만 할 수 있어요. 등급을 고르고 5판씩 해요.</p></div></div>
       <section class="sg-test-card">
@@ -114,7 +130,7 @@ export class GuardianUI {
       <section class="sg-test-rules"><h3>모든 시험 계정이 같은 조건</h3><ul><li>1-5 어려움만 출동 · 6:00 안에 대왕을 정화하면 성공</li><li>시험 이용권 ${passes?.total??25}장 · 출동할 때마다 1장(중간에 끝내도 1장) · 다시 채워지지 않아요</li><li>훈련 공격·체력·이동 속도 ${p.training.attack}단계</li><li>근거리 장비 6칸 ${esc(R.GRADE_NAMES[R.gearGrade(p,p.equippedGear?.weapon)]??'')} · 파츠 없음</li><li>훈련·보급·장비·파츠는 바꿀 수 없어요. 친구 등급만 바꿔요.</li></ul></section>
       <select id="sg-difficulty" style="display:none" aria-hidden="true"><option value="hard" selected>어려움</option></select><select id="sg-weapon-mode" style="display:none" aria-hidden="true"><option value="melee" selected>근거리</option></select>
       <button class="sg-primary sg-start sg-test-start" data-do="start">1-5 어려움 출동 · ${esc(d.name)} ${esc(R.GRADE_NAMES[g]??'')}</button>
-    </main>`;
+    </main>`);
     if(this.busy)this.root.querySelectorAll('button,select').forEach(b=>b.disabled=true);
   }
   // 장비 시험 계정 로비(2026-10-02 사용자 "친구 없이 장비만 · 근거리 10판 + 원거리 10판 · 등급은 계정마다 고정"): 세트(근거리/원거리)만 바꾸고 정해진 단계만 출동. 세트마다 10판(서버가 셈).
@@ -122,7 +138,7 @@ export class GuardianUI {
     const t=p.testMode,type=p.weaponMode==='ranged'?'ranged':'melee',g=Math.max(0,R.testGrade(p)),per=passes?.perType??t.perType??10,by=passes?.byType||{},done=by[type]?.n||0,left=Math.max(0,per-done);this.stage=t.stage;
     const names={melee:'근거리',ranged:'원거리'},other=type==='melee'?'ranged':'melee',heroName=p.hero==='minji'?'민지':'호야',diffName=({easy:'쉬움',normal:'보통',hard:'어려움'})[t.difficulty]||'어려움';
     const label=R.stageLabel(t.stage),stageName=R.STAGES.find(s=>s.id===t.stage)?.name||'',allDone=['melee','ranged'].every(k=>(by[k]?.n||0)>=per),set=R.GEAR_SETS[`${p.hero}_${type}`];
-    this.root.innerHTML=`<header class="sg-header"><div class="sg-brand">${icon('element_wind')}<span>서호팡팡<small>시험 계정</small></span></div><div class="sg-wallet"><button data-do="passes" aria-label="시험 이용권 안내">${icon('pass')}<b>${passes?.remaining??'…'}</b><span>${passes?.test?`/ ${passes.total} 시험 이용권`:'이용권'}</span></button></div><button class="sg-account" data-do="account" aria-label="계정">${esc(user)} 님</button></header>
+    this.root.innerHTML=versionMarkup(`<header class="sg-header"><div class="sg-brand">${icon('element_wind')}<span>서호팡팡<small>시험 계정</small></span></div><div class="sg-wallet"><button data-do="passes" aria-label="시험 이용권 안내">${icon('pass')}<b>${passes?.remaining??'…'}</b><span>${passes?.test?`/ ${passes.total} 시험 이용권`:'이용권'}</span></button></div><button class="sg-account" data-do="account" aria-label="계정">${esc(user)} 님</button></header>
     <main class="sg-main sg-test" aria-live="polite">
       <div class="sg-heading"><div><span class="sg-eyebrow">밸런스팀 시험 계정</span><h1>장비 성공률 조사</h1><p>친구 없이 장비만! ${label} ${esc(stageName)} · ${diffName}만 할 수 있어요. 근거리 ${per}판, 원거리 ${per}판을 해요.</p></div></div>
       <section class="sg-test-card">
@@ -133,7 +149,7 @@ export class GuardianUI {
       <section class="sg-test-rules"><h3>모든 시험 계정이 같은 조건(장비 등급만 달라요)</h3><ul><li>${label} ${diffName}만 출동 · 6:00 안에 대왕을 정화하면 성공</li><li>근거리 ${per}판 + 원거리 ${per}판 · 시험 이용권 ${passes?.total??20}장(출동할 때마다 1장, 중간에 끝내도 1장) · 다시 채워지지 않아요</li><li>훈련 공격·체력·이동 속도 ${p.training.attack}단계 · 친구 없음 · 파츠 없음</li><li>근거리·원거리만 바꿀 수 있어요. 위 단추를 눌러 바꿔요.</li></ul></section>
       <select id="sg-difficulty" style="display:none" aria-hidden="true"><option value="${esc(t.difficulty)}" selected>${diffName}</option></select><select id="sg-weapon-mode" style="display:none" aria-hidden="true"><option value="${type}" selected>${names[type]}</option></select>
       ${left>0?`<button class="sg-primary sg-start sg-test-start" data-do="start">${label} ${diffName} 출동 · ${names[type]} (${done+1} / ${per}판째)</button>`:allDone?`<button class="sg-primary sg-start sg-test-start" data-do="passes">${per*2}판을 모두 했어요. 수고했어요!</button>`:`<button class="sg-primary sg-start sg-test-start" data-test-type="${other}">${names[type]} ${per}판 끝! ${names[other]}로 바꿔요</button>`}
-    </main>`;
+    </main>`);
     if(this.busy)this.root.querySelectorAll('button,select').forEach(b=>b.disabled=true);
   }
   testGradeDialog(){
@@ -576,6 +592,7 @@ export class GuardianUI {
       if(!R.heroLocked(p)){this.openDialog(`<h2>계정</h2><p>${esc(this.state().user||'')} 님</p><button class="sg-primary" data-do-hero>캐릭터 고르기</button><button id="sg-logout">로그아웃</button><button data-close>닫기</button>`);this.dialog.querySelector('[data-do-hero]').onclick=()=>this.heroDialog();this.dialog.querySelector('#sg-logout').onclick=()=>{this.dialog.close();this.c.logout();};return;}
       this.openDialog(`<h2>계정</h2><div class="sg-hero-choice sg-hero-now"><div><img src="./assets/sprites/heroes/${p.hero==='minji'?'minji':'hoya'}_idle_1.png" alt=""/><b>${heroName(p.hero)}</b><small>가입할 때 고른 캐릭터</small></div></div><p class="sg-footnote">캐릭터는 바꿀 수 없어요. 잘못 골랐다면 선생님께 말씀해 주세요.</p><button id="sg-logout">로그아웃</button><button data-close>닫기</button>`);this.dialog.querySelector('#sg-logout').onclick=()=>{this.dialog.close();this.c.logout();};return;
     }
+    if(b.dataset.do==='news'){this.c.news?.();return;}
     if(b.dataset.do==='start'){
       if(!R.heroLocked(p)){this.heroDialog();return;}
       const difficulty=this.root.querySelector('#sg-difficulty').value,weaponMode=this.root.querySelector('#sg-weapon-mode').value;this.busy=true;b.disabled=true;

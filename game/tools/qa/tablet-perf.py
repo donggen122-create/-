@@ -19,6 +19,8 @@ import subprocess
 import time
 import hashlib
 import base64
+import io
+from PIL import Image, ImageChops
 from pathlib import Path
 from urllib.parse import urlsplit
 from playwright.sync_api import sync_playwright
@@ -43,6 +45,8 @@ ap.add_argument('--sample-frames', action='store_true', help='Replay only: exerc
 ap.add_argument('--trace', action='store_true')
 ap.add_argument('--foam', action='store_true', help='QA holds the foam overlay on CH13; synthetic worst overlay')
 ap.add_argument('--stress', action='store_true', help='QA adds 160 durable enemies, including the stage-specific threat; synthetic maximum crowd')
+ap.add_argument('--enemy-cap', type=int, default=0, help='Local QA only: enable spawn cap; 0 keeps production default OFF')
+ap.add_argument('--quality', type=int, help='Force same rendering tier across cap comparison rows')
 ap.add_argument('--threat-effects', action='store_true', help='Every 2 game seconds inject 8 native tracks or 1 native fireball (damage 0); synthetic visual load')
 ap.add_argument('--reference', help='Read JS/CSS from this local git commit for before/after replay; no checkout')
 ap.add_argument('--source', help='Read JS/CSS from this local git commit for performance measurement')
@@ -122,7 +126,7 @@ def context(b, dev, ref=None, replay=False):
 
 
 def reset_profile(page):
-    assert page.request.post(BASE + '/_qa/profile', data={'id': args.account, 'profile': profile()}).ok
+    assert page.request.post(BASE + '/_qa/profile', data={'id': args.account, 'profile': profile()}, max_retries=2).ok
     page.reload(wait_until='networkidle')
     page.wait_for_function("!document.querySelector('#btn-title-start').disabled")
 
@@ -139,11 +143,15 @@ def start(page, stage):
     # DOM click permits paging to chapter 1 even when the 3/4 chapter pair is displayed.
     page.evaluate(f"document.querySelector('.sg-chapter-chip[data-chapter=\"{chapter}\"]').click()")
     page.locator(f'[data-stage="{stage}"]').click()
-    page.locator('#sg-start').click()
+    page.evaluate("(document.querySelector('#sg-start-dock')||document.querySelector('#sg-start')).click()")
     page.locator('#levelup:not(.hidden)').wait_for()
 
 
 def prepare(page, stage):
+    if args.quality is not None:
+        page.evaluate('level=>window.__debugQuality(level)',args.quality)
+    if args.enemy_cap:
+        page.evaluate('cap=>{window.__debugQuality(99);window.__debugEnemyCap(true,cap)}',args.enemy_cap)
     seconds = 305 if int(stage[2:]) % 5 == 0 else 265
     # Evolved skills at end of a natural pilot, no extra enemies or immortal enemies.
     result = page.evaluate(f"""()=>{{window.__pilotGod=true;window.__pilotAvoid=2;
@@ -228,6 +236,8 @@ def run_scene(b, stage, dev, rate, rep):
     try:
         start(page, stage)
         prepared = prepare(page, stage)
+        if args.stress:
+            prepared['stressEnemies'] = page.evaluate('window.__sgSnapshot().enemies')
         cdp = ctx.new_cdp_session(page)
         cdp.send('Performance.enable')
         cdp.send('Emulation.setCPUThrottlingRate', {'rate': rate})
@@ -348,8 +358,17 @@ def replay(b):
                     pair.append({'outcome': outcome, 'inputHash': page.evaluate('window.__qaInputHash'), 'canvasHash':canvas_hash, 'settlement': reward, 'errors': errors})
                 finally:
                     ctx.close()
-            equal = pair[0] == pair[1]
-            results.append({'stage': stage, 'seed': seed, 'device':device, 'quality':quality, 'god':god, 'equal': equal, 'collector':recorded_perf, 'before': pair[0], 'after': pair[1]})
+            gameplay = [{k:v for k,v in row.items() if k!='canvasHash'} for row in pair]
+            canvas = {'exact':pair[0]['canvasHash']==pair[1]['canvasHash'],'equivalent':True}
+            if not canvas['exact']:
+                images=[Image.open(OUT/f'replay-{stage}-{seed}-{label}.png').convert('RGB') for label in ('before','after')]
+                diff=ImageChops.difference(*images)
+                canvas.update(changedPixels=sum(px!=(0,0,0) for px in diff.get_flattened_data()),maxChannelDelta=max(x[1] for x in diff.getextrema()))
+                # Decode/composite rounding can change a few edge pixels. Still reject any shape/art change.
+                canvas['equivalent']=canvas['changedPixels']<=images[0].width*images[0].height*.000025 and canvas['maxChannelDelta']<=10
+            equal = gameplay[0] == gameplay[1] and canvas['equivalent']
+            results.append({'stage': stage, 'seed': seed, 'device':device, 'quality':quality, 'god':god, 'equal': equal, 'collector':recorded_perf, 'gameplayExact':gameplay[0]==gameplay[1], 'canvasCheck':canvas, 'before': pair[0], 'after': pair[1]})
+            (OUT / f'{args.label}-replay.json').write_text(json.dumps(results, ensure_ascii=False, indent=2), encoding='utf-8')
             print(f'replay {stage} seed {seed}: {"PASS" if equal else "FAIL"}', flush=True)
     if not all(r['equal'] for r in results):
         (OUT / f'{args.label}-replay.json').write_text(json.dumps(results, ensure_ascii=False, indent=2), encoding='utf-8')

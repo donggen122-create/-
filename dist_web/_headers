@@ -1,0 +1,4 @@
+# Images, audio and fonts are versioned from game/src/assets.js.
+# HTML/JS/CSS retain Workers' revalidation defaults.
+/assets/*
+  Cache-Control: public, max-age=31536000, immutable

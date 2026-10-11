@@ -3,6 +3,7 @@ import assert from 'node:assert/strict';
 import { existsSync, readFileSync } from 'node:fs';
 import { GuardianUI, icon, icon2 } from '../game/src/rework-ui.js';
 import { UI2_ICONS, preloadUI2, symbol2, skillAsset } from '../game/src/ui2-art.js';
+import { assetURL } from '../game/src/assets.js';
 import { freshProfile, trainingCost, TRAINING_MAX, SKILLS, PARTS, SUPPORTS, COMBOS } from '../game/src/rework-core.js';
 
 function mode(value, fn) {
@@ -11,8 +12,8 @@ function mode(value, fn) {
   try { fn(); } finally { if (old === undefined) delete globalThis.document; else globalThis.document = old; }
 }
 test('UI 1 keeps legacy SVG markup and does not preload UI 2 art', () => mode(false, () => {
-  assert.equal(icon('coin'), '<img class="sg-icon " src="./assets/seoho_v1/icons/coin.svg" alt="" />');
-  assert.equal(icon2('nav_training','mode_melee'), '<img class="sg-icon " src="./assets/elements_v2/icons/mode_melee.svg" alt="" />');
+  assert.equal(icon('coin'), `<img class="sg-icon " src="${assetURL('./assets/seoho_v1/icons/coin.svg')}" alt="" />`);
+  assert.equal(icon2('nav_training','mode_melee'), `<img class="sg-icon " src="${assetURL('./assets/elements_v2/icons/mode_melee.svg')}" alt="" />`);
   let requests = 0; const old = globalThis.Image;
   globalThis.Image = class { set src(_) { requests++; } };
   try { preloadUI2(); assert.equal(requests, 0); } finally { if (old === undefined) delete globalThis.Image; else globalThis.Image = old; }
@@ -33,12 +34,12 @@ test('UI 1 keeps original skill paths and symbol text; UI 2 has every referenced
   mode(false, () => {
     assert.equal(symbol2('btn_help','?'), '?');
     assert.equal(symbol2('btn_close','×'), '×');
-    for (const name of sprites) assert.equal(skillAsset(name), `./assets/sprites/skills/${name}.png`);
+    for (const name of sprites) assert.equal(skillAsset(name), assetURL(`./assets/sprites/skills/${name}.png`));
   });
   mode(true, () => {
     assert.match(symbol2('btn_check','✓'), /btn_check\.png/);
     for (const name of sprites) {
-      assert.equal(skillAsset(name), `./assets/ui2/skills/${name}.png`);
+      assert.equal(skillAsset(name), assetURL(`./assets/ui2/skills/${name}.png`));
       assert.ok(existsSync(new URL(`../game/assets/ui2/skills/${name}.png`, import.meta.url)));
       assert.equal(manifest[name].source, `game/assets/sprites/skills/${name}.png`);
     }

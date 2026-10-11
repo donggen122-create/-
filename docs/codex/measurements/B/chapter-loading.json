@@ -1,0 +1,86 @@
+{
+  "chapters": [
+    {
+      "chapter": 1,
+      "unreadySprites": [],
+      "missingDraw": [],
+      "outcome": {
+        "runTime": 294.35000000006096,
+        "mode": "result",
+        "hp": 260,
+        "maxHp": 260,
+        "kills": 2036,
+        "litter": 45,
+        "choices": 24,
+        "bossHp": -3,
+        "bossMax": 51300,
+        "bossHurt": 0,
+        "bossDmg": 46686
+      }
+    },
+    {
+      "chapter": 2,
+      "unreadySprites": [],
+      "missingDraw": [],
+      "outcome": {
+        "runTime": 304.38333333338517,
+        "mode": "result",
+        "hp": 442,
+        "maxHp": 442,
+        "kills": 1774,
+        "litter": 25,
+        "choices": 24,
+        "bossHp": -51.919999999998254,
+        "bossMax": 212382,
+        "bossHurt": 0,
+        "bossDmg": 199691
+      }
+    },
+    {
+      "chapter": 3,
+      "unreadySprites": [],
+      "missingDraw": [],
+      "outcome": {
+        "runTime": 360.00000000000125,
+        "mode": "result",
+        "hp": 442,
+        "maxHp": 442,
+        "kills": 1715,
+        "litter": 62,
+        "choices": 24,
+        "bossHp": 168020.86,
+        "bossMax": 318573,
+        "bossHurt": 0,
+        "bossDmg": 93209
+      }
+    },
+    {
+      "chapter": 4,
+      "unreadySprites": [],
+      "missingDraw": [],
+      "outcome": {
+        "runTime": 360.00000000000125,
+        "mode": "result",
+        "hp": 260,
+        "maxHp": 260,
+        "kills": 1942,
+        "litter": 60,
+        "choices": 24,
+        "bossHp": 2306.0400000000336,
+        "bossMax": 368129,
+        "bossHurt": 0,
+        "bossDmg": 277472
+      }
+    }
+  ],
+  "noticeClosePersisted": "1",
+  "newsReopens": true,
+  "failureDoesNotStartRun": true,
+  "retrySucceeded": true,
+  "reuseChapterRequests": [],
+  "intentional404": [
+    "http://localhost:8797/assets/sprites/t1/floor_dirt.png?v=20261011b1"
+  ],
+  "unexpected404": [],
+  "pageErrors": []
+}

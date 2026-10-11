@@ -6,7 +6,19 @@
    켜기: 주소에 ?ui=2 (이 기기에 기억) · 끄기 ?ui=1. html.ui2 아래에서만 적용되어 끄면 예전 화면 그대로.
    rework.css가 !important를 많이 써서 여기서도 필요한 곳은 !important로 덮는다.
    ========================================================================================== */
-@font-face{font-family:"JuaUI";src:url('../assets/ui/jua-ui.woff2') format('woff2');font-display:swap}
+@font-face{font-family:"JuaUI";src:url('../assets/ui/jua-ui.woff2?v=20261011b1') format('woff2');font-display:swap}
+
+/* Keep the map above the briefing. A duplicate action appears only when the normal action is below the nav. */
+html.ui2 #guardian-lobby #sg-start-dock{position:fixed!important;z-index:20;left:16px!important;right:16px!important;transform:none!important;width:calc(100% - 32px)!important;max-width:520px!important;min-height:48px!important;margin:0 auto!important;font-size:24px!important}
+html.ui2 #guardian-lobby .sg-news{flex-shrink:0;width:36px;height:36px;min-height:36px!important;padding:2px!important;border:0!important;background:none!important;box-shadow:none!important}
+html.ui2 #guardian-lobby .sg-news .sg-icon{width:30px;height:30px}
+@media (max-height:850px) and (min-width:761px){
+ html.ui2 #guardian-lobby .sg-stage-map{padding:12px 12px 10px!important}
+ html.ui2 #guardian-lobby .sg-stage>img{width:82px!important;height:82px!important;padding:8px}
+ html.ui2 #guardian-lobby .sg-hero-scene{max-height:260px;min-height:0!important}
+ html.ui2 #guardian-lobby .sg-brief{padding:12px 16px!important}
+ html.ui2 #guardian-lobby .sg-departure{margin-top:14px!important}
+}
 
 html.ui2{
   --ink:#151a3d;
@@ -32,17 +44,17 @@ html.ui2{
 html.ui2 #menu.sg-mode{background:var(--nv-7)!important;font-family:var(--font-body)!important;color:var(--txt)!important}
 html.ui2 #guardian-lobby{position:relative;isolation:isolate;line-height:1.45;color:var(--txt)}
 /* 화면 뒤 장 그림(흐리게) + 가장자리 어둡게. 모험 탭이 아니면 작전본부 남색 */
-html.ui2 #guardian-lobby::before{content:"";position:absolute;inset:-24px;z-index:-2;background:var(--ui2-bg,url('../assets/ui/title_landscape.jpg')) center/cover no-repeat;filter:blur(10px) saturate(1.15) brightness(.62);transform:scale(1.04)}
+html.ui2 #guardian-lobby::before{content:"";position:absolute;inset:-24px;z-index:-2;background:var(--ui2-bg,url('../assets/ui/title_landscape.jpg?v=20261011b1')) center/cover no-repeat;filter:blur(10px) saturate(1.15) brightness(.62);transform:scale(1.04)}
 html.ui2 #guardian-lobby::after{content:"";position:absolute;inset:0;z-index:-1;pointer-events:none;
   background:radial-gradient(120% 90% at 50% 40%,rgba(9,16,48,0) 35%,rgba(9,16,48,.78) 100%),linear-gradient(180deg,rgba(9,16,48,.55),rgba(9,16,48,.15) 30%,rgba(9,16,48,.35) 75%,rgba(9,16,48,.85))}
-html.ui2 #guardian-lobby[data-chapter="1"]{--ui2-bg:url('../assets/sprites/t1/card_clean.jpg')}
-html.ui2 #guardian-lobby[data-chapter="2"]{--ui2-bg:url('../assets/sprites/t2/card_polluted.jpg')}
-html.ui2 #guardian-lobby[data-chapter="3"]{--ui2-bg:url('../assets/sprites/t3/card_polluted.jpg')}
-html.ui2 #guardian-lobby[data-chapter="4"]{--ui2-bg:url('../assets/sprites/t4/card_polluted.jpg')}
-html.ui2 #guardian-lobby[data-cleared="1"][data-chapter="2"]{--ui2-bg:url('../assets/sprites/t2/card_clean.jpg')}
-html.ui2 #guardian-lobby[data-cleared="1"][data-chapter="3"]{--ui2-bg:url('../assets/sprites/t3/card_clean.jpg')}
-html.ui2 #guardian-lobby[data-cleared="1"][data-chapter="4"]{--ui2-bg:url('../assets/sprites/t4/card_clean.jpg')}
-html.ui2 #guardian-lobby:not([data-tab="adventure"])::before{background-image:url('../assets/ui2/bg_hq.jpg');filter:blur(3px) saturate(.9) brightness(.5)}
+html.ui2 #guardian-lobby[data-chapter="1"]{--ui2-bg:url('../assets/ui/title_landscape.jpg?v=20261011b1')}
+html.ui2 #guardian-lobby[data-chapter="2"]{--ui2-bg:url('../assets/sprites/t2/card_polluted.jpg?v=20261011b1')}
+html.ui2 #guardian-lobby[data-chapter="3"]{--ui2-bg:url('../assets/sprites/t3/card_polluted.jpg?v=20261011b1')}
+html.ui2 #guardian-lobby[data-chapter="4"]{--ui2-bg:url('../assets/sprites/t4/card_polluted.jpg?v=20261011b1')}
+html.ui2 #guardian-lobby[data-cleared="1"][data-chapter="2"]{--ui2-bg:url('../assets/sprites/t2/card_clean.jpg?v=20261011b1')}
+html.ui2 #guardian-lobby[data-cleared="1"][data-chapter="3"]{--ui2-bg:url('../assets/sprites/t3/card_clean.jpg?v=20261011b1')}
+html.ui2 #guardian-lobby[data-cleared="1"][data-chapter="4"]{--ui2-bg:url('../assets/sprites/t4/card_clean.jpg?v=20261011b1')}
+html.ui2 #guardian-lobby:not([data-tab="adventure"])::before{background-image:url('../assets/ui2/bg_hq.jpg?v=20261011b1');filter:blur(3px) saturate(.9) brightness(.5)}
 html.ui2 #guardian-lobby :is(h1,h2,h3){font-family:var(--font-ui)!important;font-weight:400!important;letter-spacing:0!important;color:#fff!important;text-shadow:var(--to)!important}
 html.ui2 #guardian-lobby h1{font-size:clamp(26px,3.2vw,38px)!important;line-height:1.15!important}
 html.ui2 #guardian-lobby h2{font-size:24px!important;line-height:1.2!important}
@@ -150,7 +162,7 @@ html.ui2 #guardian-lobby .sg-stage.cleared>img{background:radial-gradient(circle
 html.ui2 #guardian-lobby .sg-stage.selected>img{background:radial-gradient(circle at 50% 38%,#fff3a6,#ffb81e 72%)!important;box-shadow:inset 0 0 0 3px #fff8cc,0 0 0 5px rgba(255,220,74,.55),0 0 28px 6px rgba(255,200,40,.55),0 6px 0 var(--ink)!important;animation:ui2-pulse 1.8s ease-in-out infinite}
 html.ui2 #guardian-lobby .sg-stage:disabled>img{background:radial-gradient(circle,#4a5590,#262d5c 72%)!important;filter:grayscale(1) brightness(.78) contrast(.85)!important;box-shadow:inset 0 0 0 3px rgba(120,130,170,.35),0 6px 0 var(--ink)!important}
 html.ui2 #guardian-lobby .sg-adventure .sg-stage-map .sg-stage:disabled{opacity:1!important}
-html.ui2 #guardian-lobby .sg-adventure .sg-stage-map .sg-stage:disabled .sg-stage-number::before{content:"";display:inline-block;width:18px;height:18px;vertical-align:middle;background:url('../assets/ui2/icons/fn_lock.png') center/contain no-repeat}
+html.ui2 #guardian-lobby .sg-adventure .sg-stage-map .sg-stage:disabled .sg-stage-number::before{content:"";display:inline-block;width:18px;height:18px;vertical-align:middle;background:url('../assets/ui2/icons/fn_lock.png?v=20261011b1') center/contain no-repeat}
 html.ui2 #guardian-lobby .sg-stage:last-child>img{width:126px!important;height:126px!important}
 html.ui2 #guardian-lobby .sg-stage-number{position:absolute!important;top:-10px!important;left:50%!important;transform:translateX(-50%);z-index:2;font-family:var(--font-ui)!important;font-weight:400!important;font-size:16px!important;color:#fff!important;text-shadow:var(--to-s)!important;
   background:linear-gradient(180deg,var(--red-2),var(--red-3))!important;border:3px solid var(--ink)!important;border-radius:10px!important;padding:0 10px!important;box-shadow:0 3px 0 var(--ink)!important;line-height:1.5}
@@ -457,7 +469,7 @@ html.ui2 .sg-gear-empty>.sg-ui2-icon{width:100%!important;height:100%!important;
 html.ui2 :is(#guardian-lobby,.sg-dialog) button>.sg-ui2-icon{object-fit:contain}
 html.ui2 :is(#guardian-lobby,.sg-dialog) .sg-primary .sg-ui2-icon{filter:drop-shadow(0 2px 0 var(--ink))}
 html.ui2 :is(#btn-mute,#btn-sound)>.sg-ui2-icon{width:26px;height:26px;vertical-align:middle;object-fit:contain;pointer-events:none}
-html.ui2 #timer::before{content:"";display:inline-block;width:22px;height:22px;margin-right:4px;vertical-align:middle;background:url('../assets/ui2/icons/fn_time.png') center/contain no-repeat}
+html.ui2 #timer::before{content:"";display:inline-block;width:22px;height:22px;margin-right:4px;vertical-align:middle;background:url('../assets/ui2/icons/fn_time.png?v=20261011b1') center/contain no-repeat}
 html.ui2 .sg-update h2>.sg-ui2-icon{width:28px;height:28px;vertical-align:middle;margin-right:6px}
 html.ui2 #levelup .card .tag>.sg-ui2-icon{width:22px!important;height:22px!important;margin:0 5px 0 0!important;vertical-align:middle;display:inline-block;grid-row:auto;filter:none}
 html.ui2 #result .ui2-stars i>.sg-ui2-icon{width:48px;height:48px;object-fit:contain}

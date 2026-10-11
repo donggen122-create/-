@@ -5,6 +5,8 @@
 param([switch]$Share)
 $ErrorActionPreference = "Stop"
 . "$PSScriptRoot\env.ps1"
+node "$PSScriptRoot\version-assets.mjs"
+if ($LASTEXITCODE -ne 0) { throw "Asset version stamping failed" }
 $g = Join-Path $ProjectRoot "game"; $d = Join-Path $ProjectRoot "dist_web"
 
 # 폴더는 거울처럼 맞춘다(game에서 지운 파일은 dist_web에서도 지워짐)
@@ -13,6 +15,8 @@ foreach ($sub in @("src", "assets", "admin")) {
   if ($LASTEXITCODE -ge 8) { throw "복사 실패: game\$sub → dist_web\$sub (robocopy $LASTEXITCODE)" }
 }
 Copy-Item (Join-Path $g "index.html"), (Join-Path $g "ASSET_CREDITS.md") $d -Force
+node "$PSScriptRoot\version-assets.mjs" --dist
+if ($LASTEXITCODE -ne 0) { throw "Generated asset version stamping failed" }
 Get-ChildItem $d -Filter "zz_*.html" -File -ErrorAction SilentlyContinue | Remove-Item -Force   # 캡처하다 남은 임시 페이지
 
 if ($Share) {
