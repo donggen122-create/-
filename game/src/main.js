@@ -5554,6 +5554,7 @@ async function connectCloud() {
 }
 document.getElementById("btn-retry").addEventListener("click", () => { playSfx("uiClick", 0.4); connectCloud(); });
 sgUI=new GuardianUI(elMenu,{
+  ranking:()=>cloud.ranking(),nickname:async name=>{const r=await cloud.nickname(name);sgApplyServer(r);return r;},title:async title=>{const r=await cloud.title(title);sgApplyServer(r);return r;},
   getState:()=>sgState,news:()=>sgChapter4Notice(sgState.profile,sgStorageKey('ch4-notice-hide')),start:sgStart,action:sgAction,refresh:sgRefresh,abandon:sgAbandon,sfx:playSynth,
   logout:async()=>{await cloud.logout();sgState={profile:null,passes:null,user:null,active:null,error:null};elTitle.classList.remove('hidden');refreshTitle();sgUI.render();}
 });

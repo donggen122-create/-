@@ -40,6 +40,20 @@ export const cloud = {
   },
 
   async request(path, opt = {}) {
+    if(path==='/play/finish'&&opt.body){
+      const b=JSON.parse(opt.body);
+      if(b.kills===undefined&&b.seconds>0){
+        try{
+          const saved=JSON.parse(sessionStorage.getItem('seoho_ranking_run')||'null');
+          const outcome=window.__debugOutcome?.();
+          if(saved?.runId===b.runId)b.kills=saved.kills;
+          else if(outcome&&Math.abs(Math.min(360,outcome.seconds)-b.seconds)<.2){
+            b.kills=outcome.kills;sessionStorage.setItem('seoho_ranking_run',JSON.stringify({runId:b.runId,kills:b.kills}));
+          }
+        }catch{}
+      }
+      opt={...opt,body:JSON.stringify(b)};
+    }
     const headers = { "Content-Type": "application/json", ...(opt.headers || {}) };
     if (this.token) headers.Authorization = `Bearer ${this.token}`;
     const r = await fetch(`${this.base}${path}`, { ...opt, headers, signal: AbortSignal.timeout(10000) });
@@ -48,17 +62,34 @@ export const cloud = {
     // 401 = 토큰 만료, 403 = 선생님이 계정을 잠금 → 접속 정보를 지워 처음 화면에서 다시 로그인하게 한다
     if ((r.status === 401 || r.status === 403) && this.token && path !== "/login") { this.clearSession(); }
     if (!r.ok) { const error=new Error(data?.error || `서버 오류 (${r.status})`);error.status=r.status;error.data=data;throw error; }
+    if(data?.member){this.member=data.member;this.updateDisplayName();}
+    if(path==='/play/finish')setTimeout(()=>{
+      document.getElementById('sg-rank-held')?.remove();
+      if(data?.held){const p=document.createElement('p');p.id='sg-rank-held';p.className='sg-rank-held';p.textContent='기록 확인 중';p.setAttribute('role','status');document.getElementById('result')?.append(p);}
+    },0);
     return data;
   },
+
+  member:null,
+  updateDisplayName(){
+    const paint=()=>{const el=document.getElementById('ts-user-name');if(!el)return;const text=this.loggedIn?`${this.member?.displayName||'수호대원'} 님으로 접속 중`:'';if(el.textContent!==text)el.textContent=text;};
+    if(!this._nameObserver&&document.getElementById('ts-user-name')){this._nameObserver=new MutationObserver(paint);this._nameObserver.observe(document.getElementById('ts-user-name'),{childList:true,subtree:true});}
+    paint();
+  },
+  async ranking(){return this.request('/ranking');},
+  async nickname(nickname){return this.request('/nickname',{method:'POST',body:JSON.stringify({nickname})});},
+  async title(title){return this.request('/title',{method:'POST',body:JSON.stringify({title})});},
 
   async register(id, pw) { return this.session(await this.request("/register", { method: "POST", body: JSON.stringify({ id, pw }) })); },
   async login(id, pw) { return this.session(await this.request("/login", { method: "POST", body: JSON.stringify({ id, pw }) })); },
   session(data) {
+    this.member=null;
     this.token = data.token; this.user = data.id;
     writeLS(TOKEN_KEY, this.token); writeLS(USER_KEY, this.user);
+    this.updateDisplayName();
     return data;
   },
-  clearSession() { this.token = null; this.user = null; writeLS(TOKEN_KEY, null); writeLS(USER_KEY, null); },
+  clearSession() { this.token = null; this.user = null;this.member=null; writeLS(TOKEN_KEY, null); writeLS(USER_KEY, null);this.updateDisplayName(); },
   async logout() { try { if (this.token) await this.request("/logout", { method: "POST" }); } catch (e) { /* 무시 */ } this.clearSession(); },
 
   // 토큰이 살아 있는지 확인(자동 접속)

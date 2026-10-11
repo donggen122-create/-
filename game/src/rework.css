@@ -730,3 +730,28 @@
 @media(max-width:920px){#guardian-lobby .sg-chapter-chip.sg-page-off{display:none!important}}
 .sg-training .sg-panel-title .sg-eyebrow{white-space:nowrap}
 .sg-nav>button>span{white-space:nowrap}   /* 아래 메뉴: '파츠 2'의 숫자가 아랫줄로 떨어지지 않게 */
+/* F: ranking selectors only; existing combat/layout rules remain intact. */
+.sg-rank-button{flex:0 0 auto;padding:8px 10px;border-radius:12px;font-weight:800;font-size:13px;min-height:40px;white-space:nowrap;}
+.sg-rank-dialog{width:640px;max-width:calc(100vw - 24px);max-height:calc(100dvh - 24px);box-sizing:border-box;overflow:auto;padding:20px;}
+.sg-rank-view{color:#263e4b;min-width:0;overflow-wrap:anywhere;}
+.sg-rank-head{display:flex;align-items:center;justify-content:space-between;gap:12px;}
+.sg-rank-head h2{margin:0 0 12px;}
+.sg-rank-tabs{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:5px;margin:12px 0;}
+.sg-rank-tabs button{min-width:0;min-height:44px;padding:7px 4px;font-size:13px;white-space:normal;}
+.sg-rank-tabs button[aria-selected=true],.sg-rank-titles button[aria-pressed=true]{background:#d7eee4;border-color:#479879;}
+.sg-rank-list{padding:0;list-style:none;margin:10px 0;}
+.sg-rank-list li{display:grid;grid-template-columns:42px minmax(0,1fr) 90px;align-items:center;gap:8px;padding:9px 5px;border-bottom:1px solid #dce5e8;}
+.sg-rank-list strong{text-align:right;}
+.sg-rank-list small{display:block;font-size:11px;font-weight:400;margin-top:3px;}
+.sg-rank-me,.sg-rank-hall{background:#eff7f3;border-radius:12px;padding:10px 12px;margin:12px 0;}
+.sg-rank-help{font-size:12px;line-height:1.5;color:#476170;}
+.sg-rank-view form{display:flex;gap:8px;margin:8px 0;}
+.sg-rank-view input{min-width:0;flex:1;padding:10px;width:100px;font:inherit;box-sizing:border-box;}
+.sg-rank-view form button{flex-shrink:0;}
+.sg-rank-titles{display:flex;flex-wrap:wrap;gap:8px;}
+.sg-rank-titles button{font-size:13px;min-height:44px;}
+.sg-rank-progress{width:100%;height:28px;accent-color:#479879;}
+.sg-rank-cheer{font-size:22px;font-weight:800;color:#31785c;}
+.sg-rank-message{font-size:13px;color:#286d53;}
+.sg-rank-held{font-size:14px;text-align:center;color:#d6e7e6;}
+@media(max-width:480px){.sg-rank-dialog{padding:12px;}.sg-rank-tabs{grid-template-columns:repeat(2,minmax(0,1fr));}.sg-rank-list li{grid-template-columns:35px minmax(0,1fr) 77px;gap:5px;font-size:13px;}.sg-rank-button{padding:6px;font-size:12px;}}
