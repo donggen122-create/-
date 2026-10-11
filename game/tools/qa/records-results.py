@@ -11,7 +11,7 @@ OUT=ROOT/'docs/codex/preview';OUT.mkdir(parents=True,exist_ok=True)
 LOG=ROOT/'game/tools/qa/out/A-e2e.json'
 fresh=json.loads(subprocess.check_output(['node','--input-type=module','-e',"import {freshProfile} from './game/src/rework-core.js';console.log(JSON.stringify(freshProfile()));"],cwd=ROOT))
 secrets=dict(line.split('=',1) for line in (ROOT/'game/tools/qa/.dev.vars').read_text().splitlines() if '=' in line)
-results=json.loads(LOG.read_text(encoding='utf-8')) if args.admin_only and LOG.exists() else []
+results=[r for r in json.loads(LOG.read_text(encoding='utf-8')) if not r.get('admin')] if args.admin_only and LOG.exists() else []
 def shot(locator,name):
  file=OUT/name;locator.screenshot(path=str(file));im=Image.open(file);im.save(file,optimize=True)
  if file.stat().st_size>400000:im.convert('RGB').quantize(colors=128).save(file,optimize=True)
