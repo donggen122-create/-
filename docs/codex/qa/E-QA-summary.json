@@ -1,0 +1,153 @@
+{
+  "branch": "codex/2026-10-12-E",
+  "sourceCommit": "54225b6500525e5ddf72d23d358f144813c5b9d4",
+  "qaURL": "http://localhost:8798/?ui=2",
+  "reference": "90926db",
+  "account": "qae",
+  "browser": "153.0.8010.12",
+  "node": {
+    "tests": 197,
+    "pass": 196,
+    "fail": 1,
+    "failure": "main needs story first"
+  },
+  "replay": {
+    "comparisons": 16,
+    "gameplayExact": 16,
+    "settlementExact": 16,
+    "canvasExact": 8,
+    "canvasMeasured": 8
+  },
+  "responsive": {
+    "ui1": {
+      "sizes": [
+        "1280x720",
+        "1280x800",
+        "1024x768",
+        "820x1180",
+        "768x1024",
+        "375x667",
+        "360x640"
+      ],
+      "issues": 0,
+      "url": "http://localhost:8798/?ui=1"
+    },
+    "ui2": {
+      "sizes": [
+        "1280x720",
+        "1280x800",
+        "1024x768",
+        "820x1180",
+        "768x1024",
+        "375x667",
+        "360x640"
+      ],
+      "issues": 0,
+      "url": "http://localhost:8798/?ui=2"
+    }
+  },
+  "portraits": {
+    "boss-angry.png": {
+      "size": [
+        160,
+        160
+      ],
+      "alpha": [
+        0,
+        255
+      ]
+    },
+    "boss-calm.png": {
+      "size": [
+        160,
+        160
+      ],
+      "alpha": [
+        0,
+        255
+      ]
+    },
+    "frog.png": {
+      "size": [
+        160,
+        160
+      ],
+      "alpha": [
+        0,
+        255
+      ]
+    },
+    "hoya.png": {
+      "size": [
+        160,
+        160
+      ],
+      "alpha": [
+        0,
+        255
+      ]
+    },
+    "minji.png": {
+      "size": [
+        160,
+        160
+      ],
+      "alpha": [
+        0,
+        255
+      ]
+    },
+    "otter.png": {
+      "size": [
+        160,
+        160
+      ],
+      "alpha": [
+        0,
+        255
+      ]
+    }
+  },
+  "story": {
+    "exitCode": 0,
+    "realFlows": 3,
+    "layoutLines": 45,
+    "webdriverAutoSkip": true,
+    "captures": [
+      {
+        "file": "docs\\codex\\preview\\E_story_start_1280x720.png",
+        "bytes": 297046
+      },
+      {
+        "file": "docs\\codex\\preview\\E_story_boss_1280x720.png",
+        "bytes": 305620
+      },
+      {
+        "file": "docs\\codex\\preview\\E_story_clear_1280x720.png",
+        "bytes": 320256
+      },
+      {
+        "file": "docs\\codex\\preview\\E_story_start_375x667.png",
+        "bytes": 121623
+      },
+      {
+        "file": "docs\\codex\\preview\\E_story_boss_375x667.png",
+        "bytes": 131040
+      },
+      {
+        "file": "docs\\codex\\preview\\E_story_clear_375x667.png",
+        "bytes": 159360
+      },
+      {
+        "file": "docs\\codex\\preview\\E_story_start_1280x720_ui1.png",
+        "bytes": 260358
+      }
+    ]
+  },
+  "qaServer": {
+    "port": 8798,
+    "pid": 21840,
+    "stopped": true,
+    "portClosed": true
+  }
+}
