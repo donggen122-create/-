@@ -45,7 +45,7 @@ test('선생님 계정: 통계·접속·비번·잠금·선물은 되고, 삭제
   const env = await makeEnv();
   const reg = await call(env, '/register', { body: { id: '학생하나', pw: '1234' } }); assert.equal(reg.status, 200);
   const t = (await call(env, '/admin/login', { body: TEACHER })).token;
-  for (const p of ['stats', 'online', 'passes']) assert.equal((await call(env, '/admin/' + p, { token: t })).status, 200, p);
+  for (const p of ['stats', 'online', 'passes', 'stage-stats?days=30']) assert.equal((await call(env, '/admin/' + p, { token: t })).status, 200, p);
   assert.equal((await call(env, '/admin/lock', { token: t, body: { id: '학생하나', locked: true } })).status, 200);
   assert.equal((await call(env, '/admin/lock', { token: t, body: { id: '학생하나', locked: false } })).status, 200);
   assert.equal((await call(env, '/admin/reset-password', { token: t, body: { id: '학생하나', pw: '5678' } })).status, 200);
