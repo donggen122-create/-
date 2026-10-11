@@ -1,0 +1,82 @@
+[
+  {
+    "file": "game/assets/audio/main-theme.mp3",
+    "bytes": 3753449
+  },
+  {
+    "file": "game/assets/elements_v2/fx/water_impact.png",
+    "bytes": 1581162
+  },
+  {
+    "file": "game/assets/elements_v2/fx/wind_impact.png",
+    "bytes": 1388418
+  },
+  {
+    "file": "game/assets/elements_v2/weapons/baseball.png",
+    "bytes": 1172628
+  },
+  {
+    "file": "game/assets/elements_v2/fx/earth_impact.png",
+    "bytes": 1030172
+  },
+  {
+    "file": "game/assets/elements_v2/fx/fire_impact.png",
+    "bytes": 1005835
+  },
+  {
+    "file": "game/assets/elements_v2/weapons/dodgeball.png",
+    "bytes": 961941
+  },
+  {
+    "file": "game/assets/seoho_v1/pets/cat_idle.png",
+    "bytes": 871290
+  },
+  {
+    "file": "game/assets/seoho_v1/pets/turtle_idle.png",
+    "bytes": 861663
+  },
+  {
+    "file": "game/assets/seoho_v1/pets/deer_idle.png",
+    "bytes": 767606
+  },
+  {
+    "file": "game/assets/seoho_v1/pets/otter_idle.png",
+    "bytes": 766772
+  },
+  {
+    "file": "game/assets/seoho_v1/pets/sparrow_idle.png",
+    "bytes": 717852
+  },
+  {
+    "file": "game/assets/seoho_v1/pets/seal_idle.png",
+    "bytes": 619332
+  },
+  {
+    "file": "game/assets/elements_v2/fx/lightning_impact.png",
+    "bytes": 477332
+  },
+  {
+    "file": "game/assets/sprites/t4/floor_trail.png",
+    "bytes": 347265
+  },
+  {
+    "file": "game/assets/sprites/t4/floor_burnt.png",
+    "bytes": 346788
+  },
+  {
+    "file": "game/assets/sprites/t2/floor_steel.png",
+    "bytes": 333270
+  },
+  {
+    "file": "game/assets/sprites/t3/floor_bank.png",
+    "bytes": 321890
+  },
+  {
+    "file": "game/assets/ui/title_portrait.jpg",
+    "bytes": 320164
+  },
+  {
+    "file": "game/assets/sprites/t1/floor_trash.png",
+    "bytes": 306144
+  }
+]
