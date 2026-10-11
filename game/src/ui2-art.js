@@ -1,3 +1,4 @@
+import { assetURL } from './assets.js';
 // Presentation only. UI 1 neither requests these assets nor changes its markup.
 export const isUI2 = () => typeof document !== 'undefined' && document.documentElement.classList.contains('ui2');
 export const UI2_ICONS = [
@@ -9,15 +10,15 @@ export const UI2_ICONS = [
   'btn_help','btn_close','btn_prev','btn_next','btn_check','btn_reroll',
   'supply_closed','supply_open','hud_weapon_ranged','fn_pause',
 ];
-export const art2 = (name, cls = '') => `<img class="sg-icon sg-ui2-icon ${cls}" src="./assets/ui2/icons/${name}.png" alt="" />`;
+export const art2 = (name, cls = '') => `<img class="sg-icon sg-ui2-icon ${cls}" src="${assetURL(`./assets/ui2/icons/${name}.png`)}" alt="" />`;
 export const symbol2 = (name, legacy) => isUI2() ? art2(name, 'sg-ui2-symbol') : legacy;
-export const skillAsset = name => `./assets/${isUI2() ? 'ui2' : 'sprites'}/skills/${name}.png`;
+export const skillAsset = name => assetURL(`./assets/${isUI2() ? 'ui2' : 'sprites'}/skills/${name}.png`);
 let preloaded = false;
 const images = [];
 export function preloadUI2() {
   if (!isUI2() || preloaded || typeof Image === 'undefined') return;
   preloaded = true;
-  for (const path of [...UI2_ICONS.map(name => `icons/${name}.png`), 'emblem.png', 'bg_hq.jpg']) {
+  for (const path of [...UI2_ICONS.map(name => `icons/${name}.png`), 'emblem.png']) {
     const image = new Image(); image.src = `./assets/ui2/${path}`; images.push(image);
   }
 }

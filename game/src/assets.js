@@ -2,12 +2,26 @@
 // 출처는 ASSET_CREDITS.md 참조. 이미지 크기(16x16 원본)와 게임 내 표시/충돌 크기는 분리되어 있으며,
 // 표시 크기는 content.js의 각 정의(radiusU 등)가, 확대 배율은 아래 DRAW_SCALE이 담당한다.
 
+export const ASSET_VERSION = "20261011b1";
+export function assetURL(src) {
+  if (!src || !/(?:^|\/)assets\//.test(src) || /^(data:|blob:)/.test(src)) return src;
+  const [base, hash] = src.split('#');
+  const url = base.replace(/([?&])v=[^&#]*/g, '$1').replace(/[?&]$/, '');
+  return url + (url.includes('?') ? '&' : '?') + 'v=' + ASSET_VERSION + (hash ? '#' + hash : '');
+}
+// Covers the unchanged effects module too; only asset image URLs are rewritten.
+if (typeof HTMLImageElement !== 'undefined') {
+  const descriptor = Object.getOwnPropertyDescriptor(HTMLImageElement.prototype, 'src');
+  Object.defineProperty(HTMLImageElement.prototype, 'src', {...descriptor,
+    set(value) { descriptor.set.call(this, assetURL(String(value))); }
+  });
+}
 const IMG_BASE = "./assets/sprites/";
 const AUDIO_BASE = "./assets/audio/";
 const UI_BASE = "./assets/ui/";
 
 export const ELEMENT_WEAPONS=Object.fromEntries(['sword','pencil','bat','dodgeball','baseball'].map(id=>{
-  const img=new Image();img.src=`./assets/elements_v2/weapons/${id}.png`;
+  const img=typeof Image==='undefined'?{}:new Image();img.assetSource=`./assets/elements_v2/weapons/${id}.png`;
   // Find transparent padding once so the hand anchor is independent of generator canvas size.
   img.onload=()=>{const c=document.createElement('canvas');c.width=img.naturalWidth;c.height=img.naturalHeight;const g=c.getContext('2d',{willReadFrequently:true});g.drawImage(img,0,0);const data=g.getImageData(0,0,c.width,c.height).data;let l=c.width,t=c.height,r=0,b=0;for(let y=0;y<c.height;y++)for(let x=0;x<c.width;x++)if(data[(y*c.width+x)*4+3]>40){l=Math.min(l,x);r=Math.max(r,x);t=Math.min(t,y);b=Math.max(b,y);}if(r>=l)img.assetBounds={x:l,y:t,w:r-l+1,h:b-t+1};};
   return [id,img];
@@ -205,30 +219,69 @@ export const SFX_FILES = {
   uiClick: AUDIO_BASE + "ui_click.ogg",
 };
 
+export const CHAPTER_SPRITE_KEYS = Object.fromEntries([1,2,3,4].map(n => [n,
+  Object.keys(SPRITE_FILES).filter(k => k.startsWith(`t${n}_`))
+    .concat(n === 3 ? ['t1_fx_trashball'] : [])]));
+export const COMMON_SPRITE_KEYS = Object.keys(SPRITE_FILES).filter(k => !/^t[1-4]_/.test(k));
+// Generated names are checked against the actual effect files in tests.
+export const ELEMENT_SKILL_NAMES = ["earth_bigdirt_1", "earth_bigdirt_2", "earth_boulder_1", "earth_boulder_2", "earth_chain_ring", "earth_crack", "earth_dirt_1", "earth_dirt_2", "earth_dust_1", "earth_dust_2", "earth_dust_trail", "earth_mole_1", "earth_mole_2", "earth_molefield", "earth_stone_1", "earth_stone_2", "fire_boom_1", "fire_boom_2", "fire_boom_3", "fire_bottle", "fire_frocket", "fire_fwork_1", "fire_fwork_2", "fire_fwork_3", "fire_lava_1", "fire_lava_2", "fire_lava_3", "fire_puddle_1", "fire_puddle_2", "fire_puddle_3", "fire_rocket", "fire_volcano", "lightning_bee_1", "lightning_bee_2", "lightning_bigburst", "lightning_bigflash", "lightning_bolt_1", "lightning_bolt_2", "lightning_cloud", "lightning_flash", "lightning_hline", "lightning_hstinger", "lightning_spark", "lightning_stinger", "lightning_storm", "lightning_swarm", "lightning_tbolt_1", "lightning_tbolt_2", "support_S1", "support_S2", "support_S3", "support_S4", "support_S5", "support_S6", "support_S7", "support_S8", "water_balloon", "water_beam", "water_beam_tip", "water_kballoon", "water_ksplash_1", "water_ksplash_2", "water_ksplash_3", "water_rbeam", "water_rbeam_tip", "water_rspray_1", "water_rspray_2", "water_splash_1", "water_splash_2", "water_splash_3", "water_spray_1", "water_spray_2", "wind_boomerang_1", "wind_boomerang_2", "wind_burst", "wind_mboomerang_1", "wind_mboomerang_2", "wind_pull_line", "wind_ring", "wind_shadow", "wind_swirl", "wind_top_1", "wind_top_2", "wind_top_3", "wind_trail", "wind_typhoon_1", "wind_typhoon_2", "wind_typhoon_3"];
+export const UI2_SKILL_NAMES = ["earth_boulder_1", "earth_mole_1", "earth_molefield", "earth_stone_1", "fire_bottle", "fire_frocket", "fire_rocket", "fire_volcano", "lightning_bee_1", "lightning_cloud", "lightning_storm", "lightning_swarm", "support_S1", "support_S2", "support_S3", "support_S4", "support_S5", "support_S6", "support_S7", "support_S8", "water_balloon", "water_beam_tip", "water_kballoon", "water_rbeam_tip", "wind_boomerang_1", "wind_mboomerang_1", "wind_top_1", "wind_typhoon_1"];
 const imageCache = {};
-export function loadImage(src) {
-  if (imageCache[src]) return imageCache[src];
-  const img = new Image();
-  img.src = src;
-  imageCache[src] = img;
+const imagePromises = new WeakMap();
+export function loadImage(src, defer = false) {
+  const key = assetURL(src);
+  if (imageCache[key]) return imageCache[key];
+  const img = typeof Image === 'undefined' ? {} : new Image();
+  img.assetSource = key;
+  imageCache[key] = img;
+  if (!defer && typeof Image !== 'undefined') img.src = key;
   return img;
+}
+export function readyImage(img) {
+  if (img.complete && img.naturalWidth) return img.decode ? img.decode().then(() => img) : Promise.resolve(img);
+  if (imagePromises.has(img)) return imagePromises.get(img);
+  const promise = new Promise((resolve, reject) => {
+    const cleanup = () => { clearTimeout(timer); img.removeEventListener('load', loaded); img.removeEventListener('error', failed); };
+    const loaded = () => { cleanup(); (img.decode ? img.decode() : Promise.resolve()).then(() => resolve(img), reject); };
+    const failed = () => { cleanup(); img.removeAttribute('src'); reject(new Error('그림을 불러오지 못했어요. 다시 출동해 주세요: ' + img.assetSource)); };
+    const timer = setTimeout(failed, 20000);
+    img.addEventListener('load', loaded, {once:true}); img.addEventListener('error', failed, {once:true});
+    if (!img.getAttribute('src')) img.src = img.assetSource;
+  });
+  imagePromises.set(img, promise);
+  promise.catch(() => imagePromises.delete(img));
+  return promise;
 }
 
 export const SPRITES = Object.fromEntries(
-  Object.entries(SPRITE_FILES).map(([k, v]) => [k, loadImage(v)])
+  Object.entries(SPRITE_FILES).map(([k, v]) => [k, loadImage(v,true)])
 );
 export const UI_IMAGES = Object.fromEntries(
-  Object.entries(UI_FILES).map(([k, v]) => [k, loadImage(v)])
+  Object.entries(UI_FILES).map(([k, v]) => [k, loadImage(v,true)])
 );
 // HEROES[id].frames[anim] = HTMLImageElement[]
 export const HEROES = Object.fromEntries(
   Object.entries(HERO_FILES).map(([id, anims]) => [id, {
     ...HERO_INFO[id],
-    frames: Object.fromEntries(Object.entries(anims).map(([a, list]) => [a, list.map(loadImage)])),
+    frames: Object.fromEntries(Object.entries(anims).map(([a, list]) => [a, list.map(src=>loadImage(src,a!=='idle'))])),
   }])
 );
 
 // ---- 색조 틴트 (source-atop 합성) — 같은 원본 스프라이트를 콘텐츠별로 재채색 ----
+export function loadHeroAssets(id) {
+  return Promise.all(Object.values((HEROES[id] || HEROES.hoya).frames).flat().map(readyImage));
+}
+export async function loadBattleAssets(theme, hero, {ui2=false, pet=null, progress=()=>{}} = {}) {
+  const images = [...new Set([
+    ...[...COMMON_SPRITE_KEYS,...(CHAPTER_SPRITE_KEYS[theme] || [])].map(k => SPRITES[k]),
+    ...Object.values((HEROES[hero] || HEROES.hoya).frames).flat(), ...Object.values(UI_IMAGES), ...Object.values(ELEMENT_WEAPONS),
+    ...ELEMENT_SKILL_NAMES.map(n => loadImage(`./assets/sprites/skills/${n}.png`,true)),
+    ...(ui2 ? UI2_SKILL_NAMES.map(n => loadImage(`./assets/ui2/skills/${n}.png`,true)) : []),
+    ...(pet ? [loadImage(`./assets/seoho_v1/pets/${pet}_idle.png`,true)] : [])
+  ])];
+  let done=0; progress(0);
+  await Promise.all(images.map(img => readyImage(img).then(() => progress(Math.round(++done/images.length*100)))));
+}
 const tintCache = {};
 export function tintedSprite(img, colorRgba, key) {
   const cacheKey = key || (img.src + colorRgba);
@@ -286,7 +339,7 @@ function loadBuffer(name) {
   if (pendingLoads[name]) return pendingLoads[name];
   const ctx = ensureCtx();
   if (!ctx) return Promise.resolve(null);
-  pendingLoads[name] = fetch(SFX_FILES[name])
+  pendingLoads[name] = fetch(assetURL(SFX_FILES[name]))
     .then((r) => r.arrayBuffer())
     .then((buf) => ctx.decodeAudioData(buf))
     .then((decoded) => { bufferCache[name] = decoded; return decoded; })
@@ -301,8 +354,10 @@ function primeAudio() {
   if (ctx.state === "suspended") ctx.resume().catch(() => {});
   for (const name in SFX_FILES) loadBuffer(name);
 }
-window.addEventListener("pointerdown", primeAudio, { once: true });
-window.addEventListener("keydown", primeAudio, { once: true });
+if (typeof window !== 'undefined') {
+  window.addEventListener("pointerdown", primeAudio, { once: true });
+  window.addEventListener("keydown", primeAudio, { once: true });
+}
 
 export function playSfx(name, volume = 0.6) {
   if (muted) return;

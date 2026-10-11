@@ -15,11 +15,11 @@ import {
   COLLECTIBLES, SETS, RARITY, parseReward, CURRENCY_ICON, MISSIONS, ACHIEVEMENTS,
   CHALLENGES, RULES, challengeMods, MODES,
 } from "./meta.js";
-import { SPRITES, UI_IMAGES, HEROES, tintedSprite, playSfx, playSynth, isMuted, toggleMuted } from "./assets.js";
+import { SPRITES, UI_IMAGES, HEROES, loadImage, readyImage, loadHeroAssets, loadBattleAssets, ELEMENT_SKILL_NAMES, assetURL, tintedSprite, playSfx, playSynth, isMuted, toggleMuted } from "./assets.js";
 import { music } from "./music.js";
 import { createFrameClock, createRenderQuality, setText, setWidth } from "./runtime-performance.js";
 import { createThemeEffects } from "./theme-effects.js";
-import { setEffectQuality } from "./element-effects.js";
+import { sprite as loadEffectSprite, setEffectQuality } from "./element-effects.js";
 const themeFx = createThemeEffects(SPRITES);
 // 장마다 다른 목표 그림·정화 장치·문구(1장 쓰레기 마을 / 2장 대기오염 공장 지대, 2026-09-24 / 3장 오염된 하천, 2026-09-30)
 const THEME_SKIN = {
@@ -75,7 +75,7 @@ function onMuteToggle() { toggleMuted(); refreshMuteBtn(); music.syncMute(); }
 elMute.addEventListener("click", onMuteToggle);
 elSound?.addEventListener("click", onMuteToggle);
 refreshMuteBtn();
-preloadUI2();
+// UI 2 icons are prepared with the lobby.
 // 메인 테마곡(2026-09-23): 시작 화면·로비에서 반복 재생, 전투 시작하면 멈춤(bgmOff), 전투 뒤 로비로 오면 처음부터(bgmOn(true))
 function bgmOn(restart = false) { if (elSound) elSound.hidden = false; music.play({ restart }); }
 function bgmOff() { if (elSound) elSound.hidden = true; music.stop(); }
@@ -276,7 +276,7 @@ const sgElements=createElementCombat({U,getPlayer:()=>player,getEnemies:()=>enem
 const sgWeapon=createWeaponCombat({U,getPlayer:()=>player,getEnemies:()=>enemies,getBoss:()=>boss,getProfile:()=>sgRunProfile,damage:sgDamage,images:ELEMENT_WEAPONS,sound:()=>playSfx('attack',.12),getMods:sgMods,
   getHostileShots:()=>sgHostileShots,onSpecial:(key)=>sgGearCount(key)});
 const SG_LOCAL=['localhost','127.0.0.1','[::1]'].includes(location.hostname);
-const sgPetImages=Object.fromEntries(Object.keys(R.PETS).map(id=>{const img=new Image();img.src=`./assets/seoho_v1/pets/${id}_idle.png`;return [id,img];}));
+const sgPetImages=Object.fromEntries(Object.keys(R.PETS).map(id=>[id,loadImage(`./assets/seoho_v1/pets/${id}_idle.png`,true)]));
 
 function upLv(id) { return save.upgrades[id] || 0; }
 function upValue(id) { return 0; }
@@ -5528,7 +5528,11 @@ log("게임 로드 완료. WASD/방향키로 이동, 공격은 자동입니다."
 // ---------- Simplified guardians: server profile, daily passes and combat ----------
 function sgApplyServer(data) {
   sgState={...sgState,...data,error:null,user:cloud.user};
-  if(data.profile) save.hero=data.profile.hero;
+  if(data.profile) {
+    save.hero=data.profile.hero;
+    loadHeroAssets(save.hero).catch(()=>{});
+    if(data.profile.activePet) readyImage(sgPetImages[data.profile.activePet]).catch(()=>{});
+  }
   refreshMenuMeta();
 }
 // 받침에 맞는 목적격 조사: 물대포를 · 불꽃병을
@@ -5622,6 +5626,18 @@ async function sgTidyLeftRun(){
   await sgAbandon();
 }
 async function sgStart(stage){
+  // Prepare before /play/start: missing art must not consume a pass/start the clock.
+  const theme = chapterById(stage)?.theme || Math.ceil(Number(stage.slice(2))/5);
+  await loadBattleAssets(theme, sgState.profile?.hero || save.hero, {
+    ui2:isUI2(),pet:sgState.profile?.activePet,progress:percent=>sgUI?.loadingProgress(percent)
+  });
+  // Warm the existing effects module cache, including in fixed-tick replay (no rAF).
+  for(const name of ELEMENT_SKILL_NAMES)loadEffectSprite(name);
+  const waitUntil=performance.now()+20000;
+  while(ELEMENT_SKILL_NAMES.some(name=>!loadEffectSprite(name))) {
+    if(performance.now()>waitUntil)throw new Error('효과 그림 준비가 늦어졌어요. 다시 출동해 주세요.');
+    await new Promise(resolve=>setTimeout(resolve,10));
+  }
   await sgRefresh();
   if(sgState.active)await sgAbandon();   // 다른 창·기기에 남은 도전은 새로 출동할 때 정리(이용권 그대로)
   const r=await sgPost('/play/start',{stage,clientVersion:2,requestId:crypto.randomUUID()});
