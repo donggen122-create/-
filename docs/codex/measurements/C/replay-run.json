@@ -1,0 +1,29 @@
+{
+  "conditions": {
+    "url": "http://localhost:8797/?ui=2",
+    "label": "C-final",
+    "mode": "replay",
+    "devices": "ipad",
+    "stages": "CH05,CH10,CH13,CH15,CH17,CH18,CH19,CH20",
+    "rates": "4",
+    "reps": 1,
+    "warm": 12,
+    "measure": 15,
+    "seed": 10808,
+    "account": "qa",
+    "sample_frames": false,
+    "trace": false,
+    "foam": false,
+    "stress": false,
+    "enemy_cap": 0,
+    "quality": null,
+    "threat_effects": false,
+    "reference": "037d07b",
+    "source": null,
+    "out": "game/tools/qa/out/C-replay"
+  },
+  "commit": "5e87ef96ef7ca942bb06c23a63adc504b995ea29",
+  "browser": "153.0.8010.12",
+  "count": 16,
+  "exitCode": 0
+}

@@ -1,0 +1,374 @@
+{
+  "pc": {
+    "title": {
+      "ms": 6337.2,
+      "requests": 42,
+      "bytes": 3336578,
+      "groups": {
+        "src": {
+          "requests": 25,
+          "bytes": 1307193
+        },
+        "other": {
+          "requests": 3,
+          "bytes": 64429
+        },
+        "assets/ui": {
+          "requests": 8,
+          "bytes": 1548034
+        },
+        "assets/sprites": {
+          "requests": 2,
+          "bytes": 31346
+        },
+        "assets/ui2": {
+          "requests": 4,
+          "bytes": 385576
+        }
+      }
+    },
+    "lobby": {
+      "ms": 1559.0,
+      "requests": 70,
+      "bytes": 6398196,
+      "groups": {
+        "assets/sprites": {
+          "requests": 35,
+          "bytes": 854326
+        },
+        "assets/ui2": {
+          "requests": 18,
+          "bytes": 1448355
+        },
+        "assets/audio": {
+          "requests": 11,
+          "bytes": 3873107
+        },
+        "assets/ui": {
+          "requests": 1,
+          "bytes": 218038
+        },
+        "other": {
+          "requests": 4,
+          "bytes": 3797
+        },
+        "assets/seoho_v1": {
+          "requests": 1,
+          "bytes": 573
+        }
+      }
+    },
+    "battle": {
+      "ms": 1501.0,
+      "requests": 234,
+      "bytes": 10780107,
+      "groups": {
+        "assets/sprites": {
+          "requests": 120,
+          "bytes": 5888507
+        },
+        "assets/ui2": {
+          "requests": 34,
+          "bytes": 1893977
+        },
+        "assets/elements_v2": {
+          "requests": 57,
+          "bytes": 2982313
+        },
+        "assets/seoho_v1": {
+          "requests": 19,
+          "bytes": 12367
+        },
+        "assets/ui": {
+          "requests": 2,
+          "bytes": 859
+        },
+        "other": {
+          "requests": 2,
+          "bytes": 2084
+        }
+      }
+    },
+    "reload": {
+      "ms": 5935.3,
+      "requests": 100,
+      "bytes": 73455,
+      "groups": {
+        "src": {
+          "requests": 25,
+          "bytes": 6872
+        },
+        "assets/sprites": {
+          "requests": 37,
+          "bytes": 0
+        },
+        "assets/ui2": {
+          "requests": 22,
+          "bytes": 0
+        },
+        "other": {
+          "requests": 7,
+          "bytes": 66583
+        },
+        "assets/ui": {
+          "requests": 8,
+          "bytes": 0
+        },
+        "assets/seoho_v1": {
+          "requests": 1,
+          "bytes": 0
+        }
+      }
+    },
+    "errors": [],
+    "failures": []
+  },
+  "phone": {
+    "title": {
+      "ms": 6010.8,
+      "requests": 42,
+      "bytes": 3336578,
+      "groups": {
+        "src": {
+          "requests": 25,
+          "bytes": 1307193
+        },
+        "assets/ui2": {
+          "requests": 4,
+          "bytes": 385576
+        },
+        "assets/sprites": {
+          "requests": 2,
+          "bytes": 31346
+        },
+        "assets/ui": {
+          "requests": 8,
+          "bytes": 1548034
+        },
+        "other": {
+          "requests": 3,
+          "bytes": 64429
+        }
+      }
+    },
+    "lobby": {
+      "ms": 1541.9,
+      "requests": 71,
+      "bytes": 6398645,
+      "groups": {
+        "assets/sprites": {
+          "requests": 35,
+          "bytes": 854326
+        },
+        "assets/audio": {
+          "requests": 11,
+          "bytes": 3873107
+        },
+        "assets/ui2": {
+          "requests": 18,
+          "bytes": 1448355
+        },
+        "other": {
+          "requests": 5,
+          "bytes": 4246
+        },
+        "assets/seoho_v1": {
+          "requests": 1,
+          "bytes": 573
+        },
+        "assets/ui": {
+          "requests": 1,
+          "bytes": 218038
+        }
+      }
+    },
+    "battle": {
+      "ms": 1432.5,
+      "requests": 234,
+      "bytes": 10773440,
+      "groups": {
+        "assets/elements_v2": {
+          "requests": 57,
+          "bytes": 2982313
+        },
+        "assets/ui2": {
+          "requests": 34,
+          "bytes": 1887310
+        },
+        "assets/sprites": {
+          "requests": 120,
+          "bytes": 5888507
+        },
+        "other": {
+          "requests": 2,
+          "bytes": 2084
+        },
+        "assets/seoho_v1": {
+          "requests": 19,
+          "bytes": 12367
+        },
+        "assets/ui": {
+          "requests": 2,
+          "bytes": 859
+        }
+      }
+    },
+    "reload": {
+      "ms": 5910.4,
+      "requests": 100,
+      "bytes": 73454,
+      "groups": {
+        "assets/ui2": {
+          "requests": 22,
+          "bytes": 0
+        },
+        "assets/sprites": {
+          "requests": 37,
+          "bytes": 0
+        },
+        "src": {
+          "requests": 25,
+          "bytes": 6872
+        },
+        "other": {
+          "requests": 7,
+          "bytes": 66582
+        },
+        "assets/seoho_v1": {
+          "requests": 1,
+          "bytes": 0
+        },
+        "assets/ui": {
+          "requests": 8,
+          "bytes": 0
+        }
+      }
+    },
+    "errors": [],
+    "failures": []
+  },
+  "ipad": {
+    "title": {
+      "ms": 6425.9,
+      "requests": 42,
+      "bytes": 3336578,
+      "groups": {
+        "src": {
+          "requests": 25,
+          "bytes": 1307193
+        },
+        "assets/ui": {
+          "requests": 8,
+          "bytes": 1548034
+        },
+        "assets/sprites": {
+          "requests": 2,
+          "bytes": 31346
+        },
+        "assets/ui2": {
+          "requests": 4,
+          "bytes": 385576
+        },
+        "other": {
+          "requests": 3,
+          "bytes": 64429
+        }
+      }
+    },
+    "lobby": {
+      "ms": 2256.1,
+      "requests": 71,
+      "bytes": 6398645,
+      "groups": {
+        "assets/sprites": {
+          "requests": 35,
+          "bytes": 854326
+        },
+        "assets/ui2": {
+          "requests": 18,
+          "bytes": 1448355
+        },
+        "assets/seoho_v1": {
+          "requests": 1,
+          "bytes": 573
+        },
+        "other": {
+          "requests": 5,
+          "bytes": 4246
+        },
+        "assets/audio": {
+          "requests": 11,
+          "bytes": 3873107
+        },
+        "assets/ui": {
+          "requests": 1,
+          "bytes": 218038
+        }
+      }
+    },
+    "battle": {
+      "ms": 3513.1,
+      "requests": 235,
+      "bytes": 10852871,
+      "groups": {
+        "assets/elements_v2": {
+          "requests": 57,
+          "bytes": 2982313
+        },
+        "assets/sprites": {
+          "requests": 120,
+          "bytes": 5888507
+        },
+        "assets/ui2": {
+          "requests": 35,
+          "bytes": 1966741
+        },
+        "assets/seoho_v1": {
+          "requests": 19,
+          "bytes": 12367
+        },
+        "other": {
+          "requests": 2,
+          "bytes": 2084
+        },
+        "assets/ui": {
+          "requests": 2,
+          "bytes": 859
+        }
+      }
+    },
+    "reload": {
+      "ms": 6129.7,
+      "requests": 100,
+      "bytes": 73453,
+      "groups": {
+        "assets/ui": {
+          "requests": 8,
+          "bytes": 0
+        },
+        "assets/sprites": {
+          "requests": 37,
+          "bytes": 0
+        },
+        "other": {
+          "requests": 7,
+          "bytes": 66581
+        },
+        "src": {
+          "requests": 25,
+          "bytes": 6872
+        },
+        "assets/ui2": {
+          "requests": 22,
+          "bytes": 0
+        },
+        "assets/seoho_v1": {
+          "requests": 1,
+          "bytes": 0
+        }
+      }
+    },
+    "errors": [],
+    "failures": []
+  }
+}

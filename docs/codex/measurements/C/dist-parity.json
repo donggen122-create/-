@@ -3,7 +3,7 @@
   "ciCommand": "ci-deploy.mjs sync",
   "comparison": "Buffer.equals on every file, plus exact path sets",
   "files": 600,
-  "bytes": 106332772,
+  "bytes": 106334530,
   "differences": [],
   "manifest": [
     {
@@ -2508,8 +2508,8 @@
     },
     {
       "path": "share/HANDOFF.md",
-      "bytes": 15469,
-      "sha256": "f487732f40c74ff45edcc1ac4fa52f93483a660ef8b6851c4043591b66031abe"
+      "bytes": 15764,
+      "sha256": "6b41a01c279f0f7e218d2eb08f4b94dab9e6f92e32558e363fb9cd5cb9e5297b"
     },
     {
       "path": "share/README.md",
@@ -2518,8 +2518,8 @@
     },
     {
       "path": "share/STATUS.md",
-      "bytes": 194221,
-      "sha256": "d2d7dbe0bb10f41f2da549d888a26b3e18ac5da21702793cf10d10b37cdaa9d6"
+      "bytes": 194994,
+      "sha256": "4630b1c851fa0748d2ca7969ac40c6d969bc1b235d58551d260cbd42cb5ad0b8"
     },
     {
       "path": "share/asset_list.md",
@@ -2993,8 +2993,8 @@
     },
     {
       "path": "src/ui-v2.css",
-      "bytes": 70464,
-      "sha256": "cee00f4d6c4f8e323d837eed68fc0f4772fec936684cb8db552ab9991e0e5bb6"
+      "bytes": 71154,
+      "sha256": "b4c37ef6f03908bb5cc73e990e6354c7635ed93a59b8823399e0971fd5dd9f21"
     },
     {
       "path": "src/ui2-art.js",

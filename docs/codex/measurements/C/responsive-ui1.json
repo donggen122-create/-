@@ -1,0 +1,744 @@
+{
+  "1280x720": {
+    "title": {
+      "hOverflow": [],
+      "clipped": [],
+      "overlap": [],
+      "vOverflow": []
+    },
+    "lobby-adventure": {
+      "hOverflow": [],
+      "clipped": [],
+      "overlap": [],
+      "vOverflow": []
+    },
+    "lobby-training": {
+      "hOverflow": [],
+      "clipped": [],
+      "overlap": [],
+      "vOverflow": []
+    },
+    "lobby-parts": {
+      "hOverflow": [],
+      "clipped": [],
+      "overlap": [],
+      "vOverflow": []
+    },
+    "lobby-gear": {
+      "hOverflow": [],
+      "clipped": [],
+      "overlap": [],
+      "vOverflow": []
+    },
+    "lobby-friends": {
+      "hOverflow": [],
+      "clipped": [],
+      "overlap": [],
+      "vOverflow": []
+    },
+    "lobby-book": {
+      "hOverflow": [],
+      "clipped": [],
+      "overlap": [],
+      "vOverflow": []
+    },
+    "dialog-supply-help": {
+      "hOverflow": [],
+      "clipped": [],
+      "overlap": [],
+      "vOverflow": []
+    },
+    "dialog-gear-help": {
+      "hOverflow": [],
+      "clipped": [],
+      "overlap": [],
+      "vOverflow": []
+    },
+    "dialog-gear-slot": {
+      "hOverflow": [],
+      "clipped": [],
+      "overlap": [],
+      "vOverflow": []
+    },
+    "dialog-gear-bag": {
+      "hOverflow": [],
+      "clipped": [],
+      "overlap": [],
+      "vOverflow": []
+    },
+    "dialog-gear-detail": {
+      "hOverflow": [],
+      "clipped": [],
+      "overlap": [],
+      "vOverflow": []
+    },
+    "dialog-gear-set": {
+      "hOverflow": [],
+      "clipped": [],
+      "overlap": [],
+      "vOverflow": []
+    },
+    "levelup": {
+      "hOverflow": [],
+      "clipped": [],
+      "overlap": [],
+      "vOverflow": []
+    },
+    "battle": {
+      "hOverflow": [],
+      "clipped": [],
+      "overlap": [],
+      "vOverflow": [],
+      "bossBarY": null
+    },
+    "pause": {
+      "hOverflow": [],
+      "clipped": [],
+      "overlap": [],
+      "vOverflow": []
+    },
+    "result": {
+      "hOverflow": [],
+      "clipped": [],
+      "overlap": [],
+      "vOverflow": []
+    },
+    "_pageErrors": []
+  },
+  "1280x800": {
+    "title": {
+      "hOverflow": [],
+      "clipped": [],
+      "overlap": [],
+      "vOverflow": []
+    },
+    "lobby-adventure": {
+      "hOverflow": [],
+      "clipped": [],
+      "overlap": [],
+      "vOverflow": []
+    },
+    "lobby-training": {
+      "hOverflow": [],
+      "clipped": [],
+      "overlap": [],
+      "vOverflow": []
+    },
+    "lobby-parts": {
+      "hOverflow": [],
+      "clipped": [],
+      "overlap": [],
+      "vOverflow": []
+    },
+    "lobby-gear": {
+      "hOverflow": [],
+      "clipped": [],
+      "overlap": [],
+      "vOverflow": []
+    },
+    "lobby-friends": {
+      "hOverflow": [],
+      "clipped": [],
+      "overlap": [],
+      "vOverflow": []
+    },
+    "lobby-book": {
+      "hOverflow": [],
+      "clipped": [],
+      "overlap": [],
+      "vOverflow": []
+    },
+    "dialog-supply-help": {
+      "hOverflow": [],
+      "clipped": [],
+      "overlap": [],
+      "vOverflow": []
+    },
+    "dialog-gear-help": {
+      "hOverflow": [],
+      "clipped": [],
+      "overlap": [],
+      "vOverflow": []
+    },
+    "dialog-gear-slot": {
+      "hOverflow": [],
+      "clipped": [],
+      "overlap": [],
+      "vOverflow": []
+    },
+    "dialog-gear-bag": {
+      "hOverflow": [],
+      "clipped": [],
+      "overlap": [],
+      "vOverflow": []
+    },
+    "dialog-gear-detail": {
+      "hOverflow": [],
+      "clipped": [],
+      "overlap": [],
+      "vOverflow": []
+    },
+    "dialog-gear-set": {
+      "hOverflow": [],
+      "clipped": [],
+      "overlap": [],
+      "vOverflow": []
+    },
+    "levelup": {
+      "hOverflow": [],
+      "clipped": [],
+      "overlap": [],
+      "vOverflow": []
+    },
+    "battle": {
+      "hOverflow": [],
+      "clipped": [],
+      "overlap": [],
+      "vOverflow": [],
+      "bossBarY": null
+    },
+    "pause": {
+      "hOverflow": [],
+      "clipped": [],
+      "overlap": [],
+      "vOverflow": []
+    },
+    "result": {
+      "hOverflow": [],
+      "clipped": [],
+      "overlap": [],
+      "vOverflow": []
+    },
+    "_pageErrors": []
+  },
+  "1024x768": {
+    "title": {
+      "hOverflow": [],
+      "clipped": [],
+      "overlap": [],
+      "vOverflow": []
+    },
+    "lobby-adventure": {
+      "hOverflow": [],
+      "clipped": [],
+      "overlap": [],
+      "vOverflow": []
+    },
+    "lobby-training": {
+      "hOverflow": [],
+      "clipped": [],
+      "overlap": [],
+      "vOverflow": []
+    },
+    "lobby-parts": {
+      "hOverflow": [],
+      "clipped": [],
+      "overlap": [],
+      "vOverflow": []
+    },
+    "lobby-gear": {
+      "hOverflow": [],
+      "clipped": [],
+      "overlap": [],
+      "vOverflow": []
+    },
+    "lobby-friends": {
+      "hOverflow": [],
+      "clipped": [],
+      "overlap": [],
+      "vOverflow": []
+    },
+    "lobby-book": {
+      "hOverflow": [],
+      "clipped": [],
+      "overlap": [],
+      "vOverflow": []
+    },
+    "dialog-supply-help": {
+      "hOverflow": [],
+      "clipped": [],
+      "overlap": [],
+      "vOverflow": []
+    },
+    "dialog-gear-help": {
+      "hOverflow": [],
+      "clipped": [],
+      "overlap": [],
+      "vOverflow": []
+    },
+    "dialog-gear-slot": {
+      "hOverflow": [],
+      "clipped": [],
+      "overlap": [],
+      "vOverflow": []
+    },
+    "dialog-gear-bag": {
+      "hOverflow": [],
+      "clipped": [],
+      "overlap": [],
+      "vOverflow": []
+    },
+    "dialog-gear-detail": {
+      "hOverflow": [],
+      "clipped": [],
+      "overlap": [],
+      "vOverflow": []
+    },
+    "dialog-gear-set": {
+      "hOverflow": [],
+      "clipped": [],
+      "overlap": [],
+      "vOverflow": []
+    },
+    "levelup": {
+      "hOverflow": [],
+      "clipped": [],
+      "overlap": [],
+      "vOverflow": []
+    },
+    "battle": {
+      "hOverflow": [],
+      "clipped": [],
+      "overlap": [],
+      "vOverflow": [],
+      "bossBarY": null
+    },
+    "pause": {
+      "hOverflow": [],
+      "clipped": [],
+      "overlap": [],
+      "vOverflow": []
+    },
+    "result": {
+      "hOverflow": [],
+      "clipped": [],
+      "overlap": [],
+      "vOverflow": []
+    },
+    "_pageErrors": []
+  },
+  "820x1180": {
+    "title": {
+      "hOverflow": [],
+      "clipped": [],
+      "overlap": [],
+      "vOverflow": []
+    },
+    "lobby-adventure": {
+      "hOverflow": [],
+      "clipped": [],
+      "overlap": [],
+      "vOverflow": []
+    },
+    "lobby-training": {
+      "hOverflow": [],
+      "clipped": [],
+      "overlap": [],
+      "vOverflow": []
+    },
+    "lobby-parts": {
+      "hOverflow": [],
+      "clipped": [],
+      "overlap": [],
+      "vOverflow": []
+    },
+    "lobby-gear": {
+      "hOverflow": [],
+      "clipped": [],
+      "overlap": [],
+      "vOverflow": []
+    },
+    "lobby-friends": {
+      "hOverflow": [],
+      "clipped": [],
+      "overlap": [],
+      "vOverflow": []
+    },
+    "lobby-book": {
+      "hOverflow": [],
+      "clipped": [],
+      "overlap": [],
+      "vOverflow": []
+    },
+    "dialog-supply-help": {
+      "hOverflow": [],
+      "clipped": [],
+      "overlap": [],
+      "vOverflow": []
+    },
+    "dialog-gear-help": {
+      "hOverflow": [],
+      "clipped": [],
+      "overlap": [],
+      "vOverflow": []
+    },
+    "dialog-gear-slot": {
+      "hOverflow": [],
+      "clipped": [],
+      "overlap": [],
+      "vOverflow": []
+    },
+    "dialog-gear-bag": {
+      "hOverflow": [],
+      "clipped": [],
+      "overlap": [],
+      "vOverflow": []
+    },
+    "dialog-gear-detail": {
+      "hOverflow": [],
+      "clipped": [],
+      "overlap": [],
+      "vOverflow": []
+    },
+    "dialog-gear-set": {
+      "hOverflow": [],
+      "clipped": [],
+      "overlap": [],
+      "vOverflow": []
+    },
+    "levelup": {
+      "hOverflow": [],
+      "clipped": [],
+      "overlap": [],
+      "vOverflow": []
+    },
+    "battle": {
+      "hOverflow": [],
+      "clipped": [],
+      "overlap": [],
+      "vOverflow": [],
+      "bossBarY": null
+    },
+    "pause": {
+      "hOverflow": [],
+      "clipped": [],
+      "overlap": [],
+      "vOverflow": []
+    },
+    "result": {
+      "hOverflow": [],
+      "clipped": [],
+      "overlap": [],
+      "vOverflow": []
+    },
+    "_pageErrors": []
+  },
+  "768x1024": {
+    "title": {
+      "hOverflow": [],
+      "clipped": [],
+      "overlap": [],
+      "vOverflow": []
+    },
+    "lobby-adventure": {
+      "hOverflow": [],
+      "clipped": [],
+      "overlap": [],
+      "vOverflow": []
+    },
+    "lobby-training": {
+      "hOverflow": [],
+      "clipped": [],
+      "overlap": [],
+      "vOverflow": []
+    },
+    "lobby-parts": {
+      "hOverflow": [],
+      "clipped": [],
+      "overlap": [],
+      "vOverflow": []
+    },
+    "lobby-gear": {
+      "hOverflow": [],
+      "clipped": [],
+      "overlap": [],
+      "vOverflow": []
+    },
+    "lobby-friends": {
+      "hOverflow": [],
+      "clipped": [],
+      "overlap": [],
+      "vOverflow": []
+    },
+    "lobby-book": {
+      "hOverflow": [],
+      "clipped": [],
+      "overlap": [],
+      "vOverflow": []
+    },
+    "dialog-supply-help": {
+      "hOverflow": [],
+      "clipped": [],
+      "overlap": [],
+      "vOverflow": []
+    },
+    "dialog-gear-help": {
+      "hOverflow": [],
+      "clipped": [],
+      "overlap": [],
+      "vOverflow": []
+    },
+    "dialog-gear-slot": {
+      "hOverflow": [],
+      "clipped": [],
+      "overlap": [],
+      "vOverflow": []
+    },
+    "dialog-gear-bag": {
+      "hOverflow": [],
+      "clipped": [],
+      "overlap": [],
+      "vOverflow": []
+    },
+    "dialog-gear-detail": {
+      "hOverflow": [],
+      "clipped": [],
+      "overlap": [],
+      "vOverflow": []
+    },
+    "dialog-gear-set": {
+      "hOverflow": [],
+      "clipped": [],
+      "overlap": [],
+      "vOverflow": []
+    },
+    "levelup": {
+      "hOverflow": [],
+      "clipped": [],
+      "overlap": [],
+      "vOverflow": []
+    },
+    "battle": {
+      "hOverflow": [],
+      "clipped": [],
+      "overlap": [],
+      "vOverflow": [],
+      "bossBarY": null
+    },
+    "pause": {
+      "hOverflow": [],
+      "clipped": [],
+      "overlap": [],
+      "vOverflow": []
+    },
+    "result": {
+      "hOverflow": [],
+      "clipped": [],
+      "overlap": [],
+      "vOverflow": []
+    },
+    "_pageErrors": []
+  },
+  "375x667": {
+    "title": {
+      "hOverflow": [],
+      "clipped": [],
+      "overlap": [],
+      "vOverflow": []
+    },
+    "lobby-adventure": {
+      "hOverflow": [],
+      "clipped": [],
+      "overlap": [],
+      "vOverflow": []
+    },
+    "lobby-training": {
+      "hOverflow": [],
+      "clipped": [],
+      "overlap": [],
+      "vOverflow": []
+    },
+    "lobby-parts": {
+      "hOverflow": [],
+      "clipped": [],
+      "overlap": [],
+      "vOverflow": []
+    },
+    "lobby-gear": {
+      "hOverflow": [],
+      "clipped": [],
+      "overlap": [],
+      "vOverflow": []
+    },
+    "lobby-friends": {
+      "hOverflow": [],
+      "clipped": [],
+      "overlap": [],
+      "vOverflow": []
+    },
+    "lobby-book": {
+      "hOverflow": [],
+      "clipped": [],
+      "overlap": [],
+      "vOverflow": []
+    },
+    "dialog-supply-help": {
+      "hOverflow": [],
+      "clipped": [],
+      "overlap": [],
+      "vOverflow": []
+    },
+    "dialog-gear-help": {
+      "hOverflow": [],
+      "clipped": [],
+      "overlap": [],
+      "vOverflow": []
+    },
+    "dialog-gear-slot": {
+      "hOverflow": [],
+      "clipped": [],
+      "overlap": [],
+      "vOverflow": []
+    },
+    "dialog-gear-bag": {
+      "hOverflow": [],
+      "clipped": [],
+      "overlap": [],
+      "vOverflow": []
+    },
+    "dialog-gear-detail": {
+      "hOverflow": [],
+      "clipped": [],
+      "overlap": [],
+      "vOverflow": []
+    },
+    "dialog-gear-set": {
+      "hOverflow": [],
+      "clipped": [],
+      "overlap": [],
+      "vOverflow": []
+    },
+    "levelup": {
+      "hOverflow": [],
+      "clipped": [],
+      "overlap": [],
+      "vOverflow": []
+    },
+    "battle": {
+      "hOverflow": [],
+      "clipped": [],
+      "overlap": [],
+      "vOverflow": [],
+      "bossBarY": null
+    },
+    "pause": {
+      "hOverflow": [],
+      "clipped": [],
+      "overlap": [],
+      "vOverflow": []
+    },
+    "result": {
+      "hOverflow": [],
+      "clipped": [],
+      "overlap": [],
+      "vOverflow": []
+    },
+    "_pageErrors": []
+  },
+  "360x640": {
+    "title": {
+      "hOverflow": [],
+      "clipped": [],
+      "overlap": [],
+      "vOverflow": []
+    },
+    "lobby-adventure": {
+      "hOverflow": [],
+      "clipped": [],
+      "overlap": [],
+      "vOverflow": []
+    },
+    "lobby-training": {
+      "hOverflow": [],
+      "clipped": [],
+      "overlap": [],
+      "vOverflow": []
+    },
+    "lobby-parts": {
+      "hOverflow": [],
+      "clipped": [],
+      "overlap": [],
+      "vOverflow": []
+    },
+    "lobby-gear": {
+      "hOverflow": [],
+      "clipped": [],
+      "overlap": [],
+      "vOverflow": []
+    },
+    "lobby-friends": {
+      "hOverflow": [],
+      "clipped": [],
+      "overlap": [],
+      "vOverflow": []
+    },
+    "lobby-book": {
+      "hOverflow": [],
+      "clipped": [],
+      "overlap": [],
+      "vOverflow": []
+    },
+    "dialog-supply-help": {
+      "hOverflow": [],
+      "clipped": [],
+      "overlap": [],
+      "vOverflow": []
+    },
+    "dialog-gear-help": {
+      "hOverflow": [],
+      "clipped": [],
+      "overlap": [],
+      "vOverflow": []
+    },
+    "dialog-gear-slot": {
+      "hOverflow": [],
+      "clipped": [],
+      "overlap": [],
+      "vOverflow": []
+    },
+    "dialog-gear-bag": {
+      "hOverflow": [],
+      "clipped": [],
+      "overlap": [],
+      "vOverflow": []
+    },
+    "dialog-gear-detail": {
+      "hOverflow": [],
+      "clipped": [],
+      "overlap": [],
+      "vOverflow": []
+    },
+    "dialog-gear-set": {
+      "hOverflow": [],
+      "clipped": [],
+      "overlap": [],
+      "vOverflow": []
+    },
+    "levelup": {
+      "hOverflow": [],
+      "clipped": [],
+      "overlap": [],
+      "vOverflow": []
+    },
+    "battle": {
+      "hOverflow": [],
+      "clipped": [],
+      "overlap": [],
+      "vOverflow": [],
+      "bossBarY": null
+    },
+    "pause": {
+      "hOverflow": [],
+      "clipped": [],
+      "overlap": [],
+      "vOverflow": []
+    },
+    "result": {
+      "hOverflow": [],
+      "clipped": [],
+      "overlap": [],
+      "vOverflow": []
+    },
+    "_pageErrors": []
+  }
+}
