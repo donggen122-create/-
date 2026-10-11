@@ -38,6 +38,7 @@ ap.add_argument('--reps', type=int, default=1)
 ap.add_argument('--warm', type=float, default=12)
 ap.add_argument('--measure', type=float, default=15)
 ap.add_argument('--seed', type=int, default=10808)
+ap.add_argument('--account', default='qa', help='Separate qa-prefixed account for concurrent isolated audits')
 ap.add_argument('--trace', action='store_true')
 ap.add_argument('--foam', action='store_true', help='QA holds the foam overlay on CH13; synthetic worst overlay')
 ap.add_argument('--stress', action='store_true', help='QA adds 160 durable enemies, including the stage-specific threat; synthetic maximum crowd')
@@ -46,6 +47,8 @@ ap.add_argument('--reference', help='Read JS/CSS from this local git commit for 
 ap.add_argument('--source', help='Read JS/CSS from this local git commit for performance measurement')
 ap.add_argument('--out', default=str(ROOT / 'game/tools/qa/out/tablet'))
 args = ap.parse_args()
+if not __import__('re').fullmatch(r'qa[a-z0-9_]{0,10}',args.account):
+    raise ValueError('--account must be a qa-prefixed test ID, max 12 characters')
 BASE = local_url(args.url)
 OUT = Path(args.out)
 OUT.mkdir(parents=True, exist_ok=True)
@@ -97,7 +100,7 @@ def context(b, dev, ref=None, replay=False):
     page.on('pageerror', lambda e: errors.append(str(e)))
     page.request.post(BASE + '/_qa/reset-attempts')
     page.goto(args.url, wait_until='networkidle')
-    page.locator('#login-id').fill('qa')
+    page.locator('#login-id').fill(args.account)
     page.locator('#login-pw').fill('qa_local_1234')
     page.locator('#btn-register').click()
     page.wait_for_timeout(350)
@@ -112,7 +115,7 @@ def context(b, dev, ref=None, replay=False):
 
 
 def reset_profile(page):
-    assert page.request.post(BASE + '/_qa/profile', data={'id': 'qa', 'profile': profile()}).ok
+    assert page.request.post(BASE + '/_qa/profile', data={'id': args.account, 'profile': profile()}).ok
     page.reload(wait_until='networkidle')
     page.wait_for_function("!document.querySelector('#btn-title-start').disabled")
 

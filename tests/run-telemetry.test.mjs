@@ -24,7 +24,7 @@ test('perf: all fields validated; bounded JSON; no identifying fields',()=>{
   const missing={...perf};delete missing[key];assert.equal(validatePerf(missing),null,key+' missing');
   assert.equal(validatePerf({...perf,[key]:typeof val==='number'?NaN:null}),null,key+' type');
  }
- for(const patch of [{fps:Infinity},{fps:-1},{fps:1001},{p1:100},{long33:1.01},{long50:.03},{q:1.1},{q:9},{qmax:1},{ratio:.49},{dev:'ipad'},{w:800},{h:0},{dpr:1.555},{dpr:11},{sec:361},{v:'x'.repeat(65)},{v:'<script>'},{ua:'identifier'},{v:'x'.repeat(1200)}])assert.equal(validatePerf({...perf,...patch}),null,JSON.stringify(patch));
+ for(const patch of [{fps:Infinity},{fps:-1},{fps:1001},{p1:1001},{long33:1.01},{long50:.03},{q:1.1},{q:9},{qmax:1},{ratio:.49},{dev:'ipad'},{w:800},{h:0},{dpr:1.555},{dpr:11},{sec:361},{v:'x'.repeat(65)},{v:'<script>'},{ua:'identifier'},{v:'x'.repeat(1200)}])assert.equal(validatePerf({...perf,...patch}),null,JSON.stringify(patch));
  for(const x of [null,[],{},'bad'])assert.equal(validatePerf(x),null);
  const cycle={...perf};cycle.self=cycle;assert.equal(validatePerf(cycle),null);
 });
@@ -42,6 +42,11 @@ test('read-only perf summary: average, percentile, ratios, bucket/DPR privacy an
 });
 test('device categories use UA/coarse/size without retaining UA',()=>{
  for(const [input,expected] of [[{ua:'iPad'},'tablet'],[{ua:'Android',w:800},'tablet'],[{ua:'Android Mobile'},'phone'],[{ua:'Macintosh',coarse:true},'tablet'],[{coarse:true,w:375,h:667},'phone'],[{coarse:true,w:1024,h:768},'tablet'],[{},'pc']])assert.equal(perfDevice(input),expected);
+});
+test('99th percentile is not clamped to the average when fewer than 1% frames are extreme outliers',()=>{
+ const hist=new Uint32Array(2049);hist[16]=999;hist[1000]=1;
+ const p=perfSummary({hist,n:1000,ms:999*16+1000,long33:1,long50:1,qmax:0},{w:1280,h:720,dpr:1,dev:'pc',q:0,ratio:1,sec:180});
+ assert.equal(p.p1,62.5);assert.ok(p.p1>p.fps);assert.ok(validatePerf(p));
 });
 test('failure advice is prioritized and leaves profile unchanged',()=>{
  const p=freshProfile(),before=structuredClone(p);

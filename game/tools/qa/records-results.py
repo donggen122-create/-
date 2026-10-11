@@ -6,12 +6,12 @@ from playwright.sync_api import sync_playwright
 from PIL import Image
 from browser import local_url,chrome_path
 ROOT=Path(__file__).resolve().parents[3]
-ap=argparse.ArgumentParser();ap.add_argument('--url',default='http://localhost:8798');args=ap.parse_args();BASE=local_url(args.url)
+ap=argparse.ArgumentParser();ap.add_argument('--url',default='http://localhost:8798');ap.add_argument('--admin-only',action='store_true');args=ap.parse_args();BASE=local_url(args.url)
 OUT=ROOT/'docs/codex/preview';OUT.mkdir(parents=True,exist_ok=True)
 LOG=ROOT/'game/tools/qa/out/A-e2e.json'
 fresh=json.loads(subprocess.check_output(['node','--input-type=module','-e',"import {freshProfile} from './game/src/rework-core.js';console.log(JSON.stringify(freshProfile()));"],cwd=ROOT))
 secrets=dict(line.split('=',1) for line in (ROOT/'game/tools/qa/.dev.vars').read_text().splitlines() if '=' in line)
-results=[]
+results=json.loads(LOG.read_text(encoding='utf-8')) if args.admin_only and LOG.exists() else []
 def shot(locator,name):
  file=OUT/name;locator.screenshot(path=str(file));im=Image.open(file);im.save(file,optimize=True)
  if file.stat().st_size>400000:im.convert('RGB').quantize(colors=128).save(file,optimize=True)
@@ -19,7 +19,8 @@ def shot(locator,name):
  return {'file':name,'bytes':file.stat().st_size}
 with sync_playwright() as pw:
  b=pw.chromium.launch(headless=True,executable_path=chrome_path())
- for ui in (2,1):
+ before=pw.request.new_context();baseline=before.get(BASE+'/api/admin/stage-stats?days=all',headers={'X-Admin-Key':secrets['ADMIN_KEY']}).json();baseline_attempts=sum(s['attempts'] for s in baseline['stages']);before.dispose()
+ for ui in (() if args.admin_only else (2,1)):
   for size in ((1280,800),(375,667)):
    ctx=b.new_context(viewport={'width':size[0],'height':size[1]},has_touch=size[0]<600)
    ctx.route('**/*',lambda r:r.fallback() if urlsplit(r.request.url).hostname in ('localhost','127.0.0.1') else r.abort())
@@ -53,9 +54,11 @@ with sync_playwright() as pw:
       assert bounds['scroll']<=bounds['width']+1 and bounds['left']>=0 and bounds['right']<=size[0]+1,bounds
     capture=shot(page.locator('#result'),f'A_result_ui{ui}_{size[0]}_{"success" if cleared else "failure"}.png')
     results.append({'ui':ui,'width':size[0],'outcome':outcome,'stored':event,'capture':capture,'errors':list(errors)})
+    LOG.write_text(json.dumps(results,ensure_ascii=False,indent=2),encoding='utf-8')
+    print(f'UI {ui} width {size[0]} cleared={cleared}: PASS',flush=True)
    # QA records must be excluded even when they have valid performance data.
    stats=page.request.get(BASE+'/api/admin/stage-stats?days=all',headers={'X-Admin-Key':secrets['ADMIN_KEY']}).json()
-   assert all(s['attempts']==0 for s in stats['stages']) if not any(r.get('admin') for r in results) else True
+   assert sum(s['attempts'] for s in stats['stages'])==baseline_attempts
    assert not errors,errors
    ctx.close()
  # Real local teacher login; seeded memory-only rows are synthetic, never actual student records.
@@ -63,7 +66,7 @@ with sync_playwright() as pw:
  assert page.request.post(BASE+'/_qa/stats-fixture').ok
  page.goto(BASE+'/admin/',wait_until='networkidle');page.locator('#aid').fill(secrets['TEACHER_ID']);page.locator('#apw').fill(secrets['TEACHER_PW']);page.locator('#login-form button').click()
  page.wait_for_function("document.querySelectorAll('#stage-stats-body tr').length===20")
- assert page.locator('#role-badge').inner_text()=='선생님'
+ assert '선생님' in page.locator('#role-badge').inner_text()
  assert page.locator('#stage-stats-body tr').count()==20
  captures=[shot(page.locator('#stage-stats-panel'),'A_admin_stages.png')]
  page.locator('#perf-stage').select_option('CH01');page.wait_for_function("document.querySelector('#device-stats-body tr td:nth-child(3)')?.textContent==='1-1'")

@@ -8,7 +8,7 @@ export function validatePerf(p) {
  const fields = ['v','fps','p1','long33','long50','q','ratio','qmax','dev','w','h','dpr','sec'];
  if (Object.keys(p).length !== fields.length || fields.some(k => !Object.hasOwn(p,k))) return null;
  if (typeof p.v !== 'string' || !/^[A-Za-z0-9_.:-]{1,64}$/.test(p.v) || !['tablet','phone','pc'].includes(p.dev)) return null;
- if (!finite(p.fps,0,1000) || !finite(p.p1,0,1000) || p.p1 > p.fps * 1.02 || !finite(p.long33,0,1) || !finite(p.long50,0,1) || p.long50 > p.long33) return null;
+ if (!finite(p.fps,0,1000) || !finite(p.p1,0,1000) || !finite(p.long33,0,1) || !finite(p.long50,0,1) || p.long50 > p.long33) return null;
  if (!Number.isInteger(p.q) || !finite(p.q,0,8) || !Number.isInteger(p.qmax) || !finite(p.qmax,p.q,8) || !finite(p.ratio,.5,2)) return null;
  if (!SCREEN_BUCKETS.includes(p.w) || !SCREEN_BUCKETS.includes(p.h) || !finite(p.dpr,.1,10) || !finite(p.sec,0,360)) return null;
  if (Math.abs(p.dpr * 100 - Math.round(p.dpr * 100)) > 1e-8) return null;
