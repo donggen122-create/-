@@ -190,7 +190,7 @@ with sync_playwright() as pw:
         page.locator('#btn-continue').click()
         assert not errors, errors
         results.append({'ui': ui, 'size': size, 'captures': captures, 'interactions': 'PASS', 'errors': errors})
-        LOG.write_text(json.dumps(results, ensure_ascii=False, indent=2), encoding='utf-8')
+        LOG.write_text(json.dumps(results, ensure_ascii=False, indent=2), encoding='utf-8', newline='\n')
         print(f'UI {ui} {size}: real triggers, input, skip, seen, reload, reset PASS', flush=True)
         ctx.close()
 
@@ -224,5 +224,5 @@ with sync_playwright() as pw:
     results.append({'webdriverAutoSkip': 'CH11 / CH15 before + successful after-clear PASS; seen flags remain empty'})
     ctx.close()
     browser.close()
-LOG.write_text(json.dumps(results, ensure_ascii=False, indent=2), encoding='utf-8')
+LOG.write_text(json.dumps(results, ensure_ascii=False, indent=2), encoding='utf-8', newline='\n')
 print('Story checks PASS; seven captures <=400 KB', flush=True)
