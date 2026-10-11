@@ -659,3 +659,19 @@ export function applyRunCard(skills,state,card){
  throw new Error('지금 고를 수 없는 카드예요.');
 }
 
+
+// Anonymous presentation diagnostics; not used by simulation, rewards or random rolls.
+export const PERF_VERSION='guardian-2-2026-10-11-A';
+export const PERF_BUCKETS=[320,375,768,1024,1280,1600];
+export function perfDevice({ua='',coarse=false,w=1280,h=720}={}){
+ if(/iPad|Tablet/i.test(ua)||(/Android/i.test(ua)&&!/Mobile/i.test(ua))||(/Macintosh/i.test(ua)&&coarse))return 'tablet';
+ if(/iPhone|Mobile/i.test(ua)||(coarse&&Math.min(w,h)<600))return 'phone';
+ return coarse?'tablet':'pc';
+}
+export function perfSummary(s,{w,h,dpr,dev,q,ratio,sec}){
+ if(!s?.n)return null;
+ const rank=Math.ceil(s.n*.99);let n=0,i=0;
+ for(;i<s.hist.length;i++){n+=s.hist[i];if(n>=rank)break;}
+ const round=x=>Math.round(x*100)/100,bucket=x=>PERF_BUCKETS.filter(b=>b<=x).at(-1)||320;
+ return {v:PERF_VERSION,fps:round(1000*s.n/s.ms),p1:round(Math.min(1000*s.n/s.ms,1000/Math.max(1,i<=1024?i:1024+(i-1024)*64))),long33:round(s.long33/s.n*10000)/10000,long50:round(s.long50/s.n*10000)/10000,q,ratio,qmax:Math.max(q,s.qmax),dev,w:bucket(w),h:bucket(h),dpr:round(dpr),sec:round(Math.min(360,Math.max(0,sec)))};
+}
