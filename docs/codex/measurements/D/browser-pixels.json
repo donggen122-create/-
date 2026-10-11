@@ -1,0 +1,4500 @@
+[
+  {
+    "source": "game/assets/elements_v2/weapons/baseball.png",
+    "native": {
+      "changedPixels": 351332,
+      "maxChannelDelta": 1,
+      "totalPixels": 1572516
+    },
+    "scaled": {
+      "changedPixels": 2306,
+      "maxChannelDelta": 1,
+      "totalPixels": 9216
+    }
+  },
+  {
+    "source": "game/assets/elements_v2/weapons/bat.png",
+    "native": {
+      "changedPixels": 141671,
+      "maxChannelDelta": 1,
+      "totalPixels": 1572516
+    },
+    "scaled": {
+      "changedPixels": 845,
+      "maxChannelDelta": 1,
+      "totalPixels": 9216
+    }
+  },
+  {
+    "source": "game/assets/elements_v2/weapons/dodgeball.png",
+    "native": {
+      "changedPixels": 732148,
+      "maxChannelDelta": 1,
+      "totalPixels": 1572516
+    },
+    "scaled": {
+      "changedPixels": 4290,
+      "maxChannelDelta": 1,
+      "totalPixels": 9216
+    }
+  },
+  {
+    "source": "game/assets/elements_v2/weapons/pencil.png",
+    "native": {
+      "changedPixels": 183539,
+      "maxChannelDelta": 1,
+      "totalPixels": 1572516
+    },
+    "scaled": {
+      "changedPixels": 1063,
+      "maxChannelDelta": 1,
+      "totalPixels": 9216
+    }
+  },
+  {
+    "source": "game/assets/elements_v2/weapons/sword.png",
+    "native": {
+      "changedPixels": 115970,
+      "maxChannelDelta": 1,
+      "totalPixels": 1572516
+    },
+    "scaled": {
+      "changedPixels": 722,
+      "maxChannelDelta": 1,
+      "totalPixels": 9216
+    }
+  },
+  {
+    "source": "game/assets/seoho_v1/pets/cat_idle.png",
+    "native": {
+      "changedPixels": 346153,
+      "maxChannelDelta": 1,
+      "totalPixels": 1572516
+    },
+    "scaled": {
+      "changedPixels": 2072,
+      "maxChannelDelta": 1,
+      "totalPixels": 9216
+    }
+  },
+  {
+    "source": "game/assets/seoho_v1/pets/deer_idle.png",
+    "native": {
+      "changedPixels": 385787,
+      "maxChannelDelta": 1,
+      "totalPixels": 1572516
+    },
+    "scaled": {
+      "changedPixels": 2314,
+      "maxChannelDelta": 1,
+      "totalPixels": 9216
+    }
+  },
+  {
+    "source": "game/assets/seoho_v1/pets/otter_idle.png",
+    "native": {
+      "changedPixels": 451224,
+      "maxChannelDelta": 1,
+      "totalPixels": 1572516
+    },
+    "scaled": {
+      "changedPixels": 2679,
+      "maxChannelDelta": 1,
+      "totalPixels": 9216
+    }
+  },
+  {
+    "source": "game/assets/seoho_v1/pets/seal_idle.png",
+    "native": {
+      "changedPixels": 145936,
+      "maxChannelDelta": 1,
+      "totalPixels": 1572516
+    },
+    "scaled": {
+      "changedPixels": 995,
+      "maxChannelDelta": 1,
+      "totalPixels": 9216
+    }
+  },
+  {
+    "source": "game/assets/seoho_v1/pets/sparrow_idle.png",
+    "native": {
+      "changedPixels": 366566,
+      "maxChannelDelta": 1,
+      "totalPixels": 1572516
+    },
+    "scaled": {
+      "changedPixels": 2223,
+      "maxChannelDelta": 1,
+      "totalPixels": 9216
+    }
+  },
+  {
+    "source": "game/assets/seoho_v1/pets/turtle_idle.png",
+    "native": {
+      "changedPixels": 518211,
+      "maxChannelDelta": 1,
+      "totalPixels": 1572516
+    },
+    "scaled": {
+      "changedPixels": 3152,
+      "maxChannelDelta": 1,
+      "totalPixels": 9216
+    }
+  },
+  {
+    "source": "game/assets/sprites/enemy_elite.png",
+    "native": {
+      "changedPixels": 0,
+      "maxChannelDelta": 0,
+      "totalPixels": 256
+    },
+    "scaled": {
+      "changedPixels": 0,
+      "maxChannelDelta": 0,
+      "totalPixels": 9216
+    }
+  },
+  {
+    "source": "game/assets/sprites/enemy_spider.png",
+    "native": {
+      "changedPixels": 0,
+      "maxChannelDelta": 0,
+      "totalPixels": 256
+    },
+    "scaled": {
+      "changedPixels": 0,
+      "maxChannelDelta": 0,
+      "totalPixels": 9216
+    }
+  },
+  {
+    "source": "game/assets/sprites/enemy_wraith.png",
+    "native": {
+      "changedPixels": 0,
+      "maxChannelDelta": 0,
+      "totalPixels": 256
+    },
+    "scaled": {
+      "changedPixels": 0,
+      "maxChannelDelta": 0,
+      "totalPixels": 9216
+    }
+  },
+  {
+    "source": "game/assets/sprites/gear/gear_hoya_melee_weapon.png",
+    "native": {
+      "changedPixels": 2372,
+      "maxChannelDelta": 1,
+      "totalPixels": 23680
+    },
+    "scaled": {
+      "changedPixels": 1097,
+      "maxChannelDelta": 1,
+      "totalPixels": 9984
+    }
+  },
+  {
+    "source": "game/assets/sprites/heroes/hoya_attack_1.png",
+    "native": {
+      "changedPixels": 1786,
+      "maxChannelDelta": 1,
+      "totalPixels": 18733
+    },
+    "scaled": {
+      "changedPixels": 1140,
+      "maxChannelDelta": 1,
+      "totalPixels": 10080
+    }
+  },
+  {
+    "source": "game/assets/sprites/heroes/hoya_attack_3.png",
+    "native": {
+      "changedPixels": 1930,
+      "maxChannelDelta": 1,
+      "totalPixels": 18733
+    },
+    "scaled": {
+      "changedPixels": 1224,
+      "maxChannelDelta": 1,
+      "totalPixels": 10080
+    }
+  },
+  {
+    "source": "game/assets/sprites/heroes/hoya_down_1.png",
+    "native": {
+      "changedPixels": 1564,
+      "maxChannelDelta": 1,
+      "totalPixels": 18733
+    },
+    "scaled": {
+      "changedPixels": 1035,
+      "maxChannelDelta": 1,
+      "totalPixels": 10080
+    }
+  },
+  {
+    "source": "game/assets/sprites/heroes/hoya_hurt_1.png",
+    "native": {
+      "changedPixels": 743,
+      "maxChannelDelta": 1,
+      "totalPixels": 18733
+    },
+    "scaled": {
+      "changedPixels": 518,
+      "maxChannelDelta": 1,
+      "totalPixels": 10080
+    }
+  },
+  {
+    "source": "game/assets/sprites/heroes/hoya_idle_1.png",
+    "native": {
+      "changedPixels": 743,
+      "maxChannelDelta": 1,
+      "totalPixels": 18733
+    },
+    "scaled": {
+      "changedPixels": 518,
+      "maxChannelDelta": 1,
+      "totalPixels": 10080
+    }
+  },
+  {
+    "source": "game/assets/sprites/heroes/hoya_jump_1.png",
+    "native": {
+      "changedPixels": 846,
+      "maxChannelDelta": 1,
+      "totalPixels": 18733
+    },
+    "scaled": {
+      "changedPixels": 564,
+      "maxChannelDelta": 1,
+      "totalPixels": 10080
+    }
+  },
+  {
+    "source": "game/assets/sprites/heroes/hoya_jump_2.png",
+    "native": {
+      "changedPixels": 805,
+      "maxChannelDelta": 1,
+      "totalPixels": 18733
+    },
+    "scaled": {
+      "changedPixels": 547,
+      "maxChannelDelta": 1,
+      "totalPixels": 10080
+    }
+  },
+  {
+    "source": "game/assets/sprites/heroes/hoya_ranged_1.png",
+    "native": {
+      "changedPixels": 1276,
+      "maxChannelDelta": 1,
+      "totalPixels": 19734
+    },
+    "scaled": {
+      "changedPixels": 687,
+      "maxChannelDelta": 1,
+      "totalPixels": 9504
+    }
+  },
+  {
+    "source": "game/assets/sprites/heroes/hoya_ranged_2.png",
+    "native": {
+      "changedPixels": 1153,
+      "maxChannelDelta": 1,
+      "totalPixels": 19734
+    },
+    "scaled": {
+      "changedPixels": 656,
+      "maxChannelDelta": 1,
+      "totalPixels": 9504
+    }
+  },
+  {
+    "source": "game/assets/sprites/heroes/hoya_ranged_3.png",
+    "native": {
+      "changedPixels": 1192,
+      "maxChannelDelta": 1,
+      "totalPixels": 19734
+    },
+    "scaled": {
+      "changedPixels": 673,
+      "maxChannelDelta": 1,
+      "totalPixels": 9504
+    }
+  },
+  {
+    "source": "game/assets/sprites/heroes/hoya_ranged_4.png",
+    "native": {
+      "changedPixels": 1586,
+      "maxChannelDelta": 1,
+      "totalPixels": 19734
+    },
+    "scaled": {
+      "changedPixels": 898,
+      "maxChannelDelta": 1,
+      "totalPixels": 9504
+    }
+  },
+  {
+    "source": "game/assets/sprites/heroes/hoya_ranged_5.png",
+    "native": {
+      "changedPixels": 1212,
+      "maxChannelDelta": 1,
+      "totalPixels": 19734
+    },
+    "scaled": {
+      "changedPixels": 665,
+      "maxChannelDelta": 1,
+      "totalPixels": 9504
+    }
+  },
+  {
+    "source": "game/assets/sprites/heroes/hoya_ranged_6.png",
+    "native": {
+      "changedPixels": 1162,
+      "maxChannelDelta": 1,
+      "totalPixels": 19734
+    },
+    "scaled": {
+      "changedPixels": 652,
+      "maxChannelDelta": 1,
+      "totalPixels": 9504
+    }
+  },
+  {
+    "source": "game/assets/sprites/heroes/hoya_ranged_down_1.png",
+    "native": {
+      "changedPixels": 1096,
+      "maxChannelDelta": 1,
+      "totalPixels": 19734
+    },
+    "scaled": {
+      "changedPixels": 619,
+      "maxChannelDelta": 1,
+      "totalPixels": 9504
+    }
+  },
+  {
+    "source": "game/assets/sprites/heroes/hoya_ranged_hurt_1.png",
+    "native": {
+      "changedPixels": 1125,
+      "maxChannelDelta": 1,
+      "totalPixels": 19734
+    },
+    "scaled": {
+      "changedPixels": 637,
+      "maxChannelDelta": 1,
+      "totalPixels": 9504
+    }
+  },
+  {
+    "source": "game/assets/sprites/heroes/hoya_ranged_idle_1.png",
+    "native": {
+      "changedPixels": 1036,
+      "maxChannelDelta": 1,
+      "totalPixels": 19734
+    },
+    "scaled": {
+      "changedPixels": 613,
+      "maxChannelDelta": 1,
+      "totalPixels": 9504
+    }
+  },
+  {
+    "source": "game/assets/sprites/heroes/hoya_ranged_jump_1.png",
+    "native": {
+      "changedPixels": 1075,
+      "maxChannelDelta": 1,
+      "totalPixels": 19734
+    },
+    "scaled": {
+      "changedPixels": 632,
+      "maxChannelDelta": 1,
+      "totalPixels": 9504
+    }
+  },
+  {
+    "source": "game/assets/sprites/heroes/hoya_ranged_jump_2.png",
+    "native": {
+      "changedPixels": 1172,
+      "maxChannelDelta": 1,
+      "totalPixels": 19734
+    },
+    "scaled": {
+      "changedPixels": 669,
+      "maxChannelDelta": 1,
+      "totalPixels": 9504
+    }
+  },
+  {
+    "source": "game/assets/sprites/heroes/hoya_ranged_run_1.png",
+    "native": {
+      "changedPixels": 1154,
+      "maxChannelDelta": 1,
+      "totalPixels": 19734
+    },
+    "scaled": {
+      "changedPixels": 680,
+      "maxChannelDelta": 1,
+      "totalPixels": 9504
+    }
+  },
+  {
+    "source": "game/assets/sprites/heroes/hoya_ranged_run_2.png",
+    "native": {
+      "changedPixels": 1185,
+      "maxChannelDelta": 1,
+      "totalPixels": 19734
+    },
+    "scaled": {
+      "changedPixels": 689,
+      "maxChannelDelta": 1,
+      "totalPixels": 9504
+    }
+  },
+  {
+    "source": "game/assets/sprites/heroes/hoya_ranged_run_3.png",
+    "native": {
+      "changedPixels": 1139,
+      "maxChannelDelta": 1,
+      "totalPixels": 19734
+    },
+    "scaled": {
+      "changedPixels": 635,
+      "maxChannelDelta": 1,
+      "totalPixels": 9504
+    }
+  },
+  {
+    "source": "game/assets/sprites/heroes/hoya_ranged_walk_1.png",
+    "native": {
+      "changedPixels": 1072,
+      "maxChannelDelta": 1,
+      "totalPixels": 19734
+    },
+    "scaled": {
+      "changedPixels": 615,
+      "maxChannelDelta": 1,
+      "totalPixels": 9504
+    }
+  },
+  {
+    "source": "game/assets/sprites/heroes/hoya_ranged_walk_2.png",
+    "native": {
+      "changedPixels": 1009,
+      "maxChannelDelta": 1,
+      "totalPixels": 19734
+    },
+    "scaled": {
+      "changedPixels": 567,
+      "maxChannelDelta": 1,
+      "totalPixels": 9504
+    }
+  },
+  {
+    "source": "game/assets/sprites/heroes/hoya_ranged_walk_3.png",
+    "native": {
+      "changedPixels": 1114,
+      "maxChannelDelta": 1,
+      "totalPixels": 19734
+    },
+    "scaled": {
+      "changedPixels": 625,
+      "maxChannelDelta": 1,
+      "totalPixels": 9504
+    }
+  },
+  {
+    "source": "game/assets/sprites/heroes/hoya_run_1.png",
+    "native": {
+      "changedPixels": 863,
+      "maxChannelDelta": 1,
+      "totalPixels": 18733
+    },
+    "scaled": {
+      "changedPixels": 554,
+      "maxChannelDelta": 1,
+      "totalPixels": 10080
+    }
+  },
+  {
+    "source": "game/assets/sprites/heroes/hoya_run_2.png",
+    "native": {
+      "changedPixels": 836,
+      "maxChannelDelta": 1,
+      "totalPixels": 18733
+    },
+    "scaled": {
+      "changedPixels": 563,
+      "maxChannelDelta": 1,
+      "totalPixels": 10080
+    }
+  },
+  {
+    "source": "game/assets/sprites/heroes/hoya_run_3.png",
+    "native": {
+      "changedPixels": 873,
+      "maxChannelDelta": 1,
+      "totalPixels": 18733
+    },
+    "scaled": {
+      "changedPixels": 581,
+      "maxChannelDelta": 1,
+      "totalPixels": 10080
+    }
+  },
+  {
+    "source": "game/assets/sprites/heroes/hoya_walk_1.png",
+    "native": {
+      "changedPixels": 927,
+      "maxChannelDelta": 1,
+      "totalPixels": 18733
+    },
+    "scaled": {
+      "changedPixels": 622,
+      "maxChannelDelta": 1,
+      "totalPixels": 10080
+    }
+  },
+  {
+    "source": "game/assets/sprites/heroes/hoya_walk_2.png",
+    "native": {
+      "changedPixels": 947,
+      "maxChannelDelta": 1,
+      "totalPixels": 18733
+    },
+    "scaled": {
+      "changedPixels": 637,
+      "maxChannelDelta": 1,
+      "totalPixels": 10080
+    }
+  },
+  {
+    "source": "game/assets/sprites/heroes/hoya_walk_3.png",
+    "native": {
+      "changedPixels": 908,
+      "maxChannelDelta": 1,
+      "totalPixels": 18733
+    },
+    "scaled": {
+      "changedPixels": 592,
+      "maxChannelDelta": 1,
+      "totalPixels": 10080
+    }
+  },
+  {
+    "source": "game/assets/sprites/heroes/minji_attack_1.png",
+    "native": {
+      "changedPixels": 1361,
+      "maxChannelDelta": 1,
+      "totalPixels": 18733
+    },
+    "scaled": {
+      "changedPixels": 886,
+      "maxChannelDelta": 1,
+      "totalPixels": 10080
+    }
+  },
+  {
+    "source": "game/assets/sprites/heroes/minji_attack_2.png",
+    "native": {
+      "changedPixels": 1393,
+      "maxChannelDelta": 1,
+      "totalPixels": 18733
+    },
+    "scaled": {
+      "changedPixels": 903,
+      "maxChannelDelta": 1,
+      "totalPixels": 10080
+    }
+  },
+  {
+    "source": "game/assets/sprites/heroes/minji_attack_3.png",
+    "native": {
+      "changedPixels": 1471,
+      "maxChannelDelta": 1,
+      "totalPixels": 18733
+    },
+    "scaled": {
+      "changedPixels": 966,
+      "maxChannelDelta": 1,
+      "totalPixels": 10080
+    }
+  },
+  {
+    "source": "game/assets/sprites/heroes/minji_down_1.png",
+    "native": {
+      "changedPixels": 896,
+      "maxChannelDelta": 1,
+      "totalPixels": 18733
+    },
+    "scaled": {
+      "changedPixels": 577,
+      "maxChannelDelta": 1,
+      "totalPixels": 10080
+    }
+  },
+  {
+    "source": "game/assets/sprites/heroes/minji_hurt_1.png",
+    "native": {
+      "changedPixels": 1018,
+      "maxChannelDelta": 1,
+      "totalPixels": 18733
+    },
+    "scaled": {
+      "changedPixels": 644,
+      "maxChannelDelta": 1,
+      "totalPixels": 10080
+    }
+  },
+  {
+    "source": "game/assets/sprites/heroes/minji_idle_1.png",
+    "native": {
+      "changedPixels": 1033,
+      "maxChannelDelta": 1,
+      "totalPixels": 18733
+    },
+    "scaled": {
+      "changedPixels": 670,
+      "maxChannelDelta": 1,
+      "totalPixels": 10080
+    }
+  },
+  {
+    "source": "game/assets/sprites/heroes/minji_jump_1.png",
+    "native": {
+      "changedPixels": 1049,
+      "maxChannelDelta": 1,
+      "totalPixels": 18733
+    },
+    "scaled": {
+      "changedPixels": 659,
+      "maxChannelDelta": 1,
+      "totalPixels": 10080
+    }
+  },
+  {
+    "source": "game/assets/sprites/heroes/minji_ranged_1.png",
+    "native": {
+      "changedPixels": 1006,
+      "maxChannelDelta": 1,
+      "totalPixels": 18018
+    },
+    "scaled": {
+      "changedPixels": 717,
+      "maxChannelDelta": 1,
+      "totalPixels": 10464
+    }
+  },
+  {
+    "source": "game/assets/sprites/heroes/minji_ranged_2.png",
+    "native": {
+      "changedPixels": 1042,
+      "maxChannelDelta": 1,
+      "totalPixels": 18018
+    },
+    "scaled": {
+      "changedPixels": 750,
+      "maxChannelDelta": 1,
+      "totalPixels": 10464
+    }
+  },
+  {
+    "source": "game/assets/sprites/heroes/minji_ranged_3.png",
+    "native": {
+      "changedPixels": 1019,
+      "maxChannelDelta": 1,
+      "totalPixels": 18018
+    },
+    "scaled": {
+      "changedPixels": 721,
+      "maxChannelDelta": 1,
+      "totalPixels": 10464
+    }
+  },
+  {
+    "source": "game/assets/sprites/heroes/minji_ranged_4.png",
+    "native": {
+      "changedPixels": 1030,
+      "maxChannelDelta": 1,
+      "totalPixels": 18018
+    },
+    "scaled": {
+      "changedPixels": 718,
+      "maxChannelDelta": 1,
+      "totalPixels": 10464
+    }
+  },
+  {
+    "source": "game/assets/sprites/heroes/minji_ranged_5.png",
+    "native": {
+      "changedPixels": 981,
+      "maxChannelDelta": 1,
+      "totalPixels": 18018
+    },
+    "scaled": {
+      "changedPixels": 694,
+      "maxChannelDelta": 1,
+      "totalPixels": 10464
+    }
+  },
+  {
+    "source": "game/assets/sprites/heroes/minji_ranged_6.png",
+    "native": {
+      "changedPixels": 1049,
+      "maxChannelDelta": 1,
+      "totalPixels": 18018
+    },
+    "scaled": {
+      "changedPixels": 741,
+      "maxChannelDelta": 1,
+      "totalPixels": 10464
+    }
+  },
+  {
+    "source": "game/assets/sprites/heroes/minji_ranged_down_1.png",
+    "native": {
+      "changedPixels": 919,
+      "maxChannelDelta": 1,
+      "totalPixels": 18018
+    },
+    "scaled": {
+      "changedPixels": 671,
+      "maxChannelDelta": 1,
+      "totalPixels": 10464
+    }
+  },
+  {
+    "source": "game/assets/sprites/heroes/minji_ranged_hurt_1.png",
+    "native": {
+      "changedPixels": 979,
+      "maxChannelDelta": 1,
+      "totalPixels": 18018
+    },
+    "scaled": {
+      "changedPixels": 705,
+      "maxChannelDelta": 1,
+      "totalPixels": 10464
+    }
+  },
+  {
+    "source": "game/assets/sprites/heroes/minji_ranged_idle_1.png",
+    "native": {
+      "changedPixels": 913,
+      "maxChannelDelta": 1,
+      "totalPixels": 18018
+    },
+    "scaled": {
+      "changedPixels": 667,
+      "maxChannelDelta": 1,
+      "totalPixels": 10464
+    }
+  },
+  {
+    "source": "game/assets/sprites/heroes/minji_run_1.png",
+    "native": {
+      "changedPixels": 858,
+      "maxChannelDelta": 1,
+      "totalPixels": 18733
+    },
+    "scaled": {
+      "changedPixels": 551,
+      "maxChannelDelta": 1,
+      "totalPixels": 10080
+    }
+  },
+  {
+    "source": "game/assets/sprites/heroes/minji_run_2.png",
+    "native": {
+      "changedPixels": 877,
+      "maxChannelDelta": 1,
+      "totalPixels": 18733
+    },
+    "scaled": {
+      "changedPixels": 546,
+      "maxChannelDelta": 1,
+      "totalPixels": 10080
+    }
+  },
+  {
+    "source": "game/assets/sprites/heroes/minji_run_3.png",
+    "native": {
+      "changedPixels": 878,
+      "maxChannelDelta": 1,
+      "totalPixels": 18733
+    },
+    "scaled": {
+      "changedPixels": 567,
+      "maxChannelDelta": 1,
+      "totalPixels": 10080
+    }
+  },
+  {
+    "source": "game/assets/sprites/heroes/minji_walk_1.png",
+    "native": {
+      "changedPixels": 1086,
+      "maxChannelDelta": 1,
+      "totalPixels": 18733
+    },
+    "scaled": {
+      "changedPixels": 671,
+      "maxChannelDelta": 1,
+      "totalPixels": 10080
+    }
+  },
+  {
+    "source": "game/assets/sprites/heroes/minji_walk_2.png",
+    "native": {
+      "changedPixels": 1074,
+      "maxChannelDelta": 1,
+      "totalPixels": 18733
+    },
+    "scaled": {
+      "changedPixels": 654,
+      "maxChannelDelta": 1,
+      "totalPixels": 10080
+    }
+  },
+  {
+    "source": "game/assets/sprites/heroes/minji_walk_3.png",
+    "native": {
+      "changedPixels": 1081,
+      "maxChannelDelta": 1,
+      "totalPixels": 18733
+    },
+    "scaled": {
+      "changedPixels": 670,
+      "maxChannelDelta": 1,
+      "totalPixels": 10080
+    }
+  },
+  {
+    "source": "game/assets/sprites/player_knight.png",
+    "native": {
+      "changedPixels": 0,
+      "maxChannelDelta": 0,
+      "totalPixels": 256
+    },
+    "scaled": {
+      "changedPixels": 0,
+      "maxChannelDelta": 0,
+      "totalPixels": 9216
+    }
+  },
+  {
+    "source": "game/assets/sprites/prop_chest.png",
+    "native": {
+      "changedPixels": 0,
+      "maxChannelDelta": 0,
+      "totalPixels": 256
+    },
+    "scaled": {
+      "changedPixels": 0,
+      "maxChannelDelta": 0,
+      "totalPixels": 9216
+    }
+  },
+  {
+    "source": "game/assets/sprites/prop_rock.png",
+    "native": {
+      "changedPixels": 0,
+      "maxChannelDelta": 0,
+      "totalPixels": 256
+    },
+    "scaled": {
+      "changedPixels": 0,
+      "maxChannelDelta": 0,
+      "totalPixels": 9216
+    }
+  },
+  {
+    "source": "game/assets/sprites/prop_torch.png",
+    "native": {
+      "changedPixels": 0,
+      "maxChannelDelta": 0,
+      "totalPixels": 256
+    },
+    "scaled": {
+      "changedPixels": 0,
+      "maxChannelDelta": 0,
+      "totalPixels": 9216
+    }
+  },
+  {
+    "source": "game/assets/sprites/skills/earth_bigdirt_1.png",
+    "native": {
+      "changedPixels": 1072,
+      "maxChannelDelta": 1,
+      "totalPixels": 46648
+    },
+    "scaled": {
+      "changedPixels": 228,
+      "maxChannelDelta": 1,
+      "totalPixels": 7584
+    }
+  },
+  {
+    "source": "game/assets/sprites/skills/earth_bigdirt_2.png",
+    "native": {
+      "changedPixels": 1580,
+      "maxChannelDelta": 1,
+      "totalPixels": 51200
+    },
+    "scaled": {
+      "changedPixels": 291,
+      "maxChannelDelta": 1,
+      "totalPixels": 7200
+    }
+  },
+  {
+    "source": "game/assets/sprites/skills/earth_boulder_1.png",
+    "native": {
+      "changedPixels": 632,
+      "maxChannelDelta": 1,
+      "totalPixels": 46870
+    },
+    "scaled": {
+      "changedPixels": 165,
+      "maxChannelDelta": 1,
+      "totalPixels": 9120
+    }
+  },
+  {
+    "source": "game/assets/sprites/skills/earth_boulder_2.png",
+    "native": {
+      "changedPixels": 646,
+      "maxChannelDelta": 1,
+      "totalPixels": 46224
+    },
+    "scaled": {
+      "changedPixels": 166,
+      "maxChannelDelta": 1,
+      "totalPixels": 9120
+    }
+  },
+  {
+    "source": "game/assets/sprites/skills/earth_chain_ring.png",
+    "native": {
+      "changedPixels": 2668,
+      "maxChannelDelta": 1,
+      "totalPixels": 48384
+    },
+    "scaled": {
+      "changedPixels": 625,
+      "maxChannelDelta": 1,
+      "totalPixels": 8928
+    }
+  },
+  {
+    "source": "game/assets/sprites/skills/earth_crack.png",
+    "native": {
+      "changedPixels": 1463,
+      "maxChannelDelta": 1,
+      "totalPixels": 51192
+    },
+    "scaled": {
+      "changedPixels": 298,
+      "maxChannelDelta": 1,
+      "totalPixels": 8352
+    }
+  },
+  {
+    "source": "game/assets/sprites/skills/earth_dirt_1.png",
+    "native": {
+      "changedPixels": 961,
+      "maxChannelDelta": 1,
+      "totalPixels": 28888
+    },
+    "scaled": {
+      "changedPixels": 315,
+      "maxChannelDelta": 1,
+      "totalPixels": 7872
+    }
+  },
+  {
+    "source": "game/assets/sprites/skills/earth_dirt_2.png",
+    "native": {
+      "changedPixels": 1586,
+      "maxChannelDelta": 1,
+      "totalPixels": 40587
+    },
+    "scaled": {
+      "changedPixels": 293,
+      "maxChannelDelta": 1,
+      "totalPixels": 6048
+    }
+  },
+  {
+    "source": "game/assets/sprites/skills/earth_dust_1.png",
+    "native": {
+      "changedPixels": 351,
+      "maxChannelDelta": 1,
+      "totalPixels": 11468
+    },
+    "scaled": {
+      "changedPixels": 258,
+      "maxChannelDelta": 1,
+      "totalPixels": 7104
+    }
+  },
+  {
+    "source": "game/assets/sprites/skills/earth_dust_2.png",
+    "native": {
+      "changedPixels": 745,
+      "maxChannelDelta": 1,
+      "totalPixels": 31668
+    },
+    "scaled": {
+      "changedPixels": 241,
+      "maxChannelDelta": 1,
+      "totalPixels": 7104
+    }
+  },
+  {
+    "source": "game/assets/sprites/skills/earth_dust_trail.png",
+    "native": {
+      "changedPixels": 550,
+      "maxChannelDelta": 1,
+      "totalPixels": 23520
+    },
+    "scaled": {
+      "changedPixels": 123,
+      "maxChannelDelta": 1,
+      "totalPixels": 3648
+    }
+  },
+  {
+    "source": "game/assets/sprites/skills/earth_mole_1.png",
+    "native": {
+      "changedPixels": 447,
+      "maxChannelDelta": 1,
+      "totalPixels": 23424
+    },
+    "scaled": {
+      "changedPixels": 132,
+      "maxChannelDelta": 1,
+      "totalPixels": 6432
+    }
+  },
+  {
+    "source": "game/assets/sprites/skills/earth_mole_2.png",
+    "native": {
+      "changedPixels": 406,
+      "maxChannelDelta": 1,
+      "totalPixels": 18666
+    },
+    "scaled": {
+      "changedPixels": 129,
+      "maxChannelDelta": 1,
+      "totalPixels": 5184
+    }
+  },
+  {
+    "source": "game/assets/sprites/skills/earth_molefield.png",
+    "native": {
+      "changedPixels": 680,
+      "maxChannelDelta": 1,
+      "totalPixels": 46060
+    },
+    "scaled": {
+      "changedPixels": 144,
+      "maxChannelDelta": 1,
+      "totalPixels": 7104
+    }
+  },
+  {
+    "source": "game/assets/sprites/skills/earth_stone_1.png",
+    "native": {
+      "changedPixels": 318,
+      "maxChannelDelta": 1,
+      "totalPixels": 13860
+    },
+    "scaled": {
+      "changedPixels": 218,
+      "maxChannelDelta": 1,
+      "totalPixels": 8064
+    }
+  },
+  {
+    "source": "game/assets/sprites/skills/earth_stone_2.png",
+    "native": {
+      "changedPixels": 346,
+      "maxChannelDelta": 1,
+      "totalPixels": 15120
+    },
+    "scaled": {
+      "changedPixels": 275,
+      "maxChannelDelta": 1,
+      "totalPixels": 9696
+    }
+  },
+  {
+    "source": "game/assets/sprites/skills/fire_boom_1.png",
+    "native": {
+      "changedPixels": 1463,
+      "maxChannelDelta": 1,
+      "totalPixels": 34596
+    },
+    "scaled": {
+      "changedPixels": 434,
+      "maxChannelDelta": 1,
+      "totalPixels": 9216
+    }
+  },
+  {
+    "source": "game/assets/sprites/skills/fire_boom_2.png",
+    "native": {
+      "changedPixels": 694,
+      "maxChannelDelta": 1,
+      "totalPixels": 36075
+    },
+    "scaled": {
+      "changedPixels": 214,
+      "maxChannelDelta": 1,
+      "totalPixels": 8736
+    }
+  },
+  {
+    "source": "game/assets/sprites/skills/fire_boom_3.png",
+    "native": {
+      "changedPixels": 1787,
+      "maxChannelDelta": 1,
+      "totalPixels": 38220
+    },
+    "scaled": {
+      "changedPixels": 538,
+      "maxChannelDelta": 1,
+      "totalPixels": 9216
+    }
+  },
+  {
+    "source": "game/assets/sprites/skills/fire_bottle.png",
+    "native": {
+      "changedPixels": 782,
+      "maxChannelDelta": 1,
+      "totalPixels": 28576
+    },
+    "scaled": {
+      "changedPixels": 362,
+      "maxChannelDelta": 1,
+      "totalPixels": 11424
+    }
+  },
+  {
+    "source": "game/assets/sprites/skills/fire_frocket.png",
+    "native": {
+      "changedPixels": 1798,
+      "maxChannelDelta": 1,
+      "totalPixels": 35910
+    },
+    "scaled": {
+      "changedPixels": 502,
+      "maxChannelDelta": 1,
+      "totalPixels": 9120
+    }
+  },
+  {
+    "source": "game/assets/sprites/skills/fire_fwork_2.png",
+    "native": {
+      "changedPixels": 4015,
+      "maxChannelDelta": 1,
+      "totalPixels": 45369
+    },
+    "scaled": {
+      "changedPixels": 991,
+      "maxChannelDelta": 1,
+      "totalPixels": 9216
+    }
+  },
+  {
+    "source": "game/assets/sprites/skills/fire_fwork_3.png",
+    "native": {
+      "changedPixels": 3067,
+      "maxChannelDelta": 1,
+      "totalPixels": 39800
+    },
+    "scaled": {
+      "changedPixels": 881,
+      "maxChannelDelta": 1,
+      "totalPixels": 9216
+    }
+  },
+  {
+    "source": "game/assets/sprites/skills/fire_lava_1.png",
+    "native": {
+      "changedPixels": 516,
+      "maxChannelDelta": 1,
+      "totalPixels": 23690
+    },
+    "scaled": {
+      "changedPixels": 155,
+      "maxChannelDelta": 1,
+      "totalPixels": 5184
+    }
+  },
+  {
+    "source": "game/assets/sprites/skills/fire_lava_2.png",
+    "native": {
+      "changedPixels": 1464,
+      "maxChannelDelta": 1,
+      "totalPixels": 26162
+    },
+    "scaled": {
+      "changedPixels": 334,
+      "maxChannelDelta": 1,
+      "totalPixels": 5664
+    }
+  },
+  {
+    "source": "game/assets/sprites/skills/fire_lava_3.png",
+    "native": {
+      "changedPixels": 1765,
+      "maxChannelDelta": 1,
+      "totalPixels": 32705
+    },
+    "scaled": {
+      "changedPixels": 449,
+      "maxChannelDelta": 1,
+      "totalPixels": 6816
+    }
+  },
+  {
+    "source": "game/assets/sprites/skills/fire_puddle_1.png",
+    "native": {
+      "changedPixels": 563,
+      "maxChannelDelta": 1,
+      "totalPixels": 17056
+    },
+    "scaled": {
+      "changedPixels": 228,
+      "maxChannelDelta": 1,
+      "totalPixels": 5856
+    }
+  },
+  {
+    "source": "game/assets/sprites/skills/fire_puddle_2.png",
+    "native": {
+      "changedPixels": 941,
+      "maxChannelDelta": 1,
+      "totalPixels": 26208
+    },
+    "scaled": {
+      "changedPixels": 294,
+      "maxChannelDelta": 1,
+      "totalPixels": 7296
+    }
+  },
+  {
+    "source": "game/assets/sprites/skills/fire_puddle_3.png",
+    "native": {
+      "changedPixels": 1072,
+      "maxChannelDelta": 1,
+      "totalPixels": 35621
+    },
+    "scaled": {
+      "changedPixels": 354,
+      "maxChannelDelta": 1,
+      "totalPixels": 10272
+    }
+  },
+  {
+    "source": "game/assets/sprites/skills/fire_rocket.png",
+    "native": {
+      "changedPixels": 845,
+      "maxChannelDelta": 1,
+      "totalPixels": 30960
+    },
+    "scaled": {
+      "changedPixels": 264,
+      "maxChannelDelta": 1,
+      "totalPixels": 8832
+    }
+  },
+  {
+    "source": "game/assets/sprites/skills/fire_volcano.png",
+    "native": {
+      "changedPixels": 692,
+      "maxChannelDelta": 1,
+      "totalPixels": 37925
+    },
+    "scaled": {
+      "changedPixels": 223,
+      "maxChannelDelta": 1,
+      "totalPixels": 10176
+    }
+  },
+  {
+    "source": "game/assets/sprites/skills/lightning_bee_1.png",
+    "native": {
+      "changedPixels": 878,
+      "maxChannelDelta": 1,
+      "totalPixels": 22630
+    },
+    "scaled": {
+      "changedPixels": 437,
+      "maxChannelDelta": 1,
+      "totalPixels": 9792
+    }
+  },
+  {
+    "source": "game/assets/sprites/skills/lightning_bee_2.png",
+    "native": {
+      "changedPixels": 695,
+      "maxChannelDelta": 1,
+      "totalPixels": 19591
+    },
+    "scaled": {
+      "changedPixels": 366,
+      "maxChannelDelta": 1,
+      "totalPixels": 8832
+    }
+  },
+  {
+    "source": "game/assets/sprites/skills/lightning_bigburst.png",
+    "native": {
+      "changedPixels": 2366,
+      "maxChannelDelta": 1,
+      "totalPixels": 57112
+    },
+    "scaled": {
+      "changedPixels": 497,
+      "maxChannelDelta": 1,
+      "totalPixels": 9024
+    }
+  },
+  {
+    "source": "game/assets/sprites/skills/lightning_bigflash.png",
+    "native": {
+      "changedPixels": 1117,
+      "maxChannelDelta": 1,
+      "totalPixels": 61752
+    },
+    "scaled": {
+      "changedPixels": 225,
+      "maxChannelDelta": 1,
+      "totalPixels": 9216
+    }
+  },
+  {
+    "source": "game/assets/sprites/skills/lightning_bolt_1.png",
+    "native": {
+      "changedPixels": 600,
+      "maxChannelDelta": 1,
+      "totalPixels": 39376
+    },
+    "scaled": {
+      "changedPixels": 161,
+      "maxChannelDelta": 1,
+      "totalPixels": 10752
+    }
+  },
+  {
+    "source": "game/assets/sprites/skills/lightning_bolt_2.png",
+    "native": {
+      "changedPixels": 640,
+      "maxChannelDelta": 1,
+      "totalPixels": 21728
+    },
+    "scaled": {
+      "changedPixels": 703,
+      "maxChannelDelta": 1,
+      "totalPixels": 21312
+    }
+  },
+  {
+    "source": "game/assets/sprites/skills/lightning_cloud.png",
+    "native": {
+      "changedPixels": 3836,
+      "maxChannelDelta": 1,
+      "totalPixels": 39884
+    },
+    "scaled": {
+      "changedPixels": 668,
+      "maxChannelDelta": 1,
+      "totalPixels": 6624
+    }
+  },
+  {
+    "source": "game/assets/sprites/skills/lightning_flash.png",
+    "native": {
+      "changedPixels": 973,
+      "maxChannelDelta": 1,
+      "totalPixels": 36320
+    },
+    "scaled": {
+      "changedPixels": 223,
+      "maxChannelDelta": 1,
+      "totalPixels": 6528
+    }
+  },
+  {
+    "source": "game/assets/sprites/skills/lightning_hline.png",
+    "native": {
+      "changedPixels": 340,
+      "maxChannelDelta": 1,
+      "totalPixels": 10660
+    },
+    "scaled": {
+      "changedPixels": 95,
+      "maxChannelDelta": 1,
+      "totalPixels": 2304
+    }
+  },
+  {
+    "source": "game/assets/sprites/skills/lightning_hstinger.png",
+    "native": {
+      "changedPixels": 1025,
+      "maxChannelDelta": 1,
+      "totalPixels": 40515
+    },
+    "scaled": {
+      "changedPixels": 249,
+      "maxChannelDelta": 1,
+      "totalPixels": 7776
+    }
+  },
+  {
+    "source": "game/assets/sprites/skills/lightning_spark.png",
+    "native": {
+      "changedPixels": 428,
+      "maxChannelDelta": 1,
+      "totalPixels": 10812
+    },
+    "scaled": {
+      "changedPixels": 438,
+      "maxChannelDelta": 1,
+      "totalPixels": 9600
+    }
+  },
+  {
+    "source": "game/assets/sprites/skills/lightning_stinger.png",
+    "native": {
+      "changedPixels": 738,
+      "maxChannelDelta": 1,
+      "totalPixels": 20440
+    },
+    "scaled": {
+      "changedPixels": 373,
+      "maxChannelDelta": 1,
+      "totalPixels": 8832
+    }
+  },
+  {
+    "source": "game/assets/sprites/skills/lightning_storm.png",
+    "native": {
+      "changedPixels": 625,
+      "maxChannelDelta": 1,
+      "totalPixels": 45567
+    },
+    "scaled": {
+      "changedPixels": 125,
+      "maxChannelDelta": 1,
+      "totalPixels": 6816
+    }
+  },
+  {
+    "source": "game/assets/sprites/skills/lightning_swarm.png",
+    "native": {
+      "changedPixels": 1061,
+      "maxChannelDelta": 1,
+      "totalPixels": 38964
+    },
+    "scaled": {
+      "changedPixels": 311,
+      "maxChannelDelta": 1,
+      "totalPixels": 9888
+    }
+  },
+  {
+    "source": "game/assets/sprites/skills/lightning_tbolt_1.png",
+    "native": {
+      "changedPixels": 1500,
+      "maxChannelDelta": 1,
+      "totalPixels": 51624
+    },
+    "scaled": {
+      "changedPixels": 321,
+      "maxChannelDelta": 1,
+      "totalPixels": 8352
+    }
+  },
+  {
+    "source": "game/assets/sprites/skills/lightning_tbolt_2.png",
+    "native": {
+      "changedPixels": 1299,
+      "maxChannelDelta": 1,
+      "totalPixels": 39964
+    },
+    "scaled": {
+      "changedPixels": 458,
+      "maxChannelDelta": 1,
+      "totalPixels": 9792
+    }
+  },
+  {
+    "source": "game/assets/sprites/skills/support_S1.png",
+    "native": {
+      "changedPixels": 391,
+      "maxChannelDelta": 1,
+      "totalPixels": 57240
+    },
+    "scaled": {
+      "changedPixels": 124,
+      "maxChannelDelta": 1,
+      "totalPixels": 11328
+    }
+  },
+  {
+    "source": "game/assets/sprites/skills/support_S2.png",
+    "native": {
+      "changedPixels": 413,
+      "maxChannelDelta": 1,
+      "totalPixels": 59675
+    },
+    "scaled": {
+      "changedPixels": 69,
+      "maxChannelDelta": 1,
+      "totalPixels": 7296
+    }
+  },
+  {
+    "source": "game/assets/sprites/skills/support_S3.png",
+    "native": {
+      "changedPixels": 578,
+      "maxChannelDelta": 1,
+      "totalPixels": 59983
+    },
+    "scaled": {
+      "changedPixels": 75,
+      "maxChannelDelta": 1,
+      "totalPixels": 6720
+    }
+  },
+  {
+    "source": "game/assets/sprites/skills/support_S4.png",
+    "native": {
+      "changedPixels": 1801,
+      "maxChannelDelta": 1,
+      "totalPixels": 60993
+    },
+    "scaled": {
+      "changedPixels": 344,
+      "maxChannelDelta": 1,
+      "totalPixels": 9504
+    }
+  },
+  {
+    "source": "game/assets/sprites/skills/support_S5.png",
+    "native": {
+      "changedPixels": 480,
+      "maxChannelDelta": 1,
+      "totalPixels": 59584
+    },
+    "scaled": {
+      "changedPixels": 183,
+      "maxChannelDelta": 1,
+      "totalPixels": 14304
+    }
+  },
+  {
+    "source": "game/assets/sprites/skills/support_S6.png",
+    "native": {
+      "changedPixels": 439,
+      "maxChannelDelta": 1,
+      "totalPixels": 53376
+    },
+    "scaled": {
+      "changedPixels": 138,
+      "maxChannelDelta": 1,
+      "totalPixels": 13344
+    }
+  },
+  {
+    "source": "game/assets/sprites/skills/support_S7.png",
+    "native": {
+      "changedPixels": 370,
+      "maxChannelDelta": 1,
+      "totalPixels": 71936
+    },
+    "scaled": {
+      "changedPixels": 55,
+      "maxChannelDelta": 1,
+      "totalPixels": 8352
+    }
+  },
+  {
+    "source": "game/assets/sprites/skills/support_S8.png",
+    "native": {
+      "changedPixels": 315,
+      "maxChannelDelta": 1,
+      "totalPixels": 75898
+    },
+    "scaled": {
+      "changedPixels": 53,
+      "maxChannelDelta": 1,
+      "totalPixels": 9312
+    }
+  },
+  {
+    "source": "game/assets/sprites/skills/water_balloon.png",
+    "native": {
+      "changedPixels": 574,
+      "maxChannelDelta": 1,
+      "totalPixels": 29722
+    },
+    "scaled": {
+      "changedPixels": 273,
+      "maxChannelDelta": 1,
+      "totalPixels": 11520
+    }
+  },
+  {
+    "source": "game/assets/sprites/skills/water_beam.png",
+    "native": {
+      "changedPixels": 598,
+      "maxChannelDelta": 1,
+      "totalPixels": 23320
+    },
+    "scaled": {
+      "changedPixels": 161,
+      "maxChannelDelta": 1,
+      "totalPixels": 4416
+    }
+  },
+  {
+    "source": "game/assets/sprites/skills/water_beam_tip.png",
+    "native": {
+      "changedPixels": 456,
+      "maxChannelDelta": 1,
+      "totalPixels": 17888
+    },
+    "scaled": {
+      "changedPixels": 172,
+      "maxChannelDelta": 1,
+      "totalPixels": 5568
+    }
+  },
+  {
+    "source": "game/assets/sprites/skills/water_kballoon.png",
+    "native": {
+      "changedPixels": 1064,
+      "maxChannelDelta": 1,
+      "totalPixels": 49610
+    },
+    "scaled": {
+      "changedPixels": 303,
+      "maxChannelDelta": 1,
+      "totalPixels": 10848
+    }
+  },
+  {
+    "source": "game/assets/sprites/skills/water_ksplash_1.png",
+    "native": {
+      "changedPixels": 1545,
+      "maxChannelDelta": 1,
+      "totalPixels": 31185
+    },
+    "scaled": {
+      "changedPixels": 352,
+      "maxChannelDelta": 1,
+      "totalPixels": 5376
+    }
+  },
+  {
+    "source": "game/assets/sprites/skills/water_ksplash_2.png",
+    "native": {
+      "changedPixels": 1874,
+      "maxChannelDelta": 1,
+      "totalPixels": 46410
+    },
+    "scaled": {
+      "changedPixels": 400,
+      "maxChannelDelta": 1,
+      "totalPixels": 7584
+    }
+  },
+  {
+    "source": "game/assets/sprites/skills/water_ksplash_3.png",
+    "native": {
+      "changedPixels": 1515,
+      "maxChannelDelta": 1,
+      "totalPixels": 31089
+    },
+    "scaled": {
+      "changedPixels": 318,
+      "maxChannelDelta": 1,
+      "totalPixels": 4896
+    }
+  },
+  {
+    "source": "game/assets/sprites/skills/water_rbeam.png",
+    "native": {
+      "changedPixels": 1705,
+      "maxChannelDelta": 1,
+      "totalPixels": 25875
+    },
+    "scaled": {
+      "changedPixels": 399,
+      "maxChannelDelta": 1,
+      "totalPixels": 4704
+    }
+  },
+  {
+    "source": "game/assets/sprites/skills/water_rbeam_tip.png",
+    "native": {
+      "changedPixels": 1633,
+      "maxChannelDelta": 1,
+      "totalPixels": 20566
+    },
+    "scaled": {
+      "changedPixels": 494,
+      "maxChannelDelta": 1,
+      "totalPixels": 5760
+    }
+  },
+  {
+    "source": "game/assets/sprites/skills/water_rspray_1.png",
+    "native": {
+      "changedPixels": 1128,
+      "maxChannelDelta": 1,
+      "totalPixels": 44290
+    },
+    "scaled": {
+      "changedPixels": 315,
+      "maxChannelDelta": 1,
+      "totalPixels": 8832
+    }
+  },
+  {
+    "source": "game/assets/sprites/skills/water_rspray_2.png",
+    "native": {
+      "changedPixels": 3227,
+      "maxChannelDelta": 1,
+      "totalPixels": 47083
+    },
+    "scaled": {
+      "changedPixels": 645,
+      "maxChannelDelta": 1,
+      "totalPixels": 7584
+    }
+  },
+  {
+    "source": "game/assets/sprites/skills/water_splash_1.png",
+    "native": {
+      "changedPixels": 866,
+      "maxChannelDelta": 1,
+      "totalPixels": 11700
+    },
+    "scaled": {
+      "changedPixels": 376,
+      "maxChannelDelta": 1,
+      "totalPixels": 4800
+    }
+  },
+  {
+    "source": "game/assets/sprites/skills/water_splash_2.png",
+    "native": {
+      "changedPixels": 1027,
+      "maxChannelDelta": 1,
+      "totalPixels": 25152
+    },
+    "scaled": {
+      "changedPixels": 286,
+      "maxChannelDelta": 1,
+      "totalPixels": 6336
+    }
+  },
+  {
+    "source": "game/assets/sprites/skills/water_splash_3.png",
+    "native": {
+      "changedPixels": 585,
+      "maxChannelDelta": 1,
+      "totalPixels": 14756
+    },
+    "scaled": {
+      "changedPixels": 420,
+      "maxChannelDelta": 1,
+      "totalPixels": 8832
+    }
+  },
+  {
+    "source": "game/assets/sprites/skills/water_spray_1.png",
+    "native": {
+      "changedPixels": 652,
+      "maxChannelDelta": 1,
+      "totalPixels": 13338
+    },
+    "scaled": {
+      "changedPixels": 523,
+      "maxChannelDelta": 1,
+      "totalPixels": 9024
+    }
+  },
+  {
+    "source": "game/assets/sprites/skills/wind_boomerang_1.png",
+    "native": {
+      "changedPixels": 1508,
+      "maxChannelDelta": 1,
+      "totalPixels": 26760
+    },
+    "scaled": {
+      "changedPixels": 346,
+      "maxChannelDelta": 1,
+      "totalPixels": 4992
+    }
+  },
+  {
+    "source": "game/assets/sprites/skills/wind_boomerang_2.png",
+    "native": {
+      "changedPixels": 1277,
+      "maxChannelDelta": 1,
+      "totalPixels": 32164
+    },
+    "scaled": {
+      "changedPixels": 437,
+      "maxChannelDelta": 1,
+      "totalPixels": 9984
+    }
+  },
+  {
+    "source": "game/assets/sprites/skills/wind_burst.png",
+    "native": {
+      "changedPixels": 1630,
+      "maxChannelDelta": 1,
+      "totalPixels": 24335
+    },
+    "scaled": {
+      "changedPixels": 612,
+      "maxChannelDelta": 1,
+      "totalPixels": 9120
+    }
+  },
+  {
+    "source": "game/assets/sprites/skills/wind_mboomerang_1.png",
+    "native": {
+      "changedPixels": 3061,
+      "maxChannelDelta": 1,
+      "totalPixels": 57584
+    },
+    "scaled": {
+      "changedPixels": 518,
+      "maxChannelDelta": 1,
+      "totalPixels": 8928
+    }
+  },
+  {
+    "source": "game/assets/sprites/skills/wind_mboomerang_2.png",
+    "native": {
+      "changedPixels": 2376,
+      "maxChannelDelta": 1,
+      "totalPixels": 47580
+    },
+    "scaled": {
+      "changedPixels": 648,
+      "maxChannelDelta": 1,
+      "totalPixels": 11520
+    }
+  },
+  {
+    "source": "game/assets/sprites/skills/wind_pull_line.png",
+    "native": {
+      "changedPixels": 818,
+      "maxChannelDelta": 1,
+      "totalPixels": 41418
+    },
+    "scaled": {
+      "changedPixels": 265,
+      "maxChannelDelta": 1,
+      "totalPixels": 12192
+    }
+  },
+  {
+    "source": "game/assets/sprites/skills/wind_ring.png",
+    "native": {
+      "changedPixels": 2063,
+      "maxChannelDelta": 1,
+      "totalPixels": 50850
+    },
+    "scaled": {
+      "changedPixels": 488,
+      "maxChannelDelta": 1,
+      "totalPixels": 9216
+    }
+  },
+  {
+    "source": "game/assets/sprites/skills/wind_shadow.png",
+    "native": {
+      "changedPixels": 6541,
+      "maxChannelDelta": 1,
+      "totalPixels": 10582
+    },
+    "scaled": {
+      "changedPixels": 2985,
+      "maxChannelDelta": 1,
+      "totalPixels": 4800
+    }
+  },
+  {
+    "source": "game/assets/sprites/skills/wind_swirl.png",
+    "native": {
+      "changedPixels": 703,
+      "maxChannelDelta": 1,
+      "totalPixels": 15875
+    },
+    "scaled": {
+      "changedPixels": 500,
+      "maxChannelDelta": 1,
+      "totalPixels": 9024
+    }
+  },
+  {
+    "source": "game/assets/sprites/skills/wind_top_1.png",
+    "native": {
+      "changedPixels": 3183,
+      "maxChannelDelta": 1,
+      "totalPixels": 26406
+    },
+    "scaled": {
+      "changedPixels": 1218,
+      "maxChannelDelta": 1,
+      "totalPixels": 9312
+    }
+  },
+  {
+    "source": "game/assets/sprites/skills/wind_top_2.png",
+    "native": {
+      "changedPixels": 2767,
+      "maxChannelDelta": 1,
+      "totalPixels": 26240
+    },
+    "scaled": {
+      "changedPixels": 1018,
+      "maxChannelDelta": 1,
+      "totalPixels": 9024
+    }
+  },
+  {
+    "source": "game/assets/sprites/skills/wind_top_3.png",
+    "native": {
+      "changedPixels": 3355,
+      "maxChannelDelta": 1,
+      "totalPixels": 27873
+    },
+    "scaled": {
+      "changedPixels": 1156,
+      "maxChannelDelta": 1,
+      "totalPixels": 8832
+    }
+  },
+  {
+    "source": "game/assets/sprites/skills/wind_trail.png",
+    "native": {
+      "changedPixels": 813,
+      "maxChannelDelta": 1,
+      "totalPixels": 43357
+    },
+    "scaled": {
+      "changedPixels": 179,
+      "maxChannelDelta": 1,
+      "totalPixels": 7776
+    }
+  },
+  {
+    "source": "game/assets/sprites/skills/wind_typhoon_1.png",
+    "native": {
+      "changedPixels": 5632,
+      "maxChannelDelta": 1,
+      "totalPixels": 46765
+    },
+    "scaled": {
+      "changedPixels": 1574,
+      "maxChannelDelta": 1,
+      "totalPixels": 10848
+    }
+  },
+  {
+    "source": "game/assets/sprites/skills/wind_typhoon_2.png",
+    "native": {
+      "changedPixels": 5719,
+      "maxChannelDelta": 1,
+      "totalPixels": 46530
+    },
+    "scaled": {
+      "changedPixels": 1625,
+      "maxChannelDelta": 1,
+      "totalPixels": 10944
+    }
+  },
+  {
+    "source": "game/assets/sprites/skills/wind_typhoon_3.png",
+    "native": {
+      "changedPixels": 5749,
+      "maxChannelDelta": 1,
+      "totalPixels": 47000
+    },
+    "scaled": {
+      "changedPixels": 1589,
+      "maxChannelDelta": 1,
+      "totalPixels": 10848
+    }
+  },
+  {
+    "source": "game/assets/sprites/t1/boss_angry.png",
+    "native": {
+      "changedPixels": 6255,
+      "maxChannelDelta": 1,
+      "totalPixels": 86700
+    },
+    "scaled": {
+      "changedPixels": 1020,
+      "maxChannelDelta": 1,
+      "totalPixels": 9600
+    }
+  },
+  {
+    "source": "game/assets/sprites/t1/boss_calm.png",
+    "native": {
+      "changedPixels": 3680,
+      "maxChannelDelta": 1,
+      "totalPixels": 87300
+    },
+    "scaled": {
+      "changedPixels": 597,
+      "maxChannelDelta": 1,
+      "totalPixels": 9504
+    }
+  },
+  {
+    "source": "game/assets/sprites/t1/en_baggy.png",
+    "native": {
+      "changedPixels": 1544,
+      "maxChannelDelta": 1,
+      "totalPixels": 21760
+    },
+    "scaled": {
+      "changedPixels": 928,
+      "maxChannelDelta": 1,
+      "totalPixels": 10848
+    }
+  },
+  {
+    "source": "game/assets/sprites/t1/en_bottle.png",
+    "native": {
+      "changedPixels": 1906,
+      "maxChannelDelta": 1,
+      "totalPixels": 19360
+    },
+    "scaled": {
+      "changedPixels": 1420,
+      "maxChannelDelta": 1,
+      "totalPixels": 12192
+    }
+  },
+  {
+    "source": "game/assets/sprites/t1/en_buttbug.png",
+    "native": {
+      "changedPixels": 3649,
+      "maxChannelDelta": 1,
+      "totalPixels": 33760
+    },
+    "scaled": {
+      "changedPixels": 1111,
+      "maxChannelDelta": 1,
+      "totalPixels": 7008
+    }
+  },
+  {
+    "source": "game/assets/sprites/t1/en_fly.png",
+    "native": {
+      "changedPixels": 2285,
+      "maxChannelDelta": 1,
+      "totalPixels": 22400
+    },
+    "scaled": {
+      "changedPixels": 1202,
+      "maxChannelDelta": 1,
+      "totalPixels": 10560
+    }
+  },
+  {
+    "source": "game/assets/sprites/t1/en_foodwaste.png",
+    "native": {
+      "changedPixels": 1954,
+      "maxChannelDelta": 1,
+      "totalPixels": 30560
+    },
+    "scaled": {
+      "changedPixels": 665,
+      "maxChannelDelta": 1,
+      "totalPixels": 7680
+    }
+  },
+  {
+    "source": "game/assets/sprites/t1/en_snackbag.png",
+    "native": {
+      "changedPixels": 1525,
+      "maxChannelDelta": 1,
+      "totalPixels": 21760
+    },
+    "scaled": {
+      "changedPixels": 920,
+      "maxChannelDelta": 1,
+      "totalPixels": 10848
+    }
+  },
+  {
+    "source": "game/assets/sprites/t1/floor_concrete.png",
+    "native": {
+      "changedPixels": 0,
+      "maxChannelDelta": 0,
+      "totalPixels": 200704
+    },
+    "scaled": {
+      "changedPixels": 0,
+      "maxChannelDelta": 0,
+      "totalPixels": 9216
+    }
+  },
+  {
+    "source": "game/assets/sprites/t1/floor_dirt.png",
+    "native": {
+      "changedPixels": 0,
+      "maxChannelDelta": 0,
+      "totalPixels": 200704
+    },
+    "scaled": {
+      "changedPixels": 0,
+      "maxChannelDelta": 0,
+      "totalPixels": 9216
+    }
+  },
+  {
+    "source": "game/assets/sprites/t1/floor_trash.png",
+    "native": {
+      "changedPixels": 0,
+      "maxChannelDelta": 0,
+      "totalPixels": 200704
+    },
+    "scaled": {
+      "changedPixels": 0,
+      "maxChannelDelta": 0,
+      "totalPixels": 9216
+    }
+  },
+  {
+    "source": "game/assets/sprites/t1/fx_crack.png",
+    "native": {
+      "changedPixels": 28781,
+      "maxChannelDelta": 1,
+      "totalPixels": 63232
+    },
+    "scaled": {
+      "changedPixels": 4260,
+      "maxChannelDelta": 1,
+      "totalPixels": 8928
+    }
+  },
+  {
+    "source": "game/assets/sprites/t1/fx_shockring.png",
+    "native": {
+      "changedPixels": 4652,
+      "maxChannelDelta": 1,
+      "totalPixels": 62208
+    },
+    "scaled": {
+      "changedPixels": 956,
+      "maxChannelDelta": 1,
+      "totalPixels": 8736
+    }
+  },
+  {
+    "source": "game/assets/sprites/t1/fx_trashball.png",
+    "native": {
+      "changedPixels": 992,
+      "maxChannelDelta": 1,
+      "totalPixels": 16256
+    },
+    "scaled": {
+      "changedPixels": 699,
+      "maxChannelDelta": 1,
+      "totalPixels": 9312
+    }
+  },
+  {
+    "source": "game/assets/sprites/t1/item_orb.png",
+    "native": {
+      "changedPixels": 412,
+      "maxChannelDelta": 1,
+      "totalPixels": 4096
+    },
+    "scaled": {
+      "changedPixels": 1055,
+      "maxChannelDelta": 1,
+      "totalPixels": 9216
+    }
+  },
+  {
+    "source": "game/assets/sprites/t1/prop_bags.png",
+    "native": {
+      "changedPixels": 1571,
+      "maxChannelDelta": 1,
+      "totalPixels": 24360
+    },
+    "scaled": {
+      "changedPixels": 578,
+      "maxChannelDelta": 1,
+      "totalPixels": 7392
+    }
+  },
+  {
+    "source": "game/assets/sprites/t1/prop_bench.png",
+    "native": {
+      "changedPixels": 1679,
+      "maxChannelDelta": 1,
+      "totalPixels": 21150
+    },
+    "scaled": {
+      "changedPixels": 933,
+      "maxChannelDelta": 1,
+      "totalPixels": 9792
+    }
+  },
+  {
+    "source": "game/assets/sprites/t1/prop_bin_fallen.png",
+    "native": {
+      "changedPixels": 2026,
+      "maxChannelDelta": 1,
+      "totalPixels": 23100
+    },
+    "scaled": {
+      "changedPixels": 951,
+      "maxChannelDelta": 1,
+      "totalPixels": 9024
+    }
+  },
+  {
+    "source": "game/assets/sprites/t1/prop_bins.png",
+    "native": {
+      "changedPixels": 1485,
+      "maxChannelDelta": 1,
+      "totalPixels": 43800
+    },
+    "scaled": {
+      "changedPixels": 442,
+      "maxChannelDelta": 1,
+      "totalPixels": 8448
+    }
+  },
+  {
+    "source": "game/assets/sprites/t1/prop_litter.png",
+    "native": {
+      "changedPixels": 2166,
+      "maxChannelDelta": 1,
+      "totalPixels": 18480
+    },
+    "scaled": {
+      "changedPixels": 981,
+      "maxChannelDelta": 1,
+      "totalPixels": 7200
+    }
+  },
+  {
+    "source": "game/assets/sprites/t1/prop_tire.png",
+    "native": {
+      "changedPixels": 1303,
+      "maxChannelDelta": 1,
+      "totalPixels": 16680
+    },
+    "scaled": {
+      "changedPixels": 782,
+      "maxChannelDelta": 1,
+      "totalPixels": 7968
+    }
+  },
+  {
+    "source": "game/assets/sprites/t2/boss_angry.png",
+    "native": {
+      "changedPixels": 9691,
+      "maxChannelDelta": 1,
+      "totalPixels": 78600
+    },
+    "scaled": {
+      "changedPixels": 1800,
+      "maxChannelDelta": 1,
+      "totalPixels": 10560
+    }
+  },
+  {
+    "source": "game/assets/sprites/t2/boss_calm.png",
+    "native": {
+      "changedPixels": 7107,
+      "maxChannelDelta": 1,
+      "totalPixels": 71100
+    },
+    "scaled": {
+      "changedPixels": 1622,
+      "maxChannelDelta": 1,
+      "totalPixels": 11712
+    }
+  },
+  {
+    "source": "game/assets/sprites/t2/en_bigdust.png",
+    "native": {
+      "changedPixels": 1530,
+      "maxChannelDelta": 1,
+      "totalPixels": 38400
+    },
+    "scaled": {
+      "changedPixels": 528,
+      "maxChannelDelta": 1,
+      "totalPixels": 9600
+    }
+  },
+  {
+    "source": "game/assets/sprites/t2/en_dust.png",
+    "native": {
+      "changedPixels": 2347,
+      "maxChannelDelta": 1,
+      "totalPixels": 26560
+    },
+    "scaled": {
+      "changedPixels": 923,
+      "maxChannelDelta": 1,
+      "totalPixels": 8928
+    }
+  },
+  {
+    "source": "game/assets/sprites/t2/en_gas.png",
+    "native": {
+      "changedPixels": 1793,
+      "maxChannelDelta": 1,
+      "totalPixels": 25280
+    },
+    "scaled": {
+      "changedPixels": 779,
+      "maxChannelDelta": 1,
+      "totalPixels": 9312
+    }
+  },
+  {
+    "source": "game/assets/sprites/t2/en_gas_fire.png",
+    "native": {
+      "changedPixels": 1951,
+      "maxChannelDelta": 1,
+      "totalPixels": 33600
+    },
+    "scaled": {
+      "changedPixels": 584,
+      "maxChannelDelta": 1,
+      "totalPixels": 7008
+    }
+  },
+  {
+    "source": "game/assets/sprites/t2/en_gas_windup.png",
+    "native": {
+      "changedPixels": 1773,
+      "maxChannelDelta": 1,
+      "totalPixels": 27200
+    },
+    "scaled": {
+      "changedPixels": 663,
+      "maxChannelDelta": 1,
+      "totalPixels": 8640
+    }
+  },
+  {
+    "source": "game/assets/sprites/t2/en_germ.png",
+    "native": {
+      "changedPixels": 2118,
+      "maxChannelDelta": 1,
+      "totalPixels": 32640
+    },
+    "scaled": {
+      "changedPixels": 668,
+      "maxChannelDelta": 1,
+      "totalPixels": 7200
+    }
+  },
+  {
+    "source": "game/assets/sprites/t2/en_germ2.png",
+    "native": {
+      "changedPixels": 2209,
+      "maxChannelDelta": 1,
+      "totalPixels": 35040
+    },
+    "scaled": {
+      "changedPixels": 634,
+      "maxChannelDelta": 1,
+      "totalPixels": 6720
+    }
+  },
+  {
+    "source": "game/assets/sprites/t2/en_germ3.png",
+    "native": {
+      "changedPixels": 2209,
+      "maxChannelDelta": 1,
+      "totalPixels": 36160
+    },
+    "scaled": {
+      "changedPixels": 545,
+      "maxChannelDelta": 1,
+      "totalPixels": 6528
+    }
+  },
+  {
+    "source": "game/assets/sprites/t2/en_germ_armed.png",
+    "native": {
+      "changedPixels": 2049,
+      "maxChannelDelta": 1,
+      "totalPixels": 27360
+    },
+    "scaled": {
+      "changedPixels": 721,
+      "maxChannelDelta": 1,
+      "totalPixels": 8640
+    }
+  },
+  {
+    "source": "game/assets/sprites/t2/en_raincloud.png",
+    "native": {
+      "changedPixels": 2021,
+      "maxChannelDelta": 1,
+      "totalPixels": 28800
+    },
+    "scaled": {
+      "changedPixels": 671,
+      "maxChannelDelta": 1,
+      "totalPixels": 8160
+    }
+  },
+  {
+    "source": "game/assets/sprites/t2/floor_factory.png",
+    "native": {
+      "changedPixels": 0,
+      "maxChannelDelta": 0,
+      "totalPixels": 200704
+    },
+    "scaled": {
+      "changedPixels": 0,
+      "maxChannelDelta": 0,
+      "totalPixels": 9216
+    }
+  },
+  {
+    "source": "game/assets/sprites/t2/floor_soot.png",
+    "native": {
+      "changedPixels": 0,
+      "maxChannelDelta": 0,
+      "totalPixels": 200704
+    },
+    "scaled": {
+      "changedPixels": 0,
+      "maxChannelDelta": 0,
+      "totalPixels": 9216
+    }
+  },
+  {
+    "source": "game/assets/sprites/t2/floor_steel.png",
+    "native": {
+      "changedPixels": 0,
+      "maxChannelDelta": 0,
+      "totalPixels": 200704
+    },
+    "scaled": {
+      "changedPixels": 0,
+      "maxChannelDelta": 0,
+      "totalPixels": 9216
+    }
+  },
+  {
+    "source": "game/assets/sprites/t2/fx_bomb.png",
+    "native": {
+      "changedPixels": 1262,
+      "maxChannelDelta": 1,
+      "totalPixels": 19200
+    },
+    "scaled": {
+      "changedPixels": 981,
+      "maxChannelDelta": 1,
+      "totalPixels": 12288
+    }
+  },
+  {
+    "source": "game/assets/sprites/t2/fx_flame.png",
+    "native": {
+      "changedPixels": 2608,
+      "maxChannelDelta": 1,
+      "totalPixels": 37620
+    },
+    "scaled": {
+      "changedPixels": 774,
+      "maxChannelDelta": 1,
+      "totalPixels": 7968
+    }
+  },
+  {
+    "source": "game/assets/sprites/t2/fx_smog.png",
+    "native": {
+      "changedPixels": 2473,
+      "maxChannelDelta": 1,
+      "totalPixels": 50160
+    },
+    "scaled": {
+      "changedPixels": 636,
+      "maxChannelDelta": 1,
+      "totalPixels": 8928
+    }
+  },
+  {
+    "source": "game/assets/sprites/t2/fx_splat.png",
+    "native": {
+      "changedPixels": 4049,
+      "maxChannelDelta": 1,
+      "totalPixels": 40800
+    },
+    "scaled": {
+      "changedPixels": 1214,
+      "maxChannelDelta": 1,
+      "totalPixels": 9024
+    }
+  },
+  {
+    "source": "game/assets/sprites/t2/prop_chimney.png",
+    "native": {
+      "changedPixels": 1048,
+      "maxChannelDelta": 1,
+      "totalPixels": 14980
+    },
+    "scaled": {
+      "changedPixels": 1034,
+      "maxChannelDelta": 1,
+      "totalPixels": 12096
+    }
+  },
+  {
+    "source": "game/assets/sprites/t2/prop_cones.png",
+    "native": {
+      "changedPixels": 1752,
+      "maxChannelDelta": 1,
+      "totalPixels": 18360
+    },
+    "scaled": {
+      "changedPixels": 833,
+      "maxChannelDelta": 1,
+      "totalPixels": 7200
+    }
+  },
+  {
+    "source": "game/assets/sprites/t2/prop_drums.png",
+    "native": {
+      "changedPixels": 1185,
+      "maxChannelDelta": 1,
+      "totalPixels": 19460
+    },
+    "scaled": {
+      "changedPixels": 706,
+      "maxChannelDelta": 1,
+      "totalPixels": 9312
+    }
+  },
+  {
+    "source": "game/assets/sprites/t2/prop_pedestal.png",
+    "native": {
+      "changedPixels": 769,
+      "maxChannelDelta": 1,
+      "totalPixels": 10450
+    },
+    "scaled": {
+      "changedPixels": 926,
+      "maxChannelDelta": 1,
+      "totalPixels": 10656
+    }
+  },
+  {
+    "source": "game/assets/sprites/t2/prop_pipe.png",
+    "native": {
+      "changedPixels": 1428,
+      "maxChannelDelta": 1,
+      "totalPixels": 17150
+    },
+    "scaled": {
+      "changedPixels": 322,
+      "maxChannelDelta": 1,
+      "totalPixels": 2592
+    }
+  },
+  {
+    "source": "game/assets/sprites/t2/prop_tree.png",
+    "native": {
+      "changedPixels": 2347,
+      "maxChannelDelta": 1,
+      "totalPixels": 33400
+    },
+    "scaled": {
+      "changedPixels": 849,
+      "maxChannelDelta": 1,
+      "totalPixels": 11040
+    }
+  },
+  {
+    "source": "game/assets/sprites/t2/prop_valve.png",
+    "native": {
+      "changedPixels": 1396,
+      "maxChannelDelta": 1,
+      "totalPixels": 11440
+    },
+    "scaled": {
+      "changedPixels": 1396,
+      "maxChannelDelta": 1,
+      "totalPixels": 9792
+    }
+  },
+  {
+    "source": "game/assets/sprites/t3/boss_angry.png",
+    "native": {
+      "changedPixels": 3968,
+      "maxChannelDelta": 1,
+      "totalPixels": 85500
+    },
+    "scaled": {
+      "changedPixels": 652,
+      "maxChannelDelta": 1,
+      "totalPixels": 9696
+    }
+  },
+  {
+    "source": "game/assets/sprites/t3/boss_calm.png",
+    "native": {
+      "changedPixels": 2714,
+      "maxChannelDelta": 1,
+      "totalPixels": 82200
+    },
+    "scaled": {
+      "changedPixels": 460,
+      "maxChannelDelta": 1,
+      "totalPixels": 10080
+    }
+  },
+  {
+    "source": "game/assets/sprites/t3/en_algae.png",
+    "native": {
+      "changedPixels": 2007,
+      "maxChannelDelta": 1,
+      "totalPixels": 36360
+    },
+    "scaled": {
+      "changedPixels": 609,
+      "maxChannelDelta": 1,
+      "totalPixels": 8256
+    }
+  },
+  {
+    "source": "game/assets/sprites/t3/en_algae_small.png",
+    "native": {
+      "changedPixels": 999,
+      "maxChannelDelta": 1,
+      "totalPixels": 12980
+    },
+    "scaled": {
+      "changedPixels": 808,
+      "maxChannelDelta": 1,
+      "totalPixels": 8544
+    }
+  },
+  {
+    "source": "game/assets/sprites/t3/en_algae_swell.png",
+    "native": {
+      "changedPixels": 1934,
+      "maxChannelDelta": 1,
+      "totalPixels": 35280
+    },
+    "scaled": {
+      "changedPixels": 627,
+      "maxChannelDelta": 1,
+      "totalPixels": 8448
+    }
+  },
+  {
+    "source": "game/assets/sprites/t3/en_bubble.png",
+    "native": {
+      "changedPixels": 1499,
+      "maxChannelDelta": 1,
+      "totalPixels": 28320
+    },
+    "scaled": {
+      "changedPixels": 521,
+      "maxChannelDelta": 1,
+      "totalPixels": 8352
+    }
+  },
+  {
+    "source": "game/assets/sprites/t3/en_bubble_atk.png",
+    "native": {
+      "changedPixels": 1566,
+      "maxChannelDelta": 1,
+      "totalPixels": 33440
+    },
+    "scaled": {
+      "changedPixels": 471,
+      "maxChannelDelta": 1,
+      "totalPixels": 7008
+    }
+  },
+  {
+    "source": "game/assets/sprites/t3/en_can.png",
+    "native": {
+      "changedPixels": 1193,
+      "maxChannelDelta": 1,
+      "totalPixels": 19840
+    },
+    "scaled": {
+      "changedPixels": 849,
+      "maxChannelDelta": 1,
+      "totalPixels": 11904
+    }
+  },
+  {
+    "source": "game/assets/sprites/t3/en_can_fire.png",
+    "native": {
+      "changedPixels": 1569,
+      "maxChannelDelta": 1,
+      "totalPixels": 26240
+    },
+    "scaled": {
+      "changedPixels": 614,
+      "maxChannelDelta": 1,
+      "totalPixels": 9024
+    }
+  },
+  {
+    "source": "game/assets/sprites/t3/en_net.png",
+    "native": {
+      "changedPixels": 3905,
+      "maxChannelDelta": 1,
+      "totalPixels": 63120
+    },
+    "scaled": {
+      "changedPixels": 785,
+      "maxChannelDelta": 1,
+      "totalPixels": 8448
+    }
+  },
+  {
+    "source": "game/assets/sprites/t3/en_net_throw.png",
+    "native": {
+      "changedPixels": 3586,
+      "maxChannelDelta": 1,
+      "totalPixels": 56160
+    },
+    "scaled": {
+      "changedPixels": 836,
+      "maxChannelDelta": 1,
+      "totalPixels": 9408
+    }
+  },
+  {
+    "source": "game/assets/sprites/t3/en_netmon.png",
+    "native": {
+      "changedPixels": 1546,
+      "maxChannelDelta": 1,
+      "totalPixels": 19720
+    },
+    "scaled": {
+      "changedPixels": 1255,
+      "maxChannelDelta": 1,
+      "totalPixels": 13536
+    }
+  },
+  {
+    "source": "game/assets/sprites/t3/en_netmon_pounce.png",
+    "native": {
+      "changedPixels": 1958,
+      "maxChannelDelta": 1,
+      "totalPixels": 30770
+    },
+    "scaled": {
+      "changedPixels": 678,
+      "maxChannelDelta": 1,
+      "totalPixels": 8640
+    }
+  },
+  {
+    "source": "game/assets/sprites/t3/en_petri.png",
+    "native": {
+      "changedPixels": 1176,
+      "maxChannelDelta": 1,
+      "totalPixels": 18720
+    },
+    "scaled": {
+      "changedPixels": 967,
+      "maxChannelDelta": 1,
+      "totalPixels": 12576
+    }
+  },
+  {
+    "source": "game/assets/sprites/t3/en_petri_fire.png",
+    "native": {
+      "changedPixels": 1795,
+      "maxChannelDelta": 1,
+      "totalPixels": 28960
+    },
+    "scaled": {
+      "changedPixels": 642,
+      "maxChannelDelta": 1,
+      "totalPixels": 8160
+    }
+  },
+  {
+    "source": "game/assets/sprites/t3/en_petri_windup.png",
+    "native": {
+      "changedPixels": 1367,
+      "maxChannelDelta": 1,
+      "totalPixels": 16640
+    },
+    "scaled": {
+      "changedPixels": 1368,
+      "maxChannelDelta": 1,
+      "totalPixels": 14208
+    }
+  },
+  {
+    "source": "game/assets/sprites/t3/floor_bank.png",
+    "native": {
+      "changedPixels": 0,
+      "maxChannelDelta": 0,
+      "totalPixels": 200704
+    },
+    "scaled": {
+      "changedPixels": 0,
+      "maxChannelDelta": 0,
+      "totalPixels": 9216
+    }
+  },
+  {
+    "source": "game/assets/sprites/t3/floor_sewer.png",
+    "native": {
+      "changedPixels": 0,
+      "maxChannelDelta": 0,
+      "totalPixels": 200704
+    },
+    "scaled": {
+      "changedPixels": 0,
+      "maxChannelDelta": 0,
+      "totalPixels": 9216
+    }
+  },
+  {
+    "source": "game/assets/sprites/t3/floor_stream.png",
+    "native": {
+      "changedPixels": 0,
+      "maxChannelDelta": 0,
+      "totalPixels": 200704
+    },
+    "scaled": {
+      "changedPixels": 0,
+      "maxChannelDelta": 0,
+      "totalPixels": 9216
+    }
+  },
+  {
+    "source": "game/assets/sprites/t3/fx_algae.png",
+    "native": {
+      "changedPixels": 2252,
+      "maxChannelDelta": 1,
+      "totalPixels": 51340
+    },
+    "scaled": {
+      "changedPixels": 309,
+      "maxChannelDelta": 1,
+      "totalPixels": 5184
+    }
+  },
+  {
+    "source": "game/assets/sprites/t3/fx_cola.png",
+    "native": {
+      "changedPixels": 3178,
+      "maxChannelDelta": 1,
+      "totalPixels": 30150
+    },
+    "scaled": {
+      "changedPixels": 366,
+      "maxChannelDelta": 1,
+      "totalPixels": 2496
+    }
+  },
+  {
+    "source": "game/assets/sprites/t3/fx_foam.png",
+    "native": {
+      "changedPixels": 2205,
+      "maxChannelDelta": 1,
+      "totalPixels": 41940
+    },
+    "scaled": {
+      "changedPixels": 506,
+      "maxChannelDelta": 1,
+      "totalPixels": 7104
+    }
+  },
+  {
+    "source": "game/assets/sprites/t3/fx_net.png",
+    "native": {
+      "changedPixels": 2901,
+      "maxChannelDelta": 1,
+      "totalPixels": 57240
+    },
+    "scaled": {
+      "changedPixels": 396,
+      "maxChannelDelta": 1,
+      "totalPixels": 5184
+    }
+  },
+  {
+    "source": "game/assets/sprites/t3/fx_oil.png",
+    "native": {
+      "changedPixels": 1943,
+      "maxChannelDelta": 1,
+      "totalPixels": 37920
+    },
+    "scaled": {
+      "changedPixels": 415,
+      "maxChannelDelta": 1,
+      "totalPixels": 6240
+    }
+  },
+  {
+    "source": "game/assets/sprites/t3/fx_wave.png",
+    "native": {
+      "changedPixels": 2743,
+      "maxChannelDelta": 1,
+      "totalPixels": 51120
+    },
+    "scaled": {
+      "changedPixels": 441,
+      "maxChannelDelta": 1,
+      "totalPixels": 5856
+    }
+  },
+  {
+    "source": "game/assets/sprites/t3/prop_fish_caught.png",
+    "native": {
+      "changedPixels": 1770,
+      "maxChannelDelta": 1,
+      "totalPixels": 12870
+    },
+    "scaled": {
+      "changedPixels": 1436,
+      "maxChannelDelta": 1,
+      "totalPixels": 8640
+    }
+  },
+  {
+    "source": "game/assets/sprites/t3/prop_fish_free.png",
+    "native": {
+      "changedPixels": 2095,
+      "maxChannelDelta": 1,
+      "totalPixels": 17780
+    },
+    "scaled": {
+      "changedPixels": 1407,
+      "maxChannelDelta": 1,
+      "totalPixels": 10176
+    }
+  },
+  {
+    "source": "game/assets/sprites/t3/prop_reeds.png",
+    "native": {
+      "changedPixels": 5132,
+      "maxChannelDelta": 1,
+      "totalPixels": 36800
+    },
+    "scaled": {
+      "changedPixels": 1586,
+      "maxChannelDelta": 1,
+      "totalPixels": 9984
+    }
+  },
+  {
+    "source": "game/assets/sprites/t3/prop_rock.png",
+    "native": {
+      "changedPixels": 997,
+      "maxChannelDelta": 1,
+      "totalPixels": 15480
+    },
+    "scaled": {
+      "changedPixels": 665,
+      "maxChannelDelta": 1,
+      "totalPixels": 8544
+    }
+  },
+  {
+    "source": "game/assets/sprites/t3/prop_stones.png",
+    "native": {
+      "changedPixels": 1037,
+      "maxChannelDelta": 1,
+      "totalPixels": 9790
+    },
+    "scaled": {
+      "changedPixels": 1456,
+      "maxChannelDelta": 1,
+      "totalPixels": 11424
+    }
+  },
+  {
+    "source": "game/assets/sprites/t3/prop_trash.png",
+    "native": {
+      "changedPixels": 1843,
+      "maxChannelDelta": 1,
+      "totalPixels": 20930
+    },
+    "scaled": {
+      "changedPixels": 785,
+      "maxChannelDelta": 1,
+      "totalPixels": 7488
+    }
+  },
+  {
+    "source": "game/assets/sprites/t4/boss_angry.png",
+    "native": {
+      "changedPixels": 6742,
+      "maxChannelDelta": 1,
+      "totalPixels": 92400
+    },
+    "scaled": {
+      "changedPixels": 892,
+      "maxChannelDelta": 1,
+      "totalPixels": 9024
+    }
+  },
+  {
+    "source": "game/assets/sprites/t4/boss_calm.png",
+    "native": {
+      "changedPixels": 5844,
+      "maxChannelDelta": 1,
+      "totalPixels": 87600
+    },
+    "scaled": {
+      "changedPixels": 924,
+      "maxChannelDelta": 1,
+      "totalPixels": 9504
+    }
+  },
+  {
+    "source": "game/assets/sprites/t4/boss_clean.png",
+    "native": {
+      "changedPixels": 3627,
+      "maxChannelDelta": 1,
+      "totalPixels": 83700
+    },
+    "scaled": {
+      "changedPixels": 636,
+      "maxChannelDelta": 1,
+      "totalPixels": 9888
+    }
+  },
+  {
+    "source": "game/assets/sprites/t4/boss_slam.png",
+    "native": {
+      "changedPixels": 4449,
+      "maxChannelDelta": 1,
+      "totalPixels": 69900
+    },
+    "scaled": {
+      "changedPixels": 1127,
+      "maxChannelDelta": 1,
+      "totalPixels": 11904
+    }
+  },
+  {
+    "source": "game/assets/sprites/t4/en_bulki.png",
+    "native": {
+      "changedPixels": 3376,
+      "maxChannelDelta": 1,
+      "totalPixels": 49200
+    },
+    "scaled": {
+      "changedPixels": 681,
+      "maxChannelDelta": 1,
+      "totalPixels": 7488
+    }
+  },
+  {
+    "source": "game/assets/sprites/t4/en_bulki_jump.png",
+    "native": {
+      "changedPixels": 2550,
+      "maxChannelDelta": 1,
+      "totalPixels": 25200
+    },
+    "scaled": {
+      "changedPixels": 1711,
+      "maxChannelDelta": 1,
+      "totalPixels": 14592
+    }
+  },
+  {
+    "source": "game/assets/sprites/t4/en_bulki_throw.png",
+    "native": {
+      "changedPixels": 3870,
+      "maxChannelDelta": 1,
+      "totalPixels": 51800
+    },
+    "scaled": {
+      "changedPixels": 735,
+      "maxChannelDelta": 1,
+      "totalPixels": 7104
+    }
+  },
+  {
+    "source": "game/assets/sprites/t4/en_burner.png",
+    "native": {
+      "changedPixels": 1603,
+      "maxChannelDelta": 1,
+      "totalPixels": 20480
+    },
+    "scaled": {
+      "changedPixels": 1027,
+      "maxChannelDelta": 1,
+      "totalPixels": 11520
+    }
+  },
+  {
+    "source": "game/assets/sprites/t4/en_burner_big.png",
+    "native": {
+      "changedPixels": 2649,
+      "maxChannelDelta": 1,
+      "totalPixels": 19840
+    },
+    "scaled": {
+      "changedPixels": 1836,
+      "maxChannelDelta": 1,
+      "totalPixels": 11904
+    }
+  },
+  {
+    "source": "game/assets/sprites/t4/en_burner_l.png",
+    "native": {
+      "changedPixels": 1613,
+      "maxChannelDelta": 1,
+      "totalPixels": 16320
+    },
+    "scaled": {
+      "changedPixels": 1646,
+      "maxChannelDelta": 1,
+      "totalPixels": 14496
+    }
+  },
+  {
+    "source": "game/assets/sprites/t4/en_burner_m.png",
+    "native": {
+      "changedPixels": 1481,
+      "maxChannelDelta": 1,
+      "totalPixels": 19840
+    },
+    "scaled": {
+      "changedPixels": 1059,
+      "maxChannelDelta": 1,
+      "totalPixels": 11904
+    }
+  },
+  {
+    "source": "game/assets/sprites/t4/en_burner_out.png",
+    "native": {
+      "changedPixels": 1534,
+      "maxChannelDelta": 1,
+      "totalPixels": 19200
+    },
+    "scaled": {
+      "changedPixels": 1197,
+      "maxChannelDelta": 1,
+      "totalPixels": 12288
+    }
+  },
+  {
+    "source": "game/assets/sprites/t4/en_burner_s.png",
+    "native": {
+      "changedPixels": 1796,
+      "maxChannelDelta": 1,
+      "totalPixels": 24160
+    },
+    "scaled": {
+      "changedPixels": 879,
+      "maxChannelDelta": 1,
+      "totalPixels": 9792
+    }
+  },
+  {
+    "source": "game/assets/sprites/t4/en_dozer.png",
+    "native": {
+      "changedPixels": 2229,
+      "maxChannelDelta": 1,
+      "totalPixels": 66700
+    },
+    "scaled": {
+      "changedPixels": 336,
+      "maxChannelDelta": 1,
+      "totalPixels": 7296
+    }
+  },
+  {
+    "source": "game/assets/sprites/t4/en_dozer_charge.png",
+    "native": {
+      "changedPixels": 3037,
+      "maxChannelDelta": 1,
+      "totalPixels": 62330
+    },
+    "scaled": {
+      "changedPixels": 509,
+      "maxChannelDelta": 1,
+      "totalPixels": 7776
+    }
+  },
+  {
+    "source": "game/assets/sprites/t4/en_nutria.png",
+    "native": {
+      "changedPixels": 1598,
+      "maxChannelDelta": 1,
+      "totalPixels": 18850
+    },
+    "scaled": {
+      "changedPixels": 837,
+      "maxChannelDelta": 1,
+      "totalPixels": 8256
+    }
+  },
+  {
+    "source": "game/assets/sprites/t4/en_nutria_guard.png",
+    "native": {
+      "changedPixels": 1667,
+      "maxChannelDelta": 1,
+      "totalPixels": 19110
+    },
+    "scaled": {
+      "changedPixels": 845,
+      "maxChannelDelta": 1,
+      "totalPixels": 8160
+    }
+  },
+  {
+    "source": "game/assets/sprites/t4/en_saw.png",
+    "native": {
+      "changedPixels": 1572,
+      "maxChannelDelta": 1,
+      "totalPixels": 24000
+    },
+    "scaled": {
+      "changedPixels": 684,
+      "maxChannelDelta": 1,
+      "totalPixels": 8640
+    }
+  },
+  {
+    "source": "game/assets/sprites/t4/en_saw_spin.png",
+    "native": {
+      "changedPixels": 3908,
+      "maxChannelDelta": 1,
+      "totalPixels": 24640
+    },
+    "scaled": {
+      "changedPixels": 1834,
+      "maxChannelDelta": 1,
+      "totalPixels": 9600
+    }
+  },
+  {
+    "source": "game/assets/sprites/t4/floor_burnt.png",
+    "native": {
+      "changedPixels": 0,
+      "maxChannelDelta": 0,
+      "totalPixels": 200704
+    },
+    "scaled": {
+      "changedPixels": 0,
+      "maxChannelDelta": 0,
+      "totalPixels": 9216
+    }
+  },
+  {
+    "source": "game/assets/sprites/t4/floor_logging.png",
+    "native": {
+      "changedPixels": 0,
+      "maxChannelDelta": 0,
+      "totalPixels": 200704
+    },
+    "scaled": {
+      "changedPixels": 0,
+      "maxChannelDelta": 0,
+      "totalPixels": 9216
+    }
+  },
+  {
+    "source": "game/assets/sprites/t4/floor_trail.png",
+    "native": {
+      "changedPixels": 0,
+      "maxChannelDelta": 0,
+      "totalPixels": 200704
+    },
+    "scaled": {
+      "changedPixels": 0,
+      "maxChannelDelta": 0,
+      "totalPixels": 9216
+    }
+  },
+  {
+    "source": "game/assets/sprites/t4/fx_dust.png",
+    "native": {
+      "changedPixels": 2413,
+      "maxChannelDelta": 1,
+      "totalPixels": 24480
+    },
+    "scaled": {
+      "changedPixels": 709,
+      "maxChannelDelta": 1,
+      "totalPixels": 5376
+    }
+  },
+  {
+    "source": "game/assets/sprites/t4/fx_puff.png",
+    "native": {
+      "changedPixels": 2313,
+      "maxChannelDelta": 1,
+      "totalPixels": 16120
+    },
+    "scaled": {
+      "changedPixels": 1593,
+      "maxChannelDelta": 1,
+      "totalPixels": 9696
+    }
+  },
+  {
+    "source": "game/assets/sprites/t4/fx_slam.png",
+    "native": {
+      "changedPixels": 3969,
+      "maxChannelDelta": 1,
+      "totalPixels": 34960
+    },
+    "scaled": {
+      "changedPixels": 1237,
+      "maxChannelDelta": 1,
+      "totalPixels": 9504
+    }
+  },
+  {
+    "source": "game/assets/sprites/t4/fx_tracks.png",
+    "native": {
+      "changedPixels": 4014,
+      "maxChannelDelta": 1,
+      "totalPixels": 31200
+    },
+    "scaled": {
+      "changedPixels": 1850,
+      "maxChannelDelta": 1,
+      "totalPixels": 11808
+    }
+  },
+  {
+    "source": "game/assets/sprites/t4/prop_burnt.png",
+    "native": {
+      "changedPixels": 2326,
+      "maxChannelDelta": 1,
+      "totalPixels": 21850
+    },
+    "scaled": {
+      "changedPixels": 1977,
+      "maxChannelDelta": 1,
+      "totalPixels": 15264
+    }
+  },
+  {
+    "source": "game/assets/sprites/t4/prop_camptrash.png",
+    "native": {
+      "changedPixels": 1578,
+      "maxChannelDelta": 1,
+      "totalPixels": 14190
+    },
+    "scaled": {
+      "changedPixels": 1025,
+      "maxChannelDelta": 1,
+      "totalPixels": 7872
+    }
+  },
+  {
+    "source": "game/assets/sprites/t4/prop_pond.png",
+    "native": {
+      "changedPixels": 2365,
+      "maxChannelDelta": 1,
+      "totalPixels": 42560
+    },
+    "scaled": {
+      "changedPixels": 631,
+      "maxChannelDelta": 1,
+      "totalPixels": 7776
+    }
+  },
+  {
+    "source": "game/assets/sprites/t4/prop_stump.png",
+    "native": {
+      "changedPixels": 1009,
+      "maxChannelDelta": 1,
+      "totalPixels": 14040
+    },
+    "scaled": {
+      "changedPixels": 808,
+      "maxChannelDelta": 1,
+      "totalPixels": 9408
+    }
+  },
+  {
+    "source": "game/assets/sprites/vfx/purify-v1.png",
+    "native": {
+      "changedPixels": 47580,
+      "maxChannelDelta": 1,
+      "totalPixels": 262144
+    },
+    "scaled": {
+      "changedPixels": 1882,
+      "maxChannelDelta": 1,
+      "totalPixels": 9216
+    }
+  },
+  {
+    "source": "game/assets/sprites/vfx/smog-v1.png",
+    "native": {
+      "changedPixels": 90155,
+      "maxChannelDelta": 1,
+      "totalPixels": 262144
+    },
+    "scaled": {
+      "changedPixels": 3326,
+      "maxChannelDelta": 1,
+      "totalPixels": 9216
+    }
+  },
+  {
+    "source": "game/assets/sprites/vfx/splash-v1.png",
+    "native": {
+      "changedPixels": 28872,
+      "maxChannelDelta": 1,
+      "totalPixels": 262144
+    },
+    "scaled": {
+      "changedPixels": 1118,
+      "maxChannelDelta": 1,
+      "totalPixels": 9216
+    }
+  },
+  {
+    "source": "game/assets/ui/panel-border-thin.png",
+    "native": {
+      "changedPixels": 0,
+      "maxChannelDelta": 0,
+      "totalPixels": 2304
+    },
+    "scaled": {
+      "changedPixels": 0,
+      "maxChannelDelta": 0,
+      "totalPixels": 9216
+    }
+  },
+  {
+    "source": "game/assets/ui/panel-border.png",
+    "native": {
+      "changedPixels": 0,
+      "maxChannelDelta": 0,
+      "totalPixels": 2304
+    },
+    "scaled": {
+      "changedPixels": 0,
+      "maxChannelDelta": 0,
+      "totalPixels": 9216
+    }
+  },
+  {
+    "source": "game/assets/ui/title_emblem.png",
+    "native": {
+      "changedPixels": 5290,
+      "maxChannelDelta": 1,
+      "totalPixels": 114560
+    },
+    "scaled": {
+      "changedPixels": 462,
+      "maxChannelDelta": 1,
+      "totalPixels": 8256
+    }
+  },
+  {
+    "source": "game/assets/ui/title_hoya.png",
+    "native": {
+      "changedPixels": 6935,
+      "maxChannelDelta": 1,
+      "totalPixels": 246960
+    },
+    "scaled": {
+      "changedPixels": 564,
+      "maxChannelDelta": 1,
+      "totalPixels": 11712
+    }
+  },
+  {
+    "source": "game/assets/ui/title_mascot.png",
+    "native": {
+      "changedPixels": 1745,
+      "maxChannelDelta": 1,
+      "totalPixels": 62400
+    },
+    "scaled": {
+      "changedPixels": 379,
+      "maxChannelDelta": 1,
+      "totalPixels": 9984
+    }
+  },
+  {
+    "source": "game/assets/ui/title_minji.png",
+    "native": {
+      "changedPixels": 14672,
+      "maxChannelDelta": 1,
+      "totalPixels": 277200
+    },
+    "scaled": {
+      "changedPixels": 763,
+      "maxChannelDelta": 1,
+      "totalPixels": 10464
+    }
+  },
+  {
+    "source": "game/assets/ui2/emblem.png",
+    "native": {
+      "changedPixels": 4420,
+      "maxChannelDelta": 1,
+      "totalPixels": 262144
+    },
+    "scaled": {
+      "changedPixels": 265,
+      "maxChannelDelta": 1,
+      "totalPixels": 9216
+    }
+  },
+  {
+    "source": "game/assets/ui2/icons/btn_check.png",
+    "native": {
+      "changedPixels": 1645,
+      "maxChannelDelta": 1,
+      "totalPixels": 65536
+    },
+    "scaled": {
+      "changedPixels": 345,
+      "maxChannelDelta": 1,
+      "totalPixels": 9216
+    }
+  },
+  {
+    "source": "game/assets/ui2/icons/btn_close.png",
+    "native": {
+      "changedPixels": 1627,
+      "maxChannelDelta": 1,
+      "totalPixels": 65536
+    },
+    "scaled": {
+      "changedPixels": 348,
+      "maxChannelDelta": 1,
+      "totalPixels": 9216
+    }
+  },
+  {
+    "source": "game/assets/ui2/icons/btn_help.png",
+    "native": {
+      "changedPixels": 1622,
+      "maxChannelDelta": 1,
+      "totalPixels": 65536
+    },
+    "scaled": {
+      "changedPixels": 320,
+      "maxChannelDelta": 1,
+      "totalPixels": 9216
+    }
+  },
+  {
+    "source": "game/assets/ui2/icons/btn_next.png",
+    "native": {
+      "changedPixels": 1658,
+      "maxChannelDelta": 1,
+      "totalPixels": 65536
+    },
+    "scaled": {
+      "changedPixels": 341,
+      "maxChannelDelta": 1,
+      "totalPixels": 9216
+    }
+  },
+  {
+    "source": "game/assets/ui2/icons/btn_prev.png",
+    "native": {
+      "changedPixels": 1628,
+      "maxChannelDelta": 1,
+      "totalPixels": 65536
+    },
+    "scaled": {
+      "changedPixels": 335,
+      "maxChannelDelta": 1,
+      "totalPixels": 9216
+    }
+  },
+  {
+    "source": "game/assets/ui2/icons/btn_reroll.png",
+    "native": {
+      "changedPixels": 1662,
+      "maxChannelDelta": 1,
+      "totalPixels": 65536
+    },
+    "scaled": {
+      "changedPixels": 345,
+      "maxChannelDelta": 1,
+      "totalPixels": 9216
+    }
+  },
+  {
+    "source": "game/assets/ui2/icons/cur_coin.png",
+    "native": {
+      "changedPixels": 2039,
+      "maxChannelDelta": 1,
+      "totalPixels": 65536
+    },
+    "scaled": {
+      "changedPixels": 406,
+      "maxChannelDelta": 1,
+      "totalPixels": 9216
+    }
+  },
+  {
+    "source": "game/assets/ui2/icons/cur_crown.png",
+    "native": {
+      "changedPixels": 2824,
+      "maxChannelDelta": 1,
+      "totalPixels": 65536
+    },
+    "scaled": {
+      "changedPixels": 579,
+      "maxChannelDelta": 1,
+      "totalPixels": 9216
+    }
+  },
+  {
+    "source": "game/assets/ui2/icons/cur_gift.png",
+    "native": {
+      "changedPixels": 2390,
+      "maxChannelDelta": 1,
+      "totalPixels": 65536
+    },
+    "scaled": {
+      "changedPixels": 481,
+      "maxChannelDelta": 1,
+      "totalPixels": 9216
+    }
+  },
+  {
+    "source": "game/assets/ui2/icons/cur_pass.png",
+    "native": {
+      "changedPixels": 2617,
+      "maxChannelDelta": 1,
+      "totalPixels": 65536
+    },
+    "scaled": {
+      "changedPixels": 509,
+      "maxChannelDelta": 1,
+      "totalPixels": 9216
+    }
+  },
+  {
+    "source": "game/assets/ui2/icons/cur_sprout.png",
+    "native": {
+      "changedPixels": 2740,
+      "maxChannelDelta": 1,
+      "totalPixels": 65536
+    },
+    "scaled": {
+      "changedPixels": 534,
+      "maxChannelDelta": 1,
+      "totalPixels": 9216
+    }
+  },
+  {
+    "source": "game/assets/ui2/icons/cur_star.png",
+    "native": {
+      "changedPixels": 2638,
+      "maxChannelDelta": 1,
+      "totalPixels": 65536
+    },
+    "scaled": {
+      "changedPixels": 548,
+      "maxChannelDelta": 1,
+      "totalPixels": 9216
+    }
+  },
+  {
+    "source": "game/assets/ui2/icons/el_earth.png",
+    "native": {
+      "changedPixels": 1632,
+      "maxChannelDelta": 1,
+      "totalPixels": 65536
+    },
+    "scaled": {
+      "changedPixels": 355,
+      "maxChannelDelta": 1,
+      "totalPixels": 9216
+    }
+  },
+  {
+    "source": "game/assets/ui2/icons/el_fire.png",
+    "native": {
+      "changedPixels": 1625,
+      "maxChannelDelta": 1,
+      "totalPixels": 65536
+    },
+    "scaled": {
+      "changedPixels": 341,
+      "maxChannelDelta": 1,
+      "totalPixels": 9216
+    }
+  },
+  {
+    "source": "game/assets/ui2/icons/el_lightning.png",
+    "native": {
+      "changedPixels": 1660,
+      "maxChannelDelta": 1,
+      "totalPixels": 65536
+    },
+    "scaled": {
+      "changedPixels": 362,
+      "maxChannelDelta": 1,
+      "totalPixels": 9216
+    }
+  },
+  {
+    "source": "game/assets/ui2/icons/el_water.png",
+    "native": {
+      "changedPixels": 1696,
+      "maxChannelDelta": 1,
+      "totalPixels": 65536
+    },
+    "scaled": {
+      "changedPixels": 332,
+      "maxChannelDelta": 1,
+      "totalPixels": 9216
+    }
+  },
+  {
+    "source": "game/assets/ui2/icons/el_wind.png",
+    "native": {
+      "changedPixels": 1702,
+      "maxChannelDelta": 1,
+      "totalPixels": 65536
+    },
+    "scaled": {
+      "changedPixels": 345,
+      "maxChannelDelta": 1,
+      "totalPixels": 9216
+    }
+  },
+  {
+    "source": "game/assets/ui2/icons/fn_clean.png",
+    "native": {
+      "changedPixels": 2732,
+      "maxChannelDelta": 1,
+      "totalPixels": 65536
+    },
+    "scaled": {
+      "changedPixels": 556,
+      "maxChannelDelta": 1,
+      "totalPixels": 9216
+    }
+  },
+  {
+    "source": "game/assets/ui2/icons/fn_lock.png",
+    "native": {
+      "changedPixels": 1975,
+      "maxChannelDelta": 1,
+      "totalPixels": 65536
+    },
+    "scaled": {
+      "changedPixels": 407,
+      "maxChannelDelta": 1,
+      "totalPixels": 9216
+    }
+  },
+  {
+    "source": "game/assets/ui2/icons/fn_mission.png",
+    "native": {
+      "changedPixels": 2052,
+      "maxChannelDelta": 1,
+      "totalPixels": 65536
+    },
+    "scaled": {
+      "changedPixels": 415,
+      "maxChannelDelta": 1,
+      "totalPixels": 9216
+    }
+  },
+  {
+    "source": "game/assets/ui2/icons/fn_news.png",
+    "native": {
+      "changedPixels": 2126,
+      "maxChannelDelta": 1,
+      "totalPixels": 65536
+    },
+    "scaled": {
+      "changedPixels": 448,
+      "maxChannelDelta": 1,
+      "totalPixels": 9216
+    }
+  },
+  {
+    "source": "game/assets/ui2/icons/fn_pause.png",
+    "native": {
+      "changedPixels": 1634,
+      "maxChannelDelta": 1,
+      "totalPixels": 65536
+    },
+    "scaled": {
+      "changedPixels": 355,
+      "maxChannelDelta": 1,
+      "totalPixels": 9216
+    }
+  },
+  {
+    "source": "game/assets/ui2/icons/fn_settings.png",
+    "native": {
+      "changedPixels": 2586,
+      "maxChannelDelta": 1,
+      "totalPixels": 65536
+    },
+    "scaled": {
+      "changedPixels": 485,
+      "maxChannelDelta": 1,
+      "totalPixels": 9216
+    }
+  },
+  {
+    "source": "game/assets/ui2/icons/fn_sound_off.png",
+    "native": {
+      "changedPixels": 1851,
+      "maxChannelDelta": 1,
+      "totalPixels": 65536
+    },
+    "scaled": {
+      "changedPixels": 366,
+      "maxChannelDelta": 1,
+      "totalPixels": 9216
+    }
+  },
+  {
+    "source": "game/assets/ui2/icons/fn_sound_on.png",
+    "native": {
+      "changedPixels": 2481,
+      "maxChannelDelta": 1,
+      "totalPixels": 65536
+    },
+    "scaled": {
+      "changedPixels": 534,
+      "maxChannelDelta": 1,
+      "totalPixels": 9216
+    }
+  },
+  {
+    "source": "game/assets/ui2/icons/fn_time.png",
+    "native": {
+      "changedPixels": 2331,
+      "maxChannelDelta": 1,
+      "totalPixels": 65536
+    },
+    "scaled": {
+      "changedPixels": 469,
+      "maxChannelDelta": 1,
+      "totalPixels": 9216
+    }
+  },
+  {
+    "source": "game/assets/ui2/icons/nav_adventure.png",
+    "native": {
+      "changedPixels": 2111,
+      "maxChannelDelta": 1,
+      "totalPixels": 65536
+    },
+    "scaled": {
+      "changedPixels": 440,
+      "maxChannelDelta": 1,
+      "totalPixels": 9216
+    }
+  },
+  {
+    "source": "game/assets/ui2/icons/nav_book.png",
+    "native": {
+      "changedPixels": 1939,
+      "maxChannelDelta": 1,
+      "totalPixels": 65536
+    },
+    "scaled": {
+      "changedPixels": 392,
+      "maxChannelDelta": 1,
+      "totalPixels": 9216
+    }
+  },
+  {
+    "source": "game/assets/ui2/icons/nav_friends.png",
+    "native": {
+      "changedPixels": 1640,
+      "maxChannelDelta": 1,
+      "totalPixels": 65536
+    },
+    "scaled": {
+      "changedPixels": 320,
+      "maxChannelDelta": 1,
+      "totalPixels": 9216
+    }
+  },
+  {
+    "source": "game/assets/ui2/icons/nav_gear.png",
+    "native": {
+      "changedPixels": 1581,
+      "maxChannelDelta": 1,
+      "totalPixels": 65536
+    },
+    "scaled": {
+      "changedPixels": 319,
+      "maxChannelDelta": 1,
+      "totalPixels": 9216
+    }
+  },
+  {
+    "source": "game/assets/ui2/icons/nav_parts.png",
+    "native": {
+      "changedPixels": 2173,
+      "maxChannelDelta": 1,
+      "totalPixels": 65536
+    },
+    "scaled": {
+      "changedPixels": 412,
+      "maxChannelDelta": 1,
+      "totalPixels": 9216
+    }
+  },
+  {
+    "source": "game/assets/ui2/icons/nav_training.png",
+    "native": {
+      "changedPixels": 2680,
+      "maxChannelDelta": 1,
+      "totalPixels": 65536
+    },
+    "scaled": {
+      "changedPixels": 558,
+      "maxChannelDelta": 1,
+      "totalPixels": 9216
+    }
+  },
+  {
+    "source": "game/assets/ui2/icons/slot_armor.png",
+    "native": {
+      "changedPixels": 1886,
+      "maxChannelDelta": 1,
+      "totalPixels": 65536
+    },
+    "scaled": {
+      "changedPixels": 395,
+      "maxChannelDelta": 1,
+      "totalPixels": 9216
+    }
+  },
+  {
+    "source": "game/assets/ui2/icons/slot_gloves.png",
+    "native": {
+      "changedPixels": 1701,
+      "maxChannelDelta": 1,
+      "totalPixels": 65536
+    },
+    "scaled": {
+      "changedPixels": 366,
+      "maxChannelDelta": 1,
+      "totalPixels": 9216
+    }
+  },
+  {
+    "source": "game/assets/ui2/icons/slot_helm.png",
+    "native": {
+      "changedPixels": 1659,
+      "maxChannelDelta": 1,
+      "totalPixels": 65536
+    },
+    "scaled": {
+      "changedPixels": 329,
+      "maxChannelDelta": 1,
+      "totalPixels": 9216
+    }
+  },
+  {
+    "source": "game/assets/ui2/icons/slot_necklace.png",
+    "native": {
+      "changedPixels": 1982,
+      "maxChannelDelta": 1,
+      "totalPixels": 65536
+    },
+    "scaled": {
+      "changedPixels": 405,
+      "maxChannelDelta": 1,
+      "totalPixels": 9216
+    }
+  },
+  {
+    "source": "game/assets/ui2/icons/slot_shoes.png",
+    "native": {
+      "changedPixels": 1763,
+      "maxChannelDelta": 1,
+      "totalPixels": 65536
+    },
+    "scaled": {
+      "changedPixels": 334,
+      "maxChannelDelta": 1,
+      "totalPixels": 9216
+    }
+  },
+  {
+    "source": "game/assets/ui2/icons/slot_weapon.png",
+    "native": {
+      "changedPixels": 1583,
+      "maxChannelDelta": 1,
+      "totalPixels": 65536
+    },
+    "scaled": {
+      "changedPixels": 346,
+      "maxChannelDelta": 1,
+      "totalPixels": 9216
+    }
+  },
+  {
+    "source": "game/assets/ui2/icons/stat_attack.png",
+    "native": {
+      "changedPixels": 2776,
+      "maxChannelDelta": 1,
+      "totalPixels": 65536
+    },
+    "scaled": {
+      "changedPixels": 569,
+      "maxChannelDelta": 1,
+      "totalPixels": 9216
+    }
+  },
+  {
+    "source": "game/assets/ui2/icons/stat_hp.png",
+    "native": {
+      "changedPixels": 1639,
+      "maxChannelDelta": 1,
+      "totalPixels": 65536
+    },
+    "scaled": {
+      "changedPixels": 357,
+      "maxChannelDelta": 1,
+      "totalPixels": 9216
+    }
+  },
+  {
+    "source": "game/assets/ui2/icons/stat_speed.png",
+    "native": {
+      "changedPixels": 2543,
+      "maxChannelDelta": 1,
+      "totalPixels": 65536
+    },
+    "scaled": {
+      "changedPixels": 493,
+      "maxChannelDelta": 1,
+      "totalPixels": 9216
+    }
+  },
+  {
+    "source": "game/assets/ui2/icons/supply_closed.png",
+    "native": {
+      "changedPixels": 4118,
+      "maxChannelDelta": 1,
+      "totalPixels": 262144
+    },
+    "scaled": {
+      "changedPixels": 241,
+      "maxChannelDelta": 1,
+      "totalPixels": 9216
+    }
+  },
+  {
+    "source": "game/assets/ui2/icons/supply_open.png",
+    "native": {
+      "changedPixels": 4013,
+      "maxChannelDelta": 1,
+      "totalPixels": 262144
+    },
+    "scaled": {
+      "changedPixels": 240,
+      "maxChannelDelta": 1,
+      "totalPixels": 9216
+    }
+  },
+  {
+    "source": "game/assets/ui2/skills/earth_boulder_1.png",
+    "native": {
+      "changedPixels": 632,
+      "maxChannelDelta": 1,
+      "totalPixels": 60025
+    },
+    "scaled": {
+      "changedPixels": 149,
+      "maxChannelDelta": 1,
+      "totalPixels": 9216
+    }
+  },
+  {
+    "source": "game/assets/ui2/skills/earth_mole_1.png",
+    "native": {
+      "changedPixels": 447,
+      "maxChannelDelta": 1,
+      "totalPixels": 41616
+    },
+    "scaled": {
+      "changedPixels": 139,
+      "maxChannelDelta": 1,
+      "totalPixels": 9216
+    }
+  },
+  {
+    "source": "game/assets/ui2/skills/earth_molefield.png",
+    "native": {
+      "changedPixels": 680,
+      "maxChannelDelta": 1,
+      "totalPixels": 75625
+    },
+    "scaled": {
+      "changedPixels": 116,
+      "maxChannelDelta": 1,
+      "totalPixels": 9216
+    }
+  },
+  {
+    "source": "game/assets/ui2/skills/earth_stone_1.png",
+    "native": {
+      "changedPixels": 318,
+      "maxChannelDelta": 1,
+      "totalPixels": 19600
+    },
+    "scaled": {
+      "changedPixels": 180,
+      "maxChannelDelta": 1,
+      "totalPixels": 9216
+    }
+  },
+  {
+    "source": "game/assets/ui2/skills/fire_bottle.png",
+    "native": {
+      "changedPixels": 782,
+      "maxChannelDelta": 1,
+      "totalPixels": 44100
+    },
+    "scaled": {
+      "changedPixels": 213,
+      "maxChannelDelta": 1,
+      "totalPixels": 9216
+    }
+  },
+  {
+    "source": "game/assets/ui2/skills/fire_frocket.png",
+    "native": {
+      "changedPixels": 1798,
+      "maxChannelDelta": 1,
+      "totalPixels": 45369
+    },
+    "scaled": {
+      "changedPixels": 435,
+      "maxChannelDelta": 1,
+      "totalPixels": 9216
+    }
+  },
+  {
+    "source": "game/assets/ui2/skills/fire_rocket.png",
+    "native": {
+      "changedPixels": 845,
+      "maxChannelDelta": 1,
+      "totalPixels": 40804
+    },
+    "scaled": {
+      "changedPixels": 270,
+      "maxChannelDelta": 1,
+      "totalPixels": 9216
+    }
+  },
+  {
+    "source": "game/assets/ui2/skills/fire_volcano.png",
+    "native": {
+      "changedPixels": 692,
+      "maxChannelDelta": 1,
+      "totalPixels": 52441
+    },
+    "scaled": {
+      "changedPixels": 183,
+      "maxChannelDelta": 1,
+      "totalPixels": 9216
+    }
+  },
+  {
+    "source": "game/assets/ui2/skills/lightning_bee_1.png",
+    "native": {
+      "changedPixels": 878,
+      "maxChannelDelta": 1,
+      "totalPixels": 29584
+    },
+    "scaled": {
+      "changedPixels": 320,
+      "maxChannelDelta": 1,
+      "totalPixels": 9216
+    }
+  },
+  {
+    "source": "game/assets/ui2/skills/lightning_cloud.png",
+    "native": {
+      "changedPixels": 3836,
+      "maxChannelDelta": 1,
+      "totalPixels": 71824
+    },
+    "scaled": {
+      "changedPixels": 537,
+      "maxChannelDelta": 1,
+      "totalPixels": 9216
+    }
+  },
+  {
+    "source": "game/assets/ui2/skills/lightning_storm.png",
+    "native": {
+      "changedPixels": 625,
+      "maxChannelDelta": 1,
+      "totalPixels": 78961
+    },
+    "scaled": {
+      "changedPixels": 90,
+      "maxChannelDelta": 1,
+      "totalPixels": 9216
+    }
+  },
+  {
+    "source": "game/assets/ui2/skills/lightning_swarm.png",
+    "native": {
+      "changedPixels": 1061,
+      "maxChannelDelta": 1,
+      "totalPixels": 51984
+    },
+    "scaled": {
+      "changedPixels": 256,
+      "maxChannelDelta": 1,
+      "totalPixels": 9216
+    }
+  },
+  {
+    "source": "game/assets/ui2/skills/support_S1.png",
+    "native": {
+      "changedPixels": 391,
+      "maxChannelDelta": 1,
+      "totalPixels": 88209
+    },
+    "scaled": {
+      "changedPixels": 61,
+      "maxChannelDelta": 1,
+      "totalPixels": 9216
+    }
+  },
+  {
+    "source": "game/assets/ui2/skills/support_S2.png",
+    "native": {
+      "changedPixels": 413,
+      "maxChannelDelta": 1,
+      "totalPixels": 94864
+    },
+    "scaled": {
+      "changedPixels": 56,
+      "maxChannelDelta": 1,
+      "totalPixels": 9216
+    }
+  },
+  {
+    "source": "game/assets/ui2/skills/support_S3.png",
+    "native": {
+      "changedPixels": 578,
+      "maxChannelDelta": 1,
+      "totalPixels": 104329
+    },
+    "scaled": {
+      "changedPixels": 62,
+      "maxChannelDelta": 1,
+      "totalPixels": 9216
+    }
+  },
+  {
+    "source": "game/assets/ui2/skills/support_S4.png",
+    "native": {
+      "changedPixels": 1801,
+      "maxChannelDelta": 1,
+      "totalPixels": 78961
+    },
+    "scaled": {
+      "changedPixels": 238,
+      "maxChannelDelta": 1,
+      "totalPixels": 9216
+    }
+  },
+  {
+    "source": "game/assets/ui2/skills/support_S5.png",
+    "native": {
+      "changedPixels": 480,
+      "maxChannelDelta": 1,
+      "totalPixels": 116281
+    },
+    "scaled": {
+      "changedPixels": 52,
+      "maxChannelDelta": 1,
+      "totalPixels": 9216
+    }
+  },
+  {
+    "source": "game/assets/ui2/skills/support_S6.png",
+    "native": {
+      "changedPixels": 439,
+      "maxChannelDelta": 1,
+      "totalPixels": 97344
+    },
+    "scaled": {
+      "changedPixels": 43,
+      "maxChannelDelta": 1,
+      "totalPixels": 9216
+    }
+  },
+  {
+    "source": "game/assets/ui2/skills/support_S7.png",
+    "native": {
+      "changedPixels": 370,
+      "maxChannelDelta": 1,
+      "totalPixels": 99225
+    },
+    "scaled": {
+      "changedPixels": 42,
+      "maxChannelDelta": 1,
+      "totalPixels": 9216
+    }
+  },
+  {
+    "source": "game/assets/ui2/skills/support_S8.png",
+    "native": {
+      "changedPixels": 315,
+      "maxChannelDelta": 1,
+      "totalPixels": 96721
+    },
+    "scaled": {
+      "changedPixels": 51,
+      "maxChannelDelta": 1,
+      "totalPixels": 9216
+    }
+  },
+  {
+    "source": "game/assets/ui2/skills/water_balloon.png",
+    "native": {
+      "changedPixels": 574,
+      "maxChannelDelta": 1,
+      "totalPixels": 46225
+    },
+    "scaled": {
+      "changedPixels": 157,
+      "maxChannelDelta": 1,
+      "totalPixels": 9216
+    }
+  },
+  {
+    "source": "game/assets/ui2/skills/water_beam_tip.png",
+    "native": {
+      "changedPixels": 456,
+      "maxChannelDelta": 1,
+      "totalPixels": 37249
+    },
+    "scaled": {
+      "changedPixels": 157,
+      "maxChannelDelta": 1,
+      "totalPixels": 9216
+    }
+  },
+  {
+    "source": "game/assets/ui2/skills/water_kballoon.png",
+    "native": {
+      "changedPixels": 1064,
+      "maxChannelDelta": 1,
+      "totalPixels": 73441
+    },
+    "scaled": {
+      "changedPixels": 181,
+      "maxChannelDelta": 1,
+      "totalPixels": 9216
+    }
+  },
+  {
+    "source": "game/assets/ui2/skills/water_rbeam_tip.png",
+    "native": {
+      "changedPixels": 1633,
+      "maxChannelDelta": 1,
+      "totalPixels": 41209
+    },
+    "scaled": {
+      "changedPixels": 421,
+      "maxChannelDelta": 1,
+      "totalPixels": 9216
+    }
+  },
+  {
+    "source": "game/assets/ui2/skills/wind_boomerang_1.png",
+    "native": {
+      "changedPixels": 1508,
+      "maxChannelDelta": 1,
+      "totalPixels": 63504
+    },
+    "scaled": {
+      "changedPixels": 260,
+      "maxChannelDelta": 1,
+      "totalPixels": 9216
+    }
+  },
+  {
+    "source": "game/assets/ui2/skills/wind_mboomerang_1.png",
+    "native": {
+      "changedPixels": 3061,
+      "maxChannelDelta": 1,
+      "totalPixels": 75625
+    },
+    "scaled": {
+      "changedPixels": 411,
+      "maxChannelDelta": 1,
+      "totalPixels": 9216
+    }
+  },
+  {
+    "source": "game/assets/ui2/skills/wind_top_1.png",
+    "native": {
+      "changedPixels": 3183,
+      "maxChannelDelta": 1,
+      "totalPixels": 33124
+    },
+    "scaled": {
+      "changedPixels": 942,
+      "maxChannelDelta": 1,
+      "totalPixels": 9216
+    }
+  },
+  {
+    "source": "game/assets/ui2/skills/wind_typhoon_1.png",
+    "native": {
+      "changedPixels": 5632,
+      "maxChannelDelta": 1,
+      "totalPixels": 70225
+    },
+    "scaled": {
+      "changedPixels": 899,
+      "maxChannelDelta": 1,
+      "totalPixels": 9216
+    }
+  }
+]

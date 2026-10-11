@@ -20,12 +20,15 @@ test('UI 1 keeps legacy SVG markup and does not preload UI 2 art', () => mode(fa
   assert.doesNotMatch(GuardianUI.prototype.training.call({ titleBar: () => '' }, freshProfile()), /ui2|sg-training-card/);
 }));
 test('UI 2 uses context-specific art and all 44 preload icons exist', () => mode(true, () => {
-  assert.match(icon('element_earth'), /ui2\/icons\/el_earth\.png/);
-  assert.match(icon('gift'), /cur_gift\.png/);
-  assert.match(icon2('nav_training','mode_melee'), /nav_training\.png/);
+  assert.match(icon('element_earth'), /ui2\/icons\/el_earth\.webp/);
+  assert.match(icon('gift'), /cur_gift\.webp/);
+  assert.match(icon2('nav_training','mode_melee'), /nav_training\.webp/);
   assert.equal(UI2_ICONS.length, 44);
   assert.equal(new Set(UI2_ICONS).size, 44);
-  for (const name of UI2_ICONS) assert.ok(existsSync(new URL(`../game/assets/ui2/icons/${name}.png`, import.meta.url)), name);
+  for (const name of UI2_ICONS) {
+    const actual=assetURL(`./assets/ui2/icons/${name}.webp`).split('?')[0].replace(/^\.\//,'');
+    assert.ok(existsSync(new URL(`../game/${actual}`, import.meta.url)), name);
+  }
 }));
 test('UI 1 keeps original skill paths and symbol text; UI 2 has every referenced copy', () => {
   const manifest = JSON.parse(readFileSync(new URL('../game/assets/ui2/skills/manifest.json', import.meta.url), 'utf8'));
@@ -34,14 +37,14 @@ test('UI 1 keeps original skill paths and symbol text; UI 2 has every referenced
   mode(false, () => {
     assert.equal(symbol2('btn_help','?'), '?');
     assert.equal(symbol2('btn_close','×'), '×');
-    for (const name of sprites) assert.equal(skillAsset(name), assetURL(`./assets/sprites/skills/${name}.png`));
+    for (const name of sprites) assert.equal(skillAsset(name), assetURL(`./assets/sprites/skills/${name}.webp`));
   });
   mode(true, () => {
-    assert.match(symbol2('btn_check','✓'), /btn_check\.png/);
+    assert.match(symbol2('btn_check','✓'), /btn_check\.webp/);
     for (const name of sprites) {
-      assert.equal(skillAsset(name), assetURL(`./assets/ui2/skills/${name}.png`));
-      assert.ok(existsSync(new URL(`../game/assets/ui2/skills/${name}.png`, import.meta.url)));
-      assert.equal(manifest[name].source, `game/assets/sprites/skills/${name}.png`);
+      assert.equal(skillAsset(name), assetURL(`./assets/ui2/skills/${name}.webp`));
+      assert.ok(existsSync(new URL(`../game/assets/ui2/skills/${name}.webp`, import.meta.url)));
+      assert.equal(manifest[name].source, 'game/'+assetURL(`./assets/sprites/skills/${name}.webp`).split('?')[0].replace(/^\.\//,''));
     }
   });
 });
@@ -60,8 +63,8 @@ test('UI 2 supply stages do not expose grade or celebration until party', () => 
         const frame = html.slice(0, html.indexOf('<div class="sg-sup-stage">'));
         if (neutral === undefined) neutral = frame;
         assert.equal(frame, neutral);
-        assert.match(html, /ui2\/icons\/supply_closed\.png/);
-        assert.match(html, /ui2\/icons\/supply_open\.png/);
+        assert.match(html, /ui2\/icons\/supply_closed\.webp/);
+        assert.match(html, /ui2\/icons\/supply_open\.webp/);
         assert.doesNotMatch(html, /sg-sup-lidimg/);
       } };
       GuardianUI.prototype.supplyShow.call(ui, { front:'result', grade, level:3 });
@@ -84,7 +87,7 @@ test('training still shows calculated cost and disables every unaffordable actio
   for (const id of ['attack','hp','speed']) {
     assert.match(html, new RegExp(`data-stat="${id}" disabled`));
     assert.ok(html.includes(`훈련하기 · ${trainingCost(p.training[id])} 코인`));
-    assert.ok(html.includes(`stat_${id}.png`));
+    assert.ok(html.includes(`stat_${id}.webp`));
   }
 }));
 test('maximum training replaces the meters with three ribbons and keeps actions disabled', () => mode(true, () => {

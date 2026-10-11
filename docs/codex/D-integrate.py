@@ -1,8 +1,8 @@
 """Repeatable D-only source path updates from conversion decisions, plus cutter migration."""
-import argparse, ast, json, re
+import argparse, ast, json, re, subprocess
 from pathlib import Path
 ROOT = Path(__file__).resolve().parents[2]
-ap = argparse.ArgumentParser(); ap.add_argument('mode', choices=['cutters','paths']); args=ap.parse_args()
+ap = argparse.ArgumentParser(); ap.add_argument('mode', choices=['cutters','paths','remove']); args=ap.parse_args()
 
 def write(p, text): p.write_text(text,encoding='utf-8',newline='\n')
 
@@ -36,6 +36,16 @@ if args.mode == 'cutters':
         ast.parse(text)
         write(p,text)
     print('Migrated cutters; previews and generator input sheets preserved')
+elif args.mode=='remove':
+    rows=json.loads((ROOT/'docs/codex/measurements/D/convert.json').read_text(encoding='utf-8'))['files']
+    rows=[r for r in rows if r['status']=='converted']
+    for row in rows:
+        assert row['source'].startswith('game/assets/') and not row['source'].startswith('game/assets/story/')
+        assert (ROOT/row['target']).is_file()
+    for i in range(0,len(rows),30):
+        subprocess.run(['git','rm','--',*[r['source'] for r in rows[i:i+30]]],cwd=ROOT,check=True,stdout=subprocess.DEVNULL)
+        subprocess.run(['git','add','--',*[r['target'] for r in rows[i:i+30]]],cwd=ROOT,check=True,stdout=subprocess.DEVNULL)
+    print(f'Replaced {len(rows)} originals; excluded/unreferenced files preserved')
 else:
     conversion=json.loads((ROOT/'docs/codex/measurements/D/convert.json').read_text(encoding='utf-8'))
     rows=conversion['files']; mapping={r['source'].removeprefix('game/assets/'):r['target'].removeprefix('game/assets/') for r in rows if r['status']=='converted'}
@@ -49,17 +59,27 @@ else:
             if p.name == 'assets.js':
                 for base,folder in [('IMG_BASE','sprites'),('UI_BASE','ui')]:
                     if old.startswith(folder+'/'): text=text.replace(base+' + "'+old[len(folder)+1:]+'"',base+' + "'+new[len(folder)+1:]+'"')
-        # Dynamic URL families must have one extension. Fail instead of pointing at nonexistent files.
+        # Dynamic families request WebP; assetURL resolves the explicit retained-file exceptions.
         families=['elements_v2/weapons','seoho_v1/pets','sprites/skills','sprites/t4','ui2/icons','ui2/skills']
         for family in families:
+            if p.suffix != '.js': continue
             family_rows=[r for r in rows if r['source'].startswith('game/assets/'+family+'/')]
             if not family_rows: continue
-            retained=[r['source'] for r in family_rows if r['status']!='converted']
-            if retained: raise ValueError(f'Mixed dynamic family {family}: {retained}')
             text=re.sub(r'(assets/'+re.escape(family)+r'/(?:\$\{[^}]+\}|[^"\x27`\s])+?)\.png',r'\1.webp',text)
         if p.name=='ui2-art.js':
             text=text.replace('/skills/${name}.png','/skills/${name}.webp').replace("'emblem.png'","'emblem.webp'")
-        if p.name=='assets.js': text=text.replace('20261011b1','20261012d1')
+        if p.suffix == '.js':
+            text=re.sub(r'(\./assets/(?:\$\{[^}]+\}|[^"\x27`\s])+?)\.png',
+                        lambda m:m[1]+'.webp' if '${' in m[1] else m[0],text)
+        if p.name=='assets.js':
+            text=text.replace('20261011b1','20261012d1')
+            exceptions={r['source'].removeprefix('game/').rsplit('.',1)[0]+'.webp': r['source'].removeprefix('game/') for r in rows if r['status']=='retained'}
+            table='export const IMAGE_FORMAT_EXCEPTIONS = '+json.dumps(exceptions,indent=2)+';\n'
+            if 'export const IMAGE_FORMAT_EXCEPTIONS' not in text:
+                text=text.replace('export function assetURL(src) {',table+'export function assetURL(src) {')
+                text=text.replace("  const [base, hash] = src.split('#');", "  const path = src.split(/[?#]/)[0];\n  const retained = IMAGE_FORMAT_EXCEPTIONS[path.replace(/^\\.\\//, '')];\n  if (retained) src = src.replace(path, (path.startsWith('./') ? './' : '') + retained);\n  const [base, hash] = src.split('#');")
+            else:
+                text=re.sub(r'export const IMAGE_FORMAT_EXCEPTIONS = \{.*?\};\n',lambda _:table,text,flags=re.S)
         write(p,text)
     manifest=ROOT/'game/assets/ui2/skills/manifest.json'
     text=manifest.read_text(encoding='utf-8')

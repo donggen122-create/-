@@ -1,6 +1,6 @@
 {
   "earth_boulder_1": {
-    "source": "game/assets/sprites/skills/earth_boulder_1.webp",
+    "source": "game/assets/sprites/skills/earth_boulder_1.png",
     "used_by": [
       "COMBOS:EVO_E1"
     ],
@@ -20,7 +20,7 @@
     ]
   },
   "earth_mole_1": {
-    "source": "game/assets/sprites/skills/earth_mole_1.webp",
+    "source": "game/assets/sprites/skills/earth_mole_1.png",
     "used_by": [
       "SKILLS:E2",
       "PARTS:PART_E2"
@@ -41,7 +41,7 @@
     ]
   },
   "earth_molefield": {
-    "source": "game/assets/sprites/skills/earth_molefield.webp",
+    "source": "game/assets/sprites/skills/earth_molefield.png",
     "used_by": [
       "COMBOS:EVO_E2"
     ],
@@ -61,7 +61,7 @@
     ]
   },
   "earth_stone_1": {
-    "source": "game/assets/sprites/skills/earth_stone_1.webp",
+    "source": "game/assets/sprites/skills/earth_stone_1.png",
     "used_by": [
       "SKILLS:E1",
       "PARTS:PART_E1"
@@ -82,7 +82,7 @@
     ]
   },
   "fire_bottle": {
-    "source": "game/assets/sprites/skills/fire_bottle.webp",
+    "source": "game/assets/sprites/skills/fire_bottle.png",
     "used_by": [
       "SKILLS:F1",
       "PARTS:PART_F1"
@@ -103,7 +103,7 @@
     ]
   },
   "fire_frocket": {
-    "source": "game/assets/sprites/skills/fire_frocket.webp",
+    "source": "game/assets/sprites/skills/fire_frocket.png",
     "used_by": [
       "COMBOS:EVO_F2"
     ],
@@ -123,7 +123,7 @@
     ]
   },
   "fire_rocket": {
-    "source": "game/assets/sprites/skills/fire_rocket.webp",
+    "source": "game/assets/sprites/skills/fire_rocket.png",
     "used_by": [
       "SKILLS:F2",
       "PARTS:PART_F2"
@@ -144,7 +144,7 @@
     ]
   },
   "fire_volcano": {
-    "source": "game/assets/sprites/skills/fire_volcano.webp",
+    "source": "game/assets/sprites/skills/fire_volcano.png",
     "used_by": [
       "COMBOS:EVO_F1"
     ],
@@ -164,7 +164,7 @@
     ]
   },
   "lightning_bee_1": {
-    "source": "game/assets/sprites/skills/lightning_bee_1.webp",
+    "source": "game/assets/sprites/skills/lightning_bee_1.png",
     "used_by": [
       "SKILLS:L2",
       "PARTS:PART_L2"
@@ -185,7 +185,7 @@
     ]
   },
   "lightning_cloud": {
-    "source": "game/assets/sprites/skills/lightning_cloud.webp",
+    "source": "game/assets/sprites/skills/lightning_cloud.png",
     "used_by": [
       "SKILLS:L1",
       "PARTS:PART_L1"
@@ -206,7 +206,7 @@
     ]
   },
   "lightning_storm": {
-    "source": "game/assets/sprites/skills/lightning_storm.webp",
+    "source": "game/assets/sprites/skills/lightning_storm.png",
     "used_by": [
       "COMBOS:EVO_L1"
     ],
@@ -226,7 +226,7 @@
     ]
   },
   "lightning_swarm": {
-    "source": "game/assets/sprites/skills/lightning_swarm.webp",
+    "source": "game/assets/sprites/skills/lightning_swarm.png",
     "used_by": [
       "COMBOS:EVO_L2"
     ],
@@ -246,7 +246,7 @@
     ]
   },
   "support_S1": {
-    "source": "game/assets/sprites/skills/support_S1.webp",
+    "source": "game/assets/sprites/skills/support_S1.png",
     "used_by": [
       "SUPPORTS:S1"
     ],
@@ -266,7 +266,7 @@
     ]
   },
   "support_S2": {
-    "source": "game/assets/sprites/skills/support_S2.webp",
+    "source": "game/assets/sprites/skills/support_S2.png",
     "used_by": [
       "SUPPORTS:S2"
     ],
@@ -286,7 +286,7 @@
     ]
   },
   "support_S3": {
-    "source": "game/assets/sprites/skills/support_S3.webp",
+    "source": "game/assets/sprites/skills/support_S3.png",
     "used_by": [
       "SUPPORTS:S3"
     ],
@@ -306,7 +306,7 @@
     ]
   },
   "support_S4": {
-    "source": "game/assets/sprites/skills/support_S4.webp",
+    "source": "game/assets/sprites/skills/support_S4.png",
     "used_by": [
       "SUPPORTS:S4"
     ],
@@ -326,7 +326,7 @@
     ]
   },
   "support_S5": {
-    "source": "game/assets/sprites/skills/support_S5.webp",
+    "source": "game/assets/sprites/skills/support_S5.png",
     "used_by": [
       "SUPPORTS:S5"
     ],
@@ -346,7 +346,7 @@
     ]
   },
   "support_S6": {
-    "source": "game/assets/sprites/skills/support_S6.webp",
+    "source": "game/assets/sprites/skills/support_S6.png",
     "used_by": [
       "SUPPORTS:S6"
     ],
@@ -366,7 +366,7 @@
     ]
   },
   "support_S7": {
-    "source": "game/assets/sprites/skills/support_S7.webp",
+    "source": "game/assets/sprites/skills/support_S7.png",
     "used_by": [
       "SUPPORTS:S7"
     ],
@@ -386,7 +386,7 @@
     ]
   },
   "support_S8": {
-    "source": "game/assets/sprites/skills/support_S8.webp",
+    "source": "game/assets/sprites/skills/support_S8.png",
     "used_by": [
       "SUPPORTS:S8"
     ],
@@ -406,7 +406,7 @@
     ]
   },
   "water_balloon": {
-    "source": "game/assets/sprites/skills/water_balloon.webp",
+    "source": "game/assets/sprites/skills/water_balloon.png",
     "used_by": [
       "SKILLS:W1",
       "PARTS:PART_W1"
@@ -427,7 +427,7 @@
     ]
   },
   "water_beam_tip": {
-    "source": "game/assets/sprites/skills/water_beam_tip.webp",
+    "source": "game/assets/sprites/skills/water_beam_tip.png",
     "used_by": [
       "SKILLS:W2",
       "PARTS:PART_W2"
@@ -448,7 +448,7 @@
     ]
   },
   "water_kballoon": {
-    "source": "game/assets/sprites/skills/water_kballoon.webp",
+    "source": "game/assets/sprites/skills/water_kballoon.png",
     "used_by": [
       "COMBOS:EVO_W1"
     ],
@@ -468,7 +468,7 @@
     ]
   },
   "water_rbeam_tip": {
-    "source": "game/assets/sprites/skills/water_rbeam_tip.webp",
+    "source": "game/assets/sprites/skills/water_rbeam_tip.png",
     "used_by": [
       "COMBOS:EVO_W2"
     ],
@@ -488,7 +488,7 @@
     ]
   },
   "wind_boomerang_1": {
-    "source": "game/assets/sprites/skills/wind_boomerang_1.webp",
+    "source": "game/assets/sprites/skills/wind_boomerang_1.png",
     "used_by": [
       "SKILLS:V1",
       "PARTS:PART_V1"
@@ -509,7 +509,7 @@
     ]
   },
   "wind_mboomerang_1": {
-    "source": "game/assets/sprites/skills/wind_mboomerang_1.webp",
+    "source": "game/assets/sprites/skills/wind_mboomerang_1.png",
     "used_by": [
       "COMBOS:EVO_V1"
     ],
@@ -529,7 +529,7 @@
     ]
   },
   "wind_top_1": {
-    "source": "game/assets/sprites/skills/wind_top_1.webp",
+    "source": "game/assets/sprites/skills/wind_top_1.png",
     "used_by": [
       "SKILLS:V2",
       "PARTS:PART_V2"
@@ -550,7 +550,7 @@
     ]
   },
   "wind_typhoon_1": {
-    "source": "game/assets/sprites/skills/wind_typhoon_1.webp",
+    "source": "game/assets/sprites/skills/wind_typhoon_1.png",
     "used_by": [
       "COMBOS:EVO_V2"
     ],

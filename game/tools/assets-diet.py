@@ -57,11 +57,13 @@ def main():
                'afterBytes':len(encoded) if converted else len(data), 'dimensions':dimensions,
                'sourceSha256':digest(data),'outputSha256':digest(encoded if converted else data),
                'reason':'replay tolerance fallback' if name in force else '20% threshold', **stats}
+        if name in force and cached:
+            row['initialDecision'] = cached.get('initialDecision', cached)
         rows.append(row)
         print(name, row['status'], row['beforeBytes'], row['afterBytes'], flush=True)
     result = {'baselineCommit':inventory['commit'],'pillow':__version__,'policy':'lossless exact method=6; large candidates q90 then q95 if max RGBA delta>24, then lossless; save >=20%; unreferenced/story untouched', 'files':rows}
     OUT.parent.mkdir(parents=True,exist_ok=True)
-    OUT.write_text(json.dumps(result,ensure_ascii=False,indent=2)+'\n',encoding='utf-8')
+    OUT.write_text(json.dumps(result,ensure_ascii=False,indent=2)+'\n',encoding='utf-8',newline='\n')
 
 
 if __name__ == '__main__': main()

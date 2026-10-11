@@ -44,6 +44,7 @@ def normalize_skills(output):
     prepared=[]; manifest={}
     for name,ids in sorted(used.items()):
         source=ROOT/f'game/assets/sprites/skills/{name}.webp'
+        if not source.exists(): source=source.with_suffix('.png')
         im=Image.open(source).convert('RGBA'); box=im.getchannel('A').getbbox()
         if not box: raise ValueError(f'Empty skill sprite: {source}')
         crop=im.crop(box); side=math.ceil(max(crop.size)/.88)
