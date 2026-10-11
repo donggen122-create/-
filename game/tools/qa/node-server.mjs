@@ -49,6 +49,7 @@ http.createServer(async(req,res)=>{
    const {id,profile}=JSON.parse(body);if(!/^(qa|확인대원)/.test(id))throw new Error('QA IDs only');
    DB.sql.prepare('INSERT INTO guardian_profiles(user_id,state) VALUES(?,?) ON CONFLICT(user_id) DO UPDATE SET state=excluded.state,revision=revision+1').run(id,JSON.stringify(profile));
    DB.sql.prepare("UPDATE play_runs SET status='expired' WHERE user_id=? AND status='active'").run(id);
+   DB.sql.prepare('DELETE FROM play_days WHERE user_id=?').run(id); // Repeatable QA fixture, not production quota logic.
    res.setHeader('content-type','application/json');res.end('{"ok":true}');return;
   }
   const request=new Request(`http://localhost:${port}${req.url}`,{method:req.method,headers:req.headers,...(!['GET','HEAD'].includes(req.method)?{body}: {})});

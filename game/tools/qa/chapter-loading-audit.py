@@ -32,6 +32,8 @@ with sync_playwright() as pw:
     page.on('response',lambda r:bad.append(r.url) if r.status>=400 and '/api/register' not in r.url else None)
     page.on('request',lambda r:requests.append(r.url))
     # Seed before login too: repeated QA must not briefly render an older chapter-4 profile.
+    page.request.post(BASE+'/_qa/reset-attempts')
+    page.request.post(BASE+'/api/register',data={'id':'qachapter','pw':'qa_local_1234'})
     assert page.request.post(BASE+'/_qa/profile',data={'id':'qachapter','profile':p},max_retries=2).ok
     page.goto(BASE+'/?ui=2',wait_until='networkidle');page.request.post(BASE+'/_qa/reset-attempts')
     page.locator('#login-id').fill('qachapter');page.locator('#login-pw').fill('qa_local_1234');page.locator('#btn-register').click();page.wait_for_timeout(350)

@@ -340,6 +340,7 @@ function ensureCtx() {
 }
 
 function loadBuffer(name) {
+  if (!SFX_FILES[name]) return Promise.resolve(null);   // Unknown optional sound must never fetch /undefined.
   if (bufferCache[name]) return Promise.resolve(bufferCache[name]);
   if (pendingLoads[name]) return pendingLoads[name];
   const ctx = ensureCtx();

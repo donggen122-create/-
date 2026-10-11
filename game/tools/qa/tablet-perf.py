@@ -133,7 +133,7 @@ def start(page, stage):
     # DOM click permits paging to chapter 1 even when the 3/4 chapter pair is displayed.
     page.evaluate(f"document.querySelector('.sg-chapter-chip[data-chapter=\"{chapter}\"]').click()")
     page.locator(f'[data-stage="{stage}"]').click()
-    page.locator('#sg-start').click()
+    page.evaluate("(document.querySelector('#sg-start-dock')||document.querySelector('#sg-start')).click()")
     page.locator('#levelup:not(.hidden)').wait_for()
 
 
