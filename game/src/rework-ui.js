@@ -74,12 +74,24 @@ export class GuardianUI {
     this.dialog.addEventListener('click',e=>{if(e.target===this.dialog&&!this.dialog.dataset.lock)this.dialog.close();});
     this.dialog.addEventListener('cancel',e=>{if(this.dialog.dataset.lock)e.preventDefault();});
     this.root.addEventListener('click',e=>this.click(e));
+    window.addEventListener('resize',()=>this.updateDepartureDock());
+    document.fonts?.ready.then(()=>this.updateDepartureDock());
     this.root.addEventListener('change',e=>{
       if(e.target.id==='sg-difficulty')this.setDifficulty(e.target.value);
     });
   }
   state(){return this.c.getState();}
   loadingProgress(percent){this.root.querySelectorAll('[data-do="start"]').forEach(b=>{b.disabled=true;b.textContent=`불러오는 중 ${percent}%`;});}
+  updateDepartureDock(){
+    if(!ui2())return;
+    this.root.querySelector('#sg-start-dock')?.remove();
+    const source=this.root.querySelector('#sg-start'),nav=this.root.querySelector('.sg-nav');
+    if(!source||!nav||this.tab!=='adventure')return;
+    const r=source.getBoundingClientRect(),n=nav.getBoundingClientRect();
+    if(r.top>=0&&r.bottom<=n.top-8)return;
+    const dock=source.cloneNode(true);dock.id='sg-start-dock';dock.classList.add('sg-departure-dock');
+    dock.style.bottom=`${Math.max(0,innerHeight-n.top)+10}px`;this.root.append(dock);
+  }
   // UI v2(ui-v2.css): 지금 탭·장을 root에 적어 두면 화면 뒤 장 그림을 CSS가 고른다(장 5단계를 정화했으면 맑은 그림)
   markRoot(p){const ch=CHAPTERS.find(c=>c.n===String(this.chapter))||CHAPTERS[0];this.root.dataset.tab=this.tab;this.root.dataset.chapter=ch.n;this.root.dataset.cleared=p?.stages?.[chapterStages(ch)[4].id]?.cleared?'1':'0';}
   setDifficulty(id){
@@ -98,10 +110,11 @@ export class GuardianUI {
     if(!R.stageUnlocked(p,this.stage))this.stage='CH01';
     const pendingPet=R.pendingPet(p),pendingPart=R.pendingPart(p);
     this.markRoot(p);
-    this.root.innerHTML=versionMarkup(`<header class="sg-header"><div class="sg-brand">${ui2()?'<img class="sg-ui2-emblem" src="./assets/ui2/emblem.png" alt=""/>':icon('element_wind')}<span>서호팡팡<small>수호대</small></span></div><div class="sg-wallet"><button data-do="passes" aria-label="이용권 안내">${icon('pass')}<b>${passes?.remaining??'…'}</b><span>${passes?.event?'추석 2배':'이용권'}</span></button><div>${icon('coin')}<b>${p.coins.toLocaleString()}</b><span>코인</span></div><button data-tab="parts" aria-label="파츠 보급과 보급권">${icon('gift')}<b>${p.gifts}</b><span>보급권</span></button></div><button class="sg-account" data-do="account" aria-label="계정과 캐릭터 선택">${ui2()?`${art2('fn_settings','sg-account-settings')}<img class="sg-ui2-avatar" src="./assets/ui/title_${p.hero==='minji'?'minji':'hoya'}.png" alt=""/><span>${p.hero==='minji'?'민지':'호야'}<small>${esc(user)}</small></span>`:`${esc(user)} 님`}</button></header>
+    this.root.innerHTML=versionMarkup(`<header class="sg-header"><div class="sg-brand">${ui2()?'<img class="sg-ui2-emblem" src="./assets/ui2/emblem.png" alt=""/>':icon('element_wind')}<span>서호팡팡<small>수호대</small></span></div><div class="sg-wallet"><button data-do="passes" aria-label="이용권 안내">${icon('pass')}<b>${passes?.remaining??'…'}</b><span>${passes?.event?'추석 2배':'이용권'}</span></button><div>${icon('coin')}<b>${p.coins.toLocaleString()}</b><span>코인</span></div><button data-tab="parts" aria-label="파츠 보급과 보급권">${icon('gift')}<b>${p.gifts}</b><span>보급권</span></button></div>${ui2()?`<button class="sg-news" data-do="news" aria-label="소식 다시 보기">${art2('fn_news')}</button>`:''}<button class="sg-account" data-do="account" aria-label="계정과 캐릭터 선택">${ui2()?`${art2('fn_settings','sg-account-settings')}<img class="sg-ui2-avatar" src="./assets/ui/title_${p.hero==='minji'?'minji':'hoya'}.png" alt=""/><span>${p.hero==='minji'?'민지':'호야'}<small>${esc(user)}</small></span>`:`${esc(user)} 님`}</button></header>
     <main class="sg-main" aria-live="polite">${this.nextTask(p)}${this[this.tab](p,passes)}</main>
     <nav class="sg-nav" aria-label="수호대 메뉴">${[['adventure','map','모험'],['training','mode_melee','훈련'],['parts','part_PART_F1','파츠'],['gear','shield','장비'],['friends','heart','친구'],['book','book','도감']].map(([id,im,label])=>`<button data-tab="${id}" class="${this.tab===id?'on':''}" aria-current="${this.tab===id?'page':'false'}">${icon2('nav_'+id,im)}<span>${label}${id==='parts'&&p.gifts>0?` <b class="sg-count-badge" aria-label="보급권 ${p.gifts}장">${p.gifts}</b>`:''}${id==='gear'&&this.gearAlert(p)?' <b class="sg-count-badge" aria-label="장비 할 일">!</b>':''}${id==='friends'&&pendingPet?' <b class="sg-count-badge" aria-label="친구 고르기">!</b>':''}</span></button>`).join('')}</nav>`);
     if(this.busy)this.root.querySelectorAll('button,select').forEach(b=>b.disabled=true);
+    this.updateDepartureDock();
   }
   // 밸런스 시험 계정 로비(2026-09-29): 친구 1마리의 등급만 바꾸고 1-5 어려움만 출동. 다른 조작은 서버도 막는다(rework-core action).
   renderTest(p,passes,user){
@@ -579,6 +592,7 @@ export class GuardianUI {
       if(!R.heroLocked(p)){this.openDialog(`<h2>계정</h2><p>${esc(this.state().user||'')} 님</p><button class="sg-primary" data-do-hero>캐릭터 고르기</button><button id="sg-logout">로그아웃</button><button data-close>닫기</button>`);this.dialog.querySelector('[data-do-hero]').onclick=()=>this.heroDialog();this.dialog.querySelector('#sg-logout').onclick=()=>{this.dialog.close();this.c.logout();};return;}
       this.openDialog(`<h2>계정</h2><div class="sg-hero-choice sg-hero-now"><div><img src="./assets/sprites/heroes/${p.hero==='minji'?'minji':'hoya'}_idle_1.png" alt=""/><b>${heroName(p.hero)}</b><small>가입할 때 고른 캐릭터</small></div></div><p class="sg-footnote">캐릭터는 바꿀 수 없어요. 잘못 골랐다면 선생님께 말씀해 주세요.</p><button id="sg-logout">로그아웃</button><button data-close>닫기</button>`);this.dialog.querySelector('#sg-logout').onclick=()=>{this.dialog.close();this.c.logout();};return;
     }
+    if(b.dataset.do==='news'){this.c.news?.();return;}
     if(b.dataset.do==='start'){
       if(!R.heroLocked(p)){this.heroDialog();return;}
       const difficulty=this.root.querySelector('#sg-difficulty').value,weaponMode=this.root.querySelector('#sg-weapon-mode').value;this.busy=true;b.disabled=true;

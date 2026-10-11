@@ -69,6 +69,12 @@ AUDIT_JS = r"""(kind)=>{
       if(r.bottom>H+2||r.top<-2)(scroll?out.needsScroll=out.needsScroll||[]:out.vOverflow).push(name(e)+` [${Math.round(r.top)}..${Math.round(r.bottom)}] H=${H}`);}
   }
   if(document.documentElement.classList.contains('ui2')){
+    if(kind==='lobby-adventure'){
+      const buttons=[...document.querySelectorAll('#guardian-lobby [data-do="start"]')].filter(vis);
+      out.departureVisible=[];
+      const nav=document.querySelector('#guardian-lobby .sg-nav')?.getBoundingClientRect();
+      if(!buttons.some(e=>{const r=e.getBoundingClientRect(),at=document.elementFromPoint(r.left+r.width/2,r.top+r.height/2);return r.top>=0&&r.bottom<=Math.min(H,nav?.top??H)&&r.left>=0&&r.right<=W&&(at===e||e.contains(at));}))out.departureVisible.push('Departure action is not visible above the menu on first screen');
+    }
     const slots=[...document.querySelectorAll('#guardian-lobby [data-gear-slot]')].filter(vis);
     if(kind==='lobby-gear'){
       out.gearLayout=[];

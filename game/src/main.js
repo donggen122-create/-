@@ -17,7 +17,7 @@ import {
 } from "./meta.js";
 import { SPRITES, UI_IMAGES, HEROES, loadImage, readyImage, loadHeroAssets, loadBattleAssets, ELEMENT_SKILL_NAMES, assetURL, tintedSprite, playSfx, playSynth, isMuted, toggleMuted } from "./assets.js";
 import { music } from "./music.js";
-import { createFrameClock, createRenderQuality, setText, setWidth } from "./runtime-performance.js";
+import { createFrameClock, createRenderQuality, qualityLevels, setText, setWidth } from "./runtime-performance.js";
 import { createThemeEffects } from "./theme-effects.js";
 import { sprite as loadEffectSprite, setEffectQuality } from "./element-effects.js";
 const themeFx = createThemeEffects(SPRITES);
@@ -88,6 +88,13 @@ bgmOn();   // 처음 화면(시작 화면)부터. 자동 재생이 막히면 첫
 // screenW/screenH = 실제 화면 크기(대왕 체력 막대·조이스틱·글처럼 화면에 붙는 것은 screenSpace()로 그린다).
 let viewW = 0, viewH = 0, screenW = 0, screenH = 0, viewZoom = 1, viewDpr = 1;
 const renderQuality = createRenderQuality(window.devicePixelRatio || 1);
+// Balance switch: deliberately OFF. Teacher decides whether/what cap to enable.
+const SLOW_ENEMY_CAP = {enabled:false, cap:100};
+const slowQualityMin = Math.max(0,qualityLevels(window.devicePixelRatio || 1).length-2);
+function slowEnemyLimited(e) {
+  return SLOW_ENEMY_CAP.enabled && renderQuality.level>=slowQualityMin &&
+    !e.elite && !e.sgTrait && !e.sgSpecial && enemies.length>SLOW_ENEMY_CAP.cap;
+}
 let vignetteCache = null;
 const VIEW_MIN_TILES = 16;
 function worldZoom(W, H) { return Math.max(0.62, Math.min(1, Math.min(W, H) / (VIEW_MIN_TILES * U))); }
@@ -1620,7 +1627,7 @@ let spawnedElites = new Set();
 // 난이도 배수 중 1보다 큰 것(어려움의 체력·속도·받는 피해)은 처음 90초에 걸쳐 1에서 목표값까지 오른다 — 스킬이 아직 없을 때 바로 쓰러지지 않게.
 // 1보다 작은 배수(쉬움)는 처음부터 그대로. 개편판이 아니면(diff* 없음) 예전 값(enemyHpMul 등)을 쓴다.
 function sgDiffMul(v) { return v > 1 ? 1 + (v - 1) * Math.min(1, runTime / 90) : v; }
-function spawnEnemyAt(typeId, x, y, exact = false) {
+function spawnEnemyAt(typeId, x, y, exact = false, withTrait = false, forcedTrait = null, special = false) {
   const def = ENEMIES[typeId];
   if (def.behavior === "mine" && player && !exact) {     // 세균몬: 화면 안 바닥에 지뢰처럼 생긴다(내 발밑은 피해서 3.5~6.5칸)
     const a = Math.random() * Math.PI * 2, r = (3.5 + Math.random() * 3) * U;
@@ -1630,7 +1637,7 @@ function spawnEnemyAt(typeId, x, y, exact = false) {
   // 난이도별 시간 성장(보통·어려움): 1분마다 새 적의 체력·공격력이 더 오른다
   const hpMul = runMods.diffHp ? runMods.stageHp * sgDiffMul(runMods.diffHp) : (runMods.enemyHpMul || 1);
   const hp = Math.round(enemyHp(def, curMult(), minutes) * hpMul * (1 + (runMods.hpGrowth || 0) * minutes) * (runCfg.rework && !def.elite ? R.PACE.hp : 1));
-  enemies.push({
+  const e={
     typeId, x, y, hp, hpMax: hp,
     atk: enemyAtk(def, curMult(), minutes) * (1 + (runMods.atkGrowth || 0) * minutes) * (runCfg.rework && !def.elite ? R.PACE.atk : 1),
     spdU: def.spdU * (runMods.diffSpd ? sgDiffMul(runMods.diffSpd) : (runMods.enemySpdMul || 1)), radiusU: def.radiusU, elite: !!def.elite, hitMark: player.hitCount || 0,
@@ -1639,7 +1646,14 @@ function spawnEnemyAt(typeId, x, y, exact = false) {
     // 행동별 상태
     stateT: 0, phase: "idle", dashVx: 0, dashVy: 0,
     orbitOffset: Math.random() * Math.PI * 2, summonT: 0, blinkT: 2 + Math.random() * 2,
-  });
+  };
+  enemies.push(e);
+  // Same RNG order when disabled: trait roll stays immediately after creation.
+  if(withTrait)sgMaybeTrait(e);
+  if(forcedTrait)sgApplyTrait(e,forcedTrait);
+  if(special&&SLOW_ENEMY_CAP.enabled)e.sgSpecial=true;
+  if(slowEnemyLimited(e)){enemies.pop();return null;}
+  return e;
 }
 
 function spawnRingAroundCamera(typeId) {
@@ -1649,8 +1663,7 @@ function spawnRingAroundCamera(typeId) {
     const c = Math.abs(Math.cos(angle)), s = Math.abs(Math.sin(angle));
     r = Math.min(c > 1e-3 ? viewW / 2 / c : Infinity, s > 1e-3 ? viewH / 2 / s : Infinity) + 1.5 * U;
   }
-  spawnEnemyAt(typeId, player.x + Math.cos(angle) * r, player.y + Math.sin(angle) * r);
-  sgMaybeTrait(enemies[enemies.length - 1]);
+  spawnEnemyAt(typeId, player.x + Math.cos(angle) * r, player.y + Math.sin(angle) * r, false, true);
 }
 
 // ---------- 어려움: 특별한 적(저항·능력) — 2026-09-23 사용자 요청 ----------
@@ -1700,7 +1713,7 @@ function sgTraitTick(e, dt) {
 }
 function sgSplit(e) {
   for (const side of [-1, 1]) {
-    spawnEnemyAt(e.typeId, e.x + side * 0.5 * U, e.y + (Math.random() - 0.5) * 0.4 * U);
+    spawnEnemyAt(e.typeId, e.x + side * 0.5 * U, e.y + (Math.random() - 0.5) * 0.4 * U, false, false, null, true);
     const c = enemies[enemies.length - 1];
     c.hp = c.hpMax = Math.max(1, Math.round(e.hpMax * 0.4)); c.sgScale = 0.72; c.radiusU *= 0.75; c.spdU = e.spdU * 1.1; c.spawnT = 0.4; c.kbVx = side * 140; c.sgShown = true;
   }
@@ -1805,7 +1818,7 @@ function sgOpeningWave() {
   for (let i = 0; i < n; i++) {
     const a = a0 + (i / n) * Math.PI * 2 + (Math.random() - 0.5) * 0.5, r = (d0 + Math.random() * (d1 - d0)) * U;
     const x = player.x + Math.cos(a) * r, y = player.y + Math.sin(a) * r;
-    spawnEnemyAt(pool[i % pool.length], x, y); sgMaybeTrait(enemies[enemies.length - 1]);
+    spawnEnemyAt(pool[i % pool.length], x, y, false, true);
     if (chapter?.theme) themeFx.emit("summon", x, y, { radius: 26, life: 0.5 });
   }
 }
@@ -5264,12 +5277,15 @@ window.__debugSpawn = function (typeId, n, radiusPx = 200) {
   }
   return enemies.length;
 };
+if(SG_LOCAL)window.__debugEnemyCap=(enabled=false,cap=100)=>{
+  SLOW_ENEMY_CAP.enabled=enabled===true;SLOW_ENEMY_CAP.cap=Math.max(1,cap|0);
+  return {...SLOW_ENEMY_CAP,slowQualityMin};
+};
 // QA 전용: 어려움의 특별한 적을 주인공 둘레에 만든다(trait: resist·armor·fast·regen·split)
 window.__debugSpawnTrait = function (typeId, trait, n, radiusPx = 200) {
   for (let i = 0; i < n; i++) {
     const a = (i / n) * Math.PI * 2 + 0.4, r = radiusPx * (0.75 + Math.random() * 0.25);
-    spawnEnemyAt(typeId, player.x + Math.cos(a) * r, player.y + Math.sin(a) * r);
-    sgApplyTrait(enemies[enemies.length - 1], trait);
+    spawnEnemyAt(typeId, player.x + Math.cos(a) * r, player.y + Math.sin(a) * r, false, false, trait);
   }
   return enemies.filter((e) => e.sgTrait).map((e) => ({ trait: e.sgTrait, resist: e.sgResist || null, label: e.sgLabel }));
 };
@@ -5514,7 +5530,7 @@ async function connectCloud() {
 }
 document.getElementById("btn-retry").addEventListener("click", () => { playSfx("uiClick", 0.4); connectCloud(); });
 sgUI=new GuardianUI(elMenu,{
-  getState:()=>sgState,start:sgStart,action:sgAction,refresh:sgRefresh,abandon:sgAbandon,sfx:playSynth,
+  getState:()=>sgState,news:()=>sgChapter4Notice(sgState.profile,sgStorageKey('ch4-notice-hide')),start:sgStart,action:sgAction,refresh:sgRefresh,abandon:sgAbandon,sfx:playSynth,
   logout:async()=>{await cloud.logout();sgState={profile:null,passes:null,user:null,active:null,error:null};elTitle.classList.remove('hidden');refreshTitle();sgUI.render();}
 });
 for(const id of ['sg-objective','sg-run-tools']){const el=document.createElement('div');el.id=id;document.body.append(el);}
@@ -5550,7 +5566,7 @@ function sgMaybeGuidance(){
   // 업데이트 알림(2026-09-30 사용자 "접속하면 1회 3장이 업데이트 되었다는 메시지, 그 이전에 뜨던 팝업은 지워"): 아이디마다 한 번(이 기기).
   // 예전 안내(파츠 보급 규칙 supply-v3 · 사라진 파츠 복구)는 뺐다. 캐릭터 고르기·첫 파츠·첫 장비 안내는 그대로.
   if(p.testMode)return;   // 밸런스 시험 계정: 업데이트 알림·첫 안내를 띄우지 않는다(전용 로비만)
-  // 4장 공지(2026-10-07 사용자 "다시 보지 않기·닫기 버튼"): 닫기 = 다음 접속에 또 뜸(같은 화면에서는 한 번), 다시 보지 않기 = 이 기기에서 그 아이디는 그만
+  // 4장 공지: 닫으면 계정·기기마다 한 번. 머리글 소식으로 다시 열 수 있다.
   const ch4Key=sgStorageKey('ch4-notice-hide');let ch4Hidden=false;try{ch4Hidden=localStorage.getItem(ch4Key)==='1';}catch(e){}
   if(!ch4Hidden&&!sgShownGuidance.has(ch4Key)){sgShownGuidance.add(ch4Key);sgChapter4Notice(p,ch4Key);return;}
   if(R.pendingPart(p)&&R.selectableParts(p).length&&once('first-part-guide')){sgUI.firstPartDialog();return;}
@@ -5558,16 +5574,18 @@ function sgMaybeGuidance(){
 }
 // 4장 업데이트 공지(2026-10-07): 공지 그림(assets/ui/notice_ch4.jpg, 사용자 Codex)이 있으면 그림을, 없으면 몬스터 6마리를 보여 준다.
 function sgChapter4Notice(p,hideKey){
-  const open=R.stageUnlocked(p,'CH16'),img=n=>`<img src="./assets/sprites/t4/${n}.png" alt="">`;
+  // Every close path (button, backdrop, Escape, go) persists for this account/device.
+  sgUI.dialog.addEventListener('close',()=>{try{localStorage.setItem(hideKey,'1');}catch(e){}},{once:true});
+  const open=R.stageUnlocked(p,'CH16'),img=n=>`<img src="${assetURL(`./assets/sprites/t4/${n}.png`)}" alt="">`;
   sgUI.openDialog(`<div class="sg-update sg-update-ch4"><span class="sg-update-tag">NEW 업데이트</span><h2>${isUI2()?art2('fn_news'):''}4장 「불타는 숲」 오픈!</h2>
-    <img class="sg-update-art" src="./assets/ui/notice_ch4.jpg" alt="4장 불타는 숲">
-    <div class="sg-update-foes">${['en_burner_m','en_saw','en_nutria','en_dozer','en_bulki','boss_calm'].map(img).join('')}</div>
+    <img class="sg-update-art" src="${assetURL('./assets/ui/notice_ch4.jpg')}" alt="4장 불타는 숲">
+    <template class="sg-update-foes-template"><div class="sg-update-foes">${['en_burner_m','en_saw','en_nutria','en_dozer','en_bulki','boss_calm'].map(img).join('')}</div></template>
     <p>4장 「불타는 숲」이 열렸어요!<br>친구들이 만든 숲 몬스터 5종 · 새 맵 5곳<br>불씨를 끄고 산불 거인을 정화해요.</p>
     <p class="sg-update-open">${open?'지금 바로 4장에 도전할 수 있어요!':'3-5 구정물 대왕을 정화하면 4장이 열려요.'}</p></div>
     <div class="sg-event-btns"><button class="sg-primary" id="sg-update-go">${open?'4장 보러 가기':'모험 보러 가기'}</button></div>
     <div class="sg-event-btns sg-update-hide"><button id="sg-update-never">다시 보지 않기</button><button data-close>닫기</button></div>`);
   const art=sgUI.dialog.querySelector('.sg-update-art');
-  if(art){art.onload=()=>art.closest('.sg-update')?.classList.add('has-art');art.onerror=()=>art.remove();if(art.complete&&art.naturalWidth)art.onload();}
+  if(art){art.onload=()=>art.closest('.sg-update')?.classList.add('has-art');art.onerror=()=>{const fallback=sgUI.dialog.querySelector('.sg-update-foes-template');if(fallback)fallback.replaceWith(fallback.content.cloneNode(true));art.remove();};if(art.complete&&art.naturalWidth)art.onload();}
   const never=document.getElementById('sg-update-never');
   if(never)never.onclick=()=>{try{localStorage.setItem(hideKey,'1');}catch(e){}sgUI.dialog.close();};
   const go=document.getElementById('sg-update-go');

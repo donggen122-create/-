@@ -18,7 +18,8 @@ const images = [];
 export function preloadUI2() {
   if (!isUI2() || preloaded || typeof Image === 'undefined') return;
   preloaded = true;
-  for (const path of [...UI2_ICONS.map(name => `icons/${name}.png`), 'emblem.png']) {
+  // Markup fetches only its visible icons. Supply/gear icons wait for those tabs.
+  for (const path of ['emblem.png']) {
     const image = new Image(); image.src = `./assets/ui2/${path}`; images.push(image);
   }
 }

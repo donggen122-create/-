@@ -8,6 +8,18 @@
    ========================================================================================== */
 @font-face{font-family:"JuaUI";src:url('../assets/ui/jua-ui.woff2?v=20261011b1') format('woff2');font-display:swap}
 
+/* Keep the map above the briefing. A duplicate action appears only when the normal action is below the nav. */
+html.ui2 #guardian-lobby .sg-departure-dock{position:fixed;z-index:20;left:50%;transform:translateX(-50%)!important;width:min(520px,calc(100% - 32px));min-height:48px!important;margin:0!important}
+html.ui2 #guardian-lobby .sg-news{flex-shrink:0;width:36px;height:36px;min-height:36px!important;padding:2px!important;border:0!important;background:none!important;box-shadow:none!important}
+html.ui2 #guardian-lobby .sg-news .sg-icon{width:30px;height:30px}
+@media (max-height:850px) and (min-width:761px){
+ html.ui2 #guardian-lobby .sg-stage-map{padding:12px 12px 10px!important}
+ html.ui2 #guardian-lobby .sg-stage>img{width:82px!important;height:82px!important;padding:8px}
+ html.ui2 #guardian-lobby .sg-hero-scene{max-height:260px;min-height:0!important}
+ html.ui2 #guardian-lobby .sg-brief{padding:12px 16px!important}
+ html.ui2 #guardian-lobby .sg-departure{margin-top:14px!important}
+}
+
 html.ui2{
   --ink:#151a3d;
   --nv-1:#5577d6;--nv-2:#3a5bb8;--nv-3:#2a4396;--nv-4:#1f3278;--nv-5:#16245a;--nv-6:#0e1840;--nv-7:#091030;
