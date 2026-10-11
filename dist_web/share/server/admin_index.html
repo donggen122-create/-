@@ -58,6 +58,12 @@
   .role.teacher { color: #2c6a9e; border-color: #a9cdea; background: #eaf5ff; }
   .toast { position: fixed; left: 50%; bottom: 24px; transform: translateX(-50%); background: #4a2f14; color: #fff; padding: 10px 16px; border-radius: 10px; font-size: 14px; display: none; z-index: 20; }
   @media (max-width: 600px) { header { flex-wrap: wrap; } header h1 { font-size: 17px; flex-basis: 100%; } th, td { padding: 5px 5px; font-size: 12px; } #login { margin: 20px auto; } }
+  #stage-stats-panel th,#stage-stats-panel td {padding:3px 5px;font-size:11px;}
+  .stats-rate {position:relative;min-width:72px;background:#eee7d4;border-radius:5px;overflow:hidden;}
+  .stats-rate i {position:absolute;inset:0 auto 0 0;background:#b1d99c;}
+  .stats-rate span {position:relative;}
+  .stats-stopped td {background:#fff1d0;} .stats-stopped td:nth-child(6) {color:#ad451b;}
+  #stage-stats-panel td.stats-causes {white-space:normal;min-width:120px;max-width:240px;}
 </style>
 </head>
 <body>
@@ -83,6 +89,16 @@
   <section id="main" hidden>
     <div class="cards" id="cards"></div>
 
+    <div class="panel" id="stage-stats-panel">
+      <div class="row" style="margin:0"><b>단계별 현황</b><label for="stats-days">기간</label><select id="stats-days"><option value="7">최근 7일</option><option value="30" selected>최근 30일</option><option value="all">전체</option></select><button id="stats-retry" class="sm">통계 새로고침</button></div>
+      <div class="note" id="stage-stats-note" aria-live="polite"></div>
+      <div class="tablewrap"><table><thead><tr><th>단계</th><th>도전</th><th>성공</th><th>승률</th><th>학생 수</th><th>멈춘 학생</th><th>난이도 성공/도전</th><th>자주 쓰러진 까닭 (상위 3)</th><th>평균/하위1% FPS</th></tr></thead><tbody id="stage-stats-body"></tbody></table></div>
+    </div>
+    <div class="panel" id="device-stats-panel">
+      <div class="row" style="margin:0"><b>기기별 성능</b><label for="perf-stage">단계</label><select id="perf-stage"></select></div>
+      <div class="note">위 기간을 함께 사용해요. 화면 크기는 구간, 성능 수치는 판별 중앙값이에요. 마지막 화질은 Q 숫자가 클수록 낮아요.</div>
+      <div class="tablewrap"><table><thead><tr><th>기기</th><th>화면 구간</th><th>단계</th><th>판 수</th><th>평균 FPS</th><th>하위 1% FPS</th><th>50ms 초과 비율</th><th>마지막 화질 분포</th></tr></thead><tbody id="device-stats-body"></tbody></table></div>
+    </div>
     <div class="panel" id="online-panel">
       <div class="row" style="margin:0">
         <b>🟢 지금 접속 중 <span id="online-n">0</span>명</b>
@@ -144,7 +160,8 @@
 </dialog>
 <div class="toast" id="toast"></div>
 
-<script>
+<script type="module">
+import {installStageStats} from "./stage-stats.js";
 const $ = (s) => document.querySelector(s);
 const TOKEN_STORE = "seoho_admin_token", ROLE_STORE = "seoho_admin_role";
 let TOKEN = sessionStorage.getItem(TOKEN_STORE) || "";
@@ -195,6 +212,7 @@ function lastSeen(u) { return Math.max(num(u.last_login), num(u.last_seen)); }
 function mins(ms) { return Math.max(0, Math.round(ms / 60000)); }
 function esc(s) { return String(s ?? "").replace(/[<>&"]/g, (c) => ({ "<": "&lt;", ">": "&gt;", "&": "&amp;", '"': "&quot;" }[c])); }
 
+const loadStageStats=installStageStats(api);
 async function enter() {
   const me = await api("me"); ROLE = me.role; sessionStorage.setItem(ROLE_STORE, ROLE); applyRole();
   await load(); await loadOnline(); checkSignal(); loadTeacherState();
@@ -209,7 +227,7 @@ async function load() {
   const ev = grants.event;
   $("#event-note").textContent = ev ? `🌕 ${ev.title} 진행 중: 학생이 접속하면 하루 이용권 ${10 + ev.bonus}장(기본 10 + 이벤트 ${ev.bonus}장)이 돼요. 이벤트분은 아래 표의 "추가"에 포함되고, 지급 기록에는 나오지 않아요.` : "";
   $("#login").hidden = true; $("#main").hidden = false; $("#btn-refresh").hidden = false; $("#btn-logout").hidden = false; applyRole();
-  render();
+  render();await loadStageStats();
 }
 async function loadOnline() {
   const d = await api("online"); NOW = d.now;

@@ -37,7 +37,16 @@ foreach ($f in $files) {
   $code = curl.exe -s -L -o "$out.dl" -w "%{http_code}" -m 60 $u
   if ($code -eq "200") { Move-Item "$out.dl" $out -Force } else { continue }
   $local = if ($f -like "share/*" -or $f -eq "admin/index.html") { Join-Path $root ("dist_web\" + ($f -replace '/', '\')) } else { Join-Path $root ("game\" + ($f -replace '/', '\')) }
-  $st = if (-not (Test-Path $local)) { "NEW (내 쪽에 없음)" } elseif ((Get-FileHash $out -Algorithm MD5).Hash -eq (Get-FileHash $local -Algorithm MD5).Hash) { "same" } else { "DIFFERENT" }
+  # sync-dist versions literal URLs in generated JS copies. Compare the same generated text.
+  $same = $false
+  if (Test-Path -LiteralPath $local) {
+    if ($f -like "src/*") {
+      $localHash = (& node "$PSScriptRoot\version-assets.mjs" --hash $local).Trim()
+      if ($LASTEXITCODE -ne 0) { throw "Local asset-version hash failed: $f" }
+      $same = (Get-FileHash -LiteralPath $out -Algorithm SHA256).Hash.ToLowerInvariant() -eq $localHash
+    } else { $same = (Get-FileHash -LiteralPath $out -Algorithm MD5).Hash -eq (Get-FileHash -LiteralPath $local -Algorithm MD5).Hash }
+  }
+  $st = if (-not (Test-Path -LiteralPath $local)) { "NEW (내 쪽에 없음)" } elseif ($same) { "same" } else { "DIFFERENT" }
   Write-Host ("{0,-32} {1}" -f $f, $st)
 }
 # 상대가 새 모듈을 추가했는지: 내려받은 index.html·main.js에서 import 되는 src 파일명 확인
