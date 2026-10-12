@@ -1,0 +1,7417 @@
+{
+ "policy": "Second WebP pass (Claude, 2026-10-12) over the PNG/JPG files that assets-diet.py retained.",
+ "minBytes": 100000,
+ "files": [
+  {
+   "status": "convert",
+   "before": 1172628,
+   "after": 726366,
+   "chosen": {
+    "lossless": true,
+    "quality": 100,
+    "bytes": 726366,
+    "max": 0,
+    "mean": 0.0,
+    "alphaMax": 0
+   },
+   "attempts": [
+    {
+     "lossless": true,
+     "quality": 100,
+     "bytes": 726366,
+     "max": 0,
+     "mean": 0.0,
+     "alphaMax": 0
+    }
+   ],
+   "source": "assets/elements_v2/weapons/baseball.png",
+   "webp": "assets/elements_v2/weapons/baseball.webp"
+  },
+  {
+   "status": "convert",
+   "before": 229326,
+   "after": 139418,
+   "chosen": {
+    "lossless": true,
+    "quality": 100,
+    "bytes": 139418,
+    "max": 0,
+    "mean": 0.0,
+    "alphaMax": 0
+   },
+   "attempts": [
+    {
+     "lossless": true,
+     "quality": 100,
+     "bytes": 139418,
+     "max": 0,
+     "mean": 0.0,
+     "alphaMax": 0
+    }
+   ],
+   "source": "assets/elements_v2/weapons/bat.png",
+   "webp": "assets/elements_v2/weapons/bat.webp"
+  },
+  {
+   "status": "convert",
+   "before": 961941,
+   "after": 623972,
+   "chosen": {
+    "lossless": true,
+    "quality": 100,
+    "bytes": 623972,
+    "max": 0,
+    "mean": 0.0,
+    "alphaMax": 0
+   },
+   "attempts": [
+    {
+     "lossless": true,
+     "quality": 100,
+     "bytes": 623972,
+     "max": 0,
+     "mean": 0.0,
+     "alphaMax": 0
+    }
+   ],
+   "source": "assets/elements_v2/weapons/dodgeball.png",
+   "webp": "assets/elements_v2/weapons/dodgeball.webp"
+  },
+  {
+   "status": "convert",
+   "before": 277652,
+   "after": 170262,
+   "chosen": {
+    "lossless": true,
+    "quality": 100,
+    "bytes": 170262,
+    "max": 0,
+    "mean": 0.0,
+    "alphaMax": 0
+   },
+   "attempts": [
+    {
+     "lossless": true,
+     "quality": 100,
+     "bytes": 170262,
+     "max": 0,
+     "mean": 0.0,
+     "alphaMax": 0
+    }
+   ],
+   "source": "assets/elements_v2/weapons/pencil.png",
+   "webp": "assets/elements_v2/weapons/pencil.webp"
+  },
+  {
+   "status": "convert",
+   "before": 283187,
+   "after": 180490,
+   "chosen": {
+    "lossless": true,
+    "quality": 100,
+    "bytes": 180490,
+    "max": 0,
+    "mean": 0.0,
+    "alphaMax": 0
+   },
+   "attempts": [
+    {
+     "lossless": true,
+     "quality": 100,
+     "bytes": 180490,
+     "max": 0,
+     "mean": 0.0,
+     "alphaMax": 0
+    }
+   ],
+   "source": "assets/elements_v2/weapons/sword.png",
+   "webp": "assets/elements_v2/weapons/sword.webp"
+  },
+  {
+   "status": "convert",
+   "before": 871290,
+   "after": 565480,
+   "chosen": {
+    "lossless": true,
+    "quality": 100,
+    "bytes": 565480,
+    "max": 0,
+    "mean": 0.0,
+    "alphaMax": 0
+   },
+   "attempts": [
+    {
+     "lossless": true,
+     "quality": 100,
+     "bytes": 565480,
+     "max": 0,
+     "mean": 0.0,
+     "alphaMax": 0
+    }
+   ],
+   "source": "assets/seoho_v1/pets/cat_idle.png",
+   "webp": "assets/seoho_v1/pets/cat_idle.webp"
+  },
+  {
+   "status": "convert",
+   "before": 767606,
+   "after": 490680,
+   "chosen": {
+    "lossless": true,
+    "quality": 100,
+    "bytes": 490680,
+    "max": 0,
+    "mean": 0.0,
+    "alphaMax": 0
+   },
+   "attempts": [
+    {
+     "lossless": true,
+     "quality": 100,
+     "bytes": 490680,
+     "max": 0,
+     "mean": 0.0,
+     "alphaMax": 0
+    }
+   ],
+   "source": "assets/seoho_v1/pets/deer_idle.png",
+   "webp": "assets/seoho_v1/pets/deer_idle.webp"
+  },
+  {
+   "status": "convert",
+   "before": 766772,
+   "after": 485560,
+   "chosen": {
+    "lossless": true,
+    "quality": 100,
+    "bytes": 485560,
+    "max": 0,
+    "mean": 0.0,
+    "alphaMax": 0
+   },
+   "attempts": [
+    {
+     "lossless": true,
+     "quality": 100,
+     "bytes": 485560,
+     "max": 0,
+     "mean": 0.0,
+     "alphaMax": 0
+    }
+   ],
+   "source": "assets/seoho_v1/pets/otter_idle.png",
+   "webp": "assets/seoho_v1/pets/otter_idle.webp"
+  },
+  {
+   "status": "convert",
+   "before": 619332,
+   "after": 381586,
+   "chosen": {
+    "lossless": true,
+    "quality": 100,
+    "bytes": 381586,
+    "max": 0,
+    "mean": 0.0,
+    "alphaMax": 0
+   },
+   "attempts": [
+    {
+     "lossless": true,
+     "quality": 100,
+     "bytes": 381586,
+     "max": 0,
+     "mean": 0.0,
+     "alphaMax": 0
+    }
+   ],
+   "source": "assets/seoho_v1/pets/seal_idle.png",
+   "webp": "assets/seoho_v1/pets/seal_idle.webp"
+  },
+  {
+   "status": "convert",
+   "before": 717852,
+   "after": 457430,
+   "chosen": {
+    "lossless": true,
+    "quality": 100,
+    "bytes": 457430,
+    "max": 0,
+    "mean": 0.0,
+    "alphaMax": 0
+   },
+   "attempts": [
+    {
+     "lossless": true,
+     "quality": 100,
+     "bytes": 457430,
+     "max": 0,
+     "mean": 0.0,
+     "alphaMax": 0
+    }
+   ],
+   "source": "assets/seoho_v1/pets/sparrow_idle.png",
+   "webp": "assets/seoho_v1/pets/sparrow_idle.webp"
+  },
+  {
+   "status": "convert",
+   "before": 861663,
+   "after": 551682,
+   "chosen": {
+    "lossless": true,
+    "quality": 100,
+    "bytes": 551682,
+    "max": 0,
+    "mean": 0.0,
+    "alphaMax": 0
+   },
+   "attempts": [
+    {
+     "lossless": true,
+     "quality": 100,
+     "bytes": 551682,
+     "max": 0,
+     "mean": 0.0,
+     "alphaMax": 0
+    }
+   ],
+   "source": "assets/seoho_v1/pets/turtle_idle.png",
+   "webp": "assets/seoho_v1/pets/turtle_idle.webp"
+  },
+  {
+   "status": "convert",
+   "before": 109,
+   "after": 50,
+   "chosen": {
+    "lossless": true,
+    "quality": 100,
+    "bytes": 50,
+    "max": 0,
+    "mean": 0.0,
+    "alphaMax": 0
+   },
+   "attempts": [
+    {
+     "lossless": true,
+     "quality": 100,
+     "bytes": 50,
+     "max": 0,
+     "mean": 0.0,
+     "alphaMax": 0
+    }
+   ],
+   "source": "assets/sprites/floor_ground.png",
+   "webp": "assets/sprites/floor_ground.webp"
+  },
+  {
+   "status": "keep",
+   "before": 6725,
+   "after": 6725,
+   "attempts": [
+    {
+     "lossless": true,
+     "quality": 100,
+     "bytes": 5606,
+     "max": 0,
+     "mean": 0.0,
+     "alphaMax": 0
+    }
+   ],
+   "source": "assets/sprites/gear/gear_hoya_melee_armor.png",
+   "webp": "assets/sprites/gear/gear_hoya_melee_armor.webp"
+  },
+  {
+   "status": "keep",
+   "before": 6522,
+   "after": 6522,
+   "attempts": [
+    {
+     "lossless": true,
+     "quality": 100,
+     "bytes": 5696,
+     "max": 0,
+     "mean": 0.0,
+     "alphaMax": 0
+    }
+   ],
+   "source": "assets/sprites/gear/gear_hoya_melee_gloves.png",
+   "webp": "assets/sprites/gear/gear_hoya_melee_gloves.webp"
+  },
+  {
+   "status": "keep",
+   "before": 5248,
+   "after": 5248,
+   "attempts": [
+    {
+     "lossless": true,
+     "quality": 100,
+     "bytes": 4334,
+     "max": 0,
+     "mean": 0.0,
+     "alphaMax": 0
+    }
+   ],
+   "source": "assets/sprites/gear/gear_hoya_melee_helm.png",
+   "webp": "assets/sprites/gear/gear_hoya_melee_helm.webp"
+  },
+  {
+   "status": "keep",
+   "before": 6529,
+   "after": 6529,
+   "attempts": [
+    {
+     "lossless": true,
+     "quality": 100,
+     "bytes": 5720,
+     "max": 0,
+     "mean": 0.0,
+     "alphaMax": 0
+    }
+   ],
+   "source": "assets/sprites/gear/gear_hoya_melee_necklace.png",
+   "webp": "assets/sprites/gear/gear_hoya_melee_necklace.webp"
+  },
+  {
+   "status": "keep",
+   "before": 6867,
+   "after": 6867,
+   "attempts": [
+    {
+     "lossless": true,
+     "quality": 100,
+     "bytes": 5844,
+     "max": 0,
+     "mean": 0.0,
+     "alphaMax": 0
+    }
+   ],
+   "source": "assets/sprites/gear/gear_hoya_melee_shoes.png",
+   "webp": "assets/sprites/gear/gear_hoya_melee_shoes.webp"
+  },
+  {
+   "status": "convert",
+   "before": 4475,
+   "after": 3528,
+   "chosen": {
+    "lossless": true,
+    "quality": 100,
+    "bytes": 3528,
+    "max": 0,
+    "mean": 0.0,
+    "alphaMax": 0
+   },
+   "attempts": [
+    {
+     "lossless": true,
+     "quality": 100,
+     "bytes": 3528,
+     "max": 0,
+     "mean": 0.0,
+     "alphaMax": 0
+    }
+   ],
+   "source": "assets/sprites/gear/gear_hoya_melee_weapon.png",
+   "webp": "assets/sprites/gear/gear_hoya_melee_weapon.webp"
+  },
+  {
+   "status": "keep",
+   "before": 5747,
+   "after": 5747,
+   "attempts": [
+    {
+     "lossless": true,
+     "quality": 100,
+     "bytes": 4736,
+     "max": 0,
+     "mean": 0.0,
+     "alphaMax": 0
+    }
+   ],
+   "source": "assets/sprites/gear/gear_hoya_ranged_armor.png",
+   "webp": "assets/sprites/gear/gear_hoya_ranged_armor.webp"
+  },
+  {
+   "status": "keep",
+   "before": 10349,
+   "after": 10349,
+   "attempts": [
+    {
+     "lossless": true,
+     "quality": 100,
+     "bytes": 9202,
+     "max": 0,
+     "mean": 0.0,
+     "alphaMax": 0
+    }
+   ],
+   "source": "assets/sprites/gear/gear_hoya_ranged_gloves.png",
+   "webp": "assets/sprites/gear/gear_hoya_ranged_gloves.webp"
+  },
+  {
+   "status": "keep",
+   "before": 6391,
+   "after": 6391,
+   "attempts": [
+    {
+     "lossless": true,
+     "quality": 100,
+     "bytes": 5474,
+     "max": 0,
+     "mean": 0.0,
+     "alphaMax": 0
+    }
+   ],
+   "source": "assets/sprites/gear/gear_hoya_ranged_helm.png",
+   "webp": "assets/sprites/gear/gear_hoya_ranged_helm.webp"
+  },
+  {
+   "status": "keep",
+   "before": 7116,
+   "after": 7116,
+   "attempts": [
+    {
+     "lossless": true,
+     "quality": 100,
+     "bytes": 6112,
+     "max": 0,
+     "mean": 0.0,
+     "alphaMax": 0
+    }
+   ],
+   "source": "assets/sprites/gear/gear_hoya_ranged_necklace.png",
+   "webp": "assets/sprites/gear/gear_hoya_ranged_necklace.webp"
+  },
+  {
+   "status": "keep",
+   "before": 6705,
+   "after": 6705,
+   "attempts": [
+    {
+     "lossless": true,
+     "quality": 100,
+     "bytes": 5930,
+     "max": 0,
+     "mean": 0.0,
+     "alphaMax": 0
+    }
+   ],
+   "source": "assets/sprites/gear/gear_hoya_ranged_shoes.png",
+   "webp": "assets/sprites/gear/gear_hoya_ranged_shoes.webp"
+  },
+  {
+   "status": "keep",
+   "before": 6193,
+   "after": 6193,
+   "attempts": [
+    {
+     "lossless": true,
+     "quality": 100,
+     "bytes": 5224,
+     "max": 0,
+     "mean": 0.0,
+     "alphaMax": 0
+    }
+   ],
+   "source": "assets/sprites/gear/gear_hoya_ranged_weapon.png",
+   "webp": "assets/sprites/gear/gear_hoya_ranged_weapon.webp"
+  },
+  {
+   "status": "keep",
+   "before": 6534,
+   "after": 6534,
+   "attempts": [
+    {
+     "lossless": true,
+     "quality": 100,
+     "bytes": 5752,
+     "max": 0,
+     "mean": 0.0,
+     "alphaMax": 0
+    }
+   ],
+   "source": "assets/sprites/gear/gear_minji_melee_armor.png",
+   "webp": "assets/sprites/gear/gear_minji_melee_armor.webp"
+  },
+  {
+   "status": "keep",
+   "before": 6369,
+   "after": 6369,
+   "attempts": [
+    {
+     "lossless": true,
+     "quality": 100,
+     "bytes": 5452,
+     "max": 0,
+     "mean": 0.0,
+     "alphaMax": 0
+    }
+   ],
+   "source": "assets/sprites/gear/gear_minji_melee_gloves.png",
+   "webp": "assets/sprites/gear/gear_minji_melee_gloves.webp"
+  },
+  {
+   "status": "keep",
+   "before": 7145,
+   "after": 7145,
+   "attempts": [
+    {
+     "lossless": true,
+     "quality": 100,
+     "bytes": 6200,
+     "max": 0,
+     "mean": 0.0,
+     "alphaMax": 0
+    }
+   ],
+   "source": "assets/sprites/gear/gear_minji_melee_helm.png",
+   "webp": "assets/sprites/gear/gear_minji_melee_helm.webp"
+  },
+  {
+   "status": "keep",
+   "before": 8163,
+   "after": 8163,
+   "attempts": [
+    {
+     "lossless": true,
+     "quality": 100,
+     "bytes": 7180,
+     "max": 0,
+     "mean": 0.0,
+     "alphaMax": 0
+    }
+   ],
+   "source": "assets/sprites/gear/gear_minji_melee_necklace.png",
+   "webp": "assets/sprites/gear/gear_minji_melee_necklace.webp"
+  },
+  {
+   "status": "keep",
+   "before": 6400,
+   "after": 6400,
+   "attempts": [
+    {
+     "lossless": true,
+     "quality": 100,
+     "bytes": 5630,
+     "max": 0,
+     "mean": 0.0,
+     "alphaMax": 0
+    }
+   ],
+   "source": "assets/sprites/gear/gear_minji_melee_shoes.png",
+   "webp": "assets/sprites/gear/gear_minji_melee_shoes.webp"
+  },
+  {
+   "status": "keep",
+   "before": 8148,
+   "after": 8148,
+   "attempts": [
+    {
+     "lossless": true,
+     "quality": 100,
+     "bytes": 6982,
+     "max": 0,
+     "mean": 0.0,
+     "alphaMax": 0
+    }
+   ],
+   "source": "assets/sprites/gear/gear_minji_melee_weapon.png",
+   "webp": "assets/sprites/gear/gear_minji_melee_weapon.webp"
+  },
+  {
+   "status": "keep",
+   "before": 7842,
+   "after": 7842,
+   "attempts": [
+    {
+     "lossless": true,
+     "quality": 100,
+     "bytes": 6820,
+     "max": 0,
+     "mean": 0.0,
+     "alphaMax": 0
+    }
+   ],
+   "source": "assets/sprites/gear/gear_minji_ranged_armor.png",
+   "webp": "assets/sprites/gear/gear_minji_ranged_armor.webp"
+  },
+  {
+   "status": "keep",
+   "before": 6443,
+   "after": 6443,
+   "attempts": [
+    {
+     "lossless": true,
+     "quality": 100,
+     "bytes": 5660,
+     "max": 0,
+     "mean": 0.0,
+     "alphaMax": 0
+    }
+   ],
+   "source": "assets/sprites/gear/gear_minji_ranged_gloves.png",
+   "webp": "assets/sprites/gear/gear_minji_ranged_gloves.webp"
+  },
+  {
+   "status": "keep",
+   "before": 5264,
+   "after": 5264,
+   "attempts": [
+    {
+     "lossless": true,
+     "quality": 100,
+     "bytes": 4552,
+     "max": 0,
+     "mean": 0.0,
+     "alphaMax": 0
+    }
+   ],
+   "source": "assets/sprites/gear/gear_minji_ranged_helm.png",
+   "webp": "assets/sprites/gear/gear_minji_ranged_helm.webp"
+  },
+  {
+   "status": "keep",
+   "before": 7350,
+   "after": 7350,
+   "attempts": [
+    {
+     "lossless": true,
+     "quality": 100,
+     "bytes": 6526,
+     "max": 0,
+     "mean": 0.0,
+     "alphaMax": 0
+    }
+   ],
+   "source": "assets/sprites/gear/gear_minji_ranged_necklace.png",
+   "webp": "assets/sprites/gear/gear_minji_ranged_necklace.webp"
+  },
+  {
+   "status": "keep",
+   "before": 9070,
+   "after": 9070,
+   "attempts": [
+    {
+     "lossless": true,
+     "quality": 100,
+     "bytes": 7988,
+     "max": 0,
+     "mean": 0.0,
+     "alphaMax": 0
+    }
+   ],
+   "source": "assets/sprites/gear/gear_minji_ranged_shoes.png",
+   "webp": "assets/sprites/gear/gear_minji_ranged_shoes.webp"
+  },
+  {
+   "status": "keep",
+   "before": 8762,
+   "after": 8762,
+   "attempts": [
+    {
+     "lossless": true,
+     "quality": 100,
+     "bytes": 7580,
+     "max": 0,
+     "mean": 0.0,
+     "alphaMax": 0
+    }
+   ],
+   "source": "assets/sprites/gear/gear_minji_ranged_weapon.png",
+   "webp": "assets/sprites/gear/gear_minji_ranged_weapon.webp"
+  },
+  {
+   "status": "convert",
+   "before": 21559,
+   "after": 16766,
+   "chosen": {
+    "lossless": true,
+    "quality": 100,
+    "bytes": 16766,
+    "max": 0,
+    "mean": 0.0,
+    "alphaMax": 0
+   },
+   "attempts": [
+    {
+     "lossless": true,
+     "quality": 100,
+     "bytes": 16766,
+     "max": 0,
+     "mean": 0.0,
+     "alphaMax": 0
+    }
+   ],
+   "source": "assets/sprites/heroes/hoya_attack_1.png",
+   "webp": "assets/sprites/heroes/hoya_attack_1.webp"
+  },
+  {
+   "status": "convert",
+   "before": 24398,
+   "after": 19326,
+   "chosen": {
+    "lossless": true,
+    "quality": 100,
+    "bytes": 19326,
+    "max": 0,
+    "mean": 0.0,
+    "alphaMax": 0
+   },
+   "attempts": [
+    {
+     "lossless": true,
+     "quality": 100,
+     "bytes": 19326,
+     "max": 0,
+     "mean": 0.0,
+     "alphaMax": 0
+    }
+   ],
+   "source": "assets/sprites/heroes/hoya_attack_2.png",
+   "webp": "assets/sprites/heroes/hoya_attack_2.webp"
+  },
+  {
+   "status": "convert",
+   "before": 21799,
+   "after": 16948,
+   "chosen": {
+    "lossless": true,
+    "quality": 100,
+    "bytes": 16948,
+    "max": 0,
+    "mean": 0.0,
+    "alphaMax": 0
+   },
+   "attempts": [
+    {
+     "lossless": true,
+     "quality": 100,
+     "bytes": 16948,
+     "max": 0,
+     "mean": 0.0,
+     "alphaMax": 0
+    }
+   ],
+   "source": "assets/sprites/heroes/hoya_attack_3.png",
+   "webp": "assets/sprites/heroes/hoya_attack_3.webp"
+  },
+  {
+   "status": "convert",
+   "before": 17040,
+   "after": 13394,
+   "chosen": {
+    "lossless": true,
+    "quality": 100,
+    "bytes": 13394,
+    "max": 0,
+    "mean": 0.0,
+    "alphaMax": 0
+   },
+   "attempts": [
+    {
+     "lossless": true,
+     "quality": 100,
+     "bytes": 13394,
+     "max": 0,
+     "mean": 0.0,
+     "alphaMax": 0
+    }
+   ],
+   "source": "assets/sprites/heroes/hoya_down_1.png",
+   "webp": "assets/sprites/heroes/hoya_down_1.webp"
+  },
+  {
+   "status": "convert",
+   "before": 13966,
+   "after": 10614,
+   "chosen": {
+    "lossless": true,
+    "quality": 100,
+    "bytes": 10614,
+    "max": 0,
+    "mean": 0.0,
+    "alphaMax": 0
+   },
+   "attempts": [
+    {
+     "lossless": true,
+     "quality": 100,
+     "bytes": 10614,
+     "max": 0,
+     "mean": 0.0,
+     "alphaMax": 0
+    }
+   ],
+   "source": "assets/sprites/heroes/hoya_hurt_1.png",
+   "webp": "assets/sprites/heroes/hoya_hurt_1.webp"
+  },
+  {
+   "status": "convert",
+   "before": 13966,
+   "after": 10614,
+   "chosen": {
+    "lossless": true,
+    "quality": 100,
+    "bytes": 10614,
+    "max": 0,
+    "mean": 0.0,
+    "alphaMax": 0
+   },
+   "attempts": [
+    {
+     "lossless": true,
+     "quality": 100,
+     "bytes": 10614,
+     "max": 0,
+     "mean": 0.0,
+     "alphaMax": 0
+    }
+   ],
+   "source": "assets/sprites/heroes/hoya_idle_1.png",
+   "webp": "assets/sprites/heroes/hoya_idle_1.webp"
+  },
+  {
+   "status": "convert",
+   "before": 15020,
+   "after": 11408,
+   "chosen": {
+    "lossless": true,
+    "quality": 100,
+    "bytes": 11408,
+    "max": 0,
+    "mean": 0.0,
+    "alphaMax": 0
+   },
+   "attempts": [
+    {
+     "lossless": true,
+     "quality": 100,
+     "bytes": 11408,
+     "max": 0,
+     "mean": 0.0,
+     "alphaMax": 0
+    }
+   ],
+   "source": "assets/sprites/heroes/hoya_jump_1.png",
+   "webp": "assets/sprites/heroes/hoya_jump_1.webp"
+  },
+  {
+   "status": "convert",
+   "before": 14927,
+   "after": 11274,
+   "chosen": {
+    "lossless": true,
+    "quality": 100,
+    "bytes": 11274,
+    "max": 0,
+    "mean": 0.0,
+    "alphaMax": 0
+   },
+   "attempts": [
+    {
+     "lossless": true,
+     "quality": 100,
+     "bytes": 11274,
+     "max": 0,
+     "mean": 0.0,
+     "alphaMax": 0
+    }
+   ],
+   "source": "assets/sprites/heroes/hoya_jump_2.png",
+   "webp": "assets/sprites/heroes/hoya_jump_2.webp"
+  },
+  {
+   "status": "convert",
+   "before": 19538,
+   "after": 14604,
+   "chosen": {
+    "lossless": true,
+    "quality": 100,
+    "bytes": 14604,
+    "max": 0,
+    "mean": 0.0,
+    "alphaMax": 0
+   },
+   "attempts": [
+    {
+     "lossless": true,
+     "quality": 100,
+     "bytes": 14604,
+     "max": 0,
+     "mean": 0.0,
+     "alphaMax": 0
+    }
+   ],
+   "source": "assets/sprites/heroes/hoya_ranged_1.png",
+   "webp": "assets/sprites/heroes/hoya_ranged_1.webp"
+  },
+  {
+   "status": "convert",
+   "before": 18207,
+   "after": 13644,
+   "chosen": {
+    "lossless": true,
+    "quality": 100,
+    "bytes": 13644,
+    "max": 0,
+    "mean": 0.0,
+    "alphaMax": 0
+   },
+   "attempts": [
+    {
+     "lossless": true,
+     "quality": 100,
+     "bytes": 13644,
+     "max": 0,
+     "mean": 0.0,
+     "alphaMax": 0
+    }
+   ],
+   "source": "assets/sprites/heroes/hoya_ranged_2.png",
+   "webp": "assets/sprites/heroes/hoya_ranged_2.webp"
+  },
+  {
+   "status": "convert",
+   "before": 19356,
+   "after": 14566,
+   "chosen": {
+    "lossless": true,
+    "quality": 100,
+    "bytes": 14566,
+    "max": 0,
+    "mean": 0.0,
+    "alphaMax": 0
+   },
+   "attempts": [
+    {
+     "lossless": true,
+     "quality": 100,
+     "bytes": 14566,
+     "max": 0,
+     "mean": 0.0,
+     "alphaMax": 0
+    }
+   ],
+   "source": "assets/sprites/heroes/hoya_ranged_3.png",
+   "webp": "assets/sprites/heroes/hoya_ranged_3.webp"
+  },
+  {
+   "status": "convert",
+   "before": 22009,
+   "after": 16912,
+   "chosen": {
+    "lossless": true,
+    "quality": 100,
+    "bytes": 16912,
+    "max": 0,
+    "mean": 0.0,
+    "alphaMax": 0
+   },
+   "attempts": [
+    {
+     "lossless": true,
+     "quality": 100,
+     "bytes": 16912,
+     "max": 0,
+     "mean": 0.0,
+     "alphaMax": 0
+    }
+   ],
+   "source": "assets/sprites/heroes/hoya_ranged_4.png",
+   "webp": "assets/sprites/heroes/hoya_ranged_4.webp"
+  },
+  {
+   "status": "convert",
+   "before": 19181,
+   "after": 14438,
+   "chosen": {
+    "lossless": true,
+    "quality": 100,
+    "bytes": 14438,
+    "max": 0,
+    "mean": 0.0,
+    "alphaMax": 0
+   },
+   "attempts": [
+    {
+     "lossless": true,
+     "quality": 100,
+     "bytes": 14438,
+     "max": 0,
+     "mean": 0.0,
+     "alphaMax": 0
+    }
+   ],
+   "source": "assets/sprites/heroes/hoya_ranged_5.png",
+   "webp": "assets/sprites/heroes/hoya_ranged_5.webp"
+  },
+  {
+   "status": "convert",
+   "before": 18546,
+   "after": 14182,
+   "chosen": {
+    "lossless": true,
+    "quality": 100,
+    "bytes": 14182,
+    "max": 0,
+    "mean": 0.0,
+    "alphaMax": 0
+   },
+   "attempts": [
+    {
+     "lossless": true,
+     "quality": 100,
+     "bytes": 14182,
+     "max": 0,
+     "mean": 0.0,
+     "alphaMax": 0
+    }
+   ],
+   "source": "assets/sprites/heroes/hoya_ranged_6.png",
+   "webp": "assets/sprites/heroes/hoya_ranged_6.webp"
+  },
+  {
+   "status": "convert",
+   "before": 17716,
+   "after": 13544,
+   "chosen": {
+    "lossless": true,
+    "quality": 100,
+    "bytes": 13544,
+    "max": 0,
+    "mean": 0.0,
+    "alphaMax": 0
+   },
+   "attempts": [
+    {
+     "lossless": true,
+     "quality": 100,
+     "bytes": 13544,
+     "max": 0,
+     "mean": 0.0,
+     "alphaMax": 0
+    }
+   ],
+   "source": "assets/sprites/heroes/hoya_ranged_down_1.png",
+   "webp": "assets/sprites/heroes/hoya_ranged_down_1.webp"
+  },
+  {
+   "status": "convert",
+   "before": 18501,
+   "after": 14144,
+   "chosen": {
+    "lossless": true,
+    "quality": 100,
+    "bytes": 14144,
+    "max": 0,
+    "mean": 0.0,
+    "alphaMax": 0
+   },
+   "attempts": [
+    {
+     "lossless": true,
+     "quality": 100,
+     "bytes": 14144,
+     "max": 0,
+     "mean": 0.0,
+     "alphaMax": 0
+    }
+   ],
+   "source": "assets/sprites/heroes/hoya_ranged_hurt_1.png",
+   "webp": "assets/sprites/heroes/hoya_ranged_hurt_1.webp"
+  },
+  {
+   "status": "convert",
+   "before": 17921,
+   "after": 13748,
+   "chosen": {
+    "lossless": true,
+    "quality": 100,
+    "bytes": 13748,
+    "max": 0,
+    "mean": 0.0,
+    "alphaMax": 0
+   },
+   "attempts": [
+    {
+     "lossless": true,
+     "quality": 100,
+     "bytes": 13748,
+     "max": 0,
+     "mean": 0.0,
+     "alphaMax": 0
+    }
+   ],
+   "source": "assets/sprites/heroes/hoya_ranged_idle_1.png",
+   "webp": "assets/sprites/heroes/hoya_ranged_idle_1.webp"
+  },
+  {
+   "status": "convert",
+   "before": 18669,
+   "after": 14230,
+   "chosen": {
+    "lossless": true,
+    "quality": 100,
+    "bytes": 14230,
+    "max": 0,
+    "mean": 0.0,
+    "alphaMax": 0
+   },
+   "attempts": [
+    {
+     "lossless": true,
+     "quality": 100,
+     "bytes": 14230,
+     "max": 0,
+     "mean": 0.0,
+     "alphaMax": 0
+    }
+   ],
+   "source": "assets/sprites/heroes/hoya_ranged_jump_1.png",
+   "webp": "assets/sprites/heroes/hoya_ranged_jump_1.webp"
+  },
+  {
+   "status": "convert",
+   "before": 19505,
+   "after": 14684,
+   "chosen": {
+    "lossless": true,
+    "quality": 100,
+    "bytes": 14684,
+    "max": 0,
+    "mean": 0.0,
+    "alphaMax": 0
+   },
+   "attempts": [
+    {
+     "lossless": true,
+     "quality": 100,
+     "bytes": 14684,
+     "max": 0,
+     "mean": 0.0,
+     "alphaMax": 0
+    }
+   ],
+   "source": "assets/sprites/heroes/hoya_ranged_jump_2.png",
+   "webp": "assets/sprites/heroes/hoya_ranged_jump_2.webp"
+  },
+  {
+   "status": "convert",
+   "before": 19416,
+   "after": 14816,
+   "chosen": {
+    "lossless": true,
+    "quality": 100,
+    "bytes": 14816,
+    "max": 0,
+    "mean": 0.0,
+    "alphaMax": 0
+   },
+   "attempts": [
+    {
+     "lossless": true,
+     "quality": 100,
+     "bytes": 14816,
+     "max": 0,
+     "mean": 0.0,
+     "alphaMax": 0
+    }
+   ],
+   "source": "assets/sprites/heroes/hoya_ranged_run_1.png",
+   "webp": "assets/sprites/heroes/hoya_ranged_run_1.webp"
+  },
+  {
+   "status": "convert",
+   "before": 19914,
+   "after": 15046,
+   "chosen": {
+    "lossless": true,
+    "quality": 100,
+    "bytes": 15046,
+    "max": 0,
+    "mean": 0.0,
+    "alphaMax": 0
+   },
+   "attempts": [
+    {
+     "lossless": true,
+     "quality": 100,
+     "bytes": 15046,
+     "max": 0,
+     "mean": 0.0,
+     "alphaMax": 0
+    }
+   ],
+   "source": "assets/sprites/heroes/hoya_ranged_run_2.png",
+   "webp": "assets/sprites/heroes/hoya_ranged_run_2.webp"
+  },
+  {
+   "status": "convert",
+   "before": 19387,
+   "after": 14646,
+   "chosen": {
+    "lossless": true,
+    "quality": 100,
+    "bytes": 14646,
+    "max": 0,
+    "mean": 0.0,
+    "alphaMax": 0
+   },
+   "attempts": [
+    {
+     "lossless": true,
+     "quality": 100,
+     "bytes": 14646,
+     "max": 0,
+     "mean": 0.0,
+     "alphaMax": 0
+    }
+   ],
+   "source": "assets/sprites/heroes/hoya_ranged_run_3.png",
+   "webp": "assets/sprites/heroes/hoya_ranged_run_3.webp"
+  },
+  {
+   "status": "convert",
+   "before": 18334,
+   "after": 13966,
+   "chosen": {
+    "lossless": true,
+    "quality": 100,
+    "bytes": 13966,
+    "max": 0,
+    "mean": 0.0,
+    "alphaMax": 0
+   },
+   "attempts": [
+    {
+     "lossless": true,
+     "quality": 100,
+     "bytes": 13966,
+     "max": 0,
+     "mean": 0.0,
+     "alphaMax": 0
+    }
+   ],
+   "source": "assets/sprites/heroes/hoya_ranged_walk_1.png",
+   "webp": "assets/sprites/heroes/hoya_ranged_walk_1.webp"
+  },
+  {
+   "status": "convert",
+   "before": 17452,
+   "after": 13348,
+   "chosen": {
+    "lossless": true,
+    "quality": 100,
+    "bytes": 13348,
+    "max": 0,
+    "mean": 0.0,
+    "alphaMax": 0
+   },
+   "attempts": [
+    {
+     "lossless": true,
+     "quality": 100,
+     "bytes": 13348,
+     "max": 0,
+     "mean": 0.0,
+     "alphaMax": 0
+    }
+   ],
+   "source": "assets/sprites/heroes/hoya_ranged_walk_2.png",
+   "webp": "assets/sprites/heroes/hoya_ranged_walk_2.webp"
+  },
+  {
+   "status": "convert",
+   "before": 18507,
+   "after": 14066,
+   "chosen": {
+    "lossless": true,
+    "quality": 100,
+    "bytes": 14066,
+    "max": 0,
+    "mean": 0.0,
+    "alphaMax": 0
+   },
+   "attempts": [
+    {
+     "lossless": true,
+     "quality": 100,
+     "bytes": 14066,
+     "max": 0,
+     "mean": 0.0,
+     "alphaMax": 0
+    }
+   ],
+   "source": "assets/sprites/heroes/hoya_ranged_walk_3.png",
+   "webp": "assets/sprites/heroes/hoya_ranged_walk_3.webp"
+  },
+  {
+   "status": "convert",
+   "before": 14663,
+   "after": 11080,
+   "chosen": {
+    "lossless": true,
+    "quality": 100,
+    "bytes": 11080,
+    "max": 0,
+    "mean": 0.0,
+    "alphaMax": 0
+   },
+   "attempts": [
+    {
+     "lossless": true,
+     "quality": 100,
+     "bytes": 11080,
+     "max": 0,
+     "mean": 0.0,
+     "alphaMax": 0
+    }
+   ],
+   "source": "assets/sprites/heroes/hoya_run_1.png",
+   "webp": "assets/sprites/heroes/hoya_run_1.webp"
+  },
+  {
+   "status": "convert",
+   "before": 14396,
+   "after": 10752,
+   "chosen": {
+    "lossless": true,
+    "quality": 100,
+    "bytes": 10752,
+    "max": 0,
+    "mean": 0.0,
+    "alphaMax": 0
+   },
+   "attempts": [
+    {
+     "lossless": true,
+     "quality": 100,
+     "bytes": 10752,
+     "max": 0,
+     "mean": 0.0,
+     "alphaMax": 0
+    }
+   ],
+   "source": "assets/sprites/heroes/hoya_run_2.png",
+   "webp": "assets/sprites/heroes/hoya_run_2.webp"
+  },
+  {
+   "status": "convert",
+   "before": 13811,
+   "after": 10634,
+   "chosen": {
+    "lossless": true,
+    "quality": 100,
+    "bytes": 10634,
+    "max": 0,
+    "mean": 0.0,
+    "alphaMax": 0
+   },
+   "attempts": [
+    {
+     "lossless": true,
+     "quality": 100,
+     "bytes": 10634,
+     "max": 0,
+     "mean": 0.0,
+     "alphaMax": 0
+    }
+   ],
+   "source": "assets/sprites/heroes/hoya_run_3.png",
+   "webp": "assets/sprites/heroes/hoya_run_3.webp"
+  },
+  {
+   "status": "convert",
+   "before": 15839,
+   "after": 12218,
+   "chosen": {
+    "lossless": true,
+    "quality": 100,
+    "bytes": 12218,
+    "max": 0,
+    "mean": 0.0,
+    "alphaMax": 0
+   },
+   "attempts": [
+    {
+     "lossless": true,
+     "quality": 100,
+     "bytes": 12218,
+     "max": 0,
+     "mean": 0.0,
+     "alphaMax": 0
+    }
+   ],
+   "source": "assets/sprites/heroes/hoya_walk_1.png",
+   "webp": "assets/sprites/heroes/hoya_walk_1.webp"
+  },
+  {
+   "status": "convert",
+   "before": 15614,
+   "after": 11948,
+   "chosen": {
+    "lossless": true,
+    "quality": 100,
+    "bytes": 11948,
+    "max": 0,
+    "mean": 0.0,
+    "alphaMax": 0
+   },
+   "attempts": [
+    {
+     "lossless": true,
+     "quality": 100,
+     "bytes": 11948,
+     "max": 0,
+     "mean": 0.0,
+     "alphaMax": 0
+    }
+   ],
+   "source": "assets/sprites/heroes/hoya_walk_2.png",
+   "webp": "assets/sprites/heroes/hoya_walk_2.webp"
+  },
+  {
+   "status": "convert",
+   "before": 15574,
+   "after": 11810,
+   "chosen": {
+    "lossless": true,
+    "quality": 100,
+    "bytes": 11810,
+    "max": 0,
+    "mean": 0.0,
+    "alphaMax": 0
+   },
+   "attempts": [
+    {
+     "lossless": true,
+     "quality": 100,
+     "bytes": 11810,
+     "max": 0,
+     "mean": 0.0,
+     "alphaMax": 0
+    }
+   ],
+   "source": "assets/sprites/heroes/hoya_walk_3.png",
+   "webp": "assets/sprites/heroes/hoya_walk_3.webp"
+  },
+  {
+   "status": "convert",
+   "before": 20675,
+   "after": 15782,
+   "chosen": {
+    "lossless": true,
+    "quality": 100,
+    "bytes": 15782,
+    "max": 0,
+    "mean": 0.0,
+    "alphaMax": 0
+   },
+   "attempts": [
+    {
+     "lossless": true,
+     "quality": 100,
+     "bytes": 15782,
+     "max": 0,
+     "mean": 0.0,
+     "alphaMax": 0
+    }
+   ],
+   "source": "assets/sprites/heroes/minji_attack_1.png",
+   "webp": "assets/sprites/heroes/minji_attack_1.webp"
+  },
+  {
+   "status": "convert",
+   "before": 21010,
+   "after": 16264,
+   "chosen": {
+    "lossless": true,
+    "quality": 100,
+    "bytes": 16264,
+    "max": 0,
+    "mean": 0.0,
+    "alphaMax": 0
+   },
+   "attempts": [
+    {
+     "lossless": true,
+     "quality": 100,
+     "bytes": 16264,
+     "max": 0,
+     "mean": 0.0,
+     "alphaMax": 0
+    }
+   ],
+   "source": "assets/sprites/heroes/minji_attack_2.png",
+   "webp": "assets/sprites/heroes/minji_attack_2.webp"
+  },
+  {
+   "status": "convert",
+   "before": 20677,
+   "after": 16050,
+   "chosen": {
+    "lossless": true,
+    "quality": 100,
+    "bytes": 16050,
+    "max": 0,
+    "mean": 0.0,
+    "alphaMax": 0
+   },
+   "attempts": [
+    {
+     "lossless": true,
+     "quality": 100,
+     "bytes": 16050,
+     "max": 0,
+     "mean": 0.0,
+     "alphaMax": 0
+    }
+   ],
+   "source": "assets/sprites/heroes/minji_attack_3.png",
+   "webp": "assets/sprites/heroes/minji_attack_3.webp"
+  },
+  {
+   "status": "convert",
+   "before": 15828,
+   "after": 11926,
+   "chosen": {
+    "lossless": true,
+    "quality": 100,
+    "bytes": 11926,
+    "max": 0,
+    "mean": 0.0,
+    "alphaMax": 0
+   },
+   "attempts": [
+    {
+     "lossless": true,
+     "quality": 100,
+     "bytes": 11926,
+     "max": 0,
+     "mean": 0.0,
+     "alphaMax": 0
+    }
+   ],
+   "source": "assets/sprites/heroes/minji_down_1.png",
+   "webp": "assets/sprites/heroes/minji_down_1.webp"
+  },
+  {
+   "status": "convert",
+   "before": 17665,
+   "after": 13640,
+   "chosen": {
+    "lossless": true,
+    "quality": 100,
+    "bytes": 13640,
+    "max": 0,
+    "mean": 0.0,
+    "alphaMax": 0
+   },
+   "attempts": [
+    {
+     "lossless": true,
+     "quality": 100,
+     "bytes": 13640,
+     "max": 0,
+     "mean": 0.0,
+     "alphaMax": 0
+    }
+   ],
+   "source": "assets/sprites/heroes/minji_hurt_1.png",
+   "webp": "assets/sprites/heroes/minji_hurt_1.webp"
+  },
+  {
+   "status": "convert",
+   "before": 16826,
+   "after": 12946,
+   "chosen": {
+    "lossless": true,
+    "quality": 100,
+    "bytes": 12946,
+    "max": 0,
+    "mean": 0.0,
+    "alphaMax": 0
+   },
+   "attempts": [
+    {
+     "lossless": true,
+     "quality": 100,
+     "bytes": 12946,
+     "max": 0,
+     "mean": 0.0,
+     "alphaMax": 0
+    }
+   ],
+   "source": "assets/sprites/heroes/minji_idle_1.png",
+   "webp": "assets/sprites/heroes/minji_idle_1.webp"
+  },
+  {
+   "status": "convert",
+   "before": 17301,
+   "after": 13126,
+   "chosen": {
+    "lossless": true,
+    "quality": 100,
+    "bytes": 13126,
+    "max": 0,
+    "mean": 0.0,
+    "alphaMax": 0
+   },
+   "attempts": [
+    {
+     "lossless": true,
+     "quality": 100,
+     "bytes": 13126,
+     "max": 0,
+     "mean": 0.0,
+     "alphaMax": 0
+    }
+   ],
+   "source": "assets/sprites/heroes/minji_jump_1.png",
+   "webp": "assets/sprites/heroes/minji_jump_1.webp"
+  },
+  {
+   "status": "convert",
+   "before": 18090,
+   "after": 13624,
+   "chosen": {
+    "lossless": true,
+    "quality": 100,
+    "bytes": 13624,
+    "max": 0,
+    "mean": 0.0,
+    "alphaMax": 0
+   },
+   "attempts": [
+    {
+     "lossless": true,
+     "quality": 100,
+     "bytes": 13624,
+     "max": 0,
+     "mean": 0.0,
+     "alphaMax": 0
+    }
+   ],
+   "source": "assets/sprites/heroes/minji_ranged_1.png",
+   "webp": "assets/sprites/heroes/minji_ranged_1.webp"
+  },
+  {
+   "status": "convert",
+   "before": 18867,
+   "after": 14156,
+   "chosen": {
+    "lossless": true,
+    "quality": 100,
+    "bytes": 14156,
+    "max": 0,
+    "mean": 0.0,
+    "alphaMax": 0
+   },
+   "attempts": [
+    {
+     "lossless": true,
+     "quality": 100,
+     "bytes": 14156,
+     "max": 0,
+     "mean": 0.0,
+     "alphaMax": 0
+    }
+   ],
+   "source": "assets/sprites/heroes/minji_ranged_2.png",
+   "webp": "assets/sprites/heroes/minji_ranged_2.webp"
+  },
+  {
+   "status": "convert",
+   "before": 19224,
+   "after": 14384,
+   "chosen": {
+    "lossless": true,
+    "quality": 100,
+    "bytes": 14384,
+    "max": 0,
+    "mean": 0.0,
+    "alphaMax": 0
+   },
+   "attempts": [
+    {
+     "lossless": true,
+     "quality": 100,
+     "bytes": 14384,
+     "max": 0,
+     "mean": 0.0,
+     "alphaMax": 0
+    }
+   ],
+   "source": "assets/sprites/heroes/minji_ranged_3.png",
+   "webp": "assets/sprites/heroes/minji_ranged_3.webp"
+  },
+  {
+   "status": "convert",
+   "before": 18255,
+   "after": 13622,
+   "chosen": {
+    "lossless": true,
+    "quality": 100,
+    "bytes": 13622,
+    "max": 0,
+    "mean": 0.0,
+    "alphaMax": 0
+   },
+   "attempts": [
+    {
+     "lossless": true,
+     "quality": 100,
+     "bytes": 13622,
+     "max": 0,
+     "mean": 0.0,
+     "alphaMax": 0
+    }
+   ],
+   "source": "assets/sprites/heroes/minji_ranged_4.png",
+   "webp": "assets/sprites/heroes/minji_ranged_4.webp"
+  },
+  {
+   "status": "convert",
+   "before": 17249,
+   "after": 12830,
+   "chosen": {
+    "lossless": true,
+    "quality": 100,
+    "bytes": 12830,
+    "max": 0,
+    "mean": 0.0,
+    "alphaMax": 0
+   },
+   "attempts": [
+    {
+     "lossless": true,
+     "quality": 100,
+     "bytes": 12830,
+     "max": 0,
+     "mean": 0.0,
+     "alphaMax": 0
+    }
+   ],
+   "source": "assets/sprites/heroes/minji_ranged_5.png",
+   "webp": "assets/sprites/heroes/minji_ranged_5.webp"
+  },
+  {
+   "status": "convert",
+   "before": 18673,
+   "after": 13986,
+   "chosen": {
+    "lossless": true,
+    "quality": 100,
+    "bytes": 13986,
+    "max": 0,
+    "mean": 0.0,
+    "alphaMax": 0
+   },
+   "attempts": [
+    {
+     "lossless": true,
+     "quality": 100,
+     "bytes": 13986,
+     "max": 0,
+     "mean": 0.0,
+     "alphaMax": 0
+    }
+   ],
+   "source": "assets/sprites/heroes/minji_ranged_6.png",
+   "webp": "assets/sprites/heroes/minji_ranged_6.webp"
+  },
+  {
+   "status": "convert",
+   "before": 16927,
+   "after": 12696,
+   "chosen": {
+    "lossless": true,
+    "quality": 100,
+    "bytes": 12696,
+    "max": 0,
+    "mean": 0.0,
+    "alphaMax": 0
+   },
+   "attempts": [
+    {
+     "lossless": true,
+     "quality": 100,
+     "bytes": 12696,
+     "max": 0,
+     "mean": 0.0,
+     "alphaMax": 0
+    }
+   ],
+   "source": "assets/sprites/heroes/minji_ranged_down_1.png",
+   "webp": "assets/sprites/heroes/minji_ranged_down_1.webp"
+  },
+  {
+   "status": "convert",
+   "before": 18275,
+   "after": 13610,
+   "chosen": {
+    "lossless": true,
+    "quality": 100,
+    "bytes": 13610,
+    "max": 0,
+    "mean": 0.0,
+    "alphaMax": 0
+   },
+   "attempts": [
+    {
+     "lossless": true,
+     "quality": 100,
+     "bytes": 13610,
+     "max": 0,
+     "mean": 0.0,
+     "alphaMax": 0
+    }
+   ],
+   "source": "assets/sprites/heroes/minji_ranged_hurt_1.png",
+   "webp": "assets/sprites/heroes/minji_ranged_hurt_1.webp"
+  },
+  {
+   "status": "convert",
+   "before": 17646,
+   "after": 13302,
+   "chosen": {
+    "lossless": true,
+    "quality": 100,
+    "bytes": 13302,
+    "max": 0,
+    "mean": 0.0,
+    "alphaMax": 0
+   },
+   "attempts": [
+    {
+     "lossless": true,
+     "quality": 100,
+     "bytes": 13302,
+     "max": 0,
+     "mean": 0.0,
+     "alphaMax": 0
+    }
+   ],
+   "source": "assets/sprites/heroes/minji_ranged_idle_1.png",
+   "webp": "assets/sprites/heroes/minji_ranged_idle_1.webp"
+  },
+  {
+   "status": "convert",
+   "before": 16786,
+   "after": 12558,
+   "chosen": {
+    "lossless": true,
+    "quality": 100,
+    "bytes": 12558,
+    "max": 0,
+    "mean": 0.0,
+    "alphaMax": 0
+   },
+   "attempts": [
+    {
+     "lossless": true,
+     "quality": 100,
+     "bytes": 12558,
+     "max": 0,
+     "mean": 0.0,
+     "alphaMax": 0
+    }
+   ],
+   "source": "assets/sprites/heroes/minji_run_1.png",
+   "webp": "assets/sprites/heroes/minji_run_1.webp"
+  },
+  {
+   "status": "convert",
+   "before": 16710,
+   "after": 12372,
+   "chosen": {
+    "lossless": true,
+    "quality": 100,
+    "bytes": 12372,
+    "max": 0,
+    "mean": 0.0,
+    "alphaMax": 0
+   },
+   "attempts": [
+    {
+     "lossless": true,
+     "quality": 100,
+     "bytes": 12372,
+     "max": 0,
+     "mean": 0.0,
+     "alphaMax": 0
+    }
+   ],
+   "source": "assets/sprites/heroes/minji_run_2.png",
+   "webp": "assets/sprites/heroes/minji_run_2.webp"
+  },
+  {
+   "status": "convert",
+   "before": 16516,
+   "after": 12318,
+   "chosen": {
+    "lossless": true,
+    "quality": 100,
+    "bytes": 12318,
+    "max": 0,
+    "mean": 0.0,
+    "alphaMax": 0
+   },
+   "attempts": [
+    {
+     "lossless": true,
+     "quality": 100,
+     "bytes": 12318,
+     "max": 0,
+     "mean": 0.0,
+     "alphaMax": 0
+    }
+   ],
+   "source": "assets/sprites/heroes/minji_run_3.png",
+   "webp": "assets/sprites/heroes/minji_run_3.webp"
+  },
+  {
+   "status": "convert",
+   "before": 17800,
+   "after": 13472,
+   "chosen": {
+    "lossless": true,
+    "quality": 100,
+    "bytes": 13472,
+    "max": 0,
+    "mean": 0.0,
+    "alphaMax": 0
+   },
+   "attempts": [
+    {
+     "lossless": true,
+     "quality": 100,
+     "bytes": 13472,
+     "max": 0,
+     "mean": 0.0,
+     "alphaMax": 0
+    }
+   ],
+   "source": "assets/sprites/heroes/minji_walk_1.png",
+   "webp": "assets/sprites/heroes/minji_walk_1.webp"
+  },
+  {
+   "status": "convert",
+   "before": 17310,
+   "after": 13036,
+   "chosen": {
+    "lossless": true,
+    "quality": 100,
+    "bytes": 13036,
+    "max": 0,
+    "mean": 0.0,
+    "alphaMax": 0
+   },
+   "attempts": [
+    {
+     "lossless": true,
+     "quality": 100,
+     "bytes": 13036,
+     "max": 0,
+     "mean": 0.0,
+     "alphaMax": 0
+    }
+   ],
+   "source": "assets/sprites/heroes/minji_walk_2.png",
+   "webp": "assets/sprites/heroes/minji_walk_2.webp"
+  },
+  {
+   "status": "convert",
+   "before": 17490,
+   "after": 13460,
+   "chosen": {
+    "lossless": true,
+    "quality": 100,
+    "bytes": 13460,
+    "max": 0,
+    "mean": 0.0,
+    "alphaMax": 0
+   },
+   "attempts": [
+    {
+     "lossless": true,
+     "quality": 100,
+     "bytes": 13460,
+     "max": 0,
+     "mean": 0.0,
+     "alphaMax": 0
+    }
+   ],
+   "source": "assets/sprites/heroes/minji_walk_3.png",
+   "webp": "assets/sprites/heroes/minji_walk_3.webp"
+  },
+  {
+   "status": "convert",
+   "before": 55861,
+   "after": 38692,
+   "chosen": {
+    "lossless": true,
+    "quality": 100,
+    "bytes": 38692,
+    "max": 0,
+    "mean": 0.0,
+    "alphaMax": 0
+   },
+   "attempts": [
+    {
+     "lossless": true,
+     "quality": 100,
+     "bytes": 38692,
+     "max": 0,
+     "mean": 0.0,
+     "alphaMax": 0
+    }
+   ],
+   "source": "assets/sprites/skills/earth_bigdirt_1.png",
+   "webp": "assets/sprites/skills/earth_bigdirt_1.webp"
+  },
+  {
+   "status": "convert",
+   "before": 72418,
+   "after": 50110,
+   "chosen": {
+    "lossless": true,
+    "quality": 100,
+    "bytes": 50110,
+    "max": 0,
+    "mean": 0.0,
+    "alphaMax": 0
+   },
+   "attempts": [
+    {
+     "lossless": true,
+     "quality": 100,
+     "bytes": 50110,
+     "max": 0,
+     "mean": 0.0,
+     "alphaMax": 0
+    }
+   ],
+   "source": "assets/sprites/skills/earth_bigdirt_2.png",
+   "webp": "assets/sprites/skills/earth_bigdirt_2.webp"
+  },
+  {
+   "status": "convert",
+   "before": 51633,
+   "after": 34418,
+   "chosen": {
+    "lossless": true,
+    "quality": 100,
+    "bytes": 34418,
+    "max": 0,
+    "mean": 0.0,
+    "alphaMax": 0
+   },
+   "attempts": [
+    {
+     "lossless": true,
+     "quality": 100,
+     "bytes": 34418,
+     "max": 0,
+     "mean": 0.0,
+     "alphaMax": 0
+    }
+   ],
+   "source": "assets/sprites/skills/earth_boulder_1.png",
+   "webp": "assets/sprites/skills/earth_boulder_1.webp"
+  },
+  {
+   "status": "convert",
+   "before": 52678,
+   "after": 34542,
+   "chosen": {
+    "lossless": true,
+    "quality": 100,
+    "bytes": 34542,
+    "max": 0,
+    "mean": 0.0,
+    "alphaMax": 0
+   },
+   "attempts": [
+    {
+     "lossless": true,
+     "quality": 100,
+     "bytes": 34542,
+     "max": 0,
+     "mean": 0.0,
+     "alphaMax": 0
+    }
+   ],
+   "source": "assets/sprites/skills/earth_boulder_2.png",
+   "webp": "assets/sprites/skills/earth_boulder_2.webp"
+  },
+  {
+   "status": "convert",
+   "before": 69174,
+   "after": 50582,
+   "chosen": {
+    "lossless": true,
+    "quality": 100,
+    "bytes": 50582,
+    "max": 0,
+    "mean": 0.0,
+    "alphaMax": 0
+   },
+   "attempts": [
+    {
+     "lossless": true,
+     "quality": 100,
+     "bytes": 50582,
+     "max": 0,
+     "mean": 0.0,
+     "alphaMax": 0
+    }
+   ],
+   "source": "assets/sprites/skills/earth_chain_ring.png",
+   "webp": "assets/sprites/skills/earth_chain_ring.webp"
+  },
+  {
+   "status": "convert",
+   "before": 46142,
+   "after": 33100,
+   "chosen": {
+    "lossless": true,
+    "quality": 100,
+    "bytes": 33100,
+    "max": 0,
+    "mean": 0.0,
+    "alphaMax": 0
+   },
+   "attempts": [
+    {
+     "lossless": true,
+     "quality": 100,
+     "bytes": 33100,
+     "max": 0,
+     "mean": 0.0,
+     "alphaMax": 0
+    }
+   ],
+   "source": "assets/sprites/skills/earth_crack.png",
+   "webp": "assets/sprites/skills/earth_crack.webp"
+  },
+  {
+   "status": "convert",
+   "before": 44807,
+   "after": 31462,
+   "chosen": {
+    "lossless": true,
+    "quality": 100,
+    "bytes": 31462,
+    "max": 0,
+    "mean": 0.0,
+    "alphaMax": 0
+   },
+   "attempts": [
+    {
+     "lossless": true,
+     "quality": 100,
+     "bytes": 31462,
+     "max": 0,
+     "mean": 0.0,
+     "alphaMax": 0
+    }
+   ],
+   "source": "assets/sprites/skills/earth_dirt_1.png",
+   "webp": "assets/sprites/skills/earth_dirt_1.webp"
+  },
+  {
+   "status": "convert",
+   "before": 48013,
+   "after": 33244,
+   "chosen": {
+    "lossless": true,
+    "quality": 100,
+    "bytes": 33244,
+    "max": 0,
+    "mean": 0.0,
+    "alphaMax": 0
+   },
+   "attempts": [
+    {
+     "lossless": true,
+     "quality": 100,
+     "bytes": 33244,
+     "max": 0,
+     "mean": 0.0,
+     "alphaMax": 0
+    }
+   ],
+   "source": "assets/sprites/skills/earth_dirt_2.png",
+   "webp": "assets/sprites/skills/earth_dirt_2.webp"
+  },
+  {
+   "status": "convert",
+   "before": 12260,
+   "after": 9090,
+   "chosen": {
+    "lossless": true,
+    "quality": 100,
+    "bytes": 9090,
+    "max": 0,
+    "mean": 0.0,
+    "alphaMax": 0
+   },
+   "attempts": [
+    {
+     "lossless": true,
+     "quality": 100,
+     "bytes": 9090,
+     "max": 0,
+     "mean": 0.0,
+     "alphaMax": 0
+    }
+   ],
+   "source": "assets/sprites/skills/earth_dust_1.png",
+   "webp": "assets/sprites/skills/earth_dust_1.webp"
+  },
+  {
+   "status": "convert",
+   "before": 36168,
+   "after": 25120,
+   "chosen": {
+    "lossless": true,
+    "quality": 100,
+    "bytes": 25120,
+    "max": 0,
+    "mean": 0.0,
+    "alphaMax": 0
+   },
+   "attempts": [
+    {
+     "lossless": true,
+     "quality": 100,
+     "bytes": 25120,
+     "max": 0,
+     "mean": 0.0,
+     "alphaMax": 0
+    }
+   ],
+   "source": "assets/sprites/skills/earth_dust_2.png",
+   "webp": "assets/sprites/skills/earth_dust_2.webp"
+  },
+  {
+   "status": "convert",
+   "before": 24807,
+   "after": 17530,
+   "chosen": {
+    "lossless": true,
+    "quality": 100,
+    "bytes": 17530,
+    "max": 0,
+    "mean": 0.0,
+    "alphaMax": 0
+   },
+   "attempts": [
+    {
+     "lossless": true,
+     "quality": 100,
+     "bytes": 17530,
+     "max": 0,
+     "mean": 0.0,
+     "alphaMax": 0
+    }
+   ],
+   "source": "assets/sprites/skills/earth_dust_trail.png",
+   "webp": "assets/sprites/skills/earth_dust_trail.webp"
+  },
+  {
+   "status": "convert",
+   "before": 31787,
+   "after": 21308,
+   "chosen": {
+    "lossless": true,
+    "quality": 100,
+    "bytes": 21308,
+    "max": 0,
+    "mean": 0.0,
+    "alphaMax": 0
+   },
+   "attempts": [
+    {
+     "lossless": true,
+     "quality": 100,
+     "bytes": 21308,
+     "max": 0,
+     "mean": 0.0,
+     "alphaMax": 0
+    }
+   ],
+   "source": "assets/sprites/skills/earth_mole_1.png",
+   "webp": "assets/sprites/skills/earth_mole_1.webp"
+  },
+  {
+   "status": "convert",
+   "before": 25969,
+   "after": 17758,
+   "chosen": {
+    "lossless": true,
+    "quality": 100,
+    "bytes": 17758,
+    "max": 0,
+    "mean": 0.0,
+    "alphaMax": 0
+   },
+   "attempts": [
+    {
+     "lossless": true,
+     "quality": 100,
+     "bytes": 17758,
+     "max": 0,
+     "mean": 0.0,
+     "alphaMax": 0
+    }
+   ],
+   "source": "assets/sprites/skills/earth_mole_2.png",
+   "webp": "assets/sprites/skills/earth_mole_2.webp"
+  },
+  {
+   "status": "convert",
+   "before": 58816,
+   "after": 39372,
+   "chosen": {
+    "lossless": true,
+    "quality": 100,
+    "bytes": 39372,
+    "max": 0,
+    "mean": 0.0,
+    "alphaMax": 0
+   },
+   "attempts": [
+    {
+     "lossless": true,
+     "quality": 100,
+     "bytes": 39372,
+     "max": 0,
+     "mean": 0.0,
+     "alphaMax": 0
+    }
+   ],
+   "source": "assets/sprites/skills/earth_molefield.png",
+   "webp": "assets/sprites/skills/earth_molefield.webp"
+  },
+  {
+   "status": "convert",
+   "before": 20604,
+   "after": 14416,
+   "chosen": {
+    "lossless": true,
+    "quality": 100,
+    "bytes": 14416,
+    "max": 0,
+    "mean": 0.0,
+    "alphaMax": 0
+   },
+   "attempts": [
+    {
+     "lossless": true,
+     "quality": 100,
+     "bytes": 14416,
+     "max": 0,
+     "mean": 0.0,
+     "alphaMax": 0
+    }
+   ],
+   "source": "assets/sprites/skills/earth_stone_1.png",
+   "webp": "assets/sprites/skills/earth_stone_1.webp"
+  },
+  {
+   "status": "convert",
+   "before": 21722,
+   "after": 14912,
+   "chosen": {
+    "lossless": true,
+    "quality": 100,
+    "bytes": 14912,
+    "max": 0,
+    "mean": 0.0,
+    "alphaMax": 0
+   },
+   "attempts": [
+    {
+     "lossless": true,
+     "quality": 100,
+     "bytes": 14912,
+     "max": 0,
+     "mean": 0.0,
+     "alphaMax": 0
+    }
+   ],
+   "source": "assets/sprites/skills/earth_stone_2.png",
+   "webp": "assets/sprites/skills/earth_stone_2.webp"
+  },
+  {
+   "status": "convert",
+   "before": 30615,
+   "after": 22332,
+   "chosen": {
+    "lossless": true,
+    "quality": 100,
+    "bytes": 22332,
+    "max": 0,
+    "mean": 0.0,
+    "alphaMax": 0
+   },
+   "attempts": [
+    {
+     "lossless": true,
+     "quality": 100,
+     "bytes": 22332,
+     "max": 0,
+     "mean": 0.0,
+     "alphaMax": 0
+    }
+   ],
+   "source": "assets/sprites/skills/fire_boom_1.png",
+   "webp": "assets/sprites/skills/fire_boom_1.webp"
+  },
+  {
+   "status": "convert",
+   "before": 52337,
+   "after": 35242,
+   "chosen": {
+    "lossless": true,
+    "quality": 100,
+    "bytes": 35242,
+    "max": 0,
+    "mean": 0.0,
+    "alphaMax": 0
+   },
+   "attempts": [
+    {
+     "lossless": true,
+     "quality": 100,
+     "bytes": 35242,
+     "max": 0,
+     "mean": 0.0,
+     "alphaMax": 0
+    }
+   ],
+   "source": "assets/sprites/skills/fire_boom_2.png",
+   "webp": "assets/sprites/skills/fire_boom_2.webp"
+  },
+  {
+   "status": "convert",
+   "before": 39689,
+   "after": 28682,
+   "chosen": {
+    "lossless": true,
+    "quality": 100,
+    "bytes": 28682,
+    "max": 0,
+    "mean": 0.0,
+    "alphaMax": 0
+   },
+   "attempts": [
+    {
+     "lossless": true,
+     "quality": 100,
+     "bytes": 28682,
+     "max": 0,
+     "mean": 0.0,
+     "alphaMax": 0
+    }
+   ],
+   "source": "assets/sprites/skills/fire_boom_3.png",
+   "webp": "assets/sprites/skills/fire_boom_3.webp"
+  },
+  {
+   "status": "convert",
+   "before": 33905,
+   "after": 23344,
+   "chosen": {
+    "lossless": true,
+    "quality": 100,
+    "bytes": 23344,
+    "max": 0,
+    "mean": 0.0,
+    "alphaMax": 0
+   },
+   "attempts": [
+    {
+     "lossless": true,
+     "quality": 100,
+     "bytes": 23344,
+     "max": 0,
+     "mean": 0.0,
+     "alphaMax": 0
+    }
+   ],
+   "source": "assets/sprites/skills/fire_bottle.png",
+   "webp": "assets/sprites/skills/fire_bottle.webp"
+  },
+  {
+   "status": "convert",
+   "before": 38439,
+   "after": 26922,
+   "chosen": {
+    "lossless": true,
+    "quality": 100,
+    "bytes": 26922,
+    "max": 0,
+    "mean": 0.0,
+    "alphaMax": 0
+   },
+   "attempts": [
+    {
+     "lossless": true,
+     "quality": 100,
+     "bytes": 26922,
+     "max": 0,
+     "mean": 0.0,
+     "alphaMax": 0
+    }
+   ],
+   "source": "assets/sprites/skills/fire_frocket.png",
+   "webp": "assets/sprites/skills/fire_frocket.webp"
+  },
+  {
+   "status": "keep",
+   "before": 15591,
+   "after": 15591,
+   "attempts": [
+    {
+     "lossless": true,
+     "quality": 100,
+     "bytes": 12646,
+     "max": 0,
+     "mean": 0.0,
+     "alphaMax": 0
+    }
+   ],
+   "source": "assets/sprites/skills/fire_fwork_1.png",
+   "webp": "assets/sprites/skills/fire_fwork_1.webp"
+  },
+  {
+   "status": "convert",
+   "before": 66240,
+   "after": 52668,
+   "chosen": {
+    "lossless": true,
+    "quality": 100,
+    "bytes": 52668,
+    "max": 0,
+    "mean": 0.0,
+    "alphaMax": 0
+   },
+   "attempts": [
+    {
+     "lossless": true,
+     "quality": 100,
+     "bytes": 52668,
+     "max": 0,
+     "mean": 0.0,
+     "alphaMax": 0
+    }
+   ],
+   "source": "assets/sprites/skills/fire_fwork_2.png",
+   "webp": "assets/sprites/skills/fire_fwork_2.webp"
+  },
+  {
+   "status": "convert",
+   "before": 32036,
+   "after": 25440,
+   "chosen": {
+    "lossless": true,
+    "quality": 100,
+    "bytes": 25440,
+    "max": 0,
+    "mean": 0.0,
+    "alphaMax": 0
+   },
+   "attempts": [
+    {
+     "lossless": true,
+     "quality": 100,
+     "bytes": 25440,
+     "max": 0,
+     "mean": 0.0,
+     "alphaMax": 0
+    }
+   ],
+   "source": "assets/sprites/skills/fire_fwork_3.png",
+   "webp": "assets/sprites/skills/fire_fwork_3.webp"
+  },
+  {
+   "status": "convert",
+   "before": 36761,
+   "after": 26062,
+   "chosen": {
+    "lossless": true,
+    "quality": 100,
+    "bytes": 26062,
+    "max": 0,
+    "mean": 0.0,
+    "alphaMax": 0
+   },
+   "attempts": [
+    {
+     "lossless": true,
+     "quality": 100,
+     "bytes": 26062,
+     "max": 0,
+     "mean": 0.0,
+     "alphaMax": 0
+    }
+   ],
+   "source": "assets/sprites/skills/fire_lava_1.png",
+   "webp": "assets/sprites/skills/fire_lava_1.webp"
+  },
+  {
+   "status": "convert",
+   "before": 43696,
+   "after": 31864,
+   "chosen": {
+    "lossless": true,
+    "quality": 100,
+    "bytes": 31864,
+    "max": 0,
+    "mean": 0.0,
+    "alphaMax": 0
+   },
+   "attempts": [
+    {
+     "lossless": true,
+     "quality": 100,
+     "bytes": 31864,
+     "max": 0,
+     "mean": 0.0,
+     "alphaMax": 0
+    }
+   ],
+   "source": "assets/sprites/skills/fire_lava_2.png",
+   "webp": "assets/sprites/skills/fire_lava_2.webp"
+  },
+  {
+   "status": "convert",
+   "before": 53698,
+   "after": 39232,
+   "chosen": {
+    "lossless": true,
+    "quality": 100,
+    "bytes": 39232,
+    "max": 0,
+    "mean": 0.0,
+    "alphaMax": 0
+   },
+   "attempts": [
+    {
+     "lossless": true,
+     "quality": 100,
+     "bytes": 39232,
+     "max": 0,
+     "mean": 0.0,
+     "alphaMax": 0
+    }
+   ],
+   "source": "assets/sprites/skills/fire_lava_3.png",
+   "webp": "assets/sprites/skills/fire_lava_3.webp"
+  },
+  {
+   "status": "convert",
+   "before": 28514,
+   "after": 20662,
+   "chosen": {
+    "lossless": true,
+    "quality": 100,
+    "bytes": 20662,
+    "max": 0,
+    "mean": 0.0,
+    "alphaMax": 0
+   },
+   "attempts": [
+    {
+     "lossless": true,
+     "quality": 100,
+     "bytes": 20662,
+     "max": 0,
+     "mean": 0.0,
+     "alphaMax": 0
+    }
+   ],
+   "source": "assets/sprites/skills/fire_puddle_1.png",
+   "webp": "assets/sprites/skills/fire_puddle_1.webp"
+  },
+  {
+   "status": "convert",
+   "before": 38446,
+   "after": 28234,
+   "chosen": {
+    "lossless": true,
+    "quality": 100,
+    "bytes": 28234,
+    "max": 0,
+    "mean": 0.0,
+    "alphaMax": 0
+   },
+   "attempts": [
+    {
+     "lossless": true,
+     "quality": 100,
+     "bytes": 28234,
+     "max": 0,
+     "mean": 0.0,
+     "alphaMax": 0
+    }
+   ],
+   "source": "assets/sprites/skills/fire_puddle_2.png",
+   "webp": "assets/sprites/skills/fire_puddle_2.webp"
+  },
+  {
+   "status": "convert",
+   "before": 46512,
+   "after": 34384,
+   "chosen": {
+    "lossless": true,
+    "quality": 100,
+    "bytes": 34384,
+    "max": 0,
+    "mean": 0.0,
+    "alphaMax": 0
+   },
+   "attempts": [
+    {
+     "lossless": true,
+     "quality": 100,
+     "bytes": 34384,
+     "max": 0,
+     "mean": 0.0,
+     "alphaMax": 0
+    }
+   ],
+   "source": "assets/sprites/skills/fire_puddle_3.png",
+   "webp": "assets/sprites/skills/fire_puddle_3.webp"
+  },
+  {
+   "status": "convert",
+   "before": 28493,
+   "after": 19226,
+   "chosen": {
+    "lossless": true,
+    "quality": 100,
+    "bytes": 19226,
+    "max": 0,
+    "mean": 0.0,
+    "alphaMax": 0
+   },
+   "attempts": [
+    {
+     "lossless": true,
+     "quality": 100,
+     "bytes": 19226,
+     "max": 0,
+     "mean": 0.0,
+     "alphaMax": 0
+    }
+   ],
+   "source": "assets/sprites/skills/fire_rocket.png",
+   "webp": "assets/sprites/skills/fire_rocket.webp"
+  },
+  {
+   "status": "convert",
+   "before": 49217,
+   "after": 34038,
+   "chosen": {
+    "lossless": true,
+    "quality": 100,
+    "bytes": 34038,
+    "max": 0,
+    "mean": 0.0,
+    "alphaMax": 0
+   },
+   "attempts": [
+    {
+     "lossless": true,
+     "quality": 100,
+     "bytes": 34038,
+     "max": 0,
+     "mean": 0.0,
+     "alphaMax": 0
+    }
+   ],
+   "source": "assets/sprites/skills/fire_volcano.png",
+   "webp": "assets/sprites/skills/fire_volcano.webp"
+  },
+  {
+   "status": "convert",
+   "before": 37905,
+   "after": 27272,
+   "chosen": {
+    "lossless": true,
+    "quality": 100,
+    "bytes": 27272,
+    "max": 0,
+    "mean": 0.0,
+    "alphaMax": 0
+   },
+   "attempts": [
+    {
+     "lossless": true,
+     "quality": 100,
+     "bytes": 27272,
+     "max": 0,
+     "mean": 0.0,
+     "alphaMax": 0
+    }
+   ],
+   "source": "assets/sprites/skills/lightning_bee_1.png",
+   "webp": "assets/sprites/skills/lightning_bee_1.webp"
+  },
+  {
+   "status": "convert",
+   "before": 32064,
+   "after": 22914,
+   "chosen": {
+    "lossless": true,
+    "quality": 100,
+    "bytes": 22914,
+    "max": 0,
+    "mean": 0.0,
+    "alphaMax": 0
+   },
+   "attempts": [
+    {
+     "lossless": true,
+     "quality": 100,
+     "bytes": 22914,
+     "max": 0,
+     "mean": 0.0,
+     "alphaMax": 0
+    }
+   ],
+   "source": "assets/sprites/skills/lightning_bee_2.png",
+   "webp": "assets/sprites/skills/lightning_bee_2.webp"
+  },
+  {
+   "status": "convert",
+   "before": 81157,
+   "after": 60312,
+   "chosen": {
+    "lossless": true,
+    "quality": 100,
+    "bytes": 60312,
+    "max": 0,
+    "mean": 0.0,
+    "alphaMax": 0
+   },
+   "attempts": [
+    {
+     "lossless": true,
+     "quality": 100,
+     "bytes": 60312,
+     "max": 0,
+     "mean": 0.0,
+     "alphaMax": 0
+    }
+   ],
+   "source": "assets/sprites/skills/lightning_bigburst.png",
+   "webp": "assets/sprites/skills/lightning_bigburst.webp"
+  },
+  {
+   "status": "convert",
+   "before": 52433,
+   "after": 36132,
+   "chosen": {
+    "lossless": true,
+    "quality": 100,
+    "bytes": 36132,
+    "max": 0,
+    "mean": 0.0,
+    "alphaMax": 0
+   },
+   "attempts": [
+    {
+     "lossless": true,
+     "quality": 100,
+     "bytes": 36132,
+     "max": 0,
+     "mean": 0.0,
+     "alphaMax": 0
+    }
+   ],
+   "source": "assets/sprites/skills/lightning_bigflash.png",
+   "webp": "assets/sprites/skills/lightning_bigflash.webp"
+  },
+  {
+   "status": "convert",
+   "before": 24387,
+   "after": 16736,
+   "chosen": {
+    "lossless": true,
+    "quality": 100,
+    "bytes": 16736,
+    "max": 0,
+    "mean": 0.0,
+    "alphaMax": 0
+   },
+   "attempts": [
+    {
+     "lossless": true,
+     "quality": 100,
+     "bytes": 16736,
+     "max": 0,
+     "mean": 0.0,
+     "alphaMax": 0
+    }
+   ],
+   "source": "assets/sprites/skills/lightning_bolt_1.png",
+   "webp": "assets/sprites/skills/lightning_bolt_1.webp"
+  },
+  {
+   "status": "convert",
+   "before": 27827,
+   "after": 19424,
+   "chosen": {
+    "lossless": true,
+    "quality": 100,
+    "bytes": 19424,
+    "max": 0,
+    "mean": 0.0,
+    "alphaMax": 0
+   },
+   "attempts": [
+    {
+     "lossless": true,
+     "quality": 100,
+     "bytes": 19424,
+     "max": 0,
+     "mean": 0.0,
+     "alphaMax": 0
+    }
+   ],
+   "source": "assets/sprites/skills/lightning_bolt_2.png",
+   "webp": "assets/sprites/skills/lightning_bolt_2.webp"
+  },
+  {
+   "status": "convert",
+   "before": 52287,
+   "after": 34910,
+   "chosen": {
+    "lossless": true,
+    "quality": 100,
+    "bytes": 34910,
+    "max": 0,
+    "mean": 0.0,
+    "alphaMax": 0
+   },
+   "attempts": [
+    {
+     "lossless": true,
+     "quality": 100,
+     "bytes": 34910,
+     "max": 0,
+     "mean": 0.0,
+     "alphaMax": 0
+    }
+   ],
+   "source": "assets/sprites/skills/lightning_cloud.png",
+   "webp": "assets/sprites/skills/lightning_cloud.webp"
+  },
+  {
+   "status": "convert",
+   "before": 34174,
+   "after": 24072,
+   "chosen": {
+    "lossless": true,
+    "quality": 100,
+    "bytes": 24072,
+    "max": 0,
+    "mean": 0.0,
+    "alphaMax": 0
+   },
+   "attempts": [
+    {
+     "lossless": true,
+     "quality": 100,
+     "bytes": 24072,
+     "max": 0,
+     "mean": 0.0,
+     "alphaMax": 0
+    }
+   ],
+   "source": "assets/sprites/skills/lightning_flash.png",
+   "webp": "assets/sprites/skills/lightning_flash.webp"
+  },
+  {
+   "status": "convert",
+   "before": 8123,
+   "after": 6262,
+   "chosen": {
+    "lossless": true,
+    "quality": 100,
+    "bytes": 6262,
+    "max": 0,
+    "mean": 0.0,
+    "alphaMax": 0
+   },
+   "attempts": [
+    {
+     "lossless": true,
+     "quality": 100,
+     "bytes": 6262,
+     "max": 0,
+     "mean": 0.0,
+     "alphaMax": 0
+    }
+   ],
+   "source": "assets/sprites/skills/lightning_hline.png",
+   "webp": "assets/sprites/skills/lightning_hline.webp"
+  },
+  {
+   "status": "convert",
+   "before": 38867,
+   "after": 27182,
+   "chosen": {
+    "lossless": true,
+    "quality": 100,
+    "bytes": 27182,
+    "max": 0,
+    "mean": 0.0,
+    "alphaMax": 0
+   },
+   "attempts": [
+    {
+     "lossless": true,
+     "quality": 100,
+     "bytes": 27182,
+     "max": 0,
+     "mean": 0.0,
+     "alphaMax": 0
+    }
+   ],
+   "source": "assets/sprites/skills/lightning_hstinger.png",
+   "webp": "assets/sprites/skills/lightning_hstinger.webp"
+  },
+  {
+   "status": "convert",
+   "before": 15390,
+   "after": 11396,
+   "chosen": {
+    "lossless": true,
+    "quality": 100,
+    "bytes": 11396,
+    "max": 0,
+    "mean": 0.0,
+    "alphaMax": 0
+   },
+   "attempts": [
+    {
+     "lossless": true,
+     "quality": 100,
+     "bytes": 11396,
+     "max": 0,
+     "mean": 0.0,
+     "alphaMax": 0
+    }
+   ],
+   "source": "assets/sprites/skills/lightning_spark.png",
+   "webp": "assets/sprites/skills/lightning_spark.webp"
+  },
+  {
+   "status": "convert",
+   "before": 25301,
+   "after": 17994,
+   "chosen": {
+    "lossless": true,
+    "quality": 100,
+    "bytes": 17994,
+    "max": 0,
+    "mean": 0.0,
+    "alphaMax": 0
+   },
+   "attempts": [
+    {
+     "lossless": true,
+     "quality": 100,
+     "bytes": 17994,
+     "max": 0,
+     "mean": 0.0,
+     "alphaMax": 0
+    }
+   ],
+   "source": "assets/sprites/skills/lightning_stinger.png",
+   "webp": "assets/sprites/skills/lightning_stinger.webp"
+  },
+  {
+   "status": "convert",
+   "before": 61086,
+   "after": 39648,
+   "chosen": {
+    "lossless": true,
+    "quality": 100,
+    "bytes": 39648,
+    "max": 0,
+    "mean": 0.0,
+    "alphaMax": 0
+   },
+   "attempts": [
+    {
+     "lossless": true,
+     "quality": 100,
+     "bytes": 39648,
+     "max": 0,
+     "mean": 0.0,
+     "alphaMax": 0
+    }
+   ],
+   "source": "assets/sprites/skills/lightning_storm.png",
+   "webp": "assets/sprites/skills/lightning_storm.webp"
+  },
+  {
+   "status": "convert",
+   "before": 53675,
+   "after": 38024,
+   "chosen": {
+    "lossless": true,
+    "quality": 100,
+    "bytes": 38024,
+    "max": 0,
+    "mean": 0.0,
+    "alphaMax": 0
+   },
+   "attempts": [
+    {
+     "lossless": true,
+     "quality": 100,
+     "bytes": 38024,
+     "max": 0,
+     "mean": 0.0,
+     "alphaMax": 0
+    }
+   ],
+   "source": "assets/sprites/skills/lightning_swarm.png",
+   "webp": "assets/sprites/skills/lightning_swarm.webp"
+  },
+  {
+   "status": "convert",
+   "before": 56526,
+   "after": 40480,
+   "chosen": {
+    "lossless": true,
+    "quality": 100,
+    "bytes": 40480,
+    "max": 0,
+    "mean": 0.0,
+    "alphaMax": 0
+   },
+   "attempts": [
+    {
+     "lossless": true,
+     "quality": 100,
+     "bytes": 40480,
+     "max": 0,
+     "mean": 0.0,
+     "alphaMax": 0
+    }
+   ],
+   "source": "assets/sprites/skills/lightning_tbolt_1.png",
+   "webp": "assets/sprites/skills/lightning_tbolt_1.webp"
+  },
+  {
+   "status": "convert",
+   "before": 49943,
+   "after": 36212,
+   "chosen": {
+    "lossless": true,
+    "quality": 100,
+    "bytes": 36212,
+    "max": 0,
+    "mean": 0.0,
+    "alphaMax": 0
+   },
+   "attempts": [
+    {
+     "lossless": true,
+     "quality": 100,
+     "bytes": 36212,
+     "max": 0,
+     "mean": 0.0,
+     "alphaMax": 0
+    }
+   ],
+   "source": "assets/sprites/skills/lightning_tbolt_2.png",
+   "webp": "assets/sprites/skills/lightning_tbolt_2.webp"
+  },
+  {
+   "status": "convert",
+   "before": 76216,
+   "after": 50382,
+   "chosen": {
+    "lossless": true,
+    "quality": 100,
+    "bytes": 50382,
+    "max": 0,
+    "mean": 0.0,
+    "alphaMax": 0
+   },
+   "attempts": [
+    {
+     "lossless": true,
+     "quality": 100,
+     "bytes": 50382,
+     "max": 0,
+     "mean": 0.0,
+     "alphaMax": 0
+    }
+   ],
+   "source": "assets/sprites/skills/support_S1.png",
+   "webp": "assets/sprites/skills/support_S1.webp"
+  },
+  {
+   "status": "convert",
+   "before": 91485,
+   "after": 60098,
+   "chosen": {
+    "lossless": true,
+    "quality": 100,
+    "bytes": 60098,
+    "max": 0,
+    "mean": 0.0,
+    "alphaMax": 0
+   },
+   "attempts": [
+    {
+     "lossless": true,
+     "quality": 100,
+     "bytes": 60098,
+     "max": 0,
+     "mean": 0.0,
+     "alphaMax": 0
+    }
+   ],
+   "source": "assets/sprites/skills/support_S2.png",
+   "webp": "assets/sprites/skills/support_S2.webp"
+  },
+  {
+   "status": "convert",
+   "before": 81548,
+   "after": 52544,
+   "chosen": {
+    "lossless": true,
+    "quality": 100,
+    "bytes": 52544,
+    "max": 0,
+    "mean": 0.0,
+    "alphaMax": 0
+   },
+   "attempts": [
+    {
+     "lossless": true,
+     "quality": 100,
+     "bytes": 52544,
+     "max": 0,
+     "mean": 0.0,
+     "alphaMax": 0
+    }
+   ],
+   "source": "assets/sprites/skills/support_S3.png",
+   "webp": "assets/sprites/skills/support_S3.webp"
+  },
+  {
+   "status": "convert",
+   "before": 78297,
+   "after": 54134,
+   "chosen": {
+    "lossless": true,
+    "quality": 100,
+    "bytes": 54134,
+    "max": 0,
+    "mean": 0.0,
+    "alphaMax": 0
+   },
+   "attempts": [
+    {
+     "lossless": true,
+     "quality": 100,
+     "bytes": 54134,
+     "max": 0,
+     "mean": 0.0,
+     "alphaMax": 0
+    }
+   ],
+   "source": "assets/sprites/skills/support_S4.png",
+   "webp": "assets/sprites/skills/support_S4.webp"
+  },
+  {
+   "status": "convert",
+   "before": 65329,
+   "after": 43366,
+   "chosen": {
+    "lossless": true,
+    "quality": 100,
+    "bytes": 43366,
+    "max": 0,
+    "mean": 0.0,
+    "alphaMax": 0
+   },
+   "attempts": [
+    {
+     "lossless": true,
+     "quality": 100,
+     "bytes": 43366,
+     "max": 0,
+     "mean": 0.0,
+     "alphaMax": 0
+    }
+   ],
+   "source": "assets/sprites/skills/support_S5.png",
+   "webp": "assets/sprites/skills/support_S5.webp"
+  },
+  {
+   "status": "convert",
+   "before": 85512,
+   "after": 56368,
+   "chosen": {
+    "lossless": true,
+    "quality": 100,
+    "bytes": 56368,
+    "max": 0,
+    "mean": 0.0,
+    "alphaMax": 0
+   },
+   "attempts": [
+    {
+     "lossless": true,
+     "quality": 100,
+     "bytes": 56368,
+     "max": 0,
+     "mean": 0.0,
+     "alphaMax": 0
+    }
+   ],
+   "source": "assets/sprites/skills/support_S6.png",
+   "webp": "assets/sprites/skills/support_S6.webp"
+  },
+  {
+   "status": "convert",
+   "before": 123439,
+   "after": 80874,
+   "chosen": {
+    "lossless": true,
+    "quality": 100,
+    "bytes": 80874,
+    "max": 0,
+    "mean": 0.0,
+    "alphaMax": 0
+   },
+   "attempts": [
+    {
+     "lossless": true,
+     "quality": 100,
+     "bytes": 80874,
+     "max": 0,
+     "mean": 0.0,
+     "alphaMax": 0
+    }
+   ],
+   "source": "assets/sprites/skills/support_S7.png",
+   "webp": "assets/sprites/skills/support_S7.webp"
+  },
+  {
+   "status": "convert",
+   "before": 83454,
+   "after": 52234,
+   "chosen": {
+    "lossless": true,
+    "quality": 100,
+    "bytes": 52234,
+    "max": 0,
+    "mean": 0.0,
+    "alphaMax": 0
+   },
+   "attempts": [
+    {
+     "lossless": true,
+     "quality": 100,
+     "bytes": 52234,
+     "max": 0,
+     "mean": 0.0,
+     "alphaMax": 0
+    }
+   ],
+   "source": "assets/sprites/skills/support_S8.png",
+   "webp": "assets/sprites/skills/support_S8.webp"
+  },
+  {
+   "status": "convert",
+   "before": 32726,
+   "after": 22614,
+   "chosen": {
+    "lossless": true,
+    "quality": 100,
+    "bytes": 22614,
+    "max": 0,
+    "mean": 0.0,
+    "alphaMax": 0
+   },
+   "attempts": [
+    {
+     "lossless": true,
+     "quality": 100,
+     "bytes": 22614,
+     "max": 0,
+     "mean": 0.0,
+     "alphaMax": 0
+    }
+   ],
+   "source": "assets/sprites/skills/water_balloon.png",
+   "webp": "assets/sprites/skills/water_balloon.webp"
+  },
+  {
+   "status": "convert",
+   "before": 24415,
+   "after": 17038,
+   "chosen": {
+    "lossless": true,
+    "quality": 100,
+    "bytes": 17038,
+    "max": 0,
+    "mean": 0.0,
+    "alphaMax": 0
+   },
+   "attempts": [
+    {
+     "lossless": true,
+     "quality": 100,
+     "bytes": 17038,
+     "max": 0,
+     "mean": 0.0,
+     "alphaMax": 0
+    }
+   ],
+   "source": "assets/sprites/skills/water_beam.png",
+   "webp": "assets/sprites/skills/water_beam.webp"
+  },
+  {
+   "status": "convert",
+   "before": 20882,
+   "after": 14618,
+   "chosen": {
+    "lossless": true,
+    "quality": 100,
+    "bytes": 14618,
+    "max": 0,
+    "mean": 0.0,
+    "alphaMax": 0
+   },
+   "attempts": [
+    {
+     "lossless": true,
+     "quality": 100,
+     "bytes": 14618,
+     "max": 0,
+     "mean": 0.0,
+     "alphaMax": 0
+    }
+   ],
+   "source": "assets/sprites/skills/water_beam_tip.png",
+   "webp": "assets/sprites/skills/water_beam_tip.webp"
+  },
+  {
+   "status": "convert",
+   "before": 59552,
+   "after": 41484,
+   "chosen": {
+    "lossless": true,
+    "quality": 100,
+    "bytes": 41484,
+    "max": 0,
+    "mean": 0.0,
+    "alphaMax": 0
+   },
+   "attempts": [
+    {
+     "lossless": true,
+     "quality": 100,
+     "bytes": 41484,
+     "max": 0,
+     "mean": 0.0,
+     "alphaMax": 0
+    }
+   ],
+   "source": "assets/sprites/skills/water_kballoon.png",
+   "webp": "assets/sprites/skills/water_kballoon.webp"
+  },
+  {
+   "status": "convert",
+   "before": 45047,
+   "after": 32986,
+   "chosen": {
+    "lossless": true,
+    "quality": 100,
+    "bytes": 32986,
+    "max": 0,
+    "mean": 0.0,
+    "alphaMax": 0
+   },
+   "attempts": [
+    {
+     "lossless": true,
+     "quality": 100,
+     "bytes": 32986,
+     "max": 0,
+     "mean": 0.0,
+     "alphaMax": 0
+    }
+   ],
+   "source": "assets/sprites/skills/water_ksplash_1.png",
+   "webp": "assets/sprites/skills/water_ksplash_1.webp"
+  },
+  {
+   "status": "convert",
+   "before": 63760,
+   "after": 46230,
+   "chosen": {
+    "lossless": true,
+    "quality": 100,
+    "bytes": 46230,
+    "max": 0,
+    "mean": 0.0,
+    "alphaMax": 0
+   },
+   "attempts": [
+    {
+     "lossless": true,
+     "quality": 100,
+     "bytes": 46230,
+     "max": 0,
+     "mean": 0.0,
+     "alphaMax": 0
+    }
+   ],
+   "source": "assets/sprites/skills/water_ksplash_2.png",
+   "webp": "assets/sprites/skills/water_ksplash_2.webp"
+  },
+  {
+   "status": "convert",
+   "before": 60181,
+   "after": 42626,
+   "chosen": {
+    "lossless": true,
+    "quality": 100,
+    "bytes": 42626,
+    "max": 0,
+    "mean": 0.0,
+    "alphaMax": 0
+   },
+   "attempts": [
+    {
+     "lossless": true,
+     "quality": 100,
+     "bytes": 42626,
+     "max": 0,
+     "mean": 0.0,
+     "alphaMax": 0
+    }
+   ],
+   "source": "assets/sprites/skills/water_ksplash_3.png",
+   "webp": "assets/sprites/skills/water_ksplash_3.webp"
+  },
+  {
+   "status": "convert",
+   "before": 28743,
+   "after": 20698,
+   "chosen": {
+    "lossless": true,
+    "quality": 100,
+    "bytes": 20698,
+    "max": 0,
+    "mean": 0.0,
+    "alphaMax": 0
+   },
+   "attempts": [
+    {
+     "lossless": true,
+     "quality": 100,
+     "bytes": 20698,
+     "max": 0,
+     "mean": 0.0,
+     "alphaMax": 0
+    }
+   ],
+   "source": "assets/sprites/skills/water_rbeam.png",
+   "webp": "assets/sprites/skills/water_rbeam.webp"
+  },
+  {
+   "status": "convert",
+   "before": 26857,
+   "after": 19662,
+   "chosen": {
+    "lossless": true,
+    "quality": 100,
+    "bytes": 19662,
+    "max": 0,
+    "mean": 0.0,
+    "alphaMax": 0
+   },
+   "attempts": [
+    {
+     "lossless": true,
+     "quality": 100,
+     "bytes": 19662,
+     "max": 0,
+     "mean": 0.0,
+     "alphaMax": 0
+    }
+   ],
+   "source": "assets/sprites/skills/water_rbeam_tip.png",
+   "webp": "assets/sprites/skills/water_rbeam_tip.webp"
+  },
+  {
+   "status": "convert",
+   "before": 71650,
+   "after": 49586,
+   "chosen": {
+    "lossless": true,
+    "quality": 100,
+    "bytes": 49586,
+    "max": 0,
+    "mean": 0.0,
+    "alphaMax": 0
+   },
+   "attempts": [
+    {
+     "lossless": true,
+     "quality": 100,
+     "bytes": 49586,
+     "max": 0,
+     "mean": 0.0,
+     "alphaMax": 0
+    }
+   ],
+   "source": "assets/sprites/skills/water_rspray_1.png",
+   "webp": "assets/sprites/skills/water_rspray_1.webp"
+  },
+  {
+   "status": "convert",
+   "before": 71486,
+   "after": 54376,
+   "chosen": {
+    "lossless": true,
+    "quality": 100,
+    "bytes": 54376,
+    "max": 0,
+    "mean": 0.0,
+    "alphaMax": 0
+   },
+   "attempts": [
+    {
+     "lossless": true,
+     "quality": 100,
+     "bytes": 54376,
+     "max": 0,
+     "mean": 0.0,
+     "alphaMax": 0
+    }
+   ],
+   "source": "assets/sprites/skills/water_rspray_2.png",
+   "webp": "assets/sprites/skills/water_rspray_2.webp"
+  },
+  {
+   "status": "convert",
+   "before": 18633,
+   "after": 14814,
+   "chosen": {
+    "lossless": true,
+    "quality": 100,
+    "bytes": 14814,
+    "max": 0,
+    "mean": 0.0,
+    "alphaMax": 0
+   },
+   "attempts": [
+    {
+     "lossless": true,
+     "quality": 100,
+     "bytes": 14814,
+     "max": 0,
+     "mean": 0.0,
+     "alphaMax": 0
+    }
+   ],
+   "source": "assets/sprites/skills/water_splash_1.png",
+   "webp": "assets/sprites/skills/water_splash_1.webp"
+  },
+  {
+   "status": "convert",
+   "before": 33896,
+   "after": 24394,
+   "chosen": {
+    "lossless": true,
+    "quality": 100,
+    "bytes": 24394,
+    "max": 0,
+    "mean": 0.0,
+    "alphaMax": 0
+   },
+   "attempts": [
+    {
+     "lossless": true,
+     "quality": 100,
+     "bytes": 24394,
+     "max": 0,
+     "mean": 0.0,
+     "alphaMax": 0
+    }
+   ],
+   "source": "assets/sprites/skills/water_splash_2.png",
+   "webp": "assets/sprites/skills/water_splash_2.webp"
+  },
+  {
+   "status": "convert",
+   "before": 13781,
+   "after": 10948,
+   "chosen": {
+    "lossless": true,
+    "quality": 100,
+    "bytes": 10948,
+    "max": 0,
+    "mean": 0.0,
+    "alphaMax": 0
+   },
+   "attempts": [
+    {
+     "lossless": true,
+     "quality": 100,
+     "bytes": 10948,
+     "max": 0,
+     "mean": 0.0,
+     "alphaMax": 0
+    }
+   ],
+   "source": "assets/sprites/skills/water_splash_3.png",
+   "webp": "assets/sprites/skills/water_splash_3.webp"
+  },
+  {
+   "status": "convert",
+   "before": 21832,
+   "after": 16170,
+   "chosen": {
+    "lossless": true,
+    "quality": 100,
+    "bytes": 16170,
+    "max": 0,
+    "mean": 0.0,
+    "alphaMax": 0
+   },
+   "attempts": [
+    {
+     "lossless": true,
+     "quality": 100,
+     "bytes": 16170,
+     "max": 0,
+     "mean": 0.0,
+     "alphaMax": 0
+    }
+   ],
+   "source": "assets/sprites/skills/water_spray_1.png",
+   "webp": "assets/sprites/skills/water_spray_1.webp"
+  },
+  {
+   "status": "keep",
+   "before": 19492,
+   "after": 19492,
+   "attempts": [
+    {
+     "lossless": true,
+     "quality": 100,
+     "bytes": 16002,
+     "max": 0,
+     "mean": 0.0,
+     "alphaMax": 0
+    }
+   ],
+   "source": "assets/sprites/skills/water_spray_2.png",
+   "webp": "assets/sprites/skills/water_spray_2.webp"
+  },
+  {
+   "status": "convert",
+   "before": 39849,
+   "after": 27542,
+   "chosen": {
+    "lossless": true,
+    "quality": 100,
+    "bytes": 27542,
+    "max": 0,
+    "mean": 0.0,
+    "alphaMax": 0
+   },
+   "attempts": [
+    {
+     "lossless": true,
+     "quality": 100,
+     "bytes": 27542,
+     "max": 0,
+     "mean": 0.0,
+     "alphaMax": 0
+    }
+   ],
+   "source": "assets/sprites/skills/wind_boomerang_1.png",
+   "webp": "assets/sprites/skills/wind_boomerang_1.webp"
+  },
+  {
+   "status": "convert",
+   "before": 34863,
+   "after": 24594,
+   "chosen": {
+    "lossless": true,
+    "quality": 100,
+    "bytes": 24594,
+    "max": 0,
+    "mean": 0.0,
+    "alphaMax": 0
+   },
+   "attempts": [
+    {
+     "lossless": true,
+     "quality": 100,
+     "bytes": 24594,
+     "max": 0,
+     "mean": 0.0,
+     "alphaMax": 0
+    }
+   ],
+   "source": "assets/sprites/skills/wind_boomerang_2.png",
+   "webp": "assets/sprites/skills/wind_boomerang_2.webp"
+  },
+  {
+   "status": "convert",
+   "before": 21741,
+   "after": 16036,
+   "chosen": {
+    "lossless": true,
+    "quality": 100,
+    "bytes": 16036,
+    "max": 0,
+    "mean": 0.0,
+    "alphaMax": 0
+   },
+   "attempts": [
+    {
+     "lossless": true,
+     "quality": 100,
+     "bytes": 16036,
+     "max": 0,
+     "mean": 0.0,
+     "alphaMax": 0
+    }
+   ],
+   "source": "assets/sprites/skills/wind_burst.png",
+   "webp": "assets/sprites/skills/wind_burst.webp"
+  },
+  {
+   "status": "convert",
+   "before": 61091,
+   "after": 41318,
+   "chosen": {
+    "lossless": true,
+    "quality": 100,
+    "bytes": 41318,
+    "max": 0,
+    "mean": 0.0,
+    "alphaMax": 0
+   },
+   "attempts": [
+    {
+     "lossless": true,
+     "quality": 100,
+     "bytes": 41318,
+     "max": 0,
+     "mean": 0.0,
+     "alphaMax": 0
+    }
+   ],
+   "source": "assets/sprites/skills/wind_mboomerang_1.png",
+   "webp": "assets/sprites/skills/wind_mboomerang_1.webp"
+  },
+  {
+   "status": "convert",
+   "before": 43421,
+   "after": 30186,
+   "chosen": {
+    "lossless": true,
+    "quality": 100,
+    "bytes": 30186,
+    "max": 0,
+    "mean": 0.0,
+    "alphaMax": 0
+   },
+   "attempts": [
+    {
+     "lossless": true,
+     "quality": 100,
+     "bytes": 30186,
+     "max": 0,
+     "mean": 0.0,
+     "alphaMax": 0
+    }
+   ],
+   "source": "assets/sprites/skills/wind_mboomerang_2.png",
+   "webp": "assets/sprites/skills/wind_mboomerang_2.webp"
+  },
+  {
+   "status": "convert",
+   "before": 8989,
+   "after": 6426,
+   "chosen": {
+    "lossless": true,
+    "quality": 100,
+    "bytes": 6426,
+    "max": 0,
+    "mean": 0.0,
+    "alphaMax": 0
+   },
+   "attempts": [
+    {
+     "lossless": true,
+     "quality": 100,
+     "bytes": 6426,
+     "max": 0,
+     "mean": 0.0,
+     "alphaMax": 0
+    }
+   ],
+   "source": "assets/sprites/skills/wind_pull_line.png",
+   "webp": "assets/sprites/skills/wind_pull_line.webp"
+  },
+  {
+   "status": "convert",
+   "before": 51188,
+   "after": 35706,
+   "chosen": {
+    "lossless": true,
+    "quality": 100,
+    "bytes": 35706,
+    "max": 0,
+    "mean": 0.0,
+    "alphaMax": 0
+   },
+   "attempts": [
+    {
+     "lossless": true,
+     "quality": 100,
+     "bytes": 35706,
+     "max": 0,
+     "mean": 0.0,
+     "alphaMax": 0
+    }
+   ],
+   "source": "assets/sprites/skills/wind_ring.png",
+   "webp": "assets/sprites/skills/wind_ring.webp"
+  },
+  {
+   "status": "convert",
+   "before": 5309,
+   "after": 2452,
+   "chosen": {
+    "lossless": true,
+    "quality": 100,
+    "bytes": 2452,
+    "max": 0,
+    "mean": 0.0,
+    "alphaMax": 0
+   },
+   "attempts": [
+    {
+     "lossless": true,
+     "quality": 100,
+     "bytes": 2452,
+     "max": 0,
+     "mean": 0.0,
+     "alphaMax": 0
+    }
+   ],
+   "source": "assets/sprites/skills/wind_shadow.png",
+   "webp": "assets/sprites/skills/wind_shadow.webp"
+  },
+  {
+   "status": "convert",
+   "before": 16676,
+   "after": 12380,
+   "chosen": {
+    "lossless": true,
+    "quality": 100,
+    "bytes": 12380,
+    "max": 0,
+    "mean": 0.0,
+    "alphaMax": 0
+   },
+   "attempts": [
+    {
+     "lossless": true,
+     "quality": 100,
+     "bytes": 12380,
+     "max": 0,
+     "mean": 0.0,
+     "alphaMax": 0
+    }
+   ],
+   "source": "assets/sprites/skills/wind_swirl.png",
+   "webp": "assets/sprites/skills/wind_swirl.webp"
+  },
+  {
+   "status": "convert",
+   "before": 40666,
+   "after": 30904,
+   "chosen": {
+    "lossless": true,
+    "quality": 100,
+    "bytes": 30904,
+    "max": 0,
+    "mean": 0.0,
+    "alphaMax": 0
+   },
+   "attempts": [
+    {
+     "lossless": true,
+     "quality": 100,
+     "bytes": 30904,
+     "max": 0,
+     "mean": 0.0,
+     "alphaMax": 0
+    }
+   ],
+   "source": "assets/sprites/skills/wind_top_1.png",
+   "webp": "assets/sprites/skills/wind_top_1.webp"
+  },
+  {
+   "status": "convert",
+   "before": 41225,
+   "after": 31398,
+   "chosen": {
+    "lossless": true,
+    "quality": 100,
+    "bytes": 31398,
+    "max": 0,
+    "mean": 0.0,
+    "alphaMax": 0
+   },
+   "attempts": [
+    {
+     "lossless": true,
+     "quality": 100,
+     "bytes": 31398,
+     "max": 0,
+     "mean": 0.0,
+     "alphaMax": 0
+    }
+   ],
+   "source": "assets/sprites/skills/wind_top_2.png",
+   "webp": "assets/sprites/skills/wind_top_2.webp"
+  },
+  {
+   "status": "convert",
+   "before": 41325,
+   "after": 31764,
+   "chosen": {
+    "lossless": true,
+    "quality": 100,
+    "bytes": 31764,
+    "max": 0,
+    "mean": 0.0,
+    "alphaMax": 0
+   },
+   "attempts": [
+    {
+     "lossless": true,
+     "quality": 100,
+     "bytes": 31764,
+     "max": 0,
+     "mean": 0.0,
+     "alphaMax": 0
+    }
+   ],
+   "source": "assets/sprites/skills/wind_top_3.png",
+   "webp": "assets/sprites/skills/wind_top_3.webp"
+  },
+  {
+   "status": "convert",
+   "before": 29596,
+   "after": 20160,
+   "chosen": {
+    "lossless": true,
+    "quality": 100,
+    "bytes": 20160,
+    "max": 0,
+    "mean": 0.0,
+    "alphaMax": 0
+   },
+   "attempts": [
+    {
+     "lossless": true,
+     "quality": 100,
+     "bytes": 20160,
+     "max": 0,
+     "mean": 0.0,
+     "alphaMax": 0
+    }
+   ],
+   "source": "assets/sprites/skills/wind_trail.png",
+   "webp": "assets/sprites/skills/wind_trail.webp"
+  },
+  {
+   "status": "convert",
+   "before": 63913,
+   "after": 49078,
+   "chosen": {
+    "lossless": true,
+    "quality": 100,
+    "bytes": 49078,
+    "max": 0,
+    "mean": 0.0,
+    "alphaMax": 0
+   },
+   "attempts": [
+    {
+     "lossless": true,
+     "quality": 100,
+     "bytes": 49078,
+     "max": 0,
+     "mean": 0.0,
+     "alphaMax": 0
+    }
+   ],
+   "source": "assets/sprites/skills/wind_typhoon_1.png",
+   "webp": "assets/sprites/skills/wind_typhoon_1.webp"
+  },
+  {
+   "status": "convert",
+   "before": 63994,
+   "after": 49248,
+   "chosen": {
+    "lossless": true,
+    "quality": 100,
+    "bytes": 49248,
+    "max": 0,
+    "mean": 0.0,
+    "alphaMax": 0
+   },
+   "attempts": [
+    {
+     "lossless": true,
+     "quality": 100,
+     "bytes": 49248,
+     "max": 0,
+     "mean": 0.0,
+     "alphaMax": 0
+    }
+   ],
+   "source": "assets/sprites/skills/wind_typhoon_2.png",
+   "webp": "assets/sprites/skills/wind_typhoon_2.webp"
+  },
+  {
+   "status": "convert",
+   "before": 64187,
+   "after": 49496,
+   "chosen": {
+    "lossless": true,
+    "quality": 100,
+    "bytes": 49496,
+    "max": 0,
+    "mean": 0.0,
+    "alphaMax": 0
+   },
+   "attempts": [
+    {
+     "lossless": true,
+     "quality": 100,
+     "bytes": 49496,
+     "max": 0,
+     "mean": 0.0,
+     "alphaMax": 0
+    }
+   ],
+   "source": "assets/sprites/skills/wind_typhoon_3.png",
+   "webp": "assets/sprites/skills/wind_typhoon_3.webp"
+  },
+  {
+   "status": "convert",
+   "before": 173043,
+   "after": 119494,
+   "chosen": {
+    "lossless": true,
+    "quality": 100,
+    "bytes": 119494,
+    "max": 0,
+    "mean": 0.0,
+    "alphaMax": 0
+   },
+   "attempts": [
+    {
+     "lossless": true,
+     "quality": 100,
+     "bytes": 119494,
+     "max": 0,
+     "mean": 0.0,
+     "alphaMax": 0
+    }
+   ],
+   "source": "assets/sprites/t1/boss_angry.png",
+   "webp": "assets/sprites/t1/boss_angry.webp"
+  },
+  {
+   "status": "convert",
+   "before": 148963,
+   "after": 100152,
+   "chosen": {
+    "lossless": true,
+    "quality": 100,
+    "bytes": 100152,
+    "max": 0,
+    "mean": 0.0,
+    "alphaMax": 0
+   },
+   "attempts": [
+    {
+     "lossless": true,
+     "quality": 100,
+     "bytes": 100152,
+     "max": 0,
+     "mean": 0.0,
+     "alphaMax": 0
+    }
+   ],
+   "source": "assets/sprites/t1/boss_calm.png",
+   "webp": "assets/sprites/t1/boss_calm.webp"
+  },
+  {
+   "status": "convert",
+   "before": 33467,
+   "after": 23910,
+   "chosen": {
+    "lossless": true,
+    "quality": 100,
+    "bytes": 23910,
+    "max": 0,
+    "mean": 0.0,
+    "alphaMax": 0
+   },
+   "attempts": [
+    {
+     "lossless": true,
+     "quality": 100,
+     "bytes": 23910,
+     "max": 0,
+     "mean": 0.0,
+     "alphaMax": 0
+    }
+   ],
+   "source": "assets/sprites/t1/en_baggy.png",
+   "webp": "assets/sprites/t1/en_baggy.webp"
+  },
+  {
+   "status": "convert",
+   "before": 32260,
+   "after": 23866,
+   "chosen": {
+    "lossless": true,
+    "quality": 100,
+    "bytes": 23866,
+    "max": 0,
+    "mean": 0.0,
+    "alphaMax": 0
+   },
+   "attempts": [
+    {
+     "lossless": true,
+     "quality": 100,
+     "bytes": 23866,
+     "max": 0,
+     "mean": 0.0,
+     "alphaMax": 0
+    }
+   ],
+   "source": "assets/sprites/t1/en_bottle.png",
+   "webp": "assets/sprites/t1/en_bottle.webp"
+  },
+  {
+   "status": "convert",
+   "before": 48512,
+   "after": 34698,
+   "chosen": {
+    "lossless": true,
+    "quality": 100,
+    "bytes": 34698,
+    "max": 0,
+    "mean": 0.0,
+    "alphaMax": 0
+   },
+   "attempts": [
+    {
+     "lossless": true,
+     "quality": 100,
+     "bytes": 34698,
+     "max": 0,
+     "mean": 0.0,
+     "alphaMax": 0
+    }
+   ],
+   "source": "assets/sprites/t1/en_buttbug.png",
+   "webp": "assets/sprites/t1/en_buttbug.webp"
+  },
+  {
+   "status": "convert",
+   "before": 39603,
+   "after": 28188,
+   "chosen": {
+    "lossless": true,
+    "quality": 100,
+    "bytes": 28188,
+    "max": 0,
+    "mean": 0.0,
+    "alphaMax": 0
+   },
+   "attempts": [
+    {
+     "lossless": true,
+     "quality": 100,
+     "bytes": 28188,
+     "max": 0,
+     "mean": 0.0,
+     "alphaMax": 0
+    }
+   ],
+   "source": "assets/sprites/t1/en_fly.png",
+   "webp": "assets/sprites/t1/en_fly.webp"
+  },
+  {
+   "status": "convert",
+   "before": 47742,
+   "after": 32866,
+   "chosen": {
+    "lossless": true,
+    "quality": 100,
+    "bytes": 32866,
+    "max": 0,
+    "mean": 0.0,
+    "alphaMax": 0
+   },
+   "attempts": [
+    {
+     "lossless": true,
+     "quality": 100,
+     "bytes": 32866,
+     "max": 0,
+     "mean": 0.0,
+     "alphaMax": 0
+    }
+   ],
+   "source": "assets/sprites/t1/en_foodwaste.png",
+   "webp": "assets/sprites/t1/en_foodwaste.webp"
+  },
+  {
+   "status": "convert",
+   "before": 40663,
+   "after": 30628,
+   "chosen": {
+    "lossless": true,
+    "quality": 100,
+    "bytes": 30628,
+    "max": 0,
+    "mean": 0.0,
+    "alphaMax": 0
+   },
+   "attempts": [
+    {
+     "lossless": true,
+     "quality": 100,
+     "bytes": 30628,
+     "max": 0,
+     "mean": 0.0,
+     "alphaMax": 0
+    }
+   ],
+   "source": "assets/sprites/t1/en_snackbag.png",
+   "webp": "assets/sprites/t1/en_snackbag.webp"
+  },
+  {
+   "status": "convert",
+   "before": 106733,
+   "after": 73232,
+   "chosen": {
+    "lossless": true,
+    "quality": 100,
+    "bytes": 73232,
+    "max": 0,
+    "mean": 0.0,
+    "alphaMax": 0
+   },
+   "attempts": [
+    {
+     "lossless": true,
+     "quality": 100,
+     "bytes": 73232,
+     "max": 0,
+     "mean": 0.0,
+     "alphaMax": 0
+    }
+   ],
+   "source": "assets/sprites/t1/fx_crack.png",
+   "webp": "assets/sprites/t1/fx_crack.webp"
+  },
+  {
+   "status": "convert",
+   "before": 86089,
+   "after": 61738,
+   "chosen": {
+    "lossless": true,
+    "quality": 100,
+    "bytes": 61738,
+    "max": 0,
+    "mean": 0.0,
+    "alphaMax": 0
+   },
+   "attempts": [
+    {
+     "lossless": true,
+     "quality": 100,
+     "bytes": 61738,
+     "max": 0,
+     "mean": 0.0,
+     "alphaMax": 0
+    }
+   ],
+   "source": "assets/sprites/t1/fx_shockring.png",
+   "webp": "assets/sprites/t1/fx_shockring.webp"
+  },
+  {
+   "status": "convert",
+   "before": 39334,
+   "after": 27546,
+   "chosen": {
+    "lossless": true,
+    "quality": 100,
+    "bytes": 27546,
+    "max": 0,
+    "mean": 0.0,
+    "alphaMax": 0
+   },
+   "attempts": [
+    {
+     "lossless": true,
+     "quality": 100,
+     "bytes": 27546,
+     "max": 0,
+     "mean": 0.0,
+     "alphaMax": 0
+    }
+   ],
+   "source": "assets/sprites/t1/fx_trashball.png",
+   "webp": "assets/sprites/t1/fx_trashball.webp"
+  },
+  {
+   "status": "keep",
+   "before": 6566,
+   "after": 6566,
+   "attempts": [
+    {
+     "lossless": true,
+     "quality": 100,
+     "bytes": 5278,
+     "max": 0,
+     "mean": 0.0,
+     "alphaMax": 0
+    }
+   ],
+   "source": "assets/sprites/t1/item_heart.png",
+   "webp": "assets/sprites/t1/item_heart.webp"
+  },
+  {
+   "status": "convert",
+   "before": 10064,
+   "after": 7588,
+   "chosen": {
+    "lossless": true,
+    "quality": 100,
+    "bytes": 7588,
+    "max": 0,
+    "mean": 0.0,
+    "alphaMax": 0
+   },
+   "attempts": [
+    {
+     "lossless": true,
+     "quality": 100,
+     "bytes": 7588,
+     "max": 0,
+     "mean": 0.0,
+     "alphaMax": 0
+    }
+   ],
+   "source": "assets/sprites/t1/item_orb.png",
+   "webp": "assets/sprites/t1/item_orb.webp"
+  },
+  {
+   "status": "keep",
+   "before": 10213,
+   "after": 10213,
+   "attempts": [
+    {
+     "lossless": true,
+     "quality": 100,
+     "bytes": 8368,
+     "max": 0,
+     "mean": 0.0,
+     "alphaMax": 0
+    }
+   ],
+   "source": "assets/sprites/t1/item_recycle.png",
+   "webp": "assets/sprites/t1/item_recycle.webp"
+  },
+  {
+   "status": "convert",
+   "before": 7302,
+   "after": 5778,
+   "chosen": {
+    "lossless": true,
+    "quality": 100,
+    "bytes": 5778,
+    "max": 0,
+    "mean": 0.0,
+    "alphaMax": 0
+   },
+   "attempts": [
+    {
+     "lossless": true,
+     "quality": 100,
+     "bytes": 5778,
+     "max": 0,
+     "mean": 0.0,
+     "alphaMax": 0
+    }
+   ],
+   "source": "assets/sprites/t1/item_sprout.png",
+   "webp": "assets/sprites/t1/item_sprout.webp"
+  },
+  {
+   "status": "keep",
+   "before": 6059,
+   "after": 6059,
+   "attempts": [
+    {
+     "lossless": true,
+     "quality": 100,
+     "bytes": 4980,
+     "max": 0,
+     "mean": 0.0,
+     "alphaMax": 0
+    }
+   ],
+   "source": "assets/sprites/t1/item_sprout_big.png",
+   "webp": "assets/sprites/t1/item_sprout_big.webp"
+  },
+  {
+   "status": "keep",
+   "before": 4527,
+   "after": 4527,
+   "attempts": [
+    {
+     "lossless": true,
+     "quality": 100,
+     "bytes": 3696,
+     "max": 0,
+     "mean": 0.0,
+     "alphaMax": 0
+    }
+   ],
+   "source": "assets/sprites/t1/item_star.png",
+   "webp": "assets/sprites/t1/item_star.webp"
+  },
+  {
+   "status": "convert",
+   "before": 37677,
+   "after": 26592,
+   "chosen": {
+    "lossless": true,
+    "quality": 100,
+    "bytes": 26592,
+    "max": 0,
+    "mean": 0.0,
+    "alphaMax": 0
+   },
+   "attempts": [
+    {
+     "lossless": true,
+     "quality": 100,
+     "bytes": 26592,
+     "max": 0,
+     "mean": 0.0,
+     "alphaMax": 0
+    }
+   ],
+   "source": "assets/sprites/t1/prop_bags.png",
+   "webp": "assets/sprites/t1/prop_bags.webp"
+  },
+  {
+   "status": "convert",
+   "before": 33329,
+   "after": 22684,
+   "chosen": {
+    "lossless": true,
+    "quality": 100,
+    "bytes": 22684,
+    "max": 0,
+    "mean": 0.0,
+    "alphaMax": 0
+   },
+   "attempts": [
+    {
+     "lossless": true,
+     "quality": 100,
+     "bytes": 22684,
+     "max": 0,
+     "mean": 0.0,
+     "alphaMax": 0
+    }
+   ],
+   "source": "assets/sprites/t1/prop_bench.png",
+   "webp": "assets/sprites/t1/prop_bench.webp"
+  },
+  {
+   "status": "convert",
+   "before": 41001,
+   "after": 29498,
+   "chosen": {
+    "lossless": true,
+    "quality": 100,
+    "bytes": 29498,
+    "max": 0,
+    "mean": 0.0,
+    "alphaMax": 0
+   },
+   "attempts": [
+    {
+     "lossless": true,
+     "quality": 100,
+     "bytes": 29498,
+     "max": 0,
+     "mean": 0.0,
+     "alphaMax": 0
+    }
+   ],
+   "source": "assets/sprites/t1/prop_bin_fallen.png",
+   "webp": "assets/sprites/t1/prop_bin_fallen.webp"
+  },
+  {
+   "status": "convert",
+   "before": 63976,
+   "after": 43300,
+   "chosen": {
+    "lossless": true,
+    "quality": 100,
+    "bytes": 43300,
+    "max": 0,
+    "mean": 0.0,
+    "alphaMax": 0
+   },
+   "attempts": [
+    {
+     "lossless": true,
+     "quality": 100,
+     "bytes": 43300,
+     "max": 0,
+     "mean": 0.0,
+     "alphaMax": 0
+    }
+   ],
+   "source": "assets/sprites/t1/prop_bins.png",
+   "webp": "assets/sprites/t1/prop_bins.webp"
+  },
+  {
+   "status": "convert",
+   "before": 30551,
+   "after": 22868,
+   "chosen": {
+    "lossless": true,
+    "quality": 100,
+    "bytes": 22868,
+    "max": 0,
+    "mean": 0.0,
+    "alphaMax": 0
+   },
+   "attempts": [
+    {
+     "lossless": true,
+     "quality": 100,
+     "bytes": 22868,
+     "max": 0,
+     "mean": 0.0,
+     "alphaMax": 0
+    }
+   ],
+   "source": "assets/sprites/t1/prop_litter.png",
+   "webp": "assets/sprites/t1/prop_litter.webp"
+  },
+  {
+   "status": "convert",
+   "before": 33073,
+   "after": 22802,
+   "chosen": {
+    "lossless": true,
+    "quality": 100,
+    "bytes": 22802,
+    "max": 0,
+    "mean": 0.0,
+    "alphaMax": 0
+   },
+   "attempts": [
+    {
+     "lossless": true,
+     "quality": 100,
+     "bytes": 22802,
+     "max": 0,
+     "mean": 0.0,
+     "alphaMax": 0
+    }
+   ],
+   "source": "assets/sprites/t1/prop_tire.png",
+   "webp": "assets/sprites/t1/prop_tire.webp"
+  },
+  {
+   "status": "convert",
+   "before": 157436,
+   "after": 117662,
+   "chosen": {
+    "lossless": true,
+    "quality": 100,
+    "bytes": 117662,
+    "max": 0,
+    "mean": 0.0,
+    "alphaMax": 0
+   },
+   "attempts": [
+    {
+     "lossless": true,
+     "quality": 100,
+     "bytes": 117662,
+     "max": 0,
+     "mean": 0.0,
+     "alphaMax": 0
+    }
+   ],
+   "source": "assets/sprites/t2/boss_angry.png",
+   "webp": "assets/sprites/t2/boss_angry.webp"
+  },
+  {
+   "status": "convert",
+   "before": 139135,
+   "after": 96364,
+   "chosen": {
+    "lossless": true,
+    "quality": 100,
+    "bytes": 96364,
+    "max": 0,
+    "mean": 0.0,
+    "alphaMax": 0
+   },
+   "attempts": [
+    {
+     "lossless": true,
+     "quality": 100,
+     "bytes": 96364,
+     "max": 0,
+     "mean": 0.0,
+     "alphaMax": 0
+    }
+   ],
+   "source": "assets/sprites/t2/boss_calm.png",
+   "webp": "assets/sprites/t2/boss_calm.webp"
+  },
+  {
+   "status": "keep",
+   "before": 80309,
+   "after": 80309,
+   "attempts": [
+    {
+     "lossless": true,
+     "quality": 100,
+     "bytes": 289856,
+     "max": 0,
+     "mean": 0.0,
+     "alphaMax": 0
+    }
+   ],
+   "source": "assets/sprites/t2/card_clean.jpg",
+   "webp": "assets/sprites/t2/card_clean.webp"
+  },
+  {
+   "status": "keep",
+   "before": 71946,
+   "after": 71946,
+   "attempts": [
+    {
+     "lossless": true,
+     "quality": 100,
+     "bytes": 260544,
+     "max": 0,
+     "mean": 0.0,
+     "alphaMax": 0
+    }
+   ],
+   "source": "assets/sprites/t2/card_polluted.jpg",
+   "webp": "assets/sprites/t2/card_polluted.webp"
+  },
+  {
+   "status": "convert",
+   "before": 59139,
+   "after": 38262,
+   "chosen": {
+    "lossless": true,
+    "quality": 100,
+    "bytes": 38262,
+    "max": 0,
+    "mean": 0.0,
+    "alphaMax": 0
+   },
+   "attempts": [
+    {
+     "lossless": true,
+     "quality": 100,
+     "bytes": 38262,
+     "max": 0,
+     "mean": 0.0,
+     "alphaMax": 0
+    }
+   ],
+   "source": "assets/sprites/t2/en_bigdust.png",
+   "webp": "assets/sprites/t2/en_bigdust.webp"
+  },
+  {
+   "status": "convert",
+   "before": 38432,
+   "after": 27492,
+   "chosen": {
+    "lossless": true,
+    "quality": 100,
+    "bytes": 27492,
+    "max": 0,
+    "mean": 0.0,
+    "alphaMax": 0
+   },
+   "attempts": [
+    {
+     "lossless": true,
+     "quality": 100,
+     "bytes": 27492,
+     "max": 0,
+     "mean": 0.0,
+     "alphaMax": 0
+    }
+   ],
+   "source": "assets/sprites/t2/en_dust.png",
+   "webp": "assets/sprites/t2/en_dust.webp"
+  },
+  {
+   "status": "convert",
+   "before": 38610,
+   "after": 27068,
+   "chosen": {
+    "lossless": true,
+    "quality": 100,
+    "bytes": 27068,
+    "max": 0,
+    "mean": 0.0,
+    "alphaMax": 0
+   },
+   "attempts": [
+    {
+     "lossless": true,
+     "quality": 100,
+     "bytes": 27068,
+     "max": 0,
+     "mean": 0.0,
+     "alphaMax": 0
+    }
+   ],
+   "source": "assets/sprites/t2/en_gas.png",
+   "webp": "assets/sprites/t2/en_gas.webp"
+  },
+  {
+   "status": "convert",
+   "before": 45016,
+   "after": 31356,
+   "chosen": {
+    "lossless": true,
+    "quality": 100,
+    "bytes": 31356,
+    "max": 0,
+    "mean": 0.0,
+    "alphaMax": 0
+   },
+   "attempts": [
+    {
+     "lossless": true,
+     "quality": 100,
+     "bytes": 31356,
+     "max": 0,
+     "mean": 0.0,
+     "alphaMax": 0
+    }
+   ],
+   "source": "assets/sprites/t2/en_gas_fire.png",
+   "webp": "assets/sprites/t2/en_gas_fire.webp"
+  },
+  {
+   "status": "convert",
+   "before": 42882,
+   "after": 29416,
+   "chosen": {
+    "lossless": true,
+    "quality": 100,
+    "bytes": 29416,
+    "max": 0,
+    "mean": 0.0,
+    "alphaMax": 0
+   },
+   "attempts": [
+    {
+     "lossless": true,
+     "quality": 100,
+     "bytes": 29416,
+     "max": 0,
+     "mean": 0.0,
+     "alphaMax": 0
+    }
+   ],
+   "source": "assets/sprites/t2/en_gas_windup.png",
+   "webp": "assets/sprites/t2/en_gas_windup.webp"
+  },
+  {
+   "status": "convert",
+   "before": 49964,
+   "after": 34510,
+   "chosen": {
+    "lossless": true,
+    "quality": 100,
+    "bytes": 34510,
+    "max": 0,
+    "mean": 0.0,
+    "alphaMax": 0
+   },
+   "attempts": [
+    {
+     "lossless": true,
+     "quality": 100,
+     "bytes": 34510,
+     "max": 0,
+     "mean": 0.0,
+     "alphaMax": 0
+    }
+   ],
+   "source": "assets/sprites/t2/en_germ.png",
+   "webp": "assets/sprites/t2/en_germ.webp"
+  },
+  {
+   "status": "convert",
+   "before": 50418,
+   "after": 34732,
+   "chosen": {
+    "lossless": true,
+    "quality": 100,
+    "bytes": 34732,
+    "max": 0,
+    "mean": 0.0,
+    "alphaMax": 0
+   },
+   "attempts": [
+    {
+     "lossless": true,
+     "quality": 100,
+     "bytes": 34732,
+     "max": 0,
+     "mean": 0.0,
+     "alphaMax": 0
+    }
+   ],
+   "source": "assets/sprites/t2/en_germ2.png",
+   "webp": "assets/sprites/t2/en_germ2.webp"
+  },
+  {
+   "status": "convert",
+   "before": 51447,
+   "after": 35184,
+   "chosen": {
+    "lossless": true,
+    "quality": 100,
+    "bytes": 35184,
+    "max": 0,
+    "mean": 0.0,
+    "alphaMax": 0
+   },
+   "attempts": [
+    {
+     "lossless": true,
+     "quality": 100,
+     "bytes": 35184,
+     "max": 0,
+     "mean": 0.0,
+     "alphaMax": 0
+    }
+   ],
+   "source": "assets/sprites/t2/en_germ3.png",
+   "webp": "assets/sprites/t2/en_germ3.webp"
+  },
+  {
+   "status": "convert",
+   "before": 43831,
+   "after": 30344,
+   "chosen": {
+    "lossless": true,
+    "quality": 100,
+    "bytes": 30344,
+    "max": 0,
+    "mean": 0.0,
+    "alphaMax": 0
+   },
+   "attempts": [
+    {
+     "lossless": true,
+     "quality": 100,
+     "bytes": 30344,
+     "max": 0,
+     "mean": 0.0,
+     "alphaMax": 0
+    }
+   ],
+   "source": "assets/sprites/t2/en_germ_armed.png",
+   "webp": "assets/sprites/t2/en_germ_armed.webp"
+  },
+  {
+   "status": "convert",
+   "before": 35335,
+   "after": 25516,
+   "chosen": {
+    "lossless": true,
+    "quality": 100,
+    "bytes": 25516,
+    "max": 0,
+    "mean": 0.0,
+    "alphaMax": 0
+   },
+   "attempts": [
+    {
+     "lossless": true,
+     "quality": 100,
+     "bytes": 25516,
+     "max": 0,
+     "mean": 0.0,
+     "alphaMax": 0
+    }
+   ],
+   "source": "assets/sprites/t2/en_raincloud.png",
+   "webp": "assets/sprites/t2/en_raincloud.webp"
+  },
+  {
+   "status": "convert",
+   "before": 177175,
+   "after": 134708,
+   "chosen": {
+    "lossless": true,
+    "quality": 100,
+    "bytes": 134708,
+    "max": 0,
+    "mean": 0.0,
+    "alphaMax": 0
+   },
+   "attempts": [
+    {
+     "lossless": true,
+     "quality": 100,
+     "bytes": 134708,
+     "max": 0,
+     "mean": 0.0,
+     "alphaMax": 0
+    }
+   ],
+   "source": "assets/sprites/t2/floor_factory.png",
+   "webp": "assets/sprites/t2/floor_factory.webp"
+  },
+  {
+   "status": "convert",
+   "before": 300780,
+   "after": 213486,
+   "chosen": {
+    "lossless": true,
+    "quality": 100,
+    "bytes": 213486,
+    "max": 0,
+    "mean": 0.0,
+    "alphaMax": 0
+   },
+   "attempts": [
+    {
+     "lossless": true,
+     "quality": 100,
+     "bytes": 213486,
+     "max": 0,
+     "mean": 0.0,
+     "alphaMax": 0
+    }
+   ],
+   "source": "assets/sprites/t2/floor_soot.png",
+   "webp": "assets/sprites/t2/floor_soot.webp"
+  },
+  {
+   "status": "convert",
+   "before": 333270,
+   "after": 239588,
+   "chosen": {
+    "lossless": true,
+    "quality": 100,
+    "bytes": 239588,
+    "max": 0,
+    "mean": 0.0,
+    "alphaMax": 0
+   },
+   "attempts": [
+    {
+     "lossless": true,
+     "quality": 100,
+     "bytes": 239588,
+     "max": 0,
+     "mean": 0.0,
+     "alphaMax": 0
+    }
+   ],
+   "source": "assets/sprites/t2/floor_steel.png",
+   "webp": "assets/sprites/t2/floor_steel.webp"
+  },
+  {
+   "status": "convert",
+   "before": 23411,
+   "after": 16966,
+   "chosen": {
+    "lossless": true,
+    "quality": 100,
+    "bytes": 16966,
+    "max": 0,
+    "mean": 0.0,
+    "alphaMax": 0
+   },
+   "attempts": [
+    {
+     "lossless": true,
+     "quality": 100,
+     "bytes": 16966,
+     "max": 0,
+     "mean": 0.0,
+     "alphaMax": 0
+    }
+   ],
+   "source": "assets/sprites/t2/fx_bomb.png",
+   "webp": "assets/sprites/t2/fx_bomb.webp"
+  },
+  {
+   "status": "convert",
+   "before": 51535,
+   "after": 37320,
+   "chosen": {
+    "lossless": true,
+    "quality": 100,
+    "bytes": 37320,
+    "max": 0,
+    "mean": 0.0,
+    "alphaMax": 0
+   },
+   "attempts": [
+    {
+     "lossless": true,
+     "quality": 100,
+     "bytes": 37320,
+     "max": 0,
+     "mean": 0.0,
+     "alphaMax": 0
+    }
+   ],
+   "source": "assets/sprites/t2/fx_flame.png",
+   "webp": "assets/sprites/t2/fx_flame.webp"
+  },
+  {
+   "status": "convert",
+   "before": 76763,
+   "after": 50580,
+   "chosen": {
+    "lossless": true,
+    "quality": 100,
+    "bytes": 50580,
+    "max": 0,
+    "mean": 0.0,
+    "alphaMax": 0
+   },
+   "attempts": [
+    {
+     "lossless": true,
+     "quality": 100,
+     "bytes": 50580,
+     "max": 0,
+     "mean": 0.0,
+     "alphaMax": 0
+    }
+   ],
+   "source": "assets/sprites/t2/fx_smog.png",
+   "webp": "assets/sprites/t2/fx_smog.webp"
+  },
+  {
+   "status": "convert",
+   "before": 64367,
+   "after": 44792,
+   "chosen": {
+    "lossless": true,
+    "quality": 100,
+    "bytes": 44792,
+    "max": 0,
+    "mean": 0.0,
+    "alphaMax": 0
+   },
+   "attempts": [
+    {
+     "lossless": true,
+     "quality": 100,
+     "bytes": 44792,
+     "max": 0,
+     "mean": 0.0,
+     "alphaMax": 0
+    }
+   ],
+   "source": "assets/sprites/t2/fx_splat.png",
+   "webp": "assets/sprites/t2/fx_splat.webp"
+  },
+  {
+   "status": "convert",
+   "before": 23490,
+   "after": 16314,
+   "chosen": {
+    "lossless": true,
+    "quality": 100,
+    "bytes": 16314,
+    "max": 0,
+    "mean": 0.0,
+    "alphaMax": 0
+   },
+   "attempts": [
+    {
+     "lossless": true,
+     "quality": 100,
+     "bytes": 16314,
+     "max": 0,
+     "mean": 0.0,
+     "alphaMax": 0
+    }
+   ],
+   "source": "assets/sprites/t2/prop_chimney.png",
+   "webp": "assets/sprites/t2/prop_chimney.webp"
+  },
+  {
+   "status": "convert",
+   "before": 31996,
+   "after": 23284,
+   "chosen": {
+    "lossless": true,
+    "quality": 100,
+    "bytes": 23284,
+    "max": 0,
+    "mean": 0.0,
+    "alphaMax": 0
+   },
+   "attempts": [
+    {
+     "lossless": true,
+     "quality": 100,
+     "bytes": 23284,
+     "max": 0,
+     "mean": 0.0,
+     "alphaMax": 0
+    }
+   ],
+   "source": "assets/sprites/t2/prop_cones.png",
+   "webp": "assets/sprites/t2/prop_cones.webp"
+  },
+  {
+   "status": "convert",
+   "before": 37523,
+   "after": 26326,
+   "chosen": {
+    "lossless": true,
+    "quality": 100,
+    "bytes": 26326,
+    "max": 0,
+    "mean": 0.0,
+    "alphaMax": 0
+   },
+   "attempts": [
+    {
+     "lossless": true,
+     "quality": 100,
+     "bytes": 26326,
+     "max": 0,
+     "mean": 0.0,
+     "alphaMax": 0
+    }
+   ],
+   "source": "assets/sprites/t2/prop_drums.png",
+   "webp": "assets/sprites/t2/prop_drums.webp"
+  },
+  {
+   "status": "convert",
+   "before": 20220,
+   "after": 14048,
+   "chosen": {
+    "lossless": true,
+    "quality": 100,
+    "bytes": 14048,
+    "max": 0,
+    "mean": 0.0,
+    "alphaMax": 0
+   },
+   "attempts": [
+    {
+     "lossless": true,
+     "quality": 100,
+     "bytes": 14048,
+     "max": 0,
+     "mean": 0.0,
+     "alphaMax": 0
+    }
+   ],
+   "source": "assets/sprites/t2/prop_pedestal.png",
+   "webp": "assets/sprites/t2/prop_pedestal.webp"
+  },
+  {
+   "status": "convert",
+   "before": 28323,
+   "after": 19714,
+   "chosen": {
+    "lossless": true,
+    "quality": 100,
+    "bytes": 19714,
+    "max": 0,
+    "mean": 0.0,
+    "alphaMax": 0
+   },
+   "attempts": [
+    {
+     "lossless": true,
+     "quality": 100,
+     "bytes": 19714,
+     "max": 0,
+     "mean": 0.0,
+     "alphaMax": 0
+    }
+   ],
+   "source": "assets/sprites/t2/prop_pipe.png",
+   "webp": "assets/sprites/t2/prop_pipe.webp"
+  },
+  {
+   "status": "convert",
+   "before": 49503,
+   "after": 33550,
+   "chosen": {
+    "lossless": true,
+    "quality": 100,
+    "bytes": 33550,
+    "max": 0,
+    "mean": 0.0,
+    "alphaMax": 0
+   },
+   "attempts": [
+    {
+     "lossless": true,
+     "quality": 100,
+     "bytes": 33550,
+     "max": 0,
+     "mean": 0.0,
+     "alphaMax": 0
+    }
+   ],
+   "source": "assets/sprites/t2/prop_tree.png",
+   "webp": "assets/sprites/t2/prop_tree.webp"
+  },
+  {
+   "status": "convert",
+   "before": 19423,
+   "after": 14454,
+   "chosen": {
+    "lossless": true,
+    "quality": 100,
+    "bytes": 14454,
+    "max": 0,
+    "mean": 0.0,
+    "alphaMax": 0
+   },
+   "attempts": [
+    {
+     "lossless": true,
+     "quality": 100,
+     "bytes": 14454,
+     "max": 0,
+     "mean": 0.0,
+     "alphaMax": 0
+    }
+   ],
+   "source": "assets/sprites/t2/prop_valve.png",
+   "webp": "assets/sprites/t2/prop_valve.webp"
+  },
+  {
+   "status": "convert",
+   "before": 157326,
+   "after": 105002,
+   "chosen": {
+    "lossless": true,
+    "quality": 100,
+    "bytes": 105002,
+    "max": 0,
+    "mean": 0.0,
+    "alphaMax": 0
+   },
+   "attempts": [
+    {
+     "lossless": true,
+     "quality": 100,
+     "bytes": 105002,
+     "max": 0,
+     "mean": 0.0,
+     "alphaMax": 0
+    }
+   ],
+   "source": "assets/sprites/t3/boss_angry.png",
+   "webp": "assets/sprites/t3/boss_angry.webp"
+  },
+  {
+   "status": "convert",
+   "before": 121200,
+   "after": 78756,
+   "chosen": {
+    "lossless": true,
+    "quality": 100,
+    "bytes": 78756,
+    "max": 0,
+    "mean": 0.0,
+    "alphaMax": 0
+   },
+   "attempts": [
+    {
+     "lossless": true,
+     "quality": 100,
+     "bytes": 78756,
+     "max": 0,
+     "mean": 0.0,
+     "alphaMax": 0
+    }
+   ],
+   "source": "assets/sprites/t3/boss_calm.png",
+   "webp": "assets/sprites/t3/boss_calm.webp"
+  },
+  {
+   "status": "keep",
+   "before": 105911,
+   "after": 105911,
+   "attempts": [
+    {
+     "lossless": true,
+     "quality": 100,
+     "bytes": 404206,
+     "max": 0,
+     "mean": 0.0,
+     "alphaMax": 0
+    },
+    {
+     "lossless": false,
+     "quality": 90,
+     "bytes": 97124,
+     "max": 20,
+     "mean": 1.9262,
+     "alphaMax": 0
+    },
+    {
+     "lossless": false,
+     "quality": 95,
+     "bytes": 123710,
+     "max": 16,
+     "mean": 1.4291,
+     "alphaMax": 0
+    }
+   ],
+   "source": "assets/sprites/t3/card_clean.jpg",
+   "webp": "assets/sprites/t3/card_clean.webp"
+  },
+  {
+   "status": "keep",
+   "before": 101736,
+   "after": 101736,
+   "attempts": [
+    {
+     "lossless": true,
+     "quality": 100,
+     "bytes": 372478,
+     "max": 0,
+     "mean": 0.0,
+     "alphaMax": 0
+    },
+    {
+     "lossless": false,
+     "quality": 90,
+     "bytes": 92250,
+     "max": 20,
+     "mean": 1.8165,
+     "alphaMax": 0
+    },
+    {
+     "lossless": false,
+     "quality": 95,
+     "bytes": 122652,
+     "max": 14,
+     "mean": 1.2815,
+     "alphaMax": 0
+    }
+   ],
+   "source": "assets/sprites/t3/card_polluted.jpg",
+   "webp": "assets/sprites/t3/card_polluted.webp"
+  },
+  {
+   "status": "convert",
+   "before": 54647,
+   "after": 39536,
+   "chosen": {
+    "lossless": true,
+    "quality": 100,
+    "bytes": 39536,
+    "max": 0,
+    "mean": 0.0,
+    "alphaMax": 0
+   },
+   "attempts": [
+    {
+     "lossless": true,
+     "quality": 100,
+     "bytes": 39536,
+     "max": 0,
+     "mean": 0.0,
+     "alphaMax": 0
+    }
+   ],
+   "source": "assets/sprites/t3/en_algae.png",
+   "webp": "assets/sprites/t3/en_algae.webp"
+  },
+  {
+   "status": "convert",
+   "before": 23882,
+   "after": 17960,
+   "chosen": {
+    "lossless": true,
+    "quality": 100,
+    "bytes": 17960,
+    "max": 0,
+    "mean": 0.0,
+    "alphaMax": 0
+   },
+   "attempts": [
+    {
+     "lossless": true,
+     "quality": 100,
+     "bytes": 17960,
+     "max": 0,
+     "mean": 0.0,
+     "alphaMax": 0
+    }
+   ],
+   "source": "assets/sprites/t3/en_algae_small.png",
+   "webp": "assets/sprites/t3/en_algae_small.webp"
+  },
+  {
+   "status": "convert",
+   "before": 56476,
+   "after": 41170,
+   "chosen": {
+    "lossless": true,
+    "quality": 100,
+    "bytes": 41170,
+    "max": 0,
+    "mean": 0.0,
+    "alphaMax": 0
+   },
+   "attempts": [
+    {
+     "lossless": true,
+     "quality": 100,
+     "bytes": 41170,
+     "max": 0,
+     "mean": 0.0,
+     "alphaMax": 0
+    }
+   ],
+   "source": "assets/sprites/t3/en_algae_swell.png",
+   "webp": "assets/sprites/t3/en_algae_swell.webp"
+  },
+  {
+   "status": "convert",
+   "before": 40198,
+   "after": 27972,
+   "chosen": {
+    "lossless": true,
+    "quality": 100,
+    "bytes": 27972,
+    "max": 0,
+    "mean": 0.0,
+    "alphaMax": 0
+   },
+   "attempts": [
+    {
+     "lossless": true,
+     "quality": 100,
+     "bytes": 27972,
+     "max": 0,
+     "mean": 0.0,
+     "alphaMax": 0
+    }
+   ],
+   "source": "assets/sprites/t3/en_bubble.png",
+   "webp": "assets/sprites/t3/en_bubble.webp"
+  },
+  {
+   "status": "convert",
+   "before": 48369,
+   "after": 33216,
+   "chosen": {
+    "lossless": true,
+    "quality": 100,
+    "bytes": 33216,
+    "max": 0,
+    "mean": 0.0,
+    "alphaMax": 0
+   },
+   "attempts": [
+    {
+     "lossless": true,
+     "quality": 100,
+     "bytes": 33216,
+     "max": 0,
+     "mean": 0.0,
+     "alphaMax": 0
+    }
+   ],
+   "source": "assets/sprites/t3/en_bubble_atk.png",
+   "webp": "assets/sprites/t3/en_bubble_atk.webp"
+  },
+  {
+   "status": "convert",
+   "before": 34641,
+   "after": 24338,
+   "chosen": {
+    "lossless": true,
+    "quality": 100,
+    "bytes": 24338,
+    "max": 0,
+    "mean": 0.0,
+    "alphaMax": 0
+   },
+   "attempts": [
+    {
+     "lossless": true,
+     "quality": 100,
+     "bytes": 24338,
+     "max": 0,
+     "mean": 0.0,
+     "alphaMax": 0
+    }
+   ],
+   "source": "assets/sprites/t3/en_can.png",
+   "webp": "assets/sprites/t3/en_can.webp"
+  },
+  {
+   "status": "convert",
+   "before": 38929,
+   "after": 27574,
+   "chosen": {
+    "lossless": true,
+    "quality": 100,
+    "bytes": 27574,
+    "max": 0,
+    "mean": 0.0,
+    "alphaMax": 0
+   },
+   "attempts": [
+    {
+     "lossless": true,
+     "quality": 100,
+     "bytes": 27574,
+     "max": 0,
+     "mean": 0.0,
+     "alphaMax": 0
+    }
+   ],
+   "source": "assets/sprites/t3/en_can_fire.png",
+   "webp": "assets/sprites/t3/en_can_fire.webp"
+  },
+  {
+   "status": "convert",
+   "before": 126510,
+   "after": 80650,
+   "chosen": {
+    "lossless": true,
+    "quality": 100,
+    "bytes": 80650,
+    "max": 0,
+    "mean": 0.0,
+    "alphaMax": 0
+   },
+   "attempts": [
+    {
+     "lossless": true,
+     "quality": 100,
+     "bytes": 80650,
+     "max": 0,
+     "mean": 0.0,
+     "alphaMax": 0
+    }
+   ],
+   "source": "assets/sprites/t3/en_net.png",
+   "webp": "assets/sprites/t3/en_net.webp"
+  },
+  {
+   "status": "convert",
+   "before": 112436,
+   "after": 72226,
+   "chosen": {
+    "lossless": true,
+    "quality": 100,
+    "bytes": 72226,
+    "max": 0,
+    "mean": 0.0,
+    "alphaMax": 0
+   },
+   "attempts": [
+    {
+     "lossless": true,
+     "quality": 100,
+     "bytes": 72226,
+     "max": 0,
+     "mean": 0.0,
+     "alphaMax": 0
+    }
+   ],
+   "source": "assets/sprites/t3/en_net_throw.png",
+   "webp": "assets/sprites/t3/en_net_throw.webp"
+  },
+  {
+   "status": "convert",
+   "before": 39172,
+   "after": 28182,
+   "chosen": {
+    "lossless": true,
+    "quality": 100,
+    "bytes": 28182,
+    "max": 0,
+    "mean": 0.0,
+    "alphaMax": 0
+   },
+   "attempts": [
+    {
+     "lossless": true,
+     "quality": 100,
+     "bytes": 28182,
+     "max": 0,
+     "mean": 0.0,
+     "alphaMax": 0
+    }
+   ],
+   "source": "assets/sprites/t3/en_netmon.png",
+   "webp": "assets/sprites/t3/en_netmon.webp"
+  },
+  {
+   "status": "convert",
+   "before": 45358,
+   "after": 32318,
+   "chosen": {
+    "lossless": true,
+    "quality": 100,
+    "bytes": 32318,
+    "max": 0,
+    "mean": 0.0,
+    "alphaMax": 0
+   },
+   "attempts": [
+    {
+     "lossless": true,
+     "quality": 100,
+     "bytes": 32318,
+     "max": 0,
+     "mean": 0.0,
+     "alphaMax": 0
+    }
+   ],
+   "source": "assets/sprites/t3/en_netmon_pounce.png",
+   "webp": "assets/sprites/t3/en_netmon_pounce.webp"
+  },
+  {
+   "status": "convert",
+   "before": 31028,
+   "after": 22662,
+   "chosen": {
+    "lossless": true,
+    "quality": 100,
+    "bytes": 22662,
+    "max": 0,
+    "mean": 0.0,
+    "alphaMax": 0
+   },
+   "attempts": [
+    {
+     "lossless": true,
+     "quality": 100,
+     "bytes": 22662,
+     "max": 0,
+     "mean": 0.0,
+     "alphaMax": 0
+    }
+   ],
+   "source": "assets/sprites/t3/en_petri.png",
+   "webp": "assets/sprites/t3/en_petri.webp"
+  },
+  {
+   "status": "convert",
+   "before": 36765,
+   "after": 26784,
+   "chosen": {
+    "lossless": true,
+    "quality": 100,
+    "bytes": 26784,
+    "max": 0,
+    "mean": 0.0,
+    "alphaMax": 0
+   },
+   "attempts": [
+    {
+     "lossless": true,
+     "quality": 100,
+     "bytes": 26784,
+     "max": 0,
+     "mean": 0.0,
+     "alphaMax": 0
+    }
+   ],
+   "source": "assets/sprites/t3/en_petri_fire.png",
+   "webp": "assets/sprites/t3/en_petri_fire.webp"
+  },
+  {
+   "status": "convert",
+   "before": 29368,
+   "after": 21784,
+   "chosen": {
+    "lossless": true,
+    "quality": 100,
+    "bytes": 21784,
+    "max": 0,
+    "mean": 0.0,
+    "alphaMax": 0
+   },
+   "attempts": [
+    {
+     "lossless": true,
+     "quality": 100,
+     "bytes": 21784,
+     "max": 0,
+     "mean": 0.0,
+     "alphaMax": 0
+    }
+   ],
+   "source": "assets/sprites/t3/en_petri_windup.png",
+   "webp": "assets/sprites/t3/en_petri_windup.webp"
+  },
+  {
+   "status": "convert",
+   "before": 321890,
+   "after": 234498,
+   "chosen": {
+    "lossless": true,
+    "quality": 100,
+    "bytes": 234498,
+    "max": 0,
+    "mean": 0.0,
+    "alphaMax": 0
+   },
+   "attempts": [
+    {
+     "lossless": true,
+     "quality": 100,
+     "bytes": 234498,
+     "max": 0,
+     "mean": 0.0,
+     "alphaMax": 0
+    }
+   ],
+   "source": "assets/sprites/t3/floor_bank.png",
+   "webp": "assets/sprites/t3/floor_bank.webp"
+  },
+  {
+   "status": "convert",
+   "before": 237152,
+   "after": 162220,
+   "chosen": {
+    "lossless": true,
+    "quality": 100,
+    "bytes": 162220,
+    "max": 0,
+    "mean": 0.0,
+    "alphaMax": 0
+   },
+   "attempts": [
+    {
+     "lossless": true,
+     "quality": 100,
+     "bytes": 162220,
+     "max": 0,
+     "mean": 0.0,
+     "alphaMax": 0
+    }
+   ],
+   "source": "assets/sprites/t3/floor_sewer.png",
+   "webp": "assets/sprites/t3/floor_sewer.webp"
+  },
+  {
+   "status": "convert",
+   "before": 278226,
+   "after": 191486,
+   "chosen": {
+    "lossless": true,
+    "quality": 100,
+    "bytes": 191486,
+    "max": 0,
+    "mean": 0.0,
+    "alphaMax": 0
+   },
+   "attempts": [
+    {
+     "lossless": true,
+     "quality": 100,
+     "bytes": 191486,
+     "max": 0,
+     "mean": 0.0,
+     "alphaMax": 0
+    }
+   ],
+   "source": "assets/sprites/t3/floor_stream.png",
+   "webp": "assets/sprites/t3/floor_stream.webp"
+  },
+  {
+   "status": "convert",
+   "before": 76088,
+   "after": 55754,
+   "chosen": {
+    "lossless": true,
+    "quality": 100,
+    "bytes": 55754,
+    "max": 0,
+    "mean": 0.0,
+    "alphaMax": 0
+   },
+   "attempts": [
+    {
+     "lossless": true,
+     "quality": 100,
+     "bytes": 55754,
+     "max": 0,
+     "mean": 0.0,
+     "alphaMax": 0
+    }
+   ],
+   "source": "assets/sprites/t3/fx_algae.png",
+   "webp": "assets/sprites/t3/fx_algae.webp"
+  },
+  {
+   "status": "convert",
+   "before": 38118,
+   "after": 27882,
+   "chosen": {
+    "lossless": true,
+    "quality": 100,
+    "bytes": 27882,
+    "max": 0,
+    "mean": 0.0,
+    "alphaMax": 0
+   },
+   "attempts": [
+    {
+     "lossless": true,
+     "quality": 100,
+     "bytes": 27882,
+     "max": 0,
+     "mean": 0.0,
+     "alphaMax": 0
+    }
+   ],
+   "source": "assets/sprites/t3/fx_cola.png",
+   "webp": "assets/sprites/t3/fx_cola.webp"
+  },
+  {
+   "status": "convert",
+   "before": 57892,
+   "after": 40822,
+   "chosen": {
+    "lossless": true,
+    "quality": 100,
+    "bytes": 40822,
+    "max": 0,
+    "mean": 0.0,
+    "alphaMax": 0
+   },
+   "attempts": [
+    {
+     "lossless": true,
+     "quality": 100,
+     "bytes": 40822,
+     "max": 0,
+     "mean": 0.0,
+     "alphaMax": 0
+    }
+   ],
+   "source": "assets/sprites/t3/fx_foam.png",
+   "webp": "assets/sprites/t3/fx_foam.webp"
+  },
+  {
+   "status": "convert",
+   "before": 74597,
+   "after": 47304,
+   "chosen": {
+    "lossless": true,
+    "quality": 100,
+    "bytes": 47304,
+    "max": 0,
+    "mean": 0.0,
+    "alphaMax": 0
+   },
+   "attempts": [
+    {
+     "lossless": true,
+     "quality": 100,
+     "bytes": 47304,
+     "max": 0,
+     "mean": 0.0,
+     "alphaMax": 0
+    }
+   ],
+   "source": "assets/sprites/t3/fx_net.png",
+   "webp": "assets/sprites/t3/fx_net.webp"
+  },
+  {
+   "status": "convert",
+   "before": 52603,
+   "after": 35828,
+   "chosen": {
+    "lossless": true,
+    "quality": 100,
+    "bytes": 35828,
+    "max": 0,
+    "mean": 0.0,
+    "alphaMax": 0
+   },
+   "attempts": [
+    {
+     "lossless": true,
+     "quality": 100,
+     "bytes": 35828,
+     "max": 0,
+     "mean": 0.0,
+     "alphaMax": 0
+    }
+   ],
+   "source": "assets/sprites/t3/fx_oil.png",
+   "webp": "assets/sprites/t3/fx_oil.webp"
+  },
+  {
+   "status": "convert",
+   "before": 54652,
+   "after": 39370,
+   "chosen": {
+    "lossless": true,
+    "quality": 100,
+    "bytes": 39370,
+    "max": 0,
+    "mean": 0.0,
+    "alphaMax": 0
+   },
+   "attempts": [
+    {
+     "lossless": true,
+     "quality": 100,
+     "bytes": 39370,
+     "max": 0,
+     "mean": 0.0,
+     "alphaMax": 0
+    }
+   ],
+   "source": "assets/sprites/t3/fx_wave.png",
+   "webp": "assets/sprites/t3/fx_wave.webp"
+  },
+  {
+   "status": "convert",
+   "before": 25862,
+   "after": 18604,
+   "chosen": {
+    "lossless": true,
+    "quality": 100,
+    "bytes": 18604,
+    "max": 0,
+    "mean": 0.0,
+    "alphaMax": 0
+   },
+   "attempts": [
+    {
+     "lossless": true,
+     "quality": 100,
+     "bytes": 18604,
+     "max": 0,
+     "mean": 0.0,
+     "alphaMax": 0
+    }
+   ],
+   "source": "assets/sprites/t3/prop_fish_caught.png",
+   "webp": "assets/sprites/t3/prop_fish_caught.webp"
+  },
+  {
+   "status": "convert",
+   "before": 28169,
+   "after": 21054,
+   "chosen": {
+    "lossless": true,
+    "quality": 100,
+    "bytes": 21054,
+    "max": 0,
+    "mean": 0.0,
+    "alphaMax": 0
+   },
+   "attempts": [
+    {
+     "lossless": true,
+     "quality": 100,
+     "bytes": 21054,
+     "max": 0,
+     "mean": 0.0,
+     "alphaMax": 0
+    }
+   ],
+   "source": "assets/sprites/t3/prop_fish_free.png",
+   "webp": "assets/sprites/t3/prop_fish_free.webp"
+  },
+  {
+   "status": "convert",
+   "before": 74834,
+   "after": 53876,
+   "chosen": {
+    "lossless": true,
+    "quality": 100,
+    "bytes": 53876,
+    "max": 0,
+    "mean": 0.0,
+    "alphaMax": 0
+   },
+   "attempts": [
+    {
+     "lossless": true,
+     "quality": 100,
+     "bytes": 53876,
+     "max": 0,
+     "mean": 0.0,
+     "alphaMax": 0
+    }
+   ],
+   "source": "assets/sprites/t3/prop_reeds.png",
+   "webp": "assets/sprites/t3/prop_reeds.webp"
+  },
+  {
+   "status": "convert",
+   "before": 26219,
+   "after": 17952,
+   "chosen": {
+    "lossless": true,
+    "quality": 100,
+    "bytes": 17952,
+    "max": 0,
+    "mean": 0.0,
+    "alphaMax": 0
+   },
+   "attempts": [
+    {
+     "lossless": true,
+     "quality": 100,
+     "bytes": 17952,
+     "max": 0,
+     "mean": 0.0,
+     "alphaMax": 0
+    }
+   ],
+   "source": "assets/sprites/t3/prop_rock.png",
+   "webp": "assets/sprites/t3/prop_rock.webp"
+  },
+  {
+   "status": "convert",
+   "before": 15854,
+   "after": 11750,
+   "chosen": {
+    "lossless": true,
+    "quality": 100,
+    "bytes": 11750,
+    "max": 0,
+    "mean": 0.0,
+    "alphaMax": 0
+   },
+   "attempts": [
+    {
+     "lossless": true,
+     "quality": 100,
+     "bytes": 11750,
+     "max": 0,
+     "mean": 0.0,
+     "alphaMax": 0
+    }
+   ],
+   "source": "assets/sprites/t3/prop_stones.png",
+   "webp": "assets/sprites/t3/prop_stones.webp"
+  },
+  {
+   "status": "convert",
+   "before": 42633,
+   "after": 29212,
+   "chosen": {
+    "lossless": true,
+    "quality": 100,
+    "bytes": 29212,
+    "max": 0,
+    "mean": 0.0,
+    "alphaMax": 0
+   },
+   "attempts": [
+    {
+     "lossless": true,
+     "quality": 100,
+     "bytes": 29212,
+     "max": 0,
+     "mean": 0.0,
+     "alphaMax": 0
+    }
+   ],
+   "source": "assets/sprites/t3/prop_trash.png",
+   "webp": "assets/sprites/t3/prop_trash.webp"
+  },
+  {
+   "status": "convert",
+   "before": 166333,
+   "after": 129516,
+   "chosen": {
+    "lossless": true,
+    "quality": 100,
+    "bytes": 129516,
+    "max": 0,
+    "mean": 0.0,
+    "alphaMax": 0
+   },
+   "attempts": [
+    {
+     "lossless": true,
+     "quality": 100,
+     "bytes": 129516,
+     "max": 0,
+     "mean": 0.0,
+     "alphaMax": 0
+    }
+   ],
+   "source": "assets/sprites/t4/boss_angry.png",
+   "webp": "assets/sprites/t4/boss_angry.webp"
+  },
+  {
+   "status": "convert",
+   "before": 155620,
+   "after": 115260,
+   "chosen": {
+    "lossless": true,
+    "quality": 100,
+    "bytes": 115260,
+    "max": 0,
+    "mean": 0.0,
+    "alphaMax": 0
+   },
+   "attempts": [
+    {
+     "lossless": true,
+     "quality": 100,
+     "bytes": 115260,
+     "max": 0,
+     "mean": 0.0,
+     "alphaMax": 0
+    }
+   ],
+   "source": "assets/sprites/t4/boss_calm.png",
+   "webp": "assets/sprites/t4/boss_calm.webp"
+  },
+  {
+   "status": "convert",
+   "before": 154236,
+   "after": 100778,
+   "chosen": {
+    "lossless": true,
+    "quality": 100,
+    "bytes": 100778,
+    "max": 0,
+    "mean": 0.0,
+    "alphaMax": 0
+   },
+   "attempts": [
+    {
+     "lossless": true,
+     "quality": 100,
+     "bytes": 100778,
+     "max": 0,
+     "mean": 0.0,
+     "alphaMax": 0
+    }
+   ],
+   "source": "assets/sprites/t4/boss_clean.png",
+   "webp": "assets/sprites/t4/boss_clean.webp"
+  },
+  {
+   "status": "convert",
+   "before": 122327,
+   "after": 91618,
+   "chosen": {
+    "lossless": true,
+    "quality": 100,
+    "bytes": 91618,
+    "max": 0,
+    "mean": 0.0,
+    "alphaMax": 0
+   },
+   "attempts": [
+    {
+     "lossless": true,
+     "quality": 100,
+     "bytes": 91618,
+     "max": 0,
+     "mean": 0.0,
+     "alphaMax": 0
+    }
+   ],
+   "source": "assets/sprites/t4/boss_slam.png",
+   "webp": "assets/sprites/t4/boss_slam.webp"
+  },
+  {
+   "status": "keep",
+   "before": 116921,
+   "after": 116921,
+   "attempts": [
+    {
+     "lossless": true,
+     "quality": 100,
+     "bytes": 451918,
+     "max": 0,
+     "mean": 0.0,
+     "alphaMax": 0
+    },
+    {
+     "lossless": false,
+     "quality": 90,
+     "bytes": 116438,
+     "max": 27,
+     "mean": 2.3831,
+     "alphaMax": 0
+    },
+    {
+     "lossless": false,
+     "quality": 95,
+     "bytes": 149310,
+     "max": 28,
+     "mean": 1.8245,
+     "alphaMax": 0
+    }
+   ],
+   "source": "assets/sprites/t4/card_clean.jpg",
+   "webp": "assets/sprites/t4/card_clean.webp"
+  },
+  {
+   "status": "keep",
+   "before": 105886,
+   "after": 105886,
+   "attempts": [
+    {
+     "lossless": true,
+     "quality": 100,
+     "bytes": 407078,
+     "max": 0,
+     "mean": 0.0,
+     "alphaMax": 0
+    },
+    {
+     "lossless": false,
+     "quality": 90,
+     "bytes": 104998,
+     "max": 24,
+     "mean": 2.1109,
+     "alphaMax": 0
+    },
+    {
+     "lossless": false,
+     "quality": 95,
+     "bytes": 138228,
+     "max": 20,
+     "mean": 1.5265,
+     "alphaMax": 0
+    }
+   ],
+   "source": "assets/sprites/t4/card_polluted.jpg",
+   "webp": "assets/sprites/t4/card_polluted.webp"
+  },
+  {
+   "status": "convert",
+   "before": 64811,
+   "after": 50036,
+   "chosen": {
+    "lossless": true,
+    "quality": 100,
+    "bytes": 50036,
+    "max": 0,
+    "mean": 0.0,
+    "alphaMax": 0
+   },
+   "attempts": [
+    {
+     "lossless": true,
+     "quality": 100,
+     "bytes": 50036,
+     "max": 0,
+     "mean": 0.0,
+     "alphaMax": 0
+    }
+   ],
+   "source": "assets/sprites/t4/en_bulki.png",
+   "webp": "assets/sprites/t4/en_bulki.webp"
+  },
+  {
+   "status": "convert",
+   "before": 47201,
+   "after": 37620,
+   "chosen": {
+    "lossless": true,
+    "quality": 100,
+    "bytes": 37620,
+    "max": 0,
+    "mean": 0.0,
+    "alphaMax": 0
+   },
+   "attempts": [
+    {
+     "lossless": true,
+     "quality": 100,
+     "bytes": 37620,
+     "max": 0,
+     "mean": 0.0,
+     "alphaMax": 0
+    }
+   ],
+   "source": "assets/sprites/t4/en_bulki_jump.png",
+   "webp": "assets/sprites/t4/en_bulki_jump.webp"
+  },
+  {
+   "status": "convert",
+   "before": 71227,
+   "after": 56176,
+   "chosen": {
+    "lossless": true,
+    "quality": 100,
+    "bytes": 56176,
+    "max": 0,
+    "mean": 0.0,
+    "alphaMax": 0
+   },
+   "attempts": [
+    {
+     "lossless": true,
+     "quality": 100,
+     "bytes": 56176,
+     "max": 0,
+     "mean": 0.0,
+     "alphaMax": 0
+    }
+   ],
+   "source": "assets/sprites/t4/en_bulki_throw.png",
+   "webp": "assets/sprites/t4/en_bulki_throw.webp"
+  },
+  {
+   "status": "convert",
+   "before": 34339,
+   "after": 25158,
+   "chosen": {
+    "lossless": true,
+    "quality": 100,
+    "bytes": 25158,
+    "max": 0,
+    "mean": 0.0,
+    "alphaMax": 0
+   },
+   "attempts": [
+    {
+     "lossless": true,
+     "quality": 100,
+     "bytes": 25158,
+     "max": 0,
+     "mean": 0.0,
+     "alphaMax": 0
+    }
+   ],
+   "source": "assets/sprites/t4/en_burner.png",
+   "webp": "assets/sprites/t4/en_burner.webp"
+  },
+  {
+   "status": "convert",
+   "before": 39391,
+   "after": 30702,
+   "chosen": {
+    "lossless": true,
+    "quality": 100,
+    "bytes": 30702,
+    "max": 0,
+    "mean": 0.0,
+    "alphaMax": 0
+   },
+   "attempts": [
+    {
+     "lossless": true,
+     "quality": 100,
+     "bytes": 30702,
+     "max": 0,
+     "mean": 0.0,
+     "alphaMax": 0
+    }
+   ],
+   "source": "assets/sprites/t4/en_burner_big.png",
+   "webp": "assets/sprites/t4/en_burner_big.webp"
+  },
+  {
+   "status": "convert",
+   "before": 27820,
+   "after": 21126,
+   "chosen": {
+    "lossless": true,
+    "quality": 100,
+    "bytes": 21126,
+    "max": 0,
+    "mean": 0.0,
+    "alphaMax": 0
+   },
+   "attempts": [
+    {
+     "lossless": true,
+     "quality": 100,
+     "bytes": 21126,
+     "max": 0,
+     "mean": 0.0,
+     "alphaMax": 0
+    }
+   ],
+   "source": "assets/sprites/t4/en_burner_l.png",
+   "webp": "assets/sprites/t4/en_burner_l.webp"
+  },
+  {
+   "status": "convert",
+   "before": 30872,
+   "after": 22442,
+   "chosen": {
+    "lossless": true,
+    "quality": 100,
+    "bytes": 22442,
+    "max": 0,
+    "mean": 0.0,
+    "alphaMax": 0
+   },
+   "attempts": [
+    {
+     "lossless": true,
+     "quality": 100,
+     "bytes": 22442,
+     "max": 0,
+     "mean": 0.0,
+     "alphaMax": 0
+    }
+   ],
+   "source": "assets/sprites/t4/en_burner_m.png",
+   "webp": "assets/sprites/t4/en_burner_m.webp"
+  },
+  {
+   "status": "convert",
+   "before": 28998,
+   "after": 20416,
+   "chosen": {
+    "lossless": true,
+    "quality": 100,
+    "bytes": 20416,
+    "max": 0,
+    "mean": 0.0,
+    "alphaMax": 0
+   },
+   "attempts": [
+    {
+     "lossless": true,
+     "quality": 100,
+     "bytes": 20416,
+     "max": 0,
+     "mean": 0.0,
+     "alphaMax": 0
+    }
+   ],
+   "source": "assets/sprites/t4/en_burner_out.png",
+   "webp": "assets/sprites/t4/en_burner_out.webp"
+  },
+  {
+   "status": "convert",
+   "before": 38203,
+   "after": 26746,
+   "chosen": {
+    "lossless": true,
+    "quality": 100,
+    "bytes": 26746,
+    "max": 0,
+    "mean": 0.0,
+    "alphaMax": 0
+   },
+   "attempts": [
+    {
+     "lossless": true,
+     "quality": 100,
+     "bytes": 26746,
+     "max": 0,
+     "mean": 0.0,
+     "alphaMax": 0
+    }
+   ],
+   "source": "assets/sprites/t4/en_burner_s.png",
+   "webp": "assets/sprites/t4/en_burner_s.webp"
+  },
+  {
+   "status": "convert",
+   "before": 106937,
+   "after": 75650,
+   "chosen": {
+    "lossless": true,
+    "quality": 100,
+    "bytes": 75650,
+    "max": 0,
+    "mean": 0.0,
+    "alphaMax": 0
+   },
+   "attempts": [
+    {
+     "lossless": true,
+     "quality": 100,
+     "bytes": 75650,
+     "max": 0,
+     "mean": 0.0,
+     "alphaMax": 0
+    }
+   ],
+   "source": "assets/sprites/t4/en_dozer.png",
+   "webp": "assets/sprites/t4/en_dozer.webp"
+  },
+  {
+   "status": "convert",
+   "before": 98185,
+   "after": 69886,
+   "chosen": {
+    "lossless": true,
+    "quality": 100,
+    "bytes": 69886,
+    "max": 0,
+    "mean": 0.0,
+    "alphaMax": 0
+   },
+   "attempts": [
+    {
+     "lossless": true,
+     "quality": 100,
+     "bytes": 69886,
+     "max": 0,
+     "mean": 0.0,
+     "alphaMax": 0
+    }
+   ],
+   "source": "assets/sprites/t4/en_dozer_charge.png",
+   "webp": "assets/sprites/t4/en_dozer_charge.webp"
+  },
+  {
+   "status": "convert",
+   "before": 36766,
+   "after": 27226,
+   "chosen": {
+    "lossless": true,
+    "quality": 100,
+    "bytes": 27226,
+    "max": 0,
+    "mean": 0.0,
+    "alphaMax": 0
+   },
+   "attempts": [
+    {
+     "lossless": true,
+     "quality": 100,
+     "bytes": 27226,
+     "max": 0,
+     "mean": 0.0,
+     "alphaMax": 0
+    }
+   ],
+   "source": "assets/sprites/t4/en_nutria.png",
+   "webp": "assets/sprites/t4/en_nutria.webp"
+  },
+  {
+   "status": "convert",
+   "before": 36161,
+   "after": 26616,
+   "chosen": {
+    "lossless": true,
+    "quality": 100,
+    "bytes": 26616,
+    "max": 0,
+    "mean": 0.0,
+    "alphaMax": 0
+   },
+   "attempts": [
+    {
+     "lossless": true,
+     "quality": 100,
+     "bytes": 26616,
+     "max": 0,
+     "mean": 0.0,
+     "alphaMax": 0
+    }
+   ],
+   "source": "assets/sprites/t4/en_nutria_guard.png",
+   "webp": "assets/sprites/t4/en_nutria_guard.webp"
+  },
+  {
+   "status": "convert",
+   "before": 41124,
+   "after": 28730,
+   "chosen": {
+    "lossless": true,
+    "quality": 100,
+    "bytes": 28730,
+    "max": 0,
+    "mean": 0.0,
+    "alphaMax": 0
+   },
+   "attempts": [
+    {
+     "lossless": true,
+     "quality": 100,
+     "bytes": 28730,
+     "max": 0,
+     "mean": 0.0,
+     "alphaMax": 0
+    }
+   ],
+   "source": "assets/sprites/t4/en_saw.png",
+   "webp": "assets/sprites/t4/en_saw.webp"
+  },
+  {
+   "status": "convert",
+   "before": 54154,
+   "after": 41700,
+   "chosen": {
+    "lossless": true,
+    "quality": 100,
+    "bytes": 41700,
+    "max": 0,
+    "mean": 0.0,
+    "alphaMax": 0
+   },
+   "attempts": [
+    {
+     "lossless": true,
+     "quality": 100,
+     "bytes": 41700,
+     "max": 0,
+     "mean": 0.0,
+     "alphaMax": 0
+    }
+   ],
+   "source": "assets/sprites/t4/en_saw_spin.png",
+   "webp": "assets/sprites/t4/en_saw_spin.webp"
+  },
+  {
+   "status": "convert",
+   "before": 40794,
+   "after": 29714,
+   "chosen": {
+    "lossless": true,
+    "quality": 100,
+    "bytes": 29714,
+    "max": 0,
+    "mean": 0.0,
+    "alphaMax": 0
+   },
+   "attempts": [
+    {
+     "lossless": true,
+     "quality": 100,
+     "bytes": 29714,
+     "max": 0,
+     "mean": 0.0,
+     "alphaMax": 0
+    }
+   ],
+   "source": "assets/sprites/t4/fx_dust.png",
+   "webp": "assets/sprites/t4/fx_dust.webp"
+  },
+  {
+   "status": "keep",
+   "before": 43514,
+   "after": 43514,
+   "attempts": [
+    {
+     "lossless": true,
+     "quality": 100,
+     "bytes": 35386,
+     "max": 0,
+     "mean": 0.0,
+     "alphaMax": 0
+    }
+   ],
+   "source": "assets/sprites/t4/fx_flames.png",
+   "webp": "assets/sprites/t4/fx_flames.webp"
+  },
+  {
+   "status": "convert",
+   "before": 29778,
+   "after": 21658,
+   "chosen": {
+    "lossless": true,
+    "quality": 100,
+    "bytes": 21658,
+    "max": 0,
+    "mean": 0.0,
+    "alphaMax": 0
+   },
+   "attempts": [
+    {
+     "lossless": true,
+     "quality": 100,
+     "bytes": 21658,
+     "max": 0,
+     "mean": 0.0,
+     "alphaMax": 0
+    }
+   ],
+   "source": "assets/sprites/t4/fx_puff.png",
+   "webp": "assets/sprites/t4/fx_puff.webp"
+  },
+  {
+   "status": "convert",
+   "before": 73869,
+   "after": 57830,
+   "chosen": {
+    "lossless": true,
+    "quality": 100,
+    "bytes": 57830,
+    "max": 0,
+    "mean": 0.0,
+    "alphaMax": 0
+   },
+   "attempts": [
+    {
+     "lossless": true,
+     "quality": 100,
+     "bytes": 57830,
+     "max": 0,
+     "mean": 0.0,
+     "alphaMax": 0
+    }
+   ],
+   "source": "assets/sprites/t4/fx_slam.png",
+   "webp": "assets/sprites/t4/fx_slam.webp"
+  },
+  {
+   "status": "convert",
+   "before": 61861,
+   "after": 46864,
+   "chosen": {
+    "lossless": true,
+    "quality": 100,
+    "bytes": 46864,
+    "max": 0,
+    "mean": 0.0,
+    "alphaMax": 0
+   },
+   "attempts": [
+    {
+     "lossless": true,
+     "quality": 100,
+     "bytes": 46864,
+     "max": 0,
+     "mean": 0.0,
+     "alphaMax": 0
+    }
+   ],
+   "source": "assets/sprites/t4/fx_tracks.png",
+   "webp": "assets/sprites/t4/fx_tracks.webp"
+  },
+  {
+   "status": "keep",
+   "before": 27983,
+   "after": 27983,
+   "attempts": [
+    {
+     "lossless": true,
+     "quality": 100,
+     "bytes": 23038,
+     "max": 0,
+     "mean": 0.0,
+     "alphaMax": 0
+    }
+   ],
+   "source": "assets/sprites/t4/fx_trashball.png",
+   "webp": "assets/sprites/t4/fx_trashball.webp"
+  },
+  {
+   "status": "convert",
+   "before": 30650,
+   "after": 22940,
+   "chosen": {
+    "lossless": true,
+    "quality": 100,
+    "bytes": 22940,
+    "max": 0,
+    "mean": 0.0,
+    "alphaMax": 0
+   },
+   "attempts": [
+    {
+     "lossless": true,
+     "quality": 100,
+     "bytes": 22940,
+     "max": 0,
+     "mean": 0.0,
+     "alphaMax": 0
+    }
+   ],
+   "source": "assets/sprites/t4/prop_burnt.png",
+   "webp": "assets/sprites/t4/prop_burnt.webp"
+  },
+  {
+   "status": "convert",
+   "before": 29809,
+   "after": 21792,
+   "chosen": {
+    "lossless": true,
+    "quality": 100,
+    "bytes": 21792,
+    "max": 0,
+    "mean": 0.0,
+    "alphaMax": 0
+   },
+   "attempts": [
+    {
+     "lossless": true,
+     "quality": 100,
+     "bytes": 21792,
+     "max": 0,
+     "mean": 0.0,
+     "alphaMax": 0
+    }
+   ],
+   "source": "assets/sprites/t4/prop_camptrash.png",
+   "webp": "assets/sprites/t4/prop_camptrash.webp"
+  },
+  {
+   "status": "keep",
+   "before": 11432,
+   "after": 11432,
+   "attempts": [
+    {
+     "lossless": true,
+     "quality": 100,
+     "bytes": 9986,
+     "max": 0,
+     "mean": 0.0,
+     "alphaMax": 0
+    }
+   ],
+   "source": "assets/sprites/t4/prop_ember.png",
+   "webp": "assets/sprites/t4/prop_ember.webp"
+  },
+  {
+   "status": "convert",
+   "before": 89106,
+   "after": 64924,
+   "chosen": {
+    "lossless": true,
+    "quality": 100,
+    "bytes": 64924,
+    "max": 0,
+    "mean": 0.0,
+    "alphaMax": 0
+   },
+   "attempts": [
+    {
+     "lossless": true,
+     "quality": 100,
+     "bytes": 64924,
+     "max": 0,
+     "mean": 0.0,
+     "alphaMax": 0
+    }
+   ],
+   "source": "assets/sprites/t4/prop_pond.png",
+   "webp": "assets/sprites/t4/prop_pond.webp"
+  },
+  {
+   "status": "keep",
+   "before": 18105,
+   "after": 18105,
+   "attempts": [
+    {
+     "lossless": true,
+     "quality": 100,
+     "bytes": 14528,
+     "max": 0,
+     "mean": 0.0,
+     "alphaMax": 0
+    }
+   ],
+   "source": "assets/sprites/t4/prop_sprout.png",
+   "webp": "assets/sprites/t4/prop_sprout.webp"
+  },
+  {
+   "status": "convert",
+   "before": 25879,
+   "after": 18556,
+   "chosen": {
+    "lossless": true,
+    "quality": 100,
+    "bytes": 18556,
+    "max": 0,
+    "mean": 0.0,
+    "alphaMax": 0
+   },
+   "attempts": [
+    {
+     "lossless": true,
+     "quality": 100,
+     "bytes": 18556,
+     "max": 0,
+     "mean": 0.0,
+     "alphaMax": 0
+    }
+   ],
+   "source": "assets/sprites/t4/prop_stump.png",
+   "webp": "assets/sprites/t4/prop_stump.webp"
+  },
+  {
+   "status": "keep",
+   "before": 23724,
+   "after": 23724,
+   "attempts": [
+    {
+     "lossless": true,
+     "quality": 100,
+     "bytes": 20780,
+     "max": 0,
+     "mean": 0.0,
+     "alphaMax": 0
+    }
+   ],
+   "source": "assets/sprites/ui/supply_gear_closed.png",
+   "webp": "assets/sprites/ui/supply_gear_closed.webp"
+  },
+  {
+   "status": "keep",
+   "before": 12853,
+   "after": 12853,
+   "attempts": [
+    {
+     "lossless": true,
+     "quality": 100,
+     "bytes": 11272,
+     "max": 0,
+     "mean": 0.0,
+     "alphaMax": 0
+    }
+   ],
+   "source": "assets/sprites/ui/supply_gear_lid.png",
+   "webp": "assets/sprites/ui/supply_gear_lid.webp"
+  },
+  {
+   "status": "keep",
+   "before": 20841,
+   "after": 20841,
+   "attempts": [
+    {
+     "lossless": true,
+     "quality": 100,
+     "bytes": 18074,
+     "max": 0,
+     "mean": 0.0,
+     "alphaMax": 0
+    }
+   ],
+   "source": "assets/sprites/ui/supply_gear_open.png",
+   "webp": "assets/sprites/ui/supply_gear_open.webp"
+  },
+  {
+   "status": "keep",
+   "before": 19344,
+   "after": 19344,
+   "attempts": [
+    {
+     "lossless": true,
+     "quality": 100,
+     "bytes": 16502,
+     "max": 0,
+     "mean": 0.0,
+     "alphaMax": 0
+    }
+   ],
+   "source": "assets/sprites/ui/supply_part_closed.png",
+   "webp": "assets/sprites/ui/supply_part_closed.webp"
+  },
+  {
+   "status": "keep",
+   "before": 15316,
+   "after": 15316,
+   "attempts": [
+    {
+     "lossless": true,
+     "quality": 100,
+     "bytes": 13322,
+     "max": 0,
+     "mean": 0.0,
+     "alphaMax": 0
+    }
+   ],
+   "source": "assets/sprites/ui/supply_part_lid.png",
+   "webp": "assets/sprites/ui/supply_part_lid.webp"
+  },
+  {
+   "status": "keep",
+   "before": 15931,
+   "after": 15931,
+   "attempts": [
+    {
+     "lossless": true,
+     "quality": 100,
+     "bytes": 13052,
+     "max": 0,
+     "mean": 0.0,
+     "alphaMax": 0
+    }
+   ],
+   "source": "assets/sprites/ui/supply_part_open.png",
+   "webp": "assets/sprites/ui/supply_part_open.webp"
+  },
+  {
+   "status": "convert",
+   "before": 199711,
+   "after": 143762,
+   "chosen": {
+    "lossless": true,
+    "quality": 100,
+    "bytes": 143762,
+    "max": 0,
+    "mean": 0.0,
+    "alphaMax": 0
+   },
+   "attempts": [
+    {
+     "lossless": true,
+     "quality": 100,
+     "bytes": 143762,
+     "max": 0,
+     "mean": 0.0,
+     "alphaMax": 0
+    }
+   ],
+   "source": "assets/sprites/vfx/purify-v1.png",
+   "webp": "assets/sprites/vfx/purify-v1.webp"
+  },
+  {
+   "status": "convert",
+   "before": 187662,
+   "after": 130252,
+   "chosen": {
+    "lossless": true,
+    "quality": 100,
+    "bytes": 130252,
+    "max": 0,
+    "mean": 0.0,
+    "alphaMax": 0
+   },
+   "attempts": [
+    {
+     "lossless": true,
+     "quality": 100,
+     "bytes": 130252,
+     "max": 0,
+     "mean": 0.0,
+     "alphaMax": 0
+    }
+   ],
+   "source": "assets/sprites/vfx/smog-v1.png",
+   "webp": "assets/sprites/vfx/smog-v1.webp"
+  },
+  {
+   "status": "convert",
+   "before": 134534,
+   "after": 95802,
+   "chosen": {
+    "lossless": true,
+    "quality": 100,
+    "bytes": 95802,
+    "max": 0,
+    "mean": 0.0,
+    "alphaMax": 0
+   },
+   "attempts": [
+    {
+     "lossless": true,
+     "quality": 100,
+     "bytes": 95802,
+     "max": 0,
+     "mean": 0.0,
+     "alphaMax": 0
+    }
+   ],
+   "source": "assets/sprites/vfx/splash-v1.png",
+   "webp": "assets/sprites/vfx/splash-v1.webp"
+  },
+  {
+   "status": "keep",
+   "before": 217759,
+   "after": 217759,
+   "attempts": [
+    {
+     "lossless": true,
+     "quality": 100,
+     "bytes": 1078682,
+     "max": 0,
+     "mean": 0.0,
+     "alphaMax": 0
+    },
+    {
+     "lossless": false,
+     "quality": 90,
+     "bytes": 229116,
+     "max": 37,
+     "mean": 2.5285,
+     "alphaMax": 0
+    },
+    {
+     "lossless": false,
+     "quality": 95,
+     "bytes": 295010,
+     "max": 37,
+     "mean": 2.1072,
+     "alphaMax": 0
+    }
+   ],
+   "source": "assets/ui/notice_ch4.jpg",
+   "webp": "assets/ui/notice_ch4.webp"
+  },
+  {
+   "status": "keep",
+   "before": 168233,
+   "after": 168233,
+   "attempts": [
+    {
+     "lossless": true,
+     "quality": 100,
+     "bytes": 587820,
+     "max": 0,
+     "mean": 0.0,
+     "alphaMax": 0
+    },
+    {
+     "lossless": false,
+     "quality": 90,
+     "bytes": 157098,
+     "max": 17,
+     "mean": 1.6911,
+     "alphaMax": 0
+    },
+    {
+     "lossless": false,
+     "quality": 95,
+     "bytes": 201006,
+     "max": 13,
+     "mean": 1.2039,
+     "alphaMax": 0
+    }
+   ],
+   "source": "assets/ui/title_landscape.jpg",
+   "webp": "assets/ui/title_landscape.webp"
+  },
+  {
+   "status": "keep",
+   "before": 320164,
+   "after": 320164,
+   "attempts": [
+    {
+     "lossless": true,
+     "quality": 100,
+     "bytes": 1397448,
+     "max": 0,
+     "mean": 0.0,
+     "alphaMax": 0
+    },
+    {
+     "lossless": false,
+     "quality": 90,
+     "bytes": 303018,
+     "max": 23,
+     "mean": 1.3242,
+     "alphaMax": 0
+    },
+    {
+     "lossless": false,
+     "quality": 95,
+     "bytes": 415034,
+     "max": 20,
+     "mean": 0.994,
+     "alphaMax": 0
+    }
+   ],
+   "source": "assets/ui/title_portrait.jpg",
+   "webp": "assets/ui/title_portrait.webp"
+  },
+  {
+   "status": "keep",
+   "before": 208355,
+   "after": 208355,
+   "attempts": [
+    {
+     "lossless": true,
+     "quality": 100,
+     "bytes": 1157720,
+     "max": 0,
+     "mean": 0.0,
+     "alphaMax": 0
+    },
+    {
+     "lossless": false,
+     "quality": 90,
+     "bytes": 211170,
+     "max": 35,
+     "mean": 1.4821,
+     "alphaMax": 0
+    },
+    {
+     "lossless": false,
+     "quality": 95,
+     "bytes": 290176,
+     "max": 31,
+     "mean": 1.174,
+     "alphaMax": 0
+    }
+   ],
+   "source": "assets/ui2/bg_hq.jpg",
+   "webp": "assets/ui2/bg_hq.webp"
+  }
+ ]
+}

@@ -435,12 +435,12 @@
   .hint { text-align: center; font-size: 10.5px; color: #6f6659; margin: 7px 0 0; }
 
   .frame {
-    border-style: solid; border-width: 20px; border-image: url('./assets/ui/panel-border.webp?v=20261012d1') 16 fill / 20px / 0 repeat;
+    border-style: solid; border-width: 20px; border-image: url('./assets/ui/panel-border.webp?v=20261012d2') 16 fill / 20px / 0 repeat;
     image-rendering: pixelated; background: rgba(22,16,14,0.92); padding: 22px 30px;
   }
   .card {
     width: 180px; min-height: 210px; cursor: pointer; transition: transform .12s;
-    border-style: solid; border-width: 14px; border-image: url('./assets/ui/panel-border-thin.webp?v=20261012d1') 16 fill / 14px / 0 repeat;
+    border-style: solid; border-width: 14px; border-image: url('./assets/ui/panel-border-thin.webp?v=20261012d2') 16 fill / 14px / 0 repeat;
     image-rendering: pixelated; background: rgba(26,20,16,0.94); padding: 8px 10px;
   }
   .card:hover { transform: translateY(-6px) scale(1.03); filter: brightness(1.15); }
@@ -449,7 +449,7 @@
   .card .tag { display: inline-block; font-size: 10px; padding: 2px 6px; border-radius: 4px; background: #3a2f22; margin-bottom: 6px; color: #ffcf8a; }
   .card .tag.evo { background: linear-gradient(#a06a10, #6a4208); color: #fff2b0; }
   .card .evo-name { color: #ffd76a; text-shadow: 0 0 10px rgba(255,190,80,0.55); }
-  .card:has(.tag.evo) { border-image-source: url('./assets/ui/panel-border.webp?v=20261012d1'); box-shadow: 0 0 18px rgba(255,190,80,0.3); }
+  .card:has(.tag.evo) { border-image-source: url('./assets/ui/panel-border.webp?v=20261012d2'); box-shadow: 0 0 18px rgba(255,190,80,0.3); }
   .card .lvdots { display: flex; gap: 4px; margin: 0 0 8px; }
   .card .lvdots i { width: 14px; height: 4px; border-radius: 2px; display: block; }
   .card-row { display: flex; gap: 20px; }
@@ -571,7 +571,7 @@
   /* ================= 로비 밝은 테마 (2026-09-22 시안 4판) — 위의 어두운 로비 규칙을 덮어쓴다 ================= */
   .lobby { background: linear-gradient(#cfe9ff 0%, #eef6ff 35%, #fff3dc 100%); color: #4a2f14; }
   .lobby::before { display: none; }
-  .lobby-bg { position: absolute; left: 0; right: 0; bottom: 0; height: 58%; background: url('./assets/ui/title_landscape.jpg?v=20261012d1') center bottom / cover no-repeat;
+  .lobby-bg { position: absolute; left: 0; right: 0; bottom: 0; height: 58%; background: url('./assets/ui/title_landscape.jpg?v=20261012d2') center bottom / cover no-repeat;
     -webkit-mask-image: linear-gradient(transparent, #000 50%); mask-image: linear-gradient(transparent, #000 50%); opacity: .32; pointer-events: none; }
   .lobby-top, .lobby-body, .lobby-bottom { width: min(100%, 520px); }
   .lobby-top { padding: calc(8px + var(--sat)) 12px 0; gap: 6px; }
@@ -757,18 +757,18 @@
               <div class="hp-sky"></div>
               <div class="hp-head"><span class="hp-lab">내 대원</span><span class="hp-name" id="m-hero-name">호야</span></div>
               <div class="hp-shadow"></div>
-              <img id="hero-img" src="./assets/sprites/heroes/hoya_idle_1.png?v=20261012d1" alt="주인공" />
+              <img id="hero-img" src="./assets/sprites/heroes/hoya_idle_1.webp?v=20261012d2" alt="주인공" />
               <span class="hp-flower" style="left:14%">🌼</span><span class="hp-flower" style="left:26%;top:80%">🌱</span>
               <span class="hp-flower" style="right:16%">🌷</span><span class="hp-flower" style="right:30%;top:82%">🌱</span>
             </div>
             <div class="lpanel tip-panel">
-              <img src="./assets/ui/title_mascot.webp?v=20261012d1" alt="" />
+              <img src="./assets/ui/title_mascot.webp?v=20261012d2" alt="" />
               <div class="tip-bubble"><b>환경 이야기</b><span id="m-tip"></span></div>
             </div>
           </div>
           <div class="lpanel map-panel">
             <div class="map-head">
-              <img src="./assets/ui/title_emblem.webp?v=20261012d1" alt="" />
+              <img src="./assets/ui/title_emblem.webp?v=20261012d2" alt="" />
               <div class="mh-t"><small id="m-theme-no">1장</small><span id="m-theme-name">쓰레기 마을</span></div>
               <div class="mh-prog"><span id="m-theme-prog">0 / 5 성공</span><div class="mh-bar"><i id="m-theme-bar" style="width:0%"></i></div></div>
             </div>
@@ -875,18 +875,18 @@
 
     <!-- 시작 화면: 첫 진입 시 표시. 시작하기 → 로비(주인공 미선택이면 선택 화면) -->
     <div id="title">
-      <img class="ts-bg port" src="./assets/ui/title_portrait.jpg?v=20261012d1" alt="" />
-      <img class="ts-bg land" src="./assets/ui/title_landscape.jpg?v=20261012d1" alt="" />
+      <img class="ts-bg port" src="./assets/ui/title_portrait.jpg?v=20261012d2" alt="" />
+      <img class="ts-bg land" src="./assets/ui/title_landscape.jpg?v=20261012d2" alt="" />
       <div class="ts-shade"></div>
       <div class="ts-head">
-        <img class="ts-emblem" src="./assets/ui/title_emblem.webp?v=20261012d1" alt="" />
+        <img class="ts-emblem" src="./assets/ui/title_emblem.webp?v=20261012d2" alt="" />
         <h1 class="ts-title">서호<span class="pang">팡팡</span>수호대</h1>
         <div class="ts-tag">서호초등학교 친구들과 함께 마을의 환경을 지켜라!</div>
       </div>
       <div class="ts-foot">
         <div class="ts-side hoya">
-          <img class="ts-mascot" src="./assets/ui/title_mascot.webp?v=20261012d1" alt="" />
-          <img class="ts-hero" src="./assets/ui/title_hoya.webp?v=20261012d1" alt="호야" />
+          <img class="ts-mascot" src="./assets/ui/title_mascot.webp?v=20261012d2" alt="" />
+          <img class="ts-hero" src="./assets/ui/title_hoya.webp?v=20261012d2" alt="호야" />
         </div>
         <div class="ts-center">
         <!-- 서버가 있을 때: 접속 카드(미접속) 또는 접속 정보(접속됨). 없으면 시작 버튼만 -->
@@ -906,7 +906,7 @@
         <div class="ts-user hidden" id="ts-user"><span id="ts-user-name"></span><button type="button" class="lg-local" id="btn-logout">다른 아이디로</button></div>
         <button class="ts-start" id="btn-title-start">시작하기</button>
         </div>
-        <div class="ts-side minji"><img class="ts-hero" src="./assets/ui/title_minji.webp?v=20261012d1" alt="민지" /></div>
+        <div class="ts-side minji"><img class="ts-hero" src="./assets/ui/title_minji.webp?v=20261012d2" alt="민지" /></div>
       </div>
     </div>
 
@@ -916,11 +916,11 @@
         <div class="sub">겉모습만 달라요. 능력은 로비의 '대원' 탭에서 정해져요 · 한 번 고르면 바꿀 수 없어요</div>
         <div class="hero-cards">
           <button class="hero-card" data-hero="hoya" id="hero-card-hoya">
-            <img src="./assets/sprites/heroes/hoya_idle_1.png?v=20261012d1" alt="호야" />
+            <img src="./assets/sprites/heroes/hoya_idle_1.webp?v=20261012d2" alt="호야" />
             <div class="hc-name">호야</div><div class="hc-desc">파란 후드티와 장난감 칼<br>씩씩한 남자아이</div><div class="hc-cur"></div>
           </button>
           <button class="hero-card" data-hero="minji" id="hero-card-minji">
-            <img src="./assets/sprites/heroes/minji_idle_1.png?v=20261012d1" alt="민지" />
+            <img src="./assets/sprites/heroes/minji_idle_1.webp?v=20261012d2" alt="민지" />
             <div class="hc-name">민지</div><div class="hc-desc">분홍 가디건과 마법 색연필<br>밝은 여자아이</div><div class="hc-cur"></div>
           </button>
         </div>

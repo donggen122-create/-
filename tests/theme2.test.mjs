@@ -34,8 +34,8 @@ test('2-5 boss has close/mid/far skills and valves every third skill',()=>{
 
 test('every chapter-2 sprite referenced by the game exists',()=>{
  const assets=fs.readFileSync(new URL('../game/src/assets.js',import.meta.url),'utf8');
- const keys=[...assets.matchAll(/t2_(\w+): IMG_BASE \+ "t2\/(\w+)\.png"/g)];assert.ok(keys.length>=26);
- for(const [,,f] of keys)assert.ok(fs.existsSync(new URL(`../game/assets/sprites/t2/${f}.png`,import.meta.url)),f);
+ const keys=[...assets.matchAll(/t2_(\w+): IMG_BASE \+ "t2\/(\w+)\.(png|webp)"/g)];assert.ok(keys.length>=26);
+ for(const [,,f,ext] of keys)assert.ok(fs.existsSync(new URL(`../game/assets/sprites/t2/${f}.${ext}`,import.meta.url)),f);
  const used=[...Object.values(T2_ENEMIES).flatMap(e=>[e.sprite,...Object.values(e.frames||{}).flat()]),T2_BOSS.img.calm,T2_BOSS.img.angry,...T2_STAGES.map(s=>s.floor)];
  for(const k of used)assert.match(assets,new RegExp(`\\b${k}:`),k);
  for(const f of ['card_polluted.jpg','card_clean.jpg'])assert.ok(fs.existsSync(new URL(`../game/assets/sprites/t2/${f}`,import.meta.url)),f);

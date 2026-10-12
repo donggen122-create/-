@@ -49,9 +49,16 @@ test('HTML/CSS versions match the one asset version and static headers survive s
 test('D converted and retained image references exist and match the explicit PNG/JPG allowlist',()=>{
   const report=JSON.parse(fs.readFileSync(path.join(root,'docs/codex/measurements/D/convert.json'),'utf8'));
   const before=JSON.parse(fs.readFileSync(path.join(root,'docs/codex/measurements/D/inventory-D-before.json'),'utf8'));
+  // Second pass (Claude, assets-diet-lossy.py): lossless WebP with hidden RGB discarded over D's retained files.
+  const second=JSON.parse(fs.readFileSync(path.join(root,'docs/codex/measurements/D/convert-claude.json'),'utf8'));
+  for(const row of second.files){
+    if(row.status!=='convert')continue;
+    const d=report.files.find(r=>r.source==='game/'+row.source);
+    if(d)Object.assign(d,{status:'converted',target:'game/'+row.webp,beforeBytes:row.before,afterBytes:row.after,alphaExact:row.chosen.alphaMax===0,maxChannelDelta:row.chosen.max,lossless:row.chosen.lossless});
+  }
   const rows=new Map(report.files.map(row=>[row.source,row]));
   const allowed=new Set(report.files.filter(row=>row.status!=='converted').map(row=>row.source));
-  assert.equal(ASSET_VERSION,'20261012d1');
+  assert.equal(ASSET_VERSION,'20261012d2');
   for(const original of Object.keys(before.references)){
     const row=rows.get(original);
     assert.ok(fs.existsSync(path.join(root,row?.target||original)),original);
@@ -76,7 +83,8 @@ test('D converted and retained image references exist and match the explicit PNG
         assert.notEqual(resolved.split('?')[0],'./'+ref.replace(/^game\//,''),ref);
         assert.ok(fs.existsSync(path.join(root,'game',resolved.split('?')[0])),ref);
       }else assert.ok(fs.existsSync(path.join(root,ref)),`${file}: ${ref}`);
-      if(/\.(png|jpe?g)$/.test(ref))assert.ok(allowed.has(ref),`${file}: outside allowlist ${ref}`);
+      // Story portraits (E) are cut into game/assets/story/ outside the diet passes.
+      if(/\.(png|jpe?g)$/.test(ref))assert.ok(allowed.has(ref)||ref.startsWith('game/assets/story/'),`${file}: outside allowlist ${ref}`);
     }
   }
 });

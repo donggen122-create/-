@@ -46,8 +46,8 @@ test('4-5 boss has close/mid/far skills, embers every third skill, fire falls le
 
 test('every chapter-4 sprite referenced by the game exists',()=>{
  const assets=fs.readFileSync(new URL('../game/src/assets.js',import.meta.url),'utf8');
- const keys=[...assets.matchAll(/t4_(\w+): IMG_BASE \+ "t4\/(\w+)\.png"/g)];assert.ok(keys.length>=30);
- for(const [,,f] of keys)assert.ok(fs.existsSync(new URL(`../game/assets/sprites/t4/${f}.png`,import.meta.url)),f);
+ const keys=[...assets.matchAll(/t4_(\w+): IMG_BASE \+ "t4\/(\w+)\.(png|webp)"/g)];assert.ok(keys.length>=30);
+ for(const [,,f,ext] of keys)assert.ok(fs.existsSync(new URL(`../game/assets/sprites/t4/${f}.${ext}`,import.meta.url)),f);
  const patterns=BOSS_PATTERNS_T4.map(p=>p.drop).filter(Boolean);
  const used=[...Object.values(T4_ENEMIES).flatMap(e=>[e.sprite,...Object.values(e.frames||{}).flat()]),T4_BOSS.img.calm,T4_BOSS.img.angry,...T4_STAGES.map(s=>s.floor),...patterns];
  for(const k of used)assert.match(assets,new RegExp(`\\b${k}:`),k);
