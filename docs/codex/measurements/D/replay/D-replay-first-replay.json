@@ -1,0 +1,6466 @@
+[
+  {
+    "stage": "CH05",
+    "seed": 10808,
+    "device": "pc",
+    "quality": 0,
+    "god": true,
+    "equal": false,
+    "collector": null,
+    "gameplayExact": true,
+    "canvasCheck": {
+      "exact": false,
+      "equivalent": false,
+      "changedPixels": 12499,
+      "maxChannelDelta": 3
+    },
+    "before": {
+      "outcome": {
+        "seconds": 259.95000000009225,
+        "kills": 2288,
+        "hp": 421,
+        "hpMax": 421,
+        "litter": 23,
+        "choices": 24,
+        "bossHp": -202,
+        "stats": {
+          "kills": 2288,
+          "bossKills": 1,
+          "eliteKills": 1,
+          "evolutions": 2,
+          "revives": 0,
+          "chests": 0,
+          "gems": 1228,
+          "bossDamage": 97102,
+          "abilityUses": 0,
+          "darkGems": 17,
+          "statusDmg": 0,
+          "midBossNoHit": 1,
+          "evoKinds": [
+            "EVO_L1",
+            "EVO_L2"
+          ],
+          "presetRun": false,
+          "buffs": [],
+          "litter": 23,
+          "firstHitAt": 0.9000000000000011,
+          "pet": {
+            "splash": 50
+          }
+        },
+        "elements": {
+          "time": 259.95000000009225,
+          "shots": 4,
+          "scheduled": 0,
+          "shotDetails": [
+            {
+              "kind": "hstinger",
+              "bounces": null,
+              "small": false,
+              "partSplitDone": false
+            },
+            {
+              "kind": "bottle",
+              "bounces": null,
+              "small": false,
+              "partSplitDone": false
+            },
+            {
+              "kind": "hstinger",
+              "bounces": null,
+              "small": false,
+              "partSplitDone": false
+            },
+            {
+              "kind": "hstinger",
+              "bounces": null,
+              "small": false,
+              "partSplitDone": false
+            }
+          ],
+          "fieldDetails": [
+            {
+              "kind": "puddle",
+              "life": 0.5000000000000127,
+              "age": 4.499999999999989,
+              "maxTicks": 13,
+              "ticks": 12
+            },
+            {
+              "kind": "puddle",
+              "life": 0.6833333333333466,
+              "age": 4.316666666666657,
+              "maxTicks": 13,
+              "ticks": 11
+            },
+            {
+              "kind": "puddle",
+              "life": 1.183333333333347,
+              "age": 3.816666666666658,
+              "maxTicks": 13,
+              "ticks": 10
+            },
+            {
+              "kind": "puddle",
+              "life": 1.8666666666666778,
+              "age": 3.133333333333327,
+              "maxTicks": 13,
+              "ticks": 8
+            },
+            {
+              "kind": "storm",
+              "life": 0.03333333333333899,
+              "age": 2.966666666666661,
+              "maxTicks": 8,
+              "ticks": 8
+            },
+            {
+              "kind": "puddle",
+              "life": 2.0500000000000105,
+              "age": 2.9499999999999944,
+              "maxTicks": 13,
+              "ticks": 8
+            },
+            {
+              "kind": "puddle",
+              "life": 2.5500000000000087,
+              "age": 2.449999999999996,
+              "maxTicks": 13,
+              "ticks": 7
+            },
+            {
+              "kind": "puddle",
+              "life": 2.7333333333333414,
+              "age": 2.2666666666666635,
+              "maxTicks": 13,
+              "ticks": 6
+            },
+            {
+              "kind": "storm",
+              "life": 1.0166666666666737,
+              "age": 1.9833333333333312,
+              "maxTicks": 8,
+              "ticks": 6
+            },
+            {
+              "kind": "puddle",
+              "life": 3.2333333333333396,
+              "age": 1.7666666666666653,
+              "maxTicks": 13,
+              "ticks": 5
+            },
+            {
+              "kind": "puddle",
+              "life": 3.4166666666666723,
+              "age": 1.5833333333333326,
+              "maxTicks": 13,
+              "ticks": 4
+            },
+            {
+              "kind": "puddle",
+              "life": 3.9166666666666705,
+              "age": 1.0833333333333344,
+              "maxTicks": 13,
+              "ticks": 3
+            },
+            {
+              "kind": "storm",
+              "life": 2.0000000000000036,
+              "age": 1.0000000000000013,
+              "maxTicks": 8,
+              "ticks": 3
+            },
+            {
+              "kind": "puddle",
+              "life": 4.100000000000003,
+              "age": 0.9000000000000011,
+              "maxTicks": 13,
+              "ticks": 3
+            },
+            {
+              "kind": "puddle",
+              "life": 4.600000000000001,
+              "age": 0.39999999999999997,
+              "maxTicks": 13,
+              "ticks": 1
+            },
+            {
+              "kind": "storm",
+              "life": 2.9833333333333334,
+              "age": 0.016666666666666666,
+              "maxTicks": 8,
+              "ticks": 1
+            }
+          ],
+          "fields": 16,
+          "orbits": 4,
+          "mines": 0,
+          "bees": 5,
+          "beams": 0,
+          "effects": 29,
+          "kinds": [
+            "hstinger",
+            "bottle",
+            "puddle",
+            "storm",
+            "sparks",
+            "splashfire",
+            "bigburst",
+            "tbolt",
+            "swirl",
+            "top",
+            "swarmbee"
+          ],
+          "shotAngles": [
+            2.08,
+            2.05,
+            1.85,
+            1.86
+          ],
+          "fieldSpots": [
+            {
+              "x": -718,
+              "y": 683,
+              "r": 53
+            },
+            {
+              "x": -723,
+              "y": 687,
+              "r": 53
+            },
+            {
+              "x": -697,
+              "y": 684,
+              "r": 53
+            },
+            {
+              "x": -664,
+              "y": 661,
+              "r": 53
+            },
+            {
+              "x": -712,
+              "y": 672,
+              "r": 71
+            },
+            {
+              "x": -669,
+              "y": 655,
+              "r": 53
+            },
+            {
+              "x": -669,
+              "y": 645,
+              "r": 53
+            },
+            {
+              "x": -669,
+              "y": 645,
+              "r": 53
+            },
+            {
+              "x": -674,
+              "y": 645,
+              "r": 71
+            },
+            {
+              "x": -648,
+              "y": 624,
+              "r": 53
+            },
+            {
+              "x": -635,
+              "y": 627,
+              "r": 53
+            },
+            {
+              "x": -626,
+              "y": 620,
+              "r": 53
+            },
+            {
+              "x": -668,
+              "y": 642,
+              "r": 71
+            },
+            {
+              "x": -632,
+              "y": 613,
+              "r": 53
+            },
+            {
+              "x": -650,
+              "y": 596,
+              "r": 53
+            },
+            {
+              "x": -649,
+              "y": 602,
+              "r": 71
+            }
+          ],
+          "casts": {
+            "L1": 60,
+            "EVO_L1": 258,
+            "L2": 201,
+            "EVO_L2": 2425,
+            "F1": 82
+          },
+          "hits": {
+            "L1": 159,
+            "EVO_L1": 955,
+            "L2": 137,
+            "EVO_L2": 1528,
+            "V2": 41,
+            "F1": 487
+          },
+          "damage": {
+            "L1": 38358.443135999965,
+            "EVO_L1": 272460.1800835146,
+            "L2": 9527.017499999994,
+            "EVO_L2": 192732.9662699952,
+            "V2": 3013.645992499998,
+            "F1": 33811.78195200002
+          },
+          "parts": {
+            "L1": 153,
+            "EVO_L1": 57,
+            "F1": 198
+          },
+          "legendCasts": 95
+        },
+        "mode": "result"
+      },
+      "inputHash": 1709885624,
+      "canvasHash": "752862cadc03046176dd21f95c725852c5630c89f862c279b0b13f119d8c64d1",
+      "settlement": {
+        "reward": {
+          "coins": 250,
+          "petCoinPct": 0,
+          "gifts": 1,
+          "missions": [
+            {
+              "id": "win1",
+              "name": "도전 1번 성공하기",
+              "gifts": 2
+            },
+            {
+              "id": "goal1",
+              "name": "환경 목표 1번 해내기",
+              "gifts": 2
+            }
+          ],
+          "stars": 2,
+          "first": false,
+          "partActivity": [
+            {
+              "id": "PART_F1",
+              "active": true
+            },
+            {
+              "id": "PART_W1",
+              "active": false
+            },
+            {
+              "id": "PART_L1",
+              "active": true
+            }
+          ],
+          "stageGift": {
+            "left": 1,
+            "capped": false,
+            "limit": 2
+          },
+          "difficulty": "normal",
+          "goal": true,
+          "notes": []
+        },
+        "charged": 1,
+        "cleared": true,
+        "stage": "CH05"
+      },
+      "errors": []
+    },
+    "after": {
+      "outcome": {
+        "seconds": 259.95000000009225,
+        "kills": 2288,
+        "hp": 421,
+        "hpMax": 421,
+        "litter": 23,
+        "choices": 24,
+        "bossHp": -202,
+        "stats": {
+          "kills": 2288,
+          "bossKills": 1,
+          "eliteKills": 1,
+          "evolutions": 2,
+          "revives": 0,
+          "chests": 0,
+          "gems": 1228,
+          "bossDamage": 97102,
+          "abilityUses": 0,
+          "darkGems": 17,
+          "statusDmg": 0,
+          "midBossNoHit": 1,
+          "evoKinds": [
+            "EVO_L1",
+            "EVO_L2"
+          ],
+          "presetRun": false,
+          "buffs": [],
+          "litter": 23,
+          "firstHitAt": 0.9000000000000011,
+          "pet": {
+            "splash": 50
+          }
+        },
+        "elements": {
+          "time": 259.95000000009225,
+          "shots": 4,
+          "scheduled": 0,
+          "shotDetails": [
+            {
+              "kind": "hstinger",
+              "bounces": null,
+              "small": false,
+              "partSplitDone": false
+            },
+            {
+              "kind": "bottle",
+              "bounces": null,
+              "small": false,
+              "partSplitDone": false
+            },
+            {
+              "kind": "hstinger",
+              "bounces": null,
+              "small": false,
+              "partSplitDone": false
+            },
+            {
+              "kind": "hstinger",
+              "bounces": null,
+              "small": false,
+              "partSplitDone": false
+            }
+          ],
+          "fieldDetails": [
+            {
+              "kind": "puddle",
+              "life": 0.5000000000000127,
+              "age": 4.499999999999989,
+              "maxTicks": 13,
+              "ticks": 12
+            },
+            {
+              "kind": "puddle",
+              "life": 0.6833333333333466,
+              "age": 4.316666666666657,
+              "maxTicks": 13,
+              "ticks": 11
+            },
+            {
+              "kind": "puddle",
+              "life": 1.183333333333347,
+              "age": 3.816666666666658,
+              "maxTicks": 13,
+              "ticks": 10
+            },
+            {
+              "kind": "puddle",
+              "life": 1.8666666666666778,
+              "age": 3.133333333333327,
+              "maxTicks": 13,
+              "ticks": 8
+            },
+            {
+              "kind": "storm",
+              "life": 0.03333333333333899,
+              "age": 2.966666666666661,
+              "maxTicks": 8,
+              "ticks": 8
+            },
+            {
+              "kind": "puddle",
+              "life": 2.0500000000000105,
+              "age": 2.9499999999999944,
+              "maxTicks": 13,
+              "ticks": 8
+            },
+            {
+              "kind": "puddle",
+              "life": 2.5500000000000087,
+              "age": 2.449999999999996,
+              "maxTicks": 13,
+              "ticks": 7
+            },
+            {
+              "kind": "puddle",
+              "life": 2.7333333333333414,
+              "age": 2.2666666666666635,
+              "maxTicks": 13,
+              "ticks": 6
+            },
+            {
+              "kind": "storm",
+              "life": 1.0166666666666737,
+              "age": 1.9833333333333312,
+              "maxTicks": 8,
+              "ticks": 6
+            },
+            {
+              "kind": "puddle",
+              "life": 3.2333333333333396,
+              "age": 1.7666666666666653,
+              "maxTicks": 13,
+              "ticks": 5
+            },
+            {
+              "kind": "puddle",
+              "life": 3.4166666666666723,
+              "age": 1.5833333333333326,
+              "maxTicks": 13,
+              "ticks": 4
+            },
+            {
+              "kind": "puddle",
+              "life": 3.9166666666666705,
+              "age": 1.0833333333333344,
+              "maxTicks": 13,
+              "ticks": 3
+            },
+            {
+              "kind": "storm",
+              "life": 2.0000000000000036,
+              "age": 1.0000000000000013,
+              "maxTicks": 8,
+              "ticks": 3
+            },
+            {
+              "kind": "puddle",
+              "life": 4.100000000000003,
+              "age": 0.9000000000000011,
+              "maxTicks": 13,
+              "ticks": 3
+            },
+            {
+              "kind": "puddle",
+              "life": 4.600000000000001,
+              "age": 0.39999999999999997,
+              "maxTicks": 13,
+              "ticks": 1
+            },
+            {
+              "kind": "storm",
+              "life": 2.9833333333333334,
+              "age": 0.016666666666666666,
+              "maxTicks": 8,
+              "ticks": 1
+            }
+          ],
+          "fields": 16,
+          "orbits": 4,
+          "mines": 0,
+          "bees": 5,
+          "beams": 0,
+          "effects": 29,
+          "kinds": [
+            "hstinger",
+            "bottle",
+            "puddle",
+            "storm",
+            "sparks",
+            "splashfire",
+            "bigburst",
+            "tbolt",
+            "swirl",
+            "top",
+            "swarmbee"
+          ],
+          "shotAngles": [
+            2.08,
+            2.05,
+            1.85,
+            1.86
+          ],
+          "fieldSpots": [
+            {
+              "x": -718,
+              "y": 683,
+              "r": 53
+            },
+            {
+              "x": -723,
+              "y": 687,
+              "r": 53
+            },
+            {
+              "x": -697,
+              "y": 684,
+              "r": 53
+            },
+            {
+              "x": -664,
+              "y": 661,
+              "r": 53
+            },
+            {
+              "x": -712,
+              "y": 672,
+              "r": 71
+            },
+            {
+              "x": -669,
+              "y": 655,
+              "r": 53
+            },
+            {
+              "x": -669,
+              "y": 645,
+              "r": 53
+            },
+            {
+              "x": -669,
+              "y": 645,
+              "r": 53
+            },
+            {
+              "x": -674,
+              "y": 645,
+              "r": 71
+            },
+            {
+              "x": -648,
+              "y": 624,
+              "r": 53
+            },
+            {
+              "x": -635,
+              "y": 627,
+              "r": 53
+            },
+            {
+              "x": -626,
+              "y": 620,
+              "r": 53
+            },
+            {
+              "x": -668,
+              "y": 642,
+              "r": 71
+            },
+            {
+              "x": -632,
+              "y": 613,
+              "r": 53
+            },
+            {
+              "x": -650,
+              "y": 596,
+              "r": 53
+            },
+            {
+              "x": -649,
+              "y": 602,
+              "r": 71
+            }
+          ],
+          "casts": {
+            "L1": 60,
+            "EVO_L1": 258,
+            "L2": 201,
+            "EVO_L2": 2425,
+            "F1": 82
+          },
+          "hits": {
+            "L1": 159,
+            "EVO_L1": 955,
+            "L2": 137,
+            "EVO_L2": 1528,
+            "V2": 41,
+            "F1": 487
+          },
+          "damage": {
+            "L1": 38358.443135999965,
+            "EVO_L1": 272460.1800835146,
+            "L2": 9527.017499999994,
+            "EVO_L2": 192732.9662699952,
+            "V2": 3013.645992499998,
+            "F1": 33811.78195200002
+          },
+          "parts": {
+            "L1": 153,
+            "EVO_L1": 57,
+            "F1": 198
+          },
+          "legendCasts": 95
+        },
+        "mode": "result"
+      },
+      "inputHash": 1709885624,
+      "canvasHash": "8e9435cc8c442615266ce7c8f4518a38076ea146fa720a02d6e382bf0236d59b",
+      "settlement": {
+        "reward": {
+          "coins": 250,
+          "petCoinPct": 0,
+          "gifts": 1,
+          "missions": [
+            {
+              "id": "win1",
+              "name": "도전 1번 성공하기",
+              "gifts": 2
+            },
+            {
+              "id": "goal1",
+              "name": "환경 목표 1번 해내기",
+              "gifts": 2
+            }
+          ],
+          "stars": 2,
+          "first": false,
+          "partActivity": [
+            {
+              "id": "PART_F1",
+              "active": true
+            },
+            {
+              "id": "PART_W1",
+              "active": false
+            },
+            {
+              "id": "PART_L1",
+              "active": true
+            }
+          ],
+          "stageGift": {
+            "left": 1,
+            "capped": false,
+            "limit": 2
+          },
+          "difficulty": "normal",
+          "goal": true,
+          "notes": []
+        },
+        "charged": 1,
+        "cleared": true,
+        "stage": "CH05"
+      },
+      "errors": []
+    }
+  },
+  {
+    "stage": "CH05",
+    "seed": 10809,
+    "device": "ipad",
+    "quality": 5,
+    "god": false,
+    "equal": true,
+    "collector": null,
+    "gameplayExact": true,
+    "canvasCheck": {
+      "exact": true,
+      "equivalent": true
+    },
+    "before": {
+      "outcome": {
+        "seconds": 252.75000000009328,
+        "kills": 2289,
+        "hp": 375.0943864130265,
+        "hpMax": 421,
+        "litter": 20,
+        "choices": 24,
+        "bossHp": -263,
+        "stats": {
+          "kills": 2289,
+          "bossKills": 1,
+          "eliteKills": 1,
+          "evolutions": 3,
+          "revives": 0,
+          "chests": 1,
+          "gems": 1243,
+          "bossDamage": 97163,
+          "abilityUses": 0,
+          "darkGems": 64,
+          "statusDmg": 0,
+          "midBossNoHit": 0,
+          "evoKinds": [
+            "EVO_F1",
+            "EVO_E1",
+            "EVO_V1"
+          ],
+          "presetRun": false,
+          "buffs": [],
+          "litter": 20,
+          "firstHitAt": 0.850000000000001,
+          "hurtContact": 58.29326063539984,
+          "pet": {
+            "splash": 49
+          },
+          "hurtHit": 6.417019618240018
+        },
+        "elements": {
+          "time": 252.75000000009328,
+          "shots": 4,
+          "scheduled": 0,
+          "shotDetails": [
+            {
+              "kind": "mboomerang",
+              "bounces": null,
+              "small": false,
+              "partSplitDone": false
+            },
+            {
+              "kind": "mboomerang",
+              "bounces": null,
+              "small": false,
+              "partSplitDone": false
+            },
+            {
+              "kind": "boulder",
+              "bounces": null,
+              "small": false,
+              "partSplitDone": false
+            },
+            {
+              "kind": "boulder",
+              "bounces": null,
+              "small": false,
+              "partSplitDone": false
+            }
+          ],
+          "fieldDetails": [
+            {
+              "kind": "lava",
+              "life": 0.6000000000000165,
+              "age": 5.399999999999986,
+              "maxTicks": 15,
+              "ticks": 14
+            },
+            {
+              "kind": "lava",
+              "life": 0.6000000000000165,
+              "age": 5.399999999999986,
+              "maxTicks": 15,
+              "ticks": 14
+            },
+            {
+              "kind": "lava",
+              "life": 0.6000000000000165,
+              "age": 5.399999999999986,
+              "maxTicks": 15,
+              "ticks": 14
+            },
+            {
+              "kind": "lava",
+              "life": 1.800000000000015,
+              "age": 4.19999999999999,
+              "maxTicks": 15,
+              "ticks": 11
+            },
+            {
+              "kind": "lava",
+              "life": 1.800000000000015,
+              "age": 4.19999999999999,
+              "maxTicks": 15,
+              "ticks": 11
+            },
+            {
+              "kind": "lava",
+              "life": 1.800000000000015,
+              "age": 4.19999999999999,
+              "maxTicks": 15,
+              "ticks": 11
+            },
+            {
+              "kind": "lava",
+              "life": 1.9833333333333476,
+              "age": 4.016666666666658,
+              "maxTicks": 15,
+              "ticks": 11
+            },
+            {
+              "kind": "lava",
+              "life": 1.9833333333333476,
+              "age": 4.016666666666658,
+              "maxTicks": 15,
+              "ticks": 11
+            },
+            {
+              "kind": "lava",
+              "life": 1.9833333333333476,
+              "age": 4.016666666666658,
+              "maxTicks": 15,
+              "ticks": 11
+            },
+            {
+              "kind": "lava",
+              "life": 3.0000000000000107,
+              "age": 2.9999999999999942,
+              "maxTicks": 15,
+              "ticks": 8
+            },
+            {
+              "kind": "lava",
+              "life": 3.0000000000000107,
+              "age": 2.9999999999999942,
+              "maxTicks": 15,
+              "ticks": 8
+            },
+            {
+              "kind": "lava",
+              "life": 3.0000000000000107,
+              "age": 2.9999999999999942,
+              "maxTicks": 15,
+              "ticks": 8
+            },
+            {
+              "kind": "lava",
+              "life": 4.200000000000006,
+              "age": 1.7999999999999985,
+              "maxTicks": 15,
+              "ticks": 5
+            },
+            {
+              "kind": "lava",
+              "life": 4.200000000000006,
+              "age": 1.7999999999999985,
+              "maxTicks": 15,
+              "ticks": 5
+            },
+            {
+              "kind": "lava",
+              "life": 4.200000000000006,
+              "age": 1.7999999999999985,
+              "maxTicks": 15,
+              "ticks": 5
+            },
+            {
+              "kind": "lava",
+              "life": 5.400000000000002,
+              "age": 0.6000000000000002,
+              "maxTicks": 15,
+              "ticks": 2
+            },
+            {
+              "kind": "lava",
+              "life": 5.400000000000002,
+              "age": 0.6000000000000002,
+              "maxTicks": 15,
+              "ticks": 2
+            },
+            {
+              "kind": "lava",
+              "life": 5.400000000000002,
+              "age": 0.6000000000000002,
+              "maxTicks": 15,
+              "ticks": 2
+            },
+            {
+              "kind": "lava",
+              "life": 5.583333333333335,
+              "age": 0.41666666666666663,
+              "maxTicks": 15,
+              "ticks": 2
+            },
+            {
+              "kind": "lava",
+              "life": 5.583333333333335,
+              "age": 0.41666666666666663,
+              "maxTicks": 15,
+              "ticks": 2
+            },
+            {
+              "kind": "lava",
+              "life": 5.583333333333335,
+              "age": 0.41666666666666663,
+              "maxTicks": 15,
+              "ticks": 2
+            }
+          ],
+          "fields": 21,
+          "orbits": 0,
+          "mines": 0,
+          "bees": 0,
+          "beams": 0,
+          "effects": 3,
+          "kinds": [
+            "mboomerang",
+            "boulder",
+            "lava",
+            "sparks"
+          ],
+          "shotAngles": [
+            2.04,
+            2.35,
+            -1.95,
+            -2.55
+          ],
+          "fieldSpots": [
+            {
+              "x": 614,
+              "y": -135,
+              "r": 64
+            },
+            {
+              "x": 676,
+              "y": -238,
+              "r": 64
+            },
+            {
+              "x": 645,
+              "y": -186,
+              "r": 64
+            },
+            {
+              "x": 788,
+              "y": -54,
+              "r": 64
+            },
+            {
+              "x": 680,
+              "y": -105,
+              "r": 64
+            },
+            {
+              "x": 734,
+              "y": -79,
+              "r": 64
+            },
+            {
+              "x": 790,
+              "y": -72,
+              "r": 64
+            },
+            {
+              "x": 676,
+              "y": -110,
+              "r": 64
+            },
+            {
+              "x": 733,
+              "y": -91,
+              "r": 64
+            },
+            {
+              "x": 804,
+              "y": -80,
+              "r": 64
+            },
+            {
+              "x": 701,
+              "y": -141,
+              "r": 64
+            },
+            {
+              "x": 752,
+              "y": -110,
+              "r": 64
+            },
+            {
+              "x": 811,
+              "y": -143,
+              "r": 64
+            },
+            {
+              "x": 693,
+              "y": -168,
+              "r": 64
+            },
+            {
+              "x": 752,
+              "y": -155,
+              "r": 64
+            },
+            {
+              "x": 797,
+              "y": -107,
+              "r": 64
+            },
+            {
+              "x": 796,
+              "y": -227,
+              "r": 64
+            },
+            {
+              "x": 796,
+              "y": -167,
+              "r": 64
+            },
+            {
+              "x": 765,
+              "y": -230,
+              "r": 64
+            },
+            {
+              "x": 867,
+              "y": -292,
+              "r": 64
+            },
+            {
+              "x": 816,
+              "y": -261,
+              "r": 64
+            }
+          ],
+          "casts": {
+            "F1": 41,
+            "EVO_F1": 245,
+            "E1": 40,
+            "EVO_E1": 120,
+            "V1": 24,
+            "EVO_V1": 25
+          },
+          "hits": {
+            "F1": 154,
+            "EVO_F1": 1850,
+            "E1": 47,
+            "EVO_E1": 337,
+            "V1": 20,
+            "EVO_V1": 64
+          },
+          "damage": {
+            "F1": 15229.80480000003,
+            "EVO_F1": 742393.5068159881,
+            "E1": 11322.3,
+            "EVO_E1": 161048.75474999988,
+            "V1": 2795.4420300000006,
+            "EVO_V1": 15616.21247999999
+          },
+          "parts": {
+            "F1": 86,
+            "EVO_F1": 845
+          },
+          "legendCasts": 70
+        },
+        "mode": "result"
+      },
+      "inputHash": 3581649370,
+      "canvasHash": null,
+      "settlement": {
+        "reward": {
+          "coins": 250,
+          "petCoinPct": 0,
+          "gifts": 1,
+          "missions": [
+            {
+              "id": "win1",
+              "name": "도전 1번 성공하기",
+              "gifts": 2
+            },
+            {
+              "id": "goal1",
+              "name": "환경 목표 1번 해내기",
+              "gifts": 2
+            }
+          ],
+          "stars": 2,
+          "first": false,
+          "partActivity": [
+            {
+              "id": "PART_F1",
+              "active": true
+            },
+            {
+              "id": "PART_W1",
+              "active": false
+            },
+            {
+              "id": "PART_L1",
+              "active": false
+            }
+          ],
+          "stageGift": {
+            "left": 1,
+            "capped": false,
+            "limit": 2
+          },
+          "difficulty": "normal",
+          "goal": true,
+          "notes": []
+        },
+        "charged": 1,
+        "cleared": true,
+        "stage": "CH05"
+      },
+      "errors": []
+    },
+    "after": {
+      "outcome": {
+        "seconds": 252.75000000009328,
+        "kills": 2289,
+        "hp": 375.0943864130265,
+        "hpMax": 421,
+        "litter": 20,
+        "choices": 24,
+        "bossHp": -263,
+        "stats": {
+          "kills": 2289,
+          "bossKills": 1,
+          "eliteKills": 1,
+          "evolutions": 3,
+          "revives": 0,
+          "chests": 1,
+          "gems": 1243,
+          "bossDamage": 97163,
+          "abilityUses": 0,
+          "darkGems": 64,
+          "statusDmg": 0,
+          "midBossNoHit": 0,
+          "evoKinds": [
+            "EVO_F1",
+            "EVO_E1",
+            "EVO_V1"
+          ],
+          "presetRun": false,
+          "buffs": [],
+          "litter": 20,
+          "firstHitAt": 0.850000000000001,
+          "hurtContact": 58.29326063539984,
+          "pet": {
+            "splash": 49
+          },
+          "hurtHit": 6.417019618240018
+        },
+        "elements": {
+          "time": 252.75000000009328,
+          "shots": 4,
+          "scheduled": 0,
+          "shotDetails": [
+            {
+              "kind": "mboomerang",
+              "bounces": null,
+              "small": false,
+              "partSplitDone": false
+            },
+            {
+              "kind": "mboomerang",
+              "bounces": null,
+              "small": false,
+              "partSplitDone": false
+            },
+            {
+              "kind": "boulder",
+              "bounces": null,
+              "small": false,
+              "partSplitDone": false
+            },
+            {
+              "kind": "boulder",
+              "bounces": null,
+              "small": false,
+              "partSplitDone": false
+            }
+          ],
+          "fieldDetails": [
+            {
+              "kind": "lava",
+              "life": 0.6000000000000165,
+              "age": 5.399999999999986,
+              "maxTicks": 15,
+              "ticks": 14
+            },
+            {
+              "kind": "lava",
+              "life": 0.6000000000000165,
+              "age": 5.399999999999986,
+              "maxTicks": 15,
+              "ticks": 14
+            },
+            {
+              "kind": "lava",
+              "life": 0.6000000000000165,
+              "age": 5.399999999999986,
+              "maxTicks": 15,
+              "ticks": 14
+            },
+            {
+              "kind": "lava",
+              "life": 1.800000000000015,
+              "age": 4.19999999999999,
+              "maxTicks": 15,
+              "ticks": 11
+            },
+            {
+              "kind": "lava",
+              "life": 1.800000000000015,
+              "age": 4.19999999999999,
+              "maxTicks": 15,
+              "ticks": 11
+            },
+            {
+              "kind": "lava",
+              "life": 1.800000000000015,
+              "age": 4.19999999999999,
+              "maxTicks": 15,
+              "ticks": 11
+            },
+            {
+              "kind": "lava",
+              "life": 1.9833333333333476,
+              "age": 4.016666666666658,
+              "maxTicks": 15,
+              "ticks": 11
+            },
+            {
+              "kind": "lava",
+              "life": 1.9833333333333476,
+              "age": 4.016666666666658,
+              "maxTicks": 15,
+              "ticks": 11
+            },
+            {
+              "kind": "lava",
+              "life": 1.9833333333333476,
+              "age": 4.016666666666658,
+              "maxTicks": 15,
+              "ticks": 11
+            },
+            {
+              "kind": "lava",
+              "life": 3.0000000000000107,
+              "age": 2.9999999999999942,
+              "maxTicks": 15,
+              "ticks": 8
+            },
+            {
+              "kind": "lava",
+              "life": 3.0000000000000107,
+              "age": 2.9999999999999942,
+              "maxTicks": 15,
+              "ticks": 8
+            },
+            {
+              "kind": "lava",
+              "life": 3.0000000000000107,
+              "age": 2.9999999999999942,
+              "maxTicks": 15,
+              "ticks": 8
+            },
+            {
+              "kind": "lava",
+              "life": 4.200000000000006,
+              "age": 1.7999999999999985,
+              "maxTicks": 15,
+              "ticks": 5
+            },
+            {
+              "kind": "lava",
+              "life": 4.200000000000006,
+              "age": 1.7999999999999985,
+              "maxTicks": 15,
+              "ticks": 5
+            },
+            {
+              "kind": "lava",
+              "life": 4.200000000000006,
+              "age": 1.7999999999999985,
+              "maxTicks": 15,
+              "ticks": 5
+            },
+            {
+              "kind": "lava",
+              "life": 5.400000000000002,
+              "age": 0.6000000000000002,
+              "maxTicks": 15,
+              "ticks": 2
+            },
+            {
+              "kind": "lava",
+              "life": 5.400000000000002,
+              "age": 0.6000000000000002,
+              "maxTicks": 15,
+              "ticks": 2
+            },
+            {
+              "kind": "lava",
+              "life": 5.400000000000002,
+              "age": 0.6000000000000002,
+              "maxTicks": 15,
+              "ticks": 2
+            },
+            {
+              "kind": "lava",
+              "life": 5.583333333333335,
+              "age": 0.41666666666666663,
+              "maxTicks": 15,
+              "ticks": 2
+            },
+            {
+              "kind": "lava",
+              "life": 5.583333333333335,
+              "age": 0.41666666666666663,
+              "maxTicks": 15,
+              "ticks": 2
+            },
+            {
+              "kind": "lava",
+              "life": 5.583333333333335,
+              "age": 0.41666666666666663,
+              "maxTicks": 15,
+              "ticks": 2
+            }
+          ],
+          "fields": 21,
+          "orbits": 0,
+          "mines": 0,
+          "bees": 0,
+          "beams": 0,
+          "effects": 3,
+          "kinds": [
+            "mboomerang",
+            "boulder",
+            "lava",
+            "sparks"
+          ],
+          "shotAngles": [
+            2.04,
+            2.35,
+            -1.95,
+            -2.55
+          ],
+          "fieldSpots": [
+            {
+              "x": 614,
+              "y": -135,
+              "r": 64
+            },
+            {
+              "x": 676,
+              "y": -238,
+              "r": 64
+            },
+            {
+              "x": 645,
+              "y": -186,
+              "r": 64
+            },
+            {
+              "x": 788,
+              "y": -54,
+              "r": 64
+            },
+            {
+              "x": 680,
+              "y": -105,
+              "r": 64
+            },
+            {
+              "x": 734,
+              "y": -79,
+              "r": 64
+            },
+            {
+              "x": 790,
+              "y": -72,
+              "r": 64
+            },
+            {
+              "x": 676,
+              "y": -110,
+              "r": 64
+            },
+            {
+              "x": 733,
+              "y": -91,
+              "r": 64
+            },
+            {
+              "x": 804,
+              "y": -80,
+              "r": 64
+            },
+            {
+              "x": 701,
+              "y": -141,
+              "r": 64
+            },
+            {
+              "x": 752,
+              "y": -110,
+              "r": 64
+            },
+            {
+              "x": 811,
+              "y": -143,
+              "r": 64
+            },
+            {
+              "x": 693,
+              "y": -168,
+              "r": 64
+            },
+            {
+              "x": 752,
+              "y": -155,
+              "r": 64
+            },
+            {
+              "x": 797,
+              "y": -107,
+              "r": 64
+            },
+            {
+              "x": 796,
+              "y": -227,
+              "r": 64
+            },
+            {
+              "x": 796,
+              "y": -167,
+              "r": 64
+            },
+            {
+              "x": 765,
+              "y": -230,
+              "r": 64
+            },
+            {
+              "x": 867,
+              "y": -292,
+              "r": 64
+            },
+            {
+              "x": 816,
+              "y": -261,
+              "r": 64
+            }
+          ],
+          "casts": {
+            "F1": 41,
+            "EVO_F1": 245,
+            "E1": 40,
+            "EVO_E1": 120,
+            "V1": 24,
+            "EVO_V1": 25
+          },
+          "hits": {
+            "F1": 154,
+            "EVO_F1": 1850,
+            "E1": 47,
+            "EVO_E1": 337,
+            "V1": 20,
+            "EVO_V1": 64
+          },
+          "damage": {
+            "F1": 15229.80480000003,
+            "EVO_F1": 742393.5068159881,
+            "E1": 11322.3,
+            "EVO_E1": 161048.75474999988,
+            "V1": 2795.4420300000006,
+            "EVO_V1": 15616.21247999999
+          },
+          "parts": {
+            "F1": 86,
+            "EVO_F1": 845
+          },
+          "legendCasts": 70
+        },
+        "mode": "result"
+      },
+      "inputHash": 3581649370,
+      "canvasHash": null,
+      "settlement": {
+        "reward": {
+          "coins": 250,
+          "petCoinPct": 0,
+          "gifts": 1,
+          "missions": [
+            {
+              "id": "win1",
+              "name": "도전 1번 성공하기",
+              "gifts": 2
+            },
+            {
+              "id": "goal1",
+              "name": "환경 목표 1번 해내기",
+              "gifts": 2
+            }
+          ],
+          "stars": 2,
+          "first": false,
+          "partActivity": [
+            {
+              "id": "PART_F1",
+              "active": true
+            },
+            {
+              "id": "PART_W1",
+              "active": false
+            },
+            {
+              "id": "PART_L1",
+              "active": false
+            }
+          ],
+          "stageGift": {
+            "left": 1,
+            "capped": false,
+            "limit": 2
+          },
+          "difficulty": "normal",
+          "goal": true,
+          "notes": []
+        },
+        "charged": 1,
+        "cleared": true,
+        "stage": "CH05"
+      },
+      "errors": []
+    }
+  },
+  {
+    "stage": "CH10",
+    "seed": 10808,
+    "device": "pc",
+    "quality": 0,
+    "god": true,
+    "equal": false,
+    "collector": null,
+    "gameplayExact": true,
+    "canvasCheck": {
+      "exact": false,
+      "equivalent": false,
+      "changedPixels": 720235,
+      "maxChannelDelta": 24
+    },
+    "before": {
+      "outcome": {
+        "seconds": 274.6000000000789,
+        "kills": 1984,
+        "hp": 421,
+        "hpMax": 421,
+        "litter": 23,
+        "choices": 24,
+        "bossHp": 241198.05,
+        "stats": {
+          "kills": 1984,
+          "bossKills": 0,
+          "eliteKills": 1,
+          "evolutions": 3,
+          "revives": 0,
+          "chests": 0,
+          "gems": 926,
+          "bossDamage": 159378,
+          "abilityUses": 0,
+          "darkGems": 47,
+          "statusDmg": 0,
+          "midBossNoHit": 1,
+          "evoKinds": [
+            "EVO_L1",
+            "EVO_F2",
+            "EVO_W1"
+          ],
+          "presetRun": false,
+          "buffs": [],
+          "litter": 23,
+          "firstHitAt": 0.8833333333333344,
+          "pet": {
+            "splash": 54
+          }
+        },
+        "elements": {
+          "time": 274.6000000000789,
+          "shots": 24,
+          "scheduled": 0,
+          "shotDetails": [
+            {
+              "kind": "kballoon",
+              "bounces": 11,
+              "small": false,
+              "partSplitDone": false
+            },
+            {
+              "kind": "kballoon",
+              "bounces": 11,
+              "small": false,
+              "partSplitDone": false
+            },
+            {
+              "kind": "kballoon",
+              "bounces": 11,
+              "small": false,
+              "partSplitDone": false
+            },
+            {
+              "kind": "kballoon",
+              "bounces": 12,
+              "small": false,
+              "partSplitDone": false
+            },
+            {
+              "kind": "kballoon",
+              "bounces": 11,
+              "small": false,
+              "partSplitDone": false
+            },
+            {
+              "kind": "kballoon",
+              "bounces": 12,
+              "small": false,
+              "partSplitDone": false
+            },
+            {
+              "kind": "kballoon",
+              "bounces": 11,
+              "small": false,
+              "partSplitDone": false
+            },
+            {
+              "kind": "kballoon",
+              "bounces": 12,
+              "small": false,
+              "partSplitDone": false
+            },
+            {
+              "kind": "kballoon",
+              "bounces": 11,
+              "small": false,
+              "partSplitDone": false
+            },
+            {
+              "kind": "kballoon",
+              "bounces": 12,
+              "small": false,
+              "partSplitDone": false
+            },
+            {
+              "kind": "kballoon",
+              "bounces": 11,
+              "small": false,
+              "partSplitDone": false
+            },
+            {
+              "kind": "kballoon",
+              "bounces": 12,
+              "small": false,
+              "partSplitDone": false
+            },
+            {
+              "kind": "kballoon",
+              "bounces": 11,
+              "small": false,
+              "partSplitDone": false
+            },
+            {
+              "kind": "kballoon",
+              "bounces": 12,
+              "small": false,
+              "partSplitDone": false
+            },
+            {
+              "kind": "kballoon",
+              "bounces": 11,
+              "small": false,
+              "partSplitDone": false
+            },
+            {
+              "kind": "kballoon",
+              "bounces": 12,
+              "small": false,
+              "partSplitDone": false
+            },
+            {
+              "kind": "kballoon",
+              "bounces": 11,
+              "small": false,
+              "partSplitDone": false
+            },
+            {
+              "kind": "kballoon",
+              "bounces": 12,
+              "small": false,
+              "partSplitDone": false
+            },
+            {
+              "kind": "kballoon",
+              "bounces": 11,
+              "small": false,
+              "partSplitDone": false
+            },
+            {
+              "kind": "kballoon",
+              "bounces": 12,
+              "small": false,
+              "partSplitDone": false
+            },
+            {
+              "kind": "frocket",
+              "bounces": null,
+              "small": false,
+              "partSplitDone": false
+            },
+            {
+              "kind": "sparkshot",
+              "bounces": null,
+              "small": false,
+              "partSplitDone": false
+            },
+            {
+              "kind": "sparkshot",
+              "bounces": null,
+              "small": false,
+              "partSplitDone": false
+            },
+            {
+              "kind": "sparkshot",
+              "bounces": null,
+              "small": false,
+              "partSplitDone": false
+            }
+          ],
+          "fieldDetails": [
+            {
+              "kind": "storm",
+              "life": 0.1166666666666723,
+              "age": 2.883333333333328,
+              "maxTicks": 8,
+              "ticks": 8
+            },
+            {
+              "kind": "storm",
+              "life": 1.1000000000000068,
+              "age": 1.8999999999999981,
+              "maxTicks": 8,
+              "ticks": 6
+            },
+            {
+              "kind": "storm",
+              "life": 1.2833333333333394,
+              "age": 1.7166666666666655,
+              "maxTicks": 8,
+              "ticks": 5
+            },
+            {
+              "kind": "storm",
+              "life": 2.0833333333333366,
+              "age": 0.9166666666666679,
+              "maxTicks": 8,
+              "ticks": 3
+            }
+          ],
+          "fields": 4,
+          "orbits": 0,
+          "mines": 0,
+          "bees": 0,
+          "beams": 0,
+          "effects": 19,
+          "kinds": [
+            "kballoon",
+            "frocket",
+            "sparkshot",
+            "storm",
+            "tbolt",
+            "fwork",
+            "sparks",
+            "hit",
+            "ksplash"
+          ],
+          "shotAngles": [
+            3.6,
+            2.26,
+            2.93,
+            -0.64,
+            3.34,
+            -0.64,
+            3.45,
+            -0.64,
+            2.81,
+            -0.72,
+            3.12,
+            -0.7,
+            3.74,
+            -0.52,
+            2.83,
+            -0.98,
+            2.32,
+            -1.59,
+            2.26,
+            -1.89,
+            -1.14,
+            1.28,
+            2.26,
+            3.29
+          ],
+          "fieldSpots": [
+            {
+              "x": 165,
+              "y": -233,
+              "r": 71
+            },
+            {
+              "x": 118,
+              "y": -237,
+              "r": 71
+            },
+            {
+              "x": 118,
+              "y": -237,
+              "r": 71
+            },
+            {
+              "x": 118,
+              "y": -237,
+              "r": 71
+            }
+          ],
+          "casts": {
+            "L1": 56,
+            "EVO_L1": 295,
+            "F2": 16,
+            "EVO_F2": 120,
+            "W1": 55,
+            "EVO_W1": 98
+          },
+          "hits": {
+            "L1": 138,
+            "EVO_L1": 1329,
+            "F2": 34,
+            "EVO_F2": 946,
+            "W1": 211,
+            "EVO_W1": 228
+          },
+          "damage": {
+            "L1": 34800.60479999999,
+            "EVO_L1": 373622.6740646338,
+            "F2": 5473.9490000000005,
+            "EVO_F2": 154907.47765999864,
+            "W1": 34905.34095359996,
+            "EVO_W1": 82896.06124799997
+          },
+          "parts": {
+            "L1": 125,
+            "EVO_L1": 73,
+            "W1": 30,
+            "EVO_W1": 15
+          },
+          "legendCasts": 111
+        },
+        "mode": "playing"
+      },
+      "inputHash": 2754404115,
+      "canvasHash": "6bbc72ea0b880c105e308ed84b331c872f8197e8b227f372c1d759388c72a6a3",
+      "settlement": {
+        "reward": {
+          "coins": 115,
+          "petCoinPct": 0,
+          "gifts": 0,
+          "missions": [],
+          "stars": 0,
+          "first": false,
+          "partActivity": [
+            {
+              "id": "PART_F1",
+              "active": false
+            },
+            {
+              "id": "PART_W1",
+              "active": true
+            },
+            {
+              "id": "PART_L1",
+              "active": true
+            }
+          ],
+          "stageGift": null,
+          "difficulty": "normal",
+          "goal": false,
+          "notes": []
+        },
+        "charged": 0,
+        "cleared": false,
+        "stage": "CH10"
+      },
+      "errors": []
+    },
+    "after": {
+      "outcome": {
+        "seconds": 274.6000000000789,
+        "kills": 1984,
+        "hp": 421,
+        "hpMax": 421,
+        "litter": 23,
+        "choices": 24,
+        "bossHp": 241198.05,
+        "stats": {
+          "kills": 1984,
+          "bossKills": 0,
+          "eliteKills": 1,
+          "evolutions": 3,
+          "revives": 0,
+          "chests": 0,
+          "gems": 926,
+          "bossDamage": 159378,
+          "abilityUses": 0,
+          "darkGems": 47,
+          "statusDmg": 0,
+          "midBossNoHit": 1,
+          "evoKinds": [
+            "EVO_L1",
+            "EVO_F2",
+            "EVO_W1"
+          ],
+          "presetRun": false,
+          "buffs": [],
+          "litter": 23,
+          "firstHitAt": 0.8833333333333344,
+          "pet": {
+            "splash": 54
+          }
+        },
+        "elements": {
+          "time": 274.6000000000789,
+          "shots": 24,
+          "scheduled": 0,
+          "shotDetails": [
+            {
+              "kind": "kballoon",
+              "bounces": 11,
+              "small": false,
+              "partSplitDone": false
+            },
+            {
+              "kind": "kballoon",
+              "bounces": 11,
+              "small": false,
+              "partSplitDone": false
+            },
+            {
+              "kind": "kballoon",
+              "bounces": 11,
+              "small": false,
+              "partSplitDone": false
+            },
+            {
+              "kind": "kballoon",
+              "bounces": 12,
+              "small": false,
+              "partSplitDone": false
+            },
+            {
+              "kind": "kballoon",
+              "bounces": 11,
+              "small": false,
+              "partSplitDone": false
+            },
+            {
+              "kind": "kballoon",
+              "bounces": 12,
+              "small": false,
+              "partSplitDone": false
+            },
+            {
+              "kind": "kballoon",
+              "bounces": 11,
+              "small": false,
+              "partSplitDone": false
+            },
+            {
+              "kind": "kballoon",
+              "bounces": 12,
+              "small": false,
+              "partSplitDone": false
+            },
+            {
+              "kind": "kballoon",
+              "bounces": 11,
+              "small": false,
+              "partSplitDone": false
+            },
+            {
+              "kind": "kballoon",
+              "bounces": 12,
+              "small": false,
+              "partSplitDone": false
+            },
+            {
+              "kind": "kballoon",
+              "bounces": 11,
+              "small": false,
+              "partSplitDone": false
+            },
+            {
+              "kind": "kballoon",
+              "bounces": 12,
+              "small": false,
+              "partSplitDone": false
+            },
+            {
+              "kind": "kballoon",
+              "bounces": 11,
+              "small": false,
+              "partSplitDone": false
+            },
+            {
+              "kind": "kballoon",
+              "bounces": 12,
+              "small": false,
+              "partSplitDone": false
+            },
+            {
+              "kind": "kballoon",
+              "bounces": 11,
+              "small": false,
+              "partSplitDone": false
+            },
+            {
+              "kind": "kballoon",
+              "bounces": 12,
+              "small": false,
+              "partSplitDone": false
+            },
+            {
+              "kind": "kballoon",
+              "bounces": 11,
+              "small": false,
+              "partSplitDone": false
+            },
+            {
+              "kind": "kballoon",
+              "bounces": 12,
+              "small": false,
+              "partSplitDone": false
+            },
+            {
+              "kind": "kballoon",
+              "bounces": 11,
+              "small": false,
+              "partSplitDone": false
+            },
+            {
+              "kind": "kballoon",
+              "bounces": 12,
+              "small": false,
+              "partSplitDone": false
+            },
+            {
+              "kind": "frocket",
+              "bounces": null,
+              "small": false,
+              "partSplitDone": false
+            },
+            {
+              "kind": "sparkshot",
+              "bounces": null,
+              "small": false,
+              "partSplitDone": false
+            },
+            {
+              "kind": "sparkshot",
+              "bounces": null,
+              "small": false,
+              "partSplitDone": false
+            },
+            {
+              "kind": "sparkshot",
+              "bounces": null,
+              "small": false,
+              "partSplitDone": false
+            }
+          ],
+          "fieldDetails": [
+            {
+              "kind": "storm",
+              "life": 0.1166666666666723,
+              "age": 2.883333333333328,
+              "maxTicks": 8,
+              "ticks": 8
+            },
+            {
+              "kind": "storm",
+              "life": 1.1000000000000068,
+              "age": 1.8999999999999981,
+              "maxTicks": 8,
+              "ticks": 6
+            },
+            {
+              "kind": "storm",
+              "life": 1.2833333333333394,
+              "age": 1.7166666666666655,
+              "maxTicks": 8,
+              "ticks": 5
+            },
+            {
+              "kind": "storm",
+              "life": 2.0833333333333366,
+              "age": 0.9166666666666679,
+              "maxTicks": 8,
+              "ticks": 3
+            }
+          ],
+          "fields": 4,
+          "orbits": 0,
+          "mines": 0,
+          "bees": 0,
+          "beams": 0,
+          "effects": 19,
+          "kinds": [
+            "kballoon",
+            "frocket",
+            "sparkshot",
+            "storm",
+            "tbolt",
+            "fwork",
+            "sparks",
+            "hit",
+            "ksplash"
+          ],
+          "shotAngles": [
+            3.6,
+            2.26,
+            2.93,
+            -0.64,
+            3.34,
+            -0.64,
+            3.45,
+            -0.64,
+            2.81,
+            -0.72,
+            3.12,
+            -0.7,
+            3.74,
+            -0.52,
+            2.83,
+            -0.98,
+            2.32,
+            -1.59,
+            2.26,
+            -1.89,
+            -1.14,
+            1.28,
+            2.26,
+            3.29
+          ],
+          "fieldSpots": [
+            {
+              "x": 165,
+              "y": -233,
+              "r": 71
+            },
+            {
+              "x": 118,
+              "y": -237,
+              "r": 71
+            },
+            {
+              "x": 118,
+              "y": -237,
+              "r": 71
+            },
+            {
+              "x": 118,
+              "y": -237,
+              "r": 71
+            }
+          ],
+          "casts": {
+            "L1": 56,
+            "EVO_L1": 295,
+            "F2": 16,
+            "EVO_F2": 120,
+            "W1": 55,
+            "EVO_W1": 98
+          },
+          "hits": {
+            "L1": 138,
+            "EVO_L1": 1329,
+            "F2": 34,
+            "EVO_F2": 946,
+            "W1": 211,
+            "EVO_W1": 228
+          },
+          "damage": {
+            "L1": 34800.60479999999,
+            "EVO_L1": 373622.6740646338,
+            "F2": 5473.9490000000005,
+            "EVO_F2": 154907.47765999864,
+            "W1": 34905.34095359996,
+            "EVO_W1": 82896.06124799997
+          },
+          "parts": {
+            "L1": 125,
+            "EVO_L1": 73,
+            "W1": 30,
+            "EVO_W1": 15
+          },
+          "legendCasts": 111
+        },
+        "mode": "playing"
+      },
+      "inputHash": 2754404115,
+      "canvasHash": "a86e13eaca3f4c2c3bc65a53db046f6de4945f2050a77f77ae973f2fa1a54b41",
+      "settlement": {
+        "reward": {
+          "coins": 115,
+          "petCoinPct": 0,
+          "gifts": 0,
+          "missions": [],
+          "stars": 0,
+          "first": false,
+          "partActivity": [
+            {
+              "id": "PART_F1",
+              "active": false
+            },
+            {
+              "id": "PART_W1",
+              "active": true
+            },
+            {
+              "id": "PART_L1",
+              "active": true
+            }
+          ],
+          "stageGift": null,
+          "difficulty": "normal",
+          "goal": false,
+          "notes": []
+        },
+        "charged": 0,
+        "cleared": false,
+        "stage": "CH10"
+      },
+      "errors": []
+    }
+  },
+  {
+    "stage": "CH10",
+    "seed": 10809,
+    "device": "ipad",
+    "quality": 5,
+    "god": false,
+    "equal": true,
+    "collector": null,
+    "gameplayExact": true,
+    "canvasCheck": {
+      "exact": true,
+      "equivalent": true
+    },
+    "before": {
+      "outcome": {
+        "seconds": 255.10000000009515,
+        "kills": 1967,
+        "hp": 390.4447347466669,
+        "hpMax": 421,
+        "litter": 22,
+        "choices": 24,
+        "bossHp": -100,
+        "stats": {
+          "kills": 1967,
+          "bossKills": 1,
+          "eliteKills": 1,
+          "evolutions": 2,
+          "revives": 0,
+          "chests": 1,
+          "gems": 964,
+          "bossDamage": 413065,
+          "abilityUses": 0,
+          "darkGems": 48,
+          "statusDmg": 0,
+          "midBossNoHit": 1,
+          "evoKinds": [
+            "EVO_F1",
+            "EVO_V2"
+          ],
+          "presetRun": false,
+          "buffs": [],
+          "litter": 22,
+          "firstHitAt": 0.850000000000001,
+          "hurtBlast": 24.393044899333066,
+          "pet": {
+            "splash": 50
+          },
+          "hurtContact": 9.810887020666682
+        },
+        "elements": {
+          "time": 255.10000000009515,
+          "shots": 6,
+          "scheduled": 0,
+          "shotDetails": [
+            {
+              "kind": "boomerang",
+              "bounces": null,
+              "small": false,
+              "partSplitDone": false
+            },
+            {
+              "kind": "boomerang",
+              "bounces": null,
+              "small": false,
+              "partSplitDone": false
+            },
+            {
+              "kind": "boomerang",
+              "bounces": null,
+              "small": false,
+              "partSplitDone": false
+            },
+            {
+              "kind": "volcano",
+              "bounces": null,
+              "small": false,
+              "partSplitDone": false
+            },
+            {
+              "kind": "volcano",
+              "bounces": null,
+              "small": false,
+              "partSplitDone": false
+            },
+            {
+              "kind": "volcano",
+              "bounces": null,
+              "small": false,
+              "partSplitDone": false
+            }
+          ],
+          "fieldDetails": [
+            {
+              "kind": "lava",
+              "life": 1.6313339568085894e-14,
+              "age": 5.999999999999984,
+              "maxTicks": 15,
+              "ticks": 15
+            },
+            {
+              "kind": "lava",
+              "life": 1.6313339568085894e-14,
+              "age": 5.999999999999984,
+              "maxTicks": 15,
+              "ticks": 15
+            },
+            {
+              "kind": "lava",
+              "life": 1.6313339568085894e-14,
+              "age": 5.999999999999984,
+              "maxTicks": 15,
+              "ticks": 15
+            },
+            {
+              "kind": "lava",
+              "life": 0.1833333333333496,
+              "age": 5.816666666666651,
+              "maxTicks": 15,
+              "ticks": 15
+            },
+            {
+              "kind": "lava",
+              "life": 0.1833333333333496,
+              "age": 5.816666666666651,
+              "maxTicks": 15,
+              "ticks": 15
+            },
+            {
+              "kind": "lava",
+              "life": 0.1833333333333496,
+              "age": 5.816666666666651,
+              "maxTicks": 15,
+              "ticks": 15
+            },
+            {
+              "kind": "lava",
+              "life": 0.7833333333333504,
+              "age": 5.2166666666666535,
+              "maxTicks": 15,
+              "ticks": 14
+            },
+            {
+              "kind": "lava",
+              "life": 0.7833333333333504,
+              "age": 5.2166666666666535,
+              "maxTicks": 15,
+              "ticks": 14
+            },
+            {
+              "kind": "lava",
+              "life": 0.7833333333333504,
+              "age": 5.2166666666666535,
+              "maxTicks": 15,
+              "ticks": 14
+            },
+            {
+              "kind": "lava",
+              "life": 0.9666666666666843,
+              "age": 5.033333333333321,
+              "maxTicks": 15,
+              "ticks": 13
+            },
+            {
+              "kind": "lava",
+              "life": 0.9666666666666843,
+              "age": 5.033333333333321,
+              "maxTicks": 15,
+              "ticks": 13
+            },
+            {
+              "kind": "lava",
+              "life": 0.9666666666666843,
+              "age": 5.033333333333321,
+              "maxTicks": 15,
+              "ticks": 13
+            },
+            {
+              "kind": "lava",
+              "life": 1.5666666666666824,
+              "age": 4.433333333333323,
+              "maxTicks": 15,
+              "ticks": 12
+            },
+            {
+              "kind": "lava",
+              "life": 1.5666666666666824,
+              "age": 4.433333333333323,
+              "maxTicks": 15,
+              "ticks": 12
+            },
+            {
+              "kind": "lava",
+              "life": 1.5666666666666824,
+              "age": 4.433333333333323,
+              "maxTicks": 15,
+              "ticks": 12
+            },
+            {
+              "kind": "lava",
+              "life": 2.350000000000013,
+              "age": 3.649999999999992,
+              "maxTicks": 15,
+              "ticks": 10
+            },
+            {
+              "kind": "lava",
+              "life": 2.350000000000013,
+              "age": 3.649999999999992,
+              "maxTicks": 15,
+              "ticks": 10
+            },
+            {
+              "kind": "lava",
+              "life": 2.350000000000013,
+              "age": 3.649999999999992,
+              "maxTicks": 15,
+              "ticks": 10
+            },
+            {
+              "kind": "lava",
+              "life": 3.1333333333333435,
+              "age": 2.8666666666666614,
+              "maxTicks": 15,
+              "ticks": 8
+            },
+            {
+              "kind": "lava",
+              "life": 3.1333333333333435,
+              "age": 2.8666666666666614,
+              "maxTicks": 15,
+              "ticks": 8
+            },
+            {
+              "kind": "lava",
+              "life": 3.1333333333333435,
+              "age": 2.8666666666666614,
+              "maxTicks": 15,
+              "ticks": 8
+            },
+            {
+              "kind": "lava",
+              "life": 3.916666666666674,
+              "age": 2.083333333333331,
+              "maxTicks": 15,
+              "ticks": 6
+            },
+            {
+              "kind": "lava",
+              "life": 3.916666666666674,
+              "age": 2.083333333333331,
+              "maxTicks": 15,
+              "ticks": 6
+            },
+            {
+              "kind": "lava",
+              "life": 3.916666666666674,
+              "age": 2.083333333333331,
+              "maxTicks": 15,
+              "ticks": 6
+            },
+            {
+              "kind": "lava",
+              "life": 4.100000000000007,
+              "age": 1.8999999999999981,
+              "maxTicks": 15,
+              "ticks": 5
+            },
+            {
+              "kind": "lava",
+              "life": 4.100000000000007,
+              "age": 1.8999999999999981,
+              "maxTicks": 15,
+              "ticks": 5
+            },
+            {
+              "kind": "lava",
+              "life": 4.100000000000007,
+              "age": 1.8999999999999981,
+              "maxTicks": 15,
+              "ticks": 5
+            },
+            {
+              "kind": "lava",
+              "life": 4.700000000000005,
+              "age": 1.3000000000000003,
+              "maxTicks": 15,
+              "ticks": 4
+            },
+            {
+              "kind": "lava",
+              "life": 4.700000000000005,
+              "age": 1.3000000000000003,
+              "maxTicks": 15,
+              "ticks": 4
+            },
+            {
+              "kind": "lava",
+              "life": 4.700000000000005,
+              "age": 1.3000000000000003,
+              "maxTicks": 15,
+              "ticks": 4
+            },
+            {
+              "kind": "lava",
+              "life": 5.483333333333335,
+              "age": 0.5166666666666666,
+              "maxTicks": 15,
+              "ticks": 2
+            },
+            {
+              "kind": "lava",
+              "life": 5.483333333333335,
+              "age": 0.5166666666666666,
+              "maxTicks": 15,
+              "ticks": 2
+            },
+            {
+              "kind": "lava",
+              "life": 5.483333333333335,
+              "age": 0.5166666666666666,
+              "maxTicks": 15,
+              "ticks": 2
+            },
+            {
+              "kind": "lava",
+              "life": 5.666666666666668,
+              "age": 0.3333333333333333,
+              "maxTicks": 15,
+              "ticks": 1
+            },
+            {
+              "kind": "lava",
+              "life": 5.666666666666668,
+              "age": 0.3333333333333333,
+              "maxTicks": 15,
+              "ticks": 1
+            },
+            {
+              "kind": "lava",
+              "life": 5.666666666666668,
+              "age": 0.3333333333333333,
+              "maxTicks": 15,
+              "ticks": 1
+            }
+          ],
+          "fields": 36,
+          "orbits": 5,
+          "mines": 0,
+          "bees": 0,
+          "beams": 0,
+          "effects": 36,
+          "kinds": [
+            "boomerang",
+            "volcano",
+            "lava",
+            "sparks",
+            "splashfire",
+            "boom",
+            "swirl",
+            "typhoon"
+          ],
+          "shotAngles": [
+            2.91,
+            2.48,
+            -2.91,
+            -0.25,
+            0.29,
+            -0.79
+          ],
+          "fieldSpots": [
+            {
+              "x": -4,
+              "y": 2302,
+              "r": 64
+            },
+            {
+              "x": 115,
+              "y": 2310,
+              "r": 64
+            },
+            {
+              "x": 55,
+              "y": 2306,
+              "r": 64
+            },
+            {
+              "x": -5,
+              "y": 2306,
+              "r": 64
+            },
+            {
+              "x": 115,
+              "y": 2314,
+              "r": 64
+            },
+            {
+              "x": 55,
+              "y": 2310,
+              "r": 64
+            },
+            {
+              "x": -5,
+              "y": 2306,
+              "r": 64
+            },
+            {
+              "x": 115,
+              "y": 2314,
+              "r": 64
+            },
+            {
+              "x": 55,
+              "y": 2310,
+              "r": 64
+            },
+            {
+              "x": -5,
+              "y": 2306,
+              "r": 64
+            },
+            {
+              "x": 115,
+              "y": 2314,
+              "r": 64
+            },
+            {
+              "x": 55,
+              "y": 2310,
+              "r": 64
+            },
+            {
+              "x": -5,
+              "y": 2330,
+              "r": 64
+            },
+            {
+              "x": 114,
+              "y": 2337,
+              "r": 64
+            },
+            {
+              "x": 55,
+              "y": 2333,
+              "r": 64
+            },
+            {
+              "x": -11,
+              "y": 2357,
+              "r": 64
+            },
+            {
+              "x": 108,
+              "y": 2373,
+              "r": 64
+            },
+            {
+              "x": 49,
+              "y": 2365,
+              "r": 64
+            },
+            {
+              "x": 40,
+              "y": 2390,
+              "r": 64
+            },
+            {
+              "x": 137,
+              "y": 2318,
+              "r": 64
+            },
+            {
+              "x": 89,
+              "y": 2354,
+              "r": 64
+            },
+            {
+              "x": -1,
+              "y": 2387,
+              "r": 64
+            },
+            {
+              "x": 114,
+              "y": 2420,
+              "r": 64
+            },
+            {
+              "x": 57,
+              "y": 2403,
+              "r": 64
+            },
+            {
+              "x": -4,
+              "y": 2367,
+              "r": 64
+            },
+            {
+              "x": 101,
+              "y": 2425,
+              "r": 64
+            },
+            {
+              "x": 48,
+              "y": 2396,
+              "r": 64
+            },
+            {
+              "x": -4,
+              "y": 2322,
+              "r": 64
+            },
+            {
+              "x": 43,
+              "y": 2433,
+              "r": 64
+            },
+            {
+              "x": 20,
+              "y": 2377,
+              "r": 64
+            },
+            {
+              "x": 28,
+              "y": 2289,
+              "r": 64
+            },
+            {
+              "x": 10,
+              "y": 2407,
+              "r": 64
+            },
+            {
+              "x": 19,
+              "y": 2348,
+              "r": 64
+            },
+            {
+              "x": 26,
+              "y": 2288,
+              "r": 64
+            },
+            {
+              "x": 7,
+              "y": 2407,
+              "r": 64
+            },
+            {
+              "x": 16,
+              "y": 2347,
+              "r": 64
+            }
+          ],
+          "casts": {
+            "F1": 42,
+            "EVO_F1": 320,
+            "V1": 80,
+            "F2": 19
+          },
+          "hits": {
+            "F1": 152,
+            "EVO_F1": 2735,
+            "V2": 7,
+            "EVO_V2": 269,
+            "V1": 65,
+            "F2": 16
+          },
+          "damage": {
+            "F1": 14906.655360000035,
+            "EVO_F1": 1100551.8286943668,
+            "V2": 480.81000000000006,
+            "EVO_V2": 43560.74092499987,
+            "V1": 11250.065699999992,
+            "F2": 2680.804799999999
+          },
+          "parts": {
+            "F1": 96,
+            "EVO_F1": 1309
+          },
+          "legendCasts": 97
+        },
+        "mode": "result"
+      },
+      "inputHash": 1713652701,
+      "canvasHash": null,
+      "settlement": {
+        "reward": {
+          "coins": 300,
+          "petCoinPct": 0,
+          "gifts": 1,
+          "missions": [
+            {
+              "id": "win1",
+              "name": "도전 1번 성공하기",
+              "gifts": 2
+            },
+            {
+              "id": "goal1",
+              "name": "환경 목표 1번 해내기",
+              "gifts": 2
+            }
+          ],
+          "stars": 2,
+          "first": false,
+          "partActivity": [
+            {
+              "id": "PART_F1",
+              "active": true
+            },
+            {
+              "id": "PART_W1",
+              "active": false
+            },
+            {
+              "id": "PART_L1",
+              "active": false
+            }
+          ],
+          "stageGift": {
+            "left": 1,
+            "capped": false,
+            "limit": 2
+          },
+          "difficulty": "normal",
+          "goal": true,
+          "notes": []
+        },
+        "charged": 1,
+        "cleared": true,
+        "stage": "CH10"
+      },
+      "errors": []
+    },
+    "after": {
+      "outcome": {
+        "seconds": 255.10000000009515,
+        "kills": 1967,
+        "hp": 390.4447347466669,
+        "hpMax": 421,
+        "litter": 22,
+        "choices": 24,
+        "bossHp": -100,
+        "stats": {
+          "kills": 1967,
+          "bossKills": 1,
+          "eliteKills": 1,
+          "evolutions": 2,
+          "revives": 0,
+          "chests": 1,
+          "gems": 964,
+          "bossDamage": 413065,
+          "abilityUses": 0,
+          "darkGems": 48,
+          "statusDmg": 0,
+          "midBossNoHit": 1,
+          "evoKinds": [
+            "EVO_F1",
+            "EVO_V2"
+          ],
+          "presetRun": false,
+          "buffs": [],
+          "litter": 22,
+          "firstHitAt": 0.850000000000001,
+          "hurtBlast": 24.393044899333066,
+          "pet": {
+            "splash": 50
+          },
+          "hurtContact": 9.810887020666682
+        },
+        "elements": {
+          "time": 255.10000000009515,
+          "shots": 6,
+          "scheduled": 0,
+          "shotDetails": [
+            {
+              "kind": "boomerang",
+              "bounces": null,
+              "small": false,
+              "partSplitDone": false
+            },
+            {
+              "kind": "boomerang",
+              "bounces": null,
+              "small": false,
+              "partSplitDone": false
+            },
+            {
+              "kind": "boomerang",
+              "bounces": null,
+              "small": false,
+              "partSplitDone": false
+            },
+            {
+              "kind": "volcano",
+              "bounces": null,
+              "small": false,
+              "partSplitDone": false
+            },
+            {
+              "kind": "volcano",
+              "bounces": null,
+              "small": false,
+              "partSplitDone": false
+            },
+            {
+              "kind": "volcano",
+              "bounces": null,
+              "small": false,
+              "partSplitDone": false
+            }
+          ],
+          "fieldDetails": [
+            {
+              "kind": "lava",
+              "life": 1.6313339568085894e-14,
+              "age": 5.999999999999984,
+              "maxTicks": 15,
+              "ticks": 15
+            },
+            {
+              "kind": "lava",
+              "life": 1.6313339568085894e-14,
+              "age": 5.999999999999984,
+              "maxTicks": 15,
+              "ticks": 15
+            },
+            {
+              "kind": "lava",
+              "life": 1.6313339568085894e-14,
+              "age": 5.999999999999984,
+              "maxTicks": 15,
+              "ticks": 15
+            },
+            {
+              "kind": "lava",
+              "life": 0.1833333333333496,
+              "age": 5.816666666666651,
+              "maxTicks": 15,
+              "ticks": 15
+            },
+            {
+              "kind": "lava",
+              "life": 0.1833333333333496,
+              "age": 5.816666666666651,
+              "maxTicks": 15,
+              "ticks": 15
+            },
+            {
+              "kind": "lava",
+              "life": 0.1833333333333496,
+              "age": 5.816666666666651,
+              "maxTicks": 15,
+              "ticks": 15
+            },
+            {
+              "kind": "lava",
+              "life": 0.7833333333333504,
+              "age": 5.2166666666666535,
+              "maxTicks": 15,
+              "ticks": 14
+            },
+            {
+              "kind": "lava",
+              "life": 0.7833333333333504,
+              "age": 5.2166666666666535,
+              "maxTicks": 15,
+              "ticks": 14
+            },
+            {
+              "kind": "lava",
+              "life": 0.7833333333333504,
+              "age": 5.2166666666666535,
+              "maxTicks": 15,
+              "ticks": 14
+            },
+            {
+              "kind": "lava",
+              "life": 0.9666666666666843,
+              "age": 5.033333333333321,
+              "maxTicks": 15,
+              "ticks": 13
+            },
+            {
+              "kind": "lava",
+              "life": 0.9666666666666843,
+              "age": 5.033333333333321,
+              "maxTicks": 15,
+              "ticks": 13
+            },
+            {
+              "kind": "lava",
+              "life": 0.9666666666666843,
+              "age": 5.033333333333321,
+              "maxTicks": 15,
+              "ticks": 13
+            },
+            {
+              "kind": "lava",
+              "life": 1.5666666666666824,
+              "age": 4.433333333333323,
+              "maxTicks": 15,
+              "ticks": 12
+            },
+            {
+              "kind": "lava",
+              "life": 1.5666666666666824,
+              "age": 4.433333333333323,
+              "maxTicks": 15,
+              "ticks": 12
+            },
+            {
+              "kind": "lava",
+              "life": 1.5666666666666824,
+              "age": 4.433333333333323,
+              "maxTicks": 15,
+              "ticks": 12
+            },
+            {
+              "kind": "lava",
+              "life": 2.350000000000013,
+              "age": 3.649999999999992,
+              "maxTicks": 15,
+              "ticks": 10
+            },
+            {
+              "kind": "lava",
+              "life": 2.350000000000013,
+              "age": 3.649999999999992,
+              "maxTicks": 15,
+              "ticks": 10
+            },
+            {
+              "kind": "lava",
+              "life": 2.350000000000013,
+              "age": 3.649999999999992,
+              "maxTicks": 15,
+              "ticks": 10
+            },
+            {
+              "kind": "lava",
+              "life": 3.1333333333333435,
+              "age": 2.8666666666666614,
+              "maxTicks": 15,
+              "ticks": 8
+            },
+            {
+              "kind": "lava",
+              "life": 3.1333333333333435,
+              "age": 2.8666666666666614,
+              "maxTicks": 15,
+              "ticks": 8
+            },
+            {
+              "kind": "lava",
+              "life": 3.1333333333333435,
+              "age": 2.8666666666666614,
+              "maxTicks": 15,
+              "ticks": 8
+            },
+            {
+              "kind": "lava",
+              "life": 3.916666666666674,
+              "age": 2.083333333333331,
+              "maxTicks": 15,
+              "ticks": 6
+            },
+            {
+              "kind": "lava",
+              "life": 3.916666666666674,
+              "age": 2.083333333333331,
+              "maxTicks": 15,
+              "ticks": 6
+            },
+            {
+              "kind": "lava",
+              "life": 3.916666666666674,
+              "age": 2.083333333333331,
+              "maxTicks": 15,
+              "ticks": 6
+            },
+            {
+              "kind": "lava",
+              "life": 4.100000000000007,
+              "age": 1.8999999999999981,
+              "maxTicks": 15,
+              "ticks": 5
+            },
+            {
+              "kind": "lava",
+              "life": 4.100000000000007,
+              "age": 1.8999999999999981,
+              "maxTicks": 15,
+              "ticks": 5
+            },
+            {
+              "kind": "lava",
+              "life": 4.100000000000007,
+              "age": 1.8999999999999981,
+              "maxTicks": 15,
+              "ticks": 5
+            },
+            {
+              "kind": "lava",
+              "life": 4.700000000000005,
+              "age": 1.3000000000000003,
+              "maxTicks": 15,
+              "ticks": 4
+            },
+            {
+              "kind": "lava",
+              "life": 4.700000000000005,
+              "age": 1.3000000000000003,
+              "maxTicks": 15,
+              "ticks": 4
+            },
+            {
+              "kind": "lava",
+              "life": 4.700000000000005,
+              "age": 1.3000000000000003,
+              "maxTicks": 15,
+              "ticks": 4
+            },
+            {
+              "kind": "lava",
+              "life": 5.483333333333335,
+              "age": 0.5166666666666666,
+              "maxTicks": 15,
+              "ticks": 2
+            },
+            {
+              "kind": "lava",
+              "life": 5.483333333333335,
+              "age": 0.5166666666666666,
+              "maxTicks": 15,
+              "ticks": 2
+            },
+            {
+              "kind": "lava",
+              "life": 5.483333333333335,
+              "age": 0.5166666666666666,
+              "maxTicks": 15,
+              "ticks": 2
+            },
+            {
+              "kind": "lava",
+              "life": 5.666666666666668,
+              "age": 0.3333333333333333,
+              "maxTicks": 15,
+              "ticks": 1
+            },
+            {
+              "kind": "lava",
+              "life": 5.666666666666668,
+              "age": 0.3333333333333333,
+              "maxTicks": 15,
+              "ticks": 1
+            },
+            {
+              "kind": "lava",
+              "life": 5.666666666666668,
+              "age": 0.3333333333333333,
+              "maxTicks": 15,
+              "ticks": 1
+            }
+          ],
+          "fields": 36,
+          "orbits": 5,
+          "mines": 0,
+          "bees": 0,
+          "beams": 0,
+          "effects": 36,
+          "kinds": [
+            "boomerang",
+            "volcano",
+            "lava",
+            "sparks",
+            "splashfire",
+            "boom",
+            "swirl",
+            "typhoon"
+          ],
+          "shotAngles": [
+            2.91,
+            2.48,
+            -2.91,
+            -0.25,
+            0.29,
+            -0.79
+          ],
+          "fieldSpots": [
+            {
+              "x": -4,
+              "y": 2302,
+              "r": 64
+            },
+            {
+              "x": 115,
+              "y": 2310,
+              "r": 64
+            },
+            {
+              "x": 55,
+              "y": 2306,
+              "r": 64
+            },
+            {
+              "x": -5,
+              "y": 2306,
+              "r": 64
+            },
+            {
+              "x": 115,
+              "y": 2314,
+              "r": 64
+            },
+            {
+              "x": 55,
+              "y": 2310,
+              "r": 64
+            },
+            {
+              "x": -5,
+              "y": 2306,
+              "r": 64
+            },
+            {
+              "x": 115,
+              "y": 2314,
+              "r": 64
+            },
+            {
+              "x": 55,
+              "y": 2310,
+              "r": 64
+            },
+            {
+              "x": -5,
+              "y": 2306,
+              "r": 64
+            },
+            {
+              "x": 115,
+              "y": 2314,
+              "r": 64
+            },
+            {
+              "x": 55,
+              "y": 2310,
+              "r": 64
+            },
+            {
+              "x": -5,
+              "y": 2330,
+              "r": 64
+            },
+            {
+              "x": 114,
+              "y": 2337,
+              "r": 64
+            },
+            {
+              "x": 55,
+              "y": 2333,
+              "r": 64
+            },
+            {
+              "x": -11,
+              "y": 2357,
+              "r": 64
+            },
+            {
+              "x": 108,
+              "y": 2373,
+              "r": 64
+            },
+            {
+              "x": 49,
+              "y": 2365,
+              "r": 64
+            },
+            {
+              "x": 40,
+              "y": 2390,
+              "r": 64
+            },
+            {
+              "x": 137,
+              "y": 2318,
+              "r": 64
+            },
+            {
+              "x": 89,
+              "y": 2354,
+              "r": 64
+            },
+            {
+              "x": -1,
+              "y": 2387,
+              "r": 64
+            },
+            {
+              "x": 114,
+              "y": 2420,
+              "r": 64
+            },
+            {
+              "x": 57,
+              "y": 2403,
+              "r": 64
+            },
+            {
+              "x": -4,
+              "y": 2367,
+              "r": 64
+            },
+            {
+              "x": 101,
+              "y": 2425,
+              "r": 64
+            },
+            {
+              "x": 48,
+              "y": 2396,
+              "r": 64
+            },
+            {
+              "x": -4,
+              "y": 2322,
+              "r": 64
+            },
+            {
+              "x": 43,
+              "y": 2433,
+              "r": 64
+            },
+            {
+              "x": 20,
+              "y": 2377,
+              "r": 64
+            },
+            {
+              "x": 28,
+              "y": 2289,
+              "r": 64
+            },
+            {
+              "x": 10,
+              "y": 2407,
+              "r": 64
+            },
+            {
+              "x": 19,
+              "y": 2348,
+              "r": 64
+            },
+            {
+              "x": 26,
+              "y": 2288,
+              "r": 64
+            },
+            {
+              "x": 7,
+              "y": 2407,
+              "r": 64
+            },
+            {
+              "x": 16,
+              "y": 2347,
+              "r": 64
+            }
+          ],
+          "casts": {
+            "F1": 42,
+            "EVO_F1": 320,
+            "V1": 80,
+            "F2": 19
+          },
+          "hits": {
+            "F1": 152,
+            "EVO_F1": 2735,
+            "V2": 7,
+            "EVO_V2": 269,
+            "V1": 65,
+            "F2": 16
+          },
+          "damage": {
+            "F1": 14906.655360000035,
+            "EVO_F1": 1100551.8286943668,
+            "V2": 480.81000000000006,
+            "EVO_V2": 43560.74092499987,
+            "V1": 11250.065699999992,
+            "F2": 2680.804799999999
+          },
+          "parts": {
+            "F1": 96,
+            "EVO_F1": 1309
+          },
+          "legendCasts": 97
+        },
+        "mode": "result"
+      },
+      "inputHash": 1713652701,
+      "canvasHash": null,
+      "settlement": {
+        "reward": {
+          "coins": 300,
+          "petCoinPct": 0,
+          "gifts": 1,
+          "missions": [
+            {
+              "id": "win1",
+              "name": "도전 1번 성공하기",
+              "gifts": 2
+            },
+            {
+              "id": "goal1",
+              "name": "환경 목표 1번 해내기",
+              "gifts": 2
+            }
+          ],
+          "stars": 2,
+          "first": false,
+          "partActivity": [
+            {
+              "id": "PART_F1",
+              "active": true
+            },
+            {
+              "id": "PART_W1",
+              "active": false
+            },
+            {
+              "id": "PART_L1",
+              "active": false
+            }
+          ],
+          "stageGift": {
+            "left": 1,
+            "capped": false,
+            "limit": 2
+          },
+          "difficulty": "normal",
+          "goal": true,
+          "notes": []
+        },
+        "charged": 1,
+        "cleared": true,
+        "stage": "CH10"
+      },
+      "errors": []
+    }
+  },
+  {
+    "stage": "CH13",
+    "seed": 10808,
+    "device": "pc",
+    "quality": 0,
+    "god": true,
+    "equal": false,
+    "collector": null,
+    "gameplayExact": true,
+    "canvasCheck": {
+      "exact": false,
+      "equivalent": false,
+      "changedPixels": 781068,
+      "maxChannelDelta": 17
+    },
+    "before": {
+      "outcome": {
+        "seconds": 274.6000000000789,
+        "kills": 2122,
+        "hp": 715,
+        "hpMax": 715,
+        "litter": 26,
+        "choices": 24,
+        "bossHp": null,
+        "stats": {
+          "kills": 2122,
+          "bossKills": 0,
+          "eliteKills": 2,
+          "evolutions": 3,
+          "revives": 0,
+          "chests": 1,
+          "gems": 1338,
+          "bossDamage": 0,
+          "abilityUses": 0,
+          "darkGems": 0,
+          "statusDmg": 0,
+          "midBossNoHit": 2,
+          "evoKinds": [
+            "EVO_L1",
+            "EVO_F2",
+            "EVO_E2"
+          ],
+          "presetRun": false,
+          "buffs": [],
+          "litter": 26,
+          "firstHitAt": 0.9000000000000011,
+          "pet": {
+            "splash": 54
+          }
+        },
+        "elements": {
+          "time": 274.6000000000789,
+          "shots": 3,
+          "scheduled": 0,
+          "shotDetails": [
+            {
+              "kind": "frocket",
+              "bounces": null,
+              "small": false,
+              "partSplitDone": false
+            },
+            {
+              "kind": "frocket",
+              "bounces": null,
+              "small": false,
+              "partSplitDone": false
+            },
+            {
+              "kind": "frocket",
+              "bounces": null,
+              "small": false,
+              "partSplitDone": false
+            }
+          ],
+          "fieldDetails": [
+            {
+              "kind": "storm",
+              "life": 0.03333333333333899,
+              "age": 2.966666666666661,
+              "maxTicks": 8,
+              "ticks": 8
+            },
+            {
+              "kind": "storm",
+              "life": 1.0166666666666737,
+              "age": 1.9833333333333312,
+              "maxTicks": 8,
+              "ticks": 6
+            },
+            {
+              "kind": "storm",
+              "life": 2.0000000000000036,
+              "age": 1.0000000000000013,
+              "maxTicks": 8,
+              "ticks": 3
+            },
+            {
+              "kind": "storm",
+              "life": 2.9833333333333334,
+              "age": 0.016666666666666666,
+              "maxTicks": 8,
+              "ticks": 1
+            }
+          ],
+          "fields": 4,
+          "orbits": 0,
+          "mines": 2,
+          "bees": 0,
+          "beams": 0,
+          "effects": 5,
+          "kinds": [
+            "frocket",
+            "storm",
+            "tbolt",
+            "bolt",
+            "molemine"
+          ],
+          "shotAngles": [
+            -2.49,
+            -2.1,
+            -2.8
+          ],
+          "fieldSpots": [
+            {
+              "x": 156,
+              "y": 539,
+              "r": 71
+            },
+            {
+              "x": 544,
+              "y": 616,
+              "r": 71
+            },
+            {
+              "x": 663,
+              "y": 37,
+              "r": 71
+            },
+            {
+              "x": 410,
+              "y": 47,
+              "r": 71
+            }
+          ],
+          "casts": {
+            "L1": 59,
+            "EVO_L1": 277,
+            "F2": 18,
+            "EVO_F2": 115,
+            "E2": 44,
+            "EVO_E2": 33
+          },
+          "hits": {
+            "L1": 181,
+            "EVO_L1": 2164,
+            "F2": 50,
+            "EVO_F2": 864,
+            "E2": 49,
+            "EVO_E2": 38
+          },
+          "damage": {
+            "L1": 45823.12300799996,
+            "EVO_L1": 573734.8088841685,
+            "F2": 8309.600000000002,
+            "EVO_F2": 189533.31266625,
+            "E2": 10126.620000000004,
+            "EVO_E2": 13639.431959999989
+          },
+          "parts": {
+            "L1": 138,
+            "EVO_L1": 346
+          },
+          "legendCasts": 73
+        },
+        "mode": "playing"
+      },
+      "inputHash": 318682617,
+      "canvasHash": "2e24297260720c1b8c7ceab662f1f5b46e1cebde1d74b69dda35143614b6dbac",
+      "settlement": {
+        "reward": {
+          "coins": 131,
+          "petCoinPct": 0,
+          "gifts": 0,
+          "missions": [],
+          "stars": 0,
+          "first": false,
+          "partActivity": [
+            {
+              "id": "PART_F1",
+              "active": false
+            },
+            {
+              "id": "PART_W1",
+              "active": false
+            },
+            {
+              "id": "PART_L1",
+              "active": true
+            }
+          ],
+          "stageGift": null,
+          "difficulty": "normal",
+          "goal": false,
+          "notes": []
+        },
+        "charged": 0,
+        "cleared": false,
+        "stage": "CH13"
+      },
+      "errors": []
+    },
+    "after": {
+      "outcome": {
+        "seconds": 274.6000000000789,
+        "kills": 2122,
+        "hp": 715,
+        "hpMax": 715,
+        "litter": 26,
+        "choices": 24,
+        "bossHp": null,
+        "stats": {
+          "kills": 2122,
+          "bossKills": 0,
+          "eliteKills": 2,
+          "evolutions": 3,
+          "revives": 0,
+          "chests": 1,
+          "gems": 1338,
+          "bossDamage": 0,
+          "abilityUses": 0,
+          "darkGems": 0,
+          "statusDmg": 0,
+          "midBossNoHit": 2,
+          "evoKinds": [
+            "EVO_L1",
+            "EVO_F2",
+            "EVO_E2"
+          ],
+          "presetRun": false,
+          "buffs": [],
+          "litter": 26,
+          "firstHitAt": 0.9000000000000011,
+          "pet": {
+            "splash": 54
+          }
+        },
+        "elements": {
+          "time": 274.6000000000789,
+          "shots": 3,
+          "scheduled": 0,
+          "shotDetails": [
+            {
+              "kind": "frocket",
+              "bounces": null,
+              "small": false,
+              "partSplitDone": false
+            },
+            {
+              "kind": "frocket",
+              "bounces": null,
+              "small": false,
+              "partSplitDone": false
+            },
+            {
+              "kind": "frocket",
+              "bounces": null,
+              "small": false,
+              "partSplitDone": false
+            }
+          ],
+          "fieldDetails": [
+            {
+              "kind": "storm",
+              "life": 0.03333333333333899,
+              "age": 2.966666666666661,
+              "maxTicks": 8,
+              "ticks": 8
+            },
+            {
+              "kind": "storm",
+              "life": 1.0166666666666737,
+              "age": 1.9833333333333312,
+              "maxTicks": 8,
+              "ticks": 6
+            },
+            {
+              "kind": "storm",
+              "life": 2.0000000000000036,
+              "age": 1.0000000000000013,
+              "maxTicks": 8,
+              "ticks": 3
+            },
+            {
+              "kind": "storm",
+              "life": 2.9833333333333334,
+              "age": 0.016666666666666666,
+              "maxTicks": 8,
+              "ticks": 1
+            }
+          ],
+          "fields": 4,
+          "orbits": 0,
+          "mines": 2,
+          "bees": 0,
+          "beams": 0,
+          "effects": 5,
+          "kinds": [
+            "frocket",
+            "storm",
+            "tbolt",
+            "bolt",
+            "molemine"
+          ],
+          "shotAngles": [
+            -2.49,
+            -2.1,
+            -2.8
+          ],
+          "fieldSpots": [
+            {
+              "x": 156,
+              "y": 539,
+              "r": 71
+            },
+            {
+              "x": 544,
+              "y": 616,
+              "r": 71
+            },
+            {
+              "x": 663,
+              "y": 37,
+              "r": 71
+            },
+            {
+              "x": 410,
+              "y": 47,
+              "r": 71
+            }
+          ],
+          "casts": {
+            "L1": 59,
+            "EVO_L1": 277,
+            "F2": 18,
+            "EVO_F2": 115,
+            "E2": 44,
+            "EVO_E2": 33
+          },
+          "hits": {
+            "L1": 181,
+            "EVO_L1": 2164,
+            "F2": 50,
+            "EVO_F2": 864,
+            "E2": 49,
+            "EVO_E2": 38
+          },
+          "damage": {
+            "L1": 45823.12300799996,
+            "EVO_L1": 573734.8088841685,
+            "F2": 8309.600000000002,
+            "EVO_F2": 189533.31266625,
+            "E2": 10126.620000000004,
+            "EVO_E2": 13639.431959999989
+          },
+          "parts": {
+            "L1": 138,
+            "EVO_L1": 346
+          },
+          "legendCasts": 73
+        },
+        "mode": "playing"
+      },
+      "inputHash": 318682617,
+      "canvasHash": "f64638575066a598f1e14ab6cb954d86e8fb3c2d00b6b4378207a70f28a13379",
+      "settlement": {
+        "reward": {
+          "coins": 131,
+          "petCoinPct": 0,
+          "gifts": 0,
+          "missions": [],
+          "stars": 0,
+          "first": false,
+          "partActivity": [
+            {
+              "id": "PART_F1",
+              "active": false
+            },
+            {
+              "id": "PART_W1",
+              "active": false
+            },
+            {
+              "id": "PART_L1",
+              "active": true
+            }
+          ],
+          "stageGift": null,
+          "difficulty": "normal",
+          "goal": false,
+          "notes": []
+        },
+        "charged": 0,
+        "cleared": false,
+        "stage": "CH13"
+      },
+      "errors": []
+    }
+  },
+  {
+    "stage": "CH13",
+    "seed": 10809,
+    "device": "ipad",
+    "quality": 5,
+    "god": false,
+    "equal": true,
+    "collector": null,
+    "gameplayExact": true,
+    "canvasCheck": {
+      "exact": true,
+      "equivalent": true
+    },
+    "before": {
+      "outcome": {
+        "seconds": 274.6166666667456,
+        "kills": 2138,
+        "hp": 244.20156753219592,
+        "hpMax": 421,
+        "litter": 18,
+        "choices": 23,
+        "bossHp": null,
+        "stats": {
+          "kills": 2138,
+          "bossKills": 0,
+          "eliteKills": 2,
+          "evolutions": 2,
+          "revives": 0,
+          "chests": 3,
+          "gems": 1327,
+          "bossDamage": 0,
+          "abilityUses": 0,
+          "darkGems": 0,
+          "statusDmg": 0,
+          "midBossNoHit": 2,
+          "evoKinds": [
+            "EVO_F1",
+            "EVO_F2"
+          ],
+          "presetRun": false,
+          "buffs": [],
+          "litter": 18,
+          "firstHitAt": 0.850000000000001,
+          "hurtContact": 52.76204703,
+          "hurtHit": 332.4313854378033,
+          "pet": {
+            "splash": 53
+          }
+        },
+        "elements": {
+          "time": 274.6166666667456,
+          "shots": 13,
+          "scheduled": 0,
+          "shotDetails": [
+            {
+              "kind": "frocket",
+              "bounces": null,
+              "small": false,
+              "partSplitDone": false
+            },
+            {
+              "kind": "stone",
+              "bounces": null,
+              "small": false,
+              "partSplitDone": false
+            },
+            {
+              "kind": "sparkshot",
+              "bounces": null,
+              "small": false,
+              "partSplitDone": false
+            },
+            {
+              "kind": "sparkshot",
+              "bounces": null,
+              "small": false,
+              "partSplitDone": false
+            },
+            {
+              "kind": "sparkshot",
+              "bounces": null,
+              "small": false,
+              "partSplitDone": false
+            },
+            {
+              "kind": "sparkshot",
+              "bounces": null,
+              "small": false,
+              "partSplitDone": false
+            },
+            {
+              "kind": "sparkshot",
+              "bounces": null,
+              "small": false,
+              "partSplitDone": false
+            },
+            {
+              "kind": "sparkshot",
+              "bounces": null,
+              "small": false,
+              "partSplitDone": false
+            },
+            {
+              "kind": "sparkshot",
+              "bounces": null,
+              "small": false,
+              "partSplitDone": false
+            },
+            {
+              "kind": "sparkshot",
+              "bounces": null,
+              "small": false,
+              "partSplitDone": false
+            },
+            {
+              "kind": "sparkshot",
+              "bounces": null,
+              "small": false,
+              "partSplitDone": false
+            },
+            {
+              "kind": "sparkshot",
+              "bounces": null,
+              "small": false,
+              "partSplitDone": false
+            },
+            {
+              "kind": "sparkshot",
+              "bounces": null,
+              "small": false,
+              "partSplitDone": false
+            }
+          ],
+          "fieldDetails": [
+            {
+              "kind": "lava",
+              "life": 0.4166666666666829,
+              "age": 5.583333333333319,
+              "maxTicks": 15,
+              "ticks": 14
+            },
+            {
+              "kind": "lava",
+              "life": 0.4166666666666829,
+              "age": 5.583333333333319,
+              "maxTicks": 15,
+              "ticks": 14
+            },
+            {
+              "kind": "lava",
+              "life": 0.4166666666666829,
+              "age": 5.583333333333319,
+              "maxTicks": 15,
+              "ticks": 14
+            },
+            {
+              "kind": "lava",
+              "life": 1.200000000000017,
+              "age": 4.799999999999988,
+              "maxTicks": 15,
+              "ticks": 12
+            },
+            {
+              "kind": "lava",
+              "life": 1.200000000000017,
+              "age": 4.799999999999988,
+              "maxTicks": 15,
+              "ticks": 12
+            },
+            {
+              "kind": "lava",
+              "life": 1.200000000000017,
+              "age": 4.799999999999988,
+              "maxTicks": 15,
+              "ticks": 12
+            },
+            {
+              "kind": "lava",
+              "life": 1.9833333333333476,
+              "age": 4.016666666666658,
+              "maxTicks": 15,
+              "ticks": 11
+            },
+            {
+              "kind": "lava",
+              "life": 1.9833333333333476,
+              "age": 4.016666666666658,
+              "maxTicks": 15,
+              "ticks": 11
+            },
+            {
+              "kind": "lava",
+              "life": 1.9833333333333476,
+              "age": 4.016666666666658,
+              "maxTicks": 15,
+              "ticks": 11
+            },
+            {
+              "kind": "lava",
+              "life": 2.1666666666666803,
+              "age": 3.8333333333333246,
+              "maxTicks": 15,
+              "ticks": 10
+            },
+            {
+              "kind": "lava",
+              "life": 2.1666666666666803,
+              "age": 3.8333333333333246,
+              "maxTicks": 15,
+              "ticks": 10
+            },
+            {
+              "kind": "lava",
+              "life": 2.1666666666666803,
+              "age": 3.8333333333333246,
+              "maxTicks": 15,
+              "ticks": 10
+            },
+            {
+              "kind": "lava",
+              "life": 2.766666666666678,
+              "age": 3.2333333333333267,
+              "maxTicks": 15,
+              "ticks": 9
+            },
+            {
+              "kind": "lava",
+              "life": 2.766666666666678,
+              "age": 3.2333333333333267,
+              "maxTicks": 15,
+              "ticks": 9
+            },
+            {
+              "kind": "lava",
+              "life": 2.766666666666678,
+              "age": 3.2333333333333267,
+              "maxTicks": 15,
+              "ticks": 9
+            },
+            {
+              "kind": "lava",
+              "life": 3.5500000000000087,
+              "age": 2.449999999999996,
+              "maxTicks": 15,
+              "ticks": 7
+            },
+            {
+              "kind": "lava",
+              "life": 3.5500000000000087,
+              "age": 2.449999999999996,
+              "maxTicks": 15,
+              "ticks": 7
+            },
+            {
+              "kind": "lava",
+              "life": 3.5500000000000087,
+              "age": 2.449999999999996,
+              "maxTicks": 15,
+              "ticks": 7
+            },
+            {
+              "kind": "lava",
+              "life": 4.333333333333339,
+              "age": 1.6666666666666656,
+              "maxTicks": 15,
+              "ticks": 5
+            },
+            {
+              "kind": "lava",
+              "life": 4.333333333333339,
+              "age": 1.6666666666666656,
+              "maxTicks": 15,
+              "ticks": 5
+            },
+            {
+              "kind": "lava",
+              "life": 4.333333333333339,
+              "age": 1.6666666666666656,
+              "maxTicks": 15,
+              "ticks": 5
+            },
+            {
+              "kind": "lava",
+              "life": 5.11666666666667,
+              "age": 0.8833333333333344,
+              "maxTicks": 15,
+              "ticks": 3
+            },
+            {
+              "kind": "lava",
+              "life": 5.11666666666667,
+              "age": 0.8833333333333344,
+              "maxTicks": 15,
+              "ticks": 3
+            },
+            {
+              "kind": "lava",
+              "life": 5.11666666666667,
+              "age": 0.8833333333333344,
+              "maxTicks": 15,
+              "ticks": 3
+            },
+            {
+              "kind": "lava",
+              "life": 5.3000000000000025,
+              "age": 0.7000000000000005,
+              "maxTicks": 15,
+              "ticks": 2
+            },
+            {
+              "kind": "lava",
+              "life": 5.3000000000000025,
+              "age": 0.7000000000000005,
+              "maxTicks": 15,
+              "ticks": 2
+            },
+            {
+              "kind": "lava",
+              "life": 5.3000000000000025,
+              "age": 0.7000000000000005,
+              "maxTicks": 15,
+              "ticks": 2
+            },
+            {
+              "kind": "lava",
+              "life": 5.9,
+              "age": 0.09999999999999999,
+              "maxTicks": 15,
+              "ticks": 1
+            },
+            {
+              "kind": "lava",
+              "life": 5.9,
+              "age": 0.09999999999999999,
+              "maxTicks": 15,
+              "ticks": 1
+            },
+            {
+              "kind": "lava",
+              "life": 5.9,
+              "age": 0.09999999999999999,
+              "maxTicks": 15,
+              "ticks": 1
+            }
+          ],
+          "fields": 30,
+          "orbits": 0,
+          "mines": 0,
+          "bees": 0,
+          "beams": 0,
+          "effects": 11,
+          "kinds": [
+            "frocket",
+            "stone",
+            "sparkshot",
+            "lava",
+            "boom",
+            "sparks",
+            "fwork",
+            "hit"
+          ],
+          "shotAngles": [
+            0.4,
+            -0.11,
+            0.06,
+            1.27,
+            2.25,
+            3.16,
+            4.45,
+            5.24,
+            0.16,
+            1.19,
+            2.23,
+            3.22,
+            4.23
+          ],
+          "fieldSpots": [
+            {
+              "x": 1029,
+              "y": 552,
+              "r": 64
+            },
+            {
+              "x": 1084,
+              "y": 592,
+              "r": 64
+            },
+            {
+              "x": 1073,
+              "y": 510,
+              "r": 64
+            },
+            {
+              "x": 1230,
+              "y": 497,
+              "r": 64
+            },
+            {
+              "x": 1109,
+              "y": 628,
+              "r": 64
+            },
+            {
+              "x": 810,
+              "y": 713,
+              "r": 64
+            },
+            {
+              "x": 1251,
+              "y": 751,
+              "r": 64
+            },
+            {
+              "x": 1081,
+              "y": 799,
+              "r": 64
+            },
+            {
+              "x": 1222,
+              "y": 548,
+              "r": 64
+            },
+            {
+              "x": 1225,
+              "y": 543,
+              "r": 64
+            },
+            {
+              "x": 1089,
+              "y": 776,
+              "r": 64
+            },
+            {
+              "x": 1277,
+              "y": 468,
+              "r": 64
+            },
+            {
+              "x": 1324,
+              "y": 526,
+              "r": 64
+            },
+            {
+              "x": 1220,
+              "y": 315,
+              "r": 64
+            },
+            {
+              "x": 1300,
+              "y": 471,
+              "r": 64
+            },
+            {
+              "x": 1086,
+              "y": 290,
+              "r": 64
+            },
+            {
+              "x": 1212,
+              "y": 320,
+              "r": 64
+            },
+            {
+              "x": 1245,
+              "y": 224,
+              "r": 64
+            },
+            {
+              "x": 1435,
+              "y": 430,
+              "r": 64
+            },
+            {
+              "x": 1287,
+              "y": 248,
+              "r": 64
+            },
+            {
+              "x": 1376,
+              "y": 302,
+              "r": 64
+            },
+            {
+              "x": 1454,
+              "y": 395,
+              "r": 64
+            },
+            {
+              "x": 1476,
+              "y": 675,
+              "r": 64
+            },
+            {
+              "x": 1305,
+              "y": 718,
+              "r": 64
+            },
+            {
+              "x": 1477,
+              "y": 674,
+              "r": 64
+            },
+            {
+              "x": 1312,
+              "y": 714,
+              "r": 64
+            },
+            {
+              "x": 1458,
+              "y": 408,
+              "r": 64
+            },
+            {
+              "x": 1595,
+              "y": 461,
+              "r": 64
+            },
+            {
+              "x": 1514,
+              "y": 690,
+              "r": 64
+            },
+            {
+              "x": 1411,
+              "y": 214,
+              "r": 64
+            }
+          ],
+          "casts": {
+            "F1": 40,
+            "EVO_F1": 317,
+            "F2": 37,
+            "EVO_F2": 88,
+            "E1": 13
+          },
+          "hits": {
+            "F1": 291,
+            "EVO_F1": 1963,
+            "F2": 49,
+            "EVO_F2": 603,
+            "E1": 6
+          },
+          "damage": {
+            "F1": 27467.160960000012,
+            "EVO_F1": 746914.9558463888,
+            "F2": 9659.910000000003,
+            "EVO_F2": 149494.18756500038,
+            "E1": 1300.9788
+          },
+          "parts": {
+            "F1": 112,
+            "EVO_F1": 1142
+          },
+          "legendCasts": 85
+        },
+        "mode": "playing"
+      },
+      "inputHash": 185733491,
+      "canvasHash": null,
+      "settlement": {
+        "reward": {
+          "coins": 131,
+          "petCoinPct": 0,
+          "gifts": 0,
+          "missions": [],
+          "stars": 0,
+          "first": false,
+          "partActivity": [
+            {
+              "id": "PART_F1",
+              "active": true
+            },
+            {
+              "id": "PART_W1",
+              "active": false
+            },
+            {
+              "id": "PART_L1",
+              "active": false
+            }
+          ],
+          "stageGift": null,
+          "difficulty": "normal",
+          "goal": false,
+          "notes": []
+        },
+        "charged": 0,
+        "cleared": false,
+        "stage": "CH13"
+      },
+      "errors": []
+    },
+    "after": {
+      "outcome": {
+        "seconds": 274.6166666667456,
+        "kills": 2138,
+        "hp": 244.20156753219592,
+        "hpMax": 421,
+        "litter": 18,
+        "choices": 23,
+        "bossHp": null,
+        "stats": {
+          "kills": 2138,
+          "bossKills": 0,
+          "eliteKills": 2,
+          "evolutions": 2,
+          "revives": 0,
+          "chests": 3,
+          "gems": 1327,
+          "bossDamage": 0,
+          "abilityUses": 0,
+          "darkGems": 0,
+          "statusDmg": 0,
+          "midBossNoHit": 2,
+          "evoKinds": [
+            "EVO_F1",
+            "EVO_F2"
+          ],
+          "presetRun": false,
+          "buffs": [],
+          "litter": 18,
+          "firstHitAt": 0.850000000000001,
+          "hurtContact": 52.76204703,
+          "hurtHit": 332.4313854378033,
+          "pet": {
+            "splash": 53
+          }
+        },
+        "elements": {
+          "time": 274.6166666667456,
+          "shots": 13,
+          "scheduled": 0,
+          "shotDetails": [
+            {
+              "kind": "frocket",
+              "bounces": null,
+              "small": false,
+              "partSplitDone": false
+            },
+            {
+              "kind": "stone",
+              "bounces": null,
+              "small": false,
+              "partSplitDone": false
+            },
+            {
+              "kind": "sparkshot",
+              "bounces": null,
+              "small": false,
+              "partSplitDone": false
+            },
+            {
+              "kind": "sparkshot",
+              "bounces": null,
+              "small": false,
+              "partSplitDone": false
+            },
+            {
+              "kind": "sparkshot",
+              "bounces": null,
+              "small": false,
+              "partSplitDone": false
+            },
+            {
+              "kind": "sparkshot",
+              "bounces": null,
+              "small": false,
+              "partSplitDone": false
+            },
+            {
+              "kind": "sparkshot",
+              "bounces": null,
+              "small": false,
+              "partSplitDone": false
+            },
+            {
+              "kind": "sparkshot",
+              "bounces": null,
+              "small": false,
+              "partSplitDone": false
+            },
+            {
+              "kind": "sparkshot",
+              "bounces": null,
+              "small": false,
+              "partSplitDone": false
+            },
+            {
+              "kind": "sparkshot",
+              "bounces": null,
+              "small": false,
+              "partSplitDone": false
+            },
+            {
+              "kind": "sparkshot",
+              "bounces": null,
+              "small": false,
+              "partSplitDone": false
+            },
+            {
+              "kind": "sparkshot",
+              "bounces": null,
+              "small": false,
+              "partSplitDone": false
+            },
+            {
+              "kind": "sparkshot",
+              "bounces": null,
+              "small": false,
+              "partSplitDone": false
+            }
+          ],
+          "fieldDetails": [
+            {
+              "kind": "lava",
+              "life": 0.4166666666666829,
+              "age": 5.583333333333319,
+              "maxTicks": 15,
+              "ticks": 14
+            },
+            {
+              "kind": "lava",
+              "life": 0.4166666666666829,
+              "age": 5.583333333333319,
+              "maxTicks": 15,
+              "ticks": 14
+            },
+            {
+              "kind": "lava",
+              "life": 0.4166666666666829,
+              "age": 5.583333333333319,
+              "maxTicks": 15,
+              "ticks": 14
+            },
+            {
+              "kind": "lava",
+              "life": 1.200000000000017,
+              "age": 4.799999999999988,
+              "maxTicks": 15,
+              "ticks": 12
+            },
+            {
+              "kind": "lava",
+              "life": 1.200000000000017,
+              "age": 4.799999999999988,
+              "maxTicks": 15,
+              "ticks": 12
+            },
+            {
+              "kind": "lava",
+              "life": 1.200000000000017,
+              "age": 4.799999999999988,
+              "maxTicks": 15,
+              "ticks": 12
+            },
+            {
+              "kind": "lava",
+              "life": 1.9833333333333476,
+              "age": 4.016666666666658,
+              "maxTicks": 15,
+              "ticks": 11
+            },
+            {
+              "kind": "lava",
+              "life": 1.9833333333333476,
+              "age": 4.016666666666658,
+              "maxTicks": 15,
+              "ticks": 11
+            },
+            {
+              "kind": "lava",
+              "life": 1.9833333333333476,
+              "age": 4.016666666666658,
+              "maxTicks": 15,
+              "ticks": 11
+            },
+            {
+              "kind": "lava",
+              "life": 2.1666666666666803,
+              "age": 3.8333333333333246,
+              "maxTicks": 15,
+              "ticks": 10
+            },
+            {
+              "kind": "lava",
+              "life": 2.1666666666666803,
+              "age": 3.8333333333333246,
+              "maxTicks": 15,
+              "ticks": 10
+            },
+            {
+              "kind": "lava",
+              "life": 2.1666666666666803,
+              "age": 3.8333333333333246,
+              "maxTicks": 15,
+              "ticks": 10
+            },
+            {
+              "kind": "lava",
+              "life": 2.766666666666678,
+              "age": 3.2333333333333267,
+              "maxTicks": 15,
+              "ticks": 9
+            },
+            {
+              "kind": "lava",
+              "life": 2.766666666666678,
+              "age": 3.2333333333333267,
+              "maxTicks": 15,
+              "ticks": 9
+            },
+            {
+              "kind": "lava",
+              "life": 2.766666666666678,
+              "age": 3.2333333333333267,
+              "maxTicks": 15,
+              "ticks": 9
+            },
+            {
+              "kind": "lava",
+              "life": 3.5500000000000087,
+              "age": 2.449999999999996,
+              "maxTicks": 15,
+              "ticks": 7
+            },
+            {
+              "kind": "lava",
+              "life": 3.5500000000000087,
+              "age": 2.449999999999996,
+              "maxTicks": 15,
+              "ticks": 7
+            },
+            {
+              "kind": "lava",
+              "life": 3.5500000000000087,
+              "age": 2.449999999999996,
+              "maxTicks": 15,
+              "ticks": 7
+            },
+            {
+              "kind": "lava",
+              "life": 4.333333333333339,
+              "age": 1.6666666666666656,
+              "maxTicks": 15,
+              "ticks": 5
+            },
+            {
+              "kind": "lava",
+              "life": 4.333333333333339,
+              "age": 1.6666666666666656,
+              "maxTicks": 15,
+              "ticks": 5
+            },
+            {
+              "kind": "lava",
+              "life": 4.333333333333339,
+              "age": 1.6666666666666656,
+              "maxTicks": 15,
+              "ticks": 5
+            },
+            {
+              "kind": "lava",
+              "life": 5.11666666666667,
+              "age": 0.8833333333333344,
+              "maxTicks": 15,
+              "ticks": 3
+            },
+            {
+              "kind": "lava",
+              "life": 5.11666666666667,
+              "age": 0.8833333333333344,
+              "maxTicks": 15,
+              "ticks": 3
+            },
+            {
+              "kind": "lava",
+              "life": 5.11666666666667,
+              "age": 0.8833333333333344,
+              "maxTicks": 15,
+              "ticks": 3
+            },
+            {
+              "kind": "lava",
+              "life": 5.3000000000000025,
+              "age": 0.7000000000000005,
+              "maxTicks": 15,
+              "ticks": 2
+            },
+            {
+              "kind": "lava",
+              "life": 5.3000000000000025,
+              "age": 0.7000000000000005,
+              "maxTicks": 15,
+              "ticks": 2
+            },
+            {
+              "kind": "lava",
+              "life": 5.3000000000000025,
+              "age": 0.7000000000000005,
+              "maxTicks": 15,
+              "ticks": 2
+            },
+            {
+              "kind": "lava",
+              "life": 5.9,
+              "age": 0.09999999999999999,
+              "maxTicks": 15,
+              "ticks": 1
+            },
+            {
+              "kind": "lava",
+              "life": 5.9,
+              "age": 0.09999999999999999,
+              "maxTicks": 15,
+              "ticks": 1
+            },
+            {
+              "kind": "lava",
+              "life": 5.9,
+              "age": 0.09999999999999999,
+              "maxTicks": 15,
+              "ticks": 1
+            }
+          ],
+          "fields": 30,
+          "orbits": 0,
+          "mines": 0,
+          "bees": 0,
+          "beams": 0,
+          "effects": 11,
+          "kinds": [
+            "frocket",
+            "stone",
+            "sparkshot",
+            "lava",
+            "boom",
+            "sparks",
+            "fwork",
+            "hit"
+          ],
+          "shotAngles": [
+            0.4,
+            -0.11,
+            0.06,
+            1.27,
+            2.25,
+            3.16,
+            4.45,
+            5.24,
+            0.16,
+            1.19,
+            2.23,
+            3.22,
+            4.23
+          ],
+          "fieldSpots": [
+            {
+              "x": 1029,
+              "y": 552,
+              "r": 64
+            },
+            {
+              "x": 1084,
+              "y": 592,
+              "r": 64
+            },
+            {
+              "x": 1073,
+              "y": 510,
+              "r": 64
+            },
+            {
+              "x": 1230,
+              "y": 497,
+              "r": 64
+            },
+            {
+              "x": 1109,
+              "y": 628,
+              "r": 64
+            },
+            {
+              "x": 810,
+              "y": 713,
+              "r": 64
+            },
+            {
+              "x": 1251,
+              "y": 751,
+              "r": 64
+            },
+            {
+              "x": 1081,
+              "y": 799,
+              "r": 64
+            },
+            {
+              "x": 1222,
+              "y": 548,
+              "r": 64
+            },
+            {
+              "x": 1225,
+              "y": 543,
+              "r": 64
+            },
+            {
+              "x": 1089,
+              "y": 776,
+              "r": 64
+            },
+            {
+              "x": 1277,
+              "y": 468,
+              "r": 64
+            },
+            {
+              "x": 1324,
+              "y": 526,
+              "r": 64
+            },
+            {
+              "x": 1220,
+              "y": 315,
+              "r": 64
+            },
+            {
+              "x": 1300,
+              "y": 471,
+              "r": 64
+            },
+            {
+              "x": 1086,
+              "y": 290,
+              "r": 64
+            },
+            {
+              "x": 1212,
+              "y": 320,
+              "r": 64
+            },
+            {
+              "x": 1245,
+              "y": 224,
+              "r": 64
+            },
+            {
+              "x": 1435,
+              "y": 430,
+              "r": 64
+            },
+            {
+              "x": 1287,
+              "y": 248,
+              "r": 64
+            },
+            {
+              "x": 1376,
+              "y": 302,
+              "r": 64
+            },
+            {
+              "x": 1454,
+              "y": 395,
+              "r": 64
+            },
+            {
+              "x": 1476,
+              "y": 675,
+              "r": 64
+            },
+            {
+              "x": 1305,
+              "y": 718,
+              "r": 64
+            },
+            {
+              "x": 1477,
+              "y": 674,
+              "r": 64
+            },
+            {
+              "x": 1312,
+              "y": 714,
+              "r": 64
+            },
+            {
+              "x": 1458,
+              "y": 408,
+              "r": 64
+            },
+            {
+              "x": 1595,
+              "y": 461,
+              "r": 64
+            },
+            {
+              "x": 1514,
+              "y": 690,
+              "r": 64
+            },
+            {
+              "x": 1411,
+              "y": 214,
+              "r": 64
+            }
+          ],
+          "casts": {
+            "F1": 40,
+            "EVO_F1": 317,
+            "F2": 37,
+            "EVO_F2": 88,
+            "E1": 13
+          },
+          "hits": {
+            "F1": 291,
+            "EVO_F1": 1963,
+            "F2": 49,
+            "EVO_F2": 603,
+            "E1": 6
+          },
+          "damage": {
+            "F1": 27467.160960000012,
+            "EVO_F1": 746914.9558463888,
+            "F2": 9659.910000000003,
+            "EVO_F2": 149494.18756500038,
+            "E1": 1300.9788
+          },
+          "parts": {
+            "F1": 112,
+            "EVO_F1": 1142
+          },
+          "legendCasts": 85
+        },
+        "mode": "playing"
+      },
+      "inputHash": 185733491,
+      "canvasHash": null,
+      "settlement": {
+        "reward": {
+          "coins": 131,
+          "petCoinPct": 0,
+          "gifts": 0,
+          "missions": [],
+          "stars": 0,
+          "first": false,
+          "partActivity": [
+            {
+              "id": "PART_F1",
+              "active": true
+            },
+            {
+              "id": "PART_W1",
+              "active": false
+            },
+            {
+              "id": "PART_L1",
+              "active": false
+            }
+          ],
+          "stageGift": null,
+          "difficulty": "normal",
+          "goal": false,
+          "notes": []
+        },
+        "charged": 0,
+        "cleared": false,
+        "stage": "CH13"
+      },
+      "errors": []
+    }
+  },
+  {
+    "stage": "CH15",
+    "seed": 10808,
+    "device": "pc",
+    "quality": 0,
+    "god": true,
+    "equal": false,
+    "collector": null,
+    "gameplayExact": true,
+    "canvasCheck": {
+      "exact": false,
+      "equivalent": false,
+      "changedPixels": 789299,
+      "maxChannelDelta": 13
+    },
+    "before": {
+      "outcome": {
+        "seconds": 274.6000000000789,
+        "kills": 2013,
+        "hp": 715,
+        "hpMax": 715,
+        "litter": 30,
+        "choices": 24,
+        "bossHp": 455489.56,
+        "stats": {
+          "kills": 2013,
+          "bossKills": 0,
+          "eliteKills": 1,
+          "evolutions": 2,
+          "revives": 0,
+          "chests": 0,
+          "gems": 1143,
+          "bossDamage": 145375,
+          "abilityUses": 0,
+          "darkGems": 0,
+          "statusDmg": 0,
+          "midBossNoHit": 1,
+          "evoKinds": [
+            "EVO_L1",
+            "EVO_E2"
+          ],
+          "presetRun": false,
+          "buffs": [],
+          "litter": 30,
+          "firstHitAt": 0.9000000000000011,
+          "pet": {
+            "splash": 54
+          }
+        },
+        "elements": {
+          "time": 274.6000000000789,
+          "shots": 0,
+          "scheduled": 0,
+          "shotDetails": [],
+          "fieldDetails": [
+            {
+              "kind": "storm",
+              "life": 0.21666666666667228,
+              "age": 2.7833333333333283,
+              "maxTicks": 8,
+              "ticks": 8
+            },
+            {
+              "kind": "storm",
+              "life": 1.2000000000000064,
+              "age": 1.7999999999999985,
+              "maxTicks": 8,
+              "ticks": 5
+            },
+            {
+              "kind": "storm",
+              "life": 2.1833333333333362,
+              "age": 0.8166666666666675,
+              "maxTicks": 8,
+              "ticks": 3
+            }
+          ],
+          "fields": 3,
+          "orbits": 0,
+          "mines": 0,
+          "bees": 0,
+          "beams": 1,
+          "effects": 10,
+          "kinds": [
+            "storm",
+            "tbolt",
+            "boom",
+            "sparks",
+            "spray",
+            "bigdirt",
+            "chainring",
+            "beam"
+          ],
+          "shotAngles": [],
+          "fieldSpots": [
+            {
+              "x": -80,
+              "y": 65,
+              "r": 71
+            },
+            {
+              "x": -66,
+              "y": 60,
+              "r": 71
+            },
+            {
+              "x": -26,
+              "y": 45,
+              "r": 71
+            }
+          ],
+          "casts": {
+            "L1": 48,
+            "EVO_L1": 298,
+            "E2": 37,
+            "EVO_E2": 309,
+            "W2": 103,
+            "F2": 34
+          },
+          "hits": {
+            "L1": 141,
+            "EVO_L1": 1711,
+            "E2": 52,
+            "EVO_E2": 376,
+            "W2": 422,
+            "F2": 35
+          },
+          "damage": {
+            "L1": 34435.64716799999,
+            "EVO_L1": 608109.8740147253,
+            "E2": 8226.504000000012,
+            "EVO_E2": 142363.6093550008,
+            "W2": 35926.60189500022,
+            "F2": 5864.260499999997
+          },
+          "parts": {
+            "L1": 97,
+            "EVO_L1": 80
+          },
+          "legendCasts": 83
+        },
+        "mode": "playing"
+      },
+      "inputHash": 1745860868,
+      "canvasHash": "87ae0a1ebdd5d444ac3e55ed502565ce48da22a57d4fe7b3d4a928f8ec47c63b",
+      "settlement": {
+        "reward": {
+          "coins": 142,
+          "petCoinPct": 0,
+          "gifts": 0,
+          "missions": [],
+          "stars": 0,
+          "first": false,
+          "partActivity": [
+            {
+              "id": "PART_F1",
+              "active": false
+            },
+            {
+              "id": "PART_W1",
+              "active": false
+            },
+            {
+              "id": "PART_L1",
+              "active": true
+            }
+          ],
+          "stageGift": null,
+          "difficulty": "normal",
+          "goal": false,
+          "notes": []
+        },
+        "charged": 0,
+        "cleared": false,
+        "stage": "CH15"
+      },
+      "errors": []
+    },
+    "after": {
+      "outcome": {
+        "seconds": 274.6000000000789,
+        "kills": 2013,
+        "hp": 715,
+        "hpMax": 715,
+        "litter": 30,
+        "choices": 24,
+        "bossHp": 455489.56,
+        "stats": {
+          "kills": 2013,
+          "bossKills": 0,
+          "eliteKills": 1,
+          "evolutions": 2,
+          "revives": 0,
+          "chests": 0,
+          "gems": 1143,
+          "bossDamage": 145375,
+          "abilityUses": 0,
+          "darkGems": 0,
+          "statusDmg": 0,
+          "midBossNoHit": 1,
+          "evoKinds": [
+            "EVO_L1",
+            "EVO_E2"
+          ],
+          "presetRun": false,
+          "buffs": [],
+          "litter": 30,
+          "firstHitAt": 0.9000000000000011,
+          "pet": {
+            "splash": 54
+          }
+        },
+        "elements": {
+          "time": 274.6000000000789,
+          "shots": 0,
+          "scheduled": 0,
+          "shotDetails": [],
+          "fieldDetails": [
+            {
+              "kind": "storm",
+              "life": 0.21666666666667228,
+              "age": 2.7833333333333283,
+              "maxTicks": 8,
+              "ticks": 8
+            },
+            {
+              "kind": "storm",
+              "life": 1.2000000000000064,
+              "age": 1.7999999999999985,
+              "maxTicks": 8,
+              "ticks": 5
+            },
+            {
+              "kind": "storm",
+              "life": 2.1833333333333362,
+              "age": 0.8166666666666675,
+              "maxTicks": 8,
+              "ticks": 3
+            }
+          ],
+          "fields": 3,
+          "orbits": 0,
+          "mines": 0,
+          "bees": 0,
+          "beams": 1,
+          "effects": 10,
+          "kinds": [
+            "storm",
+            "tbolt",
+            "boom",
+            "sparks",
+            "spray",
+            "bigdirt",
+            "chainring",
+            "beam"
+          ],
+          "shotAngles": [],
+          "fieldSpots": [
+            {
+              "x": -80,
+              "y": 65,
+              "r": 71
+            },
+            {
+              "x": -66,
+              "y": 60,
+              "r": 71
+            },
+            {
+              "x": -26,
+              "y": 45,
+              "r": 71
+            }
+          ],
+          "casts": {
+            "L1": 48,
+            "EVO_L1": 298,
+            "E2": 37,
+            "EVO_E2": 309,
+            "W2": 103,
+            "F2": 34
+          },
+          "hits": {
+            "L1": 141,
+            "EVO_L1": 1711,
+            "E2": 52,
+            "EVO_E2": 376,
+            "W2": 422,
+            "F2": 35
+          },
+          "damage": {
+            "L1": 34435.64716799999,
+            "EVO_L1": 608109.8740147253,
+            "E2": 8226.504000000012,
+            "EVO_E2": 142363.6093550008,
+            "W2": 35926.60189500022,
+            "F2": 5864.260499999997
+          },
+          "parts": {
+            "L1": 97,
+            "EVO_L1": 80
+          },
+          "legendCasts": 83
+        },
+        "mode": "playing"
+      },
+      "inputHash": 1745860868,
+      "canvasHash": "e19157bc2f53f0a93896268cd1681bea05b7278cd5cd3f97581788076028f868",
+      "settlement": {
+        "reward": {
+          "coins": 142,
+          "petCoinPct": 0,
+          "gifts": 0,
+          "missions": [],
+          "stars": 0,
+          "first": false,
+          "partActivity": [
+            {
+              "id": "PART_F1",
+              "active": false
+            },
+            {
+              "id": "PART_W1",
+              "active": false
+            },
+            {
+              "id": "PART_L1",
+              "active": true
+            }
+          ],
+          "stageGift": null,
+          "difficulty": "normal",
+          "goal": false,
+          "notes": []
+        },
+        "charged": 0,
+        "cleared": false,
+        "stage": "CH15"
+      },
+      "errors": []
+    }
+  },
+  {
+    "stage": "CH15",
+    "seed": 10809,
+    "device": "ipad",
+    "quality": 5,
+    "god": false,
+    "equal": true,
+    "collector": null,
+    "gameplayExact": true,
+    "canvasCheck": {
+      "exact": true,
+      "equivalent": true
+    },
+    "before": {
+      "outcome": {
+        "seconds": 274.6000000000789,
+        "kills": 2037,
+        "hp": 715,
+        "hpMax": 715,
+        "litter": 33,
+        "choices": 24,
+        "bossHp": 170175.12,
+        "stats": {
+          "kills": 2037,
+          "bossKills": 0,
+          "eliteKills": 1,
+          "evolutions": 2,
+          "revives": 0,
+          "chests": 3,
+          "gems": 1087,
+          "bossDamage": 412106,
+          "abilityUses": 0,
+          "darkGems": 0,
+          "statusDmg": 0,
+          "midBossNoHit": 1,
+          "evoKinds": [
+            "EVO_F1",
+            "EVO_W2"
+          ],
+          "presetRun": false,
+          "buffs": [],
+          "litter": 33,
+          "firstHitAt": 0.850000000000001,
+          "hurtContact": 99.81774291299999,
+          "hurtHit": 278.4497425940784,
+          "pet": {
+            "splash": 53
+          }
+        },
+        "elements": {
+          "time": 274.6000000000789,
+          "shots": 24,
+          "scheduled": 0,
+          "shotDetails": [
+            {
+              "kind": "balloon",
+              "bounces": 6,
+              "small": false,
+              "partSplitDone": false
+            },
+            {
+              "kind": "balloon",
+              "bounces": 7,
+              "small": false,
+              "partSplitDone": false
+            },
+            {
+              "kind": "balloon",
+              "bounces": 7,
+              "small": false,
+              "partSplitDone": false
+            },
+            {
+              "kind": "balloon",
+              "bounces": 6,
+              "small": false,
+              "partSplitDone": false
+            },
+            {
+              "kind": "balloon",
+              "bounces": 7,
+              "small": false,
+              "partSplitDone": false
+            },
+            {
+              "kind": "balloon",
+              "bounces": 7,
+              "small": false,
+              "partSplitDone": false
+            },
+            {
+              "kind": "balloon",
+              "bounces": 6,
+              "small": false,
+              "partSplitDone": false
+            },
+            {
+              "kind": "balloon",
+              "bounces": 7,
+              "small": false,
+              "partSplitDone": false
+            },
+            {
+              "kind": "balloon",
+              "bounces": 7,
+              "small": false,
+              "partSplitDone": false
+            },
+            {
+              "kind": "balloon",
+              "bounces": 6,
+              "small": false,
+              "partSplitDone": false
+            },
+            {
+              "kind": "balloon",
+              "bounces": 7,
+              "small": false,
+              "partSplitDone": false
+            },
+            {
+              "kind": "balloon",
+              "bounces": 7,
+              "small": false,
+              "partSplitDone": false
+            },
+            {
+              "kind": "balloon",
+              "bounces": 6,
+              "small": false,
+              "partSplitDone": false
+            },
+            {
+              "kind": "balloon",
+              "bounces": 7,
+              "small": false,
+              "partSplitDone": false
+            },
+            {
+              "kind": "balloon",
+              "bounces": 7,
+              "small": false,
+              "partSplitDone": false
+            },
+            {
+              "kind": "balloon",
+              "bounces": 6,
+              "small": false,
+              "partSplitDone": false
+            },
+            {
+              "kind": "balloon",
+              "bounces": 7,
+              "small": false,
+              "partSplitDone": false
+            },
+            {
+              "kind": "balloon",
+              "bounces": 7,
+              "small": false,
+              "partSplitDone": false
+            },
+            {
+              "kind": "balloon",
+              "bounces": 6,
+              "small": false,
+              "partSplitDone": false
+            },
+            {
+              "kind": "balloon",
+              "bounces": 7,
+              "small": false,
+              "partSplitDone": false
+            },
+            {
+              "kind": "balloon",
+              "bounces": 7,
+              "small": false,
+              "partSplitDone": false
+            },
+            {
+              "kind": "balloon",
+              "bounces": 6,
+              "small": false,
+              "partSplitDone": false
+            },
+            {
+              "kind": "balloon",
+              "bounces": 7,
+              "small": false,
+              "partSplitDone": false
+            },
+            {
+              "kind": "balloon",
+              "bounces": 7,
+              "small": false,
+              "partSplitDone": false
+            }
+          ],
+          "fieldDetails": [
+            {
+              "kind": "lava",
+              "life": 0.4166666666666829,
+              "age": 5.583333333333319,
+              "maxTicks": 15,
+              "ticks": 14
+            },
+            {
+              "kind": "lava",
+              "life": 0.4166666666666829,
+              "age": 5.583333333333319,
+              "maxTicks": 15,
+              "ticks": 14
+            },
+            {
+              "kind": "lava",
+              "life": 0.4166666666666829,
+              "age": 5.583333333333319,
+              "maxTicks": 15,
+              "ticks": 14
+            },
+            {
+              "kind": "lava",
+              "life": 1.6166666666666822,
+              "age": 4.383333333333323,
+              "maxTicks": 15,
+              "ticks": 11
+            },
+            {
+              "kind": "lava",
+              "life": 1.6166666666666822,
+              "age": 4.383333333333323,
+              "maxTicks": 15,
+              "ticks": 11
+            },
+            {
+              "kind": "lava",
+              "life": 1.6166666666666822,
+              "age": 4.383333333333323,
+              "maxTicks": 15,
+              "ticks": 11
+            },
+            {
+              "kind": "lava",
+              "life": 2.816666666666678,
+              "age": 3.183333333333327,
+              "maxTicks": 15,
+              "ticks": 8
+            },
+            {
+              "kind": "lava",
+              "life": 2.816666666666678,
+              "age": 3.183333333333327,
+              "maxTicks": 15,
+              "ticks": 8
+            },
+            {
+              "kind": "lava",
+              "life": 2.816666666666678,
+              "age": 3.183333333333327,
+              "maxTicks": 15,
+              "ticks": 8
+            },
+            {
+              "kind": "lava",
+              "life": 4.016666666666674,
+              "age": 1.9833333333333312,
+              "maxTicks": 15,
+              "ticks": 5
+            },
+            {
+              "kind": "lava",
+              "life": 4.016666666666674,
+              "age": 1.9833333333333312,
+              "maxTicks": 15,
+              "ticks": 5
+            },
+            {
+              "kind": "lava",
+              "life": 4.016666666666674,
+              "age": 1.9833333333333312,
+              "maxTicks": 15,
+              "ticks": 5
+            },
+            {
+              "kind": "lava",
+              "life": 5.2166666666666694,
+              "age": 0.7833333333333341,
+              "maxTicks": 15,
+              "ticks": 2
+            },
+            {
+              "kind": "lava",
+              "life": 5.2166666666666694,
+              "age": 0.7833333333333341,
+              "maxTicks": 15,
+              "ticks": 2
+            },
+            {
+              "kind": "lava",
+              "life": 5.2166666666666694,
+              "age": 0.7833333333333341,
+              "maxTicks": 15,
+              "ticks": 2
+            }
+          ],
+          "fields": 15,
+          "orbits": 0,
+          "mines": 0,
+          "bees": 0,
+          "beams": 0,
+          "effects": 3,
+          "kinds": [
+            "balloon",
+            "lava",
+            "splash",
+            "sparks",
+            "rspray"
+          ],
+          "shotAngles": [
+            2.97,
+            -0.28,
+            0.92,
+            3.65,
+            -0.46,
+            0.74,
+            3.42,
+            -0.65,
+            0.55,
+            3.49,
+            -0.29,
+            0.91,
+            3.24,
+            -0.06,
+            1.14,
+            4.15,
+            0.59,
+            1.79,
+            4.42,
+            1.01,
+            2.21,
+            5.5,
+            1.29,
+            2.49
+          ],
+          "fieldSpots": [
+            {
+              "x": -5,
+              "y": 597,
+              "r": 64
+            },
+            {
+              "x": -83,
+              "y": 689,
+              "r": 64
+            },
+            {
+              "x": -44,
+              "y": 643,
+              "r": 64
+            },
+            {
+              "x": -21,
+              "y": 570,
+              "r": 64
+            },
+            {
+              "x": -110,
+              "y": 651,
+              "r": 64
+            },
+            {
+              "x": -66,
+              "y": 611,
+              "r": 64
+            },
+            {
+              "x": -89,
+              "y": 583,
+              "r": 64
+            },
+            {
+              "x": -84,
+              "y": 703,
+              "r": 64
+            },
+            {
+              "x": -86,
+              "y": 643,
+              "r": 64
+            },
+            {
+              "x": -65,
+              "y": 564,
+              "r": 64
+            },
+            {
+              "x": -160,
+              "y": 638,
+              "r": 64
+            },
+            {
+              "x": -112,
+              "y": 601,
+              "r": 64
+            },
+            {
+              "x": -14,
+              "y": 604,
+              "r": 64
+            },
+            {
+              "x": -128,
+              "y": 567,
+              "r": 64
+            },
+            {
+              "x": -71,
+              "y": 585,
+              "r": 64
+            }
+          ],
+          "casts": {
+            "F1": 51,
+            "EVO_F1": 271,
+            "W2": 44,
+            "EVO_W2": 142,
+            "W1": 134,
+            "F2": 23
+          },
+          "hits": {
+            "F1": 258,
+            "EVO_F1": 2742,
+            "W2": 61,
+            "EVO_W2": 534,
+            "W1": 529,
+            "F2": 25
+          },
+          "damage": {
+            "F1": 24233.139840000054,
+            "EVO_F1": 917932.4656992326,
+            "W2": 2829.8700000000003,
+            "EVO_W2": 57226.60791750025,
+            "W1": 120657.73823999977,
+            "F2": 3595.500000000001
+          },
+          "parts": {
+            "F1": 144,
+            "EVO_F1": 1163,
+            "W1": 74
+          },
+          "legendCasts": 119
+        },
+        "mode": "playing"
+      },
+      "inputHash": 250856047,
+      "canvasHash": null,
+      "settlement": {
+        "reward": {
+          "coins": 142,
+          "petCoinPct": 0,
+          "gifts": 0,
+          "missions": [],
+          "stars": 0,
+          "first": false,
+          "partActivity": [
+            {
+              "id": "PART_F1",
+              "active": true
+            },
+            {
+              "id": "PART_W1",
+              "active": true
+            },
+            {
+              "id": "PART_L1",
+              "active": false
+            }
+          ],
+          "stageGift": null,
+          "difficulty": "normal",
+          "goal": false,
+          "notes": []
+        },
+        "charged": 0,
+        "cleared": false,
+        "stage": "CH15"
+      },
+      "errors": []
+    },
+    "after": {
+      "outcome": {
+        "seconds": 274.6000000000789,
+        "kills": 2037,
+        "hp": 715,
+        "hpMax": 715,
+        "litter": 33,
+        "choices": 24,
+        "bossHp": 170175.12,
+        "stats": {
+          "kills": 2037,
+          "bossKills": 0,
+          "eliteKills": 1,
+          "evolutions": 2,
+          "revives": 0,
+          "chests": 3,
+          "gems": 1087,
+          "bossDamage": 412106,
+          "abilityUses": 0,
+          "darkGems": 0,
+          "statusDmg": 0,
+          "midBossNoHit": 1,
+          "evoKinds": [
+            "EVO_F1",
+            "EVO_W2"
+          ],
+          "presetRun": false,
+          "buffs": [],
+          "litter": 33,
+          "firstHitAt": 0.850000000000001,
+          "hurtContact": 99.81774291299999,
+          "hurtHit": 278.4497425940784,
+          "pet": {
+            "splash": 53
+          }
+        },
+        "elements": {
+          "time": 274.6000000000789,
+          "shots": 24,
+          "scheduled": 0,
+          "shotDetails": [
+            {
+              "kind": "balloon",
+              "bounces": 6,
+              "small": false,
+              "partSplitDone": false
+            },
+            {
+              "kind": "balloon",
+              "bounces": 7,
+              "small": false,
+              "partSplitDone": false
+            },
+            {
+              "kind": "balloon",
+              "bounces": 7,
+              "small": false,
+              "partSplitDone": false
+            },
+            {
+              "kind": "balloon",
+              "bounces": 6,
+              "small": false,
+              "partSplitDone": false
+            },
+            {
+              "kind": "balloon",
+              "bounces": 7,
+              "small": false,
+              "partSplitDone": false
+            },
+            {
+              "kind": "balloon",
+              "bounces": 7,
+              "small": false,
+              "partSplitDone": false
+            },
+            {
+              "kind": "balloon",
+              "bounces": 6,
+              "small": false,
+              "partSplitDone": false
+            },
+            {
+              "kind": "balloon",
+              "bounces": 7,
+              "small": false,
+              "partSplitDone": false
+            },
+            {
+              "kind": "balloon",
+              "bounces": 7,
+              "small": false,
+              "partSplitDone": false
+            },
+            {
+              "kind": "balloon",
+              "bounces": 6,
+              "small": false,
+              "partSplitDone": false
+            },
+            {
+              "kind": "balloon",
+              "bounces": 7,
+              "small": false,
+              "partSplitDone": false
+            },
+            {
+              "kind": "balloon",
+              "bounces": 7,
+              "small": false,
+              "partSplitDone": false
+            },
+            {
+              "kind": "balloon",
+              "bounces": 6,
+              "small": false,
+              "partSplitDone": false
+            },
+            {
+              "kind": "balloon",
+              "bounces": 7,
+              "small": false,
+              "partSplitDone": false
+            },
+            {
+              "kind": "balloon",
+              "bounces": 7,
+              "small": false,
+              "partSplitDone": false
+            },
+            {
+              "kind": "balloon",
+              "bounces": 6,
+              "small": false,
+              "partSplitDone": false
+            },
+            {
+              "kind": "balloon",
+              "bounces": 7,
+              "small": false,
+              "partSplitDone": false
+            },
+            {
+              "kind": "balloon",
+              "bounces": 7,
+              "small": false,
+              "partSplitDone": false
+            },
+            {
+              "kind": "balloon",
+              "bounces": 6,
+              "small": false,
+              "partSplitDone": false
+            },
+            {
+              "kind": "balloon",
+              "bounces": 7,
+              "small": false,
+              "partSplitDone": false
+            },
+            {
+              "kind": "balloon",
+              "bounces": 7,
+              "small": false,
+              "partSplitDone": false
+            },
+            {
+              "kind": "balloon",
+              "bounces": 6,
+              "small": false,
+              "partSplitDone": false
+            },
+            {
+              "kind": "balloon",
+              "bounces": 7,
+              "small": false,
+              "partSplitDone": false
+            },
+            {
+              "kind": "balloon",
+              "bounces": 7,
+              "small": false,
+              "partSplitDone": false
+            }
+          ],
+          "fieldDetails": [
+            {
+              "kind": "lava",
+              "life": 0.4166666666666829,
+              "age": 5.583333333333319,
+              "maxTicks": 15,
+              "ticks": 14
+            },
+            {
+              "kind": "lava",
+              "life": 0.4166666666666829,
+              "age": 5.583333333333319,
+              "maxTicks": 15,
+              "ticks": 14
+            },
+            {
+              "kind": "lava",
+              "life": 0.4166666666666829,
+              "age": 5.583333333333319,
+              "maxTicks": 15,
+              "ticks": 14
+            },
+            {
+              "kind": "lava",
+              "life": 1.6166666666666822,
+              "age": 4.383333333333323,
+              "maxTicks": 15,
+              "ticks": 11
+            },
+            {
+              "kind": "lava",
+              "life": 1.6166666666666822,
+              "age": 4.383333333333323,
+              "maxTicks": 15,
+              "ticks": 11
+            },
+            {
+              "kind": "lava",
+              "life": 1.6166666666666822,
+              "age": 4.383333333333323,
+              "maxTicks": 15,
+              "ticks": 11
+            },
+            {
+              "kind": "lava",
+              "life": 2.816666666666678,
+              "age": 3.183333333333327,
+              "maxTicks": 15,
+              "ticks": 8
+            },
+            {
+              "kind": "lava",
+              "life": 2.816666666666678,
+              "age": 3.183333333333327,
+              "maxTicks": 15,
+              "ticks": 8
+            },
+            {
+              "kind": "lava",
+              "life": 2.816666666666678,
+              "age": 3.183333333333327,
+              "maxTicks": 15,
+              "ticks": 8
+            },
+            {
+              "kind": "lava",
+              "life": 4.016666666666674,
+              "age": 1.9833333333333312,
+              "maxTicks": 15,
+              "ticks": 5
+            },
+            {
+              "kind": "lava",
+              "life": 4.016666666666674,
+              "age": 1.9833333333333312,
+              "maxTicks": 15,
+              "ticks": 5
+            },
+            {
+              "kind": "lava",
+              "life": 4.016666666666674,
+              "age": 1.9833333333333312,
+              "maxTicks": 15,
+              "ticks": 5
+            },
+            {
+              "kind": "lava",
+              "life": 5.2166666666666694,
+              "age": 0.7833333333333341,
+              "maxTicks": 15,
+              "ticks": 2
+            },
+            {
+              "kind": "lava",
+              "life": 5.2166666666666694,
+              "age": 0.7833333333333341,
+              "maxTicks": 15,
+              "ticks": 2
+            },
+            {
+              "kind": "lava",
+              "life": 5.2166666666666694,
+              "age": 0.7833333333333341,
+              "maxTicks": 15,
+              "ticks": 2
+            }
+          ],
+          "fields": 15,
+          "orbits": 0,
+          "mines": 0,
+          "bees": 0,
+          "beams": 0,
+          "effects": 3,
+          "kinds": [
+            "balloon",
+            "lava",
+            "splash",
+            "sparks",
+            "rspray"
+          ],
+          "shotAngles": [
+            2.97,
+            -0.28,
+            0.92,
+            3.65,
+            -0.46,
+            0.74,
+            3.42,
+            -0.65,
+            0.55,
+            3.49,
+            -0.29,
+            0.91,
+            3.24,
+            -0.06,
+            1.14,
+            4.15,
+            0.59,
+            1.79,
+            4.42,
+            1.01,
+            2.21,
+            5.5,
+            1.29,
+            2.49
+          ],
+          "fieldSpots": [
+            {
+              "x": -5,
+              "y": 597,
+              "r": 64
+            },
+            {
+              "x": -83,
+              "y": 689,
+              "r": 64
+            },
+            {
+              "x": -44,
+              "y": 643,
+              "r": 64
+            },
+            {
+              "x": -21,
+              "y": 570,
+              "r": 64
+            },
+            {
+              "x": -110,
+              "y": 651,
+              "r": 64
+            },
+            {
+              "x": -66,
+              "y": 611,
+              "r": 64
+            },
+            {
+              "x": -89,
+              "y": 583,
+              "r": 64
+            },
+            {
+              "x": -84,
+              "y": 703,
+              "r": 64
+            },
+            {
+              "x": -86,
+              "y": 643,
+              "r": 64
+            },
+            {
+              "x": -65,
+              "y": 564,
+              "r": 64
+            },
+            {
+              "x": -160,
+              "y": 638,
+              "r": 64
+            },
+            {
+              "x": -112,
+              "y": 601,
+              "r": 64
+            },
+            {
+              "x": -14,
+              "y": 604,
+              "r": 64
+            },
+            {
+              "x": -128,
+              "y": 567,
+              "r": 64
+            },
+            {
+              "x": -71,
+              "y": 585,
+              "r": 64
+            }
+          ],
+          "casts": {
+            "F1": 51,
+            "EVO_F1": 271,
+            "W2": 44,
+            "EVO_W2": 142,
+            "W1": 134,
+            "F2": 23
+          },
+          "hits": {
+            "F1": 258,
+            "EVO_F1": 2742,
+            "W2": 61,
+            "EVO_W2": 534,
+            "W1": 529,
+            "F2": 25
+          },
+          "damage": {
+            "F1": 24233.139840000054,
+            "EVO_F1": 917932.4656992326,
+            "W2": 2829.8700000000003,
+            "EVO_W2": 57226.60791750025,
+            "W1": 120657.73823999977,
+            "F2": 3595.500000000001
+          },
+          "parts": {
+            "F1": 144,
+            "EVO_F1": 1163,
+            "W1": 74
+          },
+          "legendCasts": 119
+        },
+        "mode": "playing"
+      },
+      "inputHash": 250856047,
+      "canvasHash": null,
+      "settlement": {
+        "reward": {
+          "coins": 142,
+          "petCoinPct": 0,
+          "gifts": 0,
+          "missions": [],
+          "stars": 0,
+          "first": false,
+          "partActivity": [
+            {
+              "id": "PART_F1",
+              "active": true
+            },
+            {
+              "id": "PART_W1",
+              "active": true
+            },
+            {
+              "id": "PART_L1",
+              "active": false
+            }
+          ],
+          "stageGift": null,
+          "difficulty": "normal",
+          "goal": false,
+          "notes": []
+        },
+        "charged": 0,
+        "cleared": false,
+        "stage": "CH15"
+      },
+      "errors": []
+    }
+  }
+]

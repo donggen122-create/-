@@ -1,0 +1,39 @@
+--- a/tests/theme2.test.mjs
++++ b/tests/theme2.test.mjs
+@@ -34,8 +34,8 @@
+
+ test('every chapter-2 sprite referenced by the game exists',()=>{
+  const assets=fs.readFileSync(new URL('../game/src/assets.js',import.meta.url),'utf8');
+- const keys=[...assets.matchAll(/t2_(\w+): IMG_BASE \+ "t2\/(\w+)\.png"/g)];assert.ok(keys.length>=26);
+- for(const [,,f] of keys)assert.ok(fs.existsSync(new URL(`../game/assets/sprites/t2/${f}.png`,import.meta.url)),f);
++ const keys=[...assets.matchAll(/t2_(\w+): IMG_BASE \+ "t2\/(\w+)\.(png|webp)"/g)];assert.ok(keys.length>=26);
++ for(const [,,f,ext] of keys)assert.ok(fs.existsSync(new URL(`../game/assets/sprites/t2/${f}.${ext}`,import.meta.url)),f);
+  const used=[...Object.values(T2_ENEMIES).flatMap(e=>[e.sprite,...Object.values(e.frames||{}).flat()]),T2_BOSS.img.calm,T2_BOSS.img.angry,...T2_STAGES.map(s=>s.floor)];
+  for(const k of used)assert.match(assets,new RegExp(`\\b${k}:`),k);
+  for(const f of ['card_polluted.jpg','card_clean.jpg'])assert.ok(fs.existsSync(new URL(`../game/assets/sprites/t2/${f}`,import.meta.url)),f);
+--- a/tests/theme3.test.mjs
++++ b/tests/theme3.test.mjs
+@@ -47,8 +47,8 @@
+
+ test('every chapter-3 sprite referenced by the game exists',()=>{
+  const assets=fs.readFileSync(new URL('../game/src/assets.js',import.meta.url),'utf8');
+- const keys=[...assets.matchAll(/t3_(\w+): IMG_BASE \+ "t3\/(\w+)\.png"/g)];assert.ok(keys.length>=27);
+- for(const [,,f] of keys)assert.ok(fs.existsSync(new URL(`../game/assets/sprites/t3/${f}.png`,import.meta.url)),f);
++ const keys=[...assets.matchAll(/t3_(\w+): IMG_BASE \+ "t3\/(\w+)\.(png|webp)"/g)];assert.ok(keys.length>=27);
++ for(const [,,f,ext] of keys)assert.ok(fs.existsSync(new URL(`../game/assets/sprites/t3/${f}.${ext}`,import.meta.url)),f);
+  const patterns=BOSS_PATTERNS_T3.map(p=>p.drop).filter(Boolean);
+  const used=[...Object.values(T3_ENEMIES).flatMap(e=>[e.sprite,...Object.values(e.frames||{}).flat()]),T3_BOSS.img.calm,T3_BOSS.img.angry,...T3_STAGES.map(s=>s.floor),...patterns];
+  for(const k of used)assert.match(assets,new RegExp(`\\b${k}:`),k);
+--- a/tests/theme4.test.mjs
++++ b/tests/theme4.test.mjs
+@@ -46,8 +46,8 @@
+
+ test('every chapter-4 sprite referenced by the game exists',()=>{
+  const assets=fs.readFileSync(new URL('../game/src/assets.js',import.meta.url),'utf8');
+- const keys=[...assets.matchAll(/t4_(\w+): IMG_BASE \+ "t4\/(\w+)\.png"/g)];assert.ok(keys.length>=30);
+- for(const [,,f] of keys)assert.ok(fs.existsSync(new URL(`../game/assets/sprites/t4/${f}.png`,import.meta.url)),f);
++ const keys=[...assets.matchAll(/t4_(\w+): IMG_BASE \+ "t4\/(\w+)\.(png|webp)"/g)];assert.ok(keys.length>=30);
++ for(const [,,f,ext] of keys)assert.ok(fs.existsSync(new URL(`../game/assets/sprites/t4/${f}.${ext}`,import.meta.url)),f);
+  const patterns=BOSS_PATTERNS_T4.map(p=>p.drop).filter(Boolean);
+  const used=[...Object.values(T4_ENEMIES).flatMap(e=>[e.sprite,...Object.values(e.frames||{}).flat()]),T4_BOSS.img.calm,T4_BOSS.img.angry,...T4_STAGES.map(s=>s.floor),...patterns];
+  for(const k of used)assert.match(assets,new RegExp(`\\b${k}:`),k);

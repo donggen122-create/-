@@ -1,0 +1,11 @@
+{
+  "baseline": "3da7fc051b25c5dd5ad00db1d38529ea196cb9f9",
+  "branch": "codex/2026-10-12-D",
+  "changedFiles": 293,
+  "ownershipPass": true,
+  "mainAndReworkOnlyImagePaths": true,
+  "cssOnlyUrls": true,
+  "indexOnlyImagePaths": true,
+  "push": false,
+  "deploy": false
+}

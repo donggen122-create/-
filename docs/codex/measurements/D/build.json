@@ -1,0 +1,15 @@
+{
+  "success": true,
+  "bytes": 75726522,
+  "convertedWebPDataURIs": 91,
+  "inlineConvertedSha256Pass": true,
+  "mimeCounts": {
+    "image/svg+xml": 72,
+    "image/png": 304,
+    "image/webp": 91,
+    "image/jpeg": 10,
+    "font/woff2": 2,
+    "audio/ogg": 11,
+    "audio/mpeg": 1
+  }
+}

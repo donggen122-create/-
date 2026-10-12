@@ -17,3 +17,13 @@ test('single-file modules include every local dependency before its importer', (
     }
   }
 });
+
+test('single-file build handles WebP in the MIME map, asset table and each static URL pass',()=>{
+  const build=readFileSync(new URL('../game/tools/build-single.ps1',import.meta.url),'utf8');
+  assert.match(build,/"\.webp"\s*=\s*"image\/webp"/);
+  assert.match(build,/@\('\.webp','\.png','\.jpg'/);
+  const passes=[...build.matchAll(/\$src|\$html|\$css/g)];
+  assert.ok(passes.length>0);
+  assert.equal((build.match(/\(\?:webp\|png\|/g)||[]).length,3,'JS, HTML and CSS all embed WebP');
+  assert.match(build,/key\.replace\(\/\\\.webp\$\/, "\.png"\)/,'retained dynamic PNG fallback');
+});

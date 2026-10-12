@@ -1,0 +1,4311 @@
+{
+  "commit": "253cd0146e4923003eb6f19e178716ee45c0b1d2",
+  "formats": {
+    ".ogg": {
+      "files": 11,
+      "bytes": 132145
+    },
+    ".mp3": {
+      "files": 1,
+      "bytes": 3753449
+    },
+    ".png": {
+      "files": 304,
+      "bytes": 25997178
+    },
+    ".svg": {
+      "files": 72,
+      "bytes": 49033
+    },
+    ".webp": {
+      "files": 91,
+      "bytes": 5376194
+    },
+    ".jpg": {
+      "files": 10,
+      "bytes": 1497220
+    },
+    ".woff2": {
+      "files": 2,
+      "bytes": 231408
+    },
+    ".json": {
+      "files": 1,
+      "bytes": 8389
+    }
+  },
+  "files": [
+    {
+      "path": "game/assets/audio/attack_slice.ogg",
+      "bytes": 15532,
+      "format": ".ogg"
+    },
+    {
+      "path": "game/assets/audio/attack_whoosh.ogg",
+      "bytes": 16508,
+      "format": ".ogg"
+    },
+    {
+      "path": "game/assets/audio/boss_telegraph.ogg",
+      "bytes": 19012,
+      "format": ".ogg"
+    },
+    {
+      "path": "game/assets/audio/card_select.ogg",
+      "bytes": 4522,
+      "format": ".ogg"
+    },
+    {
+      "path": "game/assets/audio/gem_pickup.ogg",
+      "bytes": 13615,
+      "format": ".ogg"
+    },
+    {
+      "path": "game/assets/audio/gold_reward.ogg",
+      "bytes": 25394,
+      "format": ".ogg"
+    },
+    {
+      "path": "game/assets/audio/hit_boss.ogg",
+      "bytes": 15577,
+      "format": ".ogg"
+    },
+    {
+      "path": "game/assets/audio/hit_light.ogg",
+      "bytes": 5827,
+      "format": ".ogg"
+    },
+    {
+      "path": "game/assets/audio/hit_light2.ogg",
+      "bytes": 5795,
+      "format": ".ogg"
+    },
+    {
+      "path": "game/assets/audio/levelup_open.ogg",
+      "bytes": 5707,
+      "format": ".ogg"
+    },
+    {
+      "path": "game/assets/audio/main-theme.mp3",
+      "bytes": 3753449,
+      "format": ".mp3"
+    },
+    {
+      "path": "game/assets/audio/ui_click.ogg",
+      "bytes": 4656,
+      "format": ".ogg"
+    },
+    {
+      "path": "game/assets/elements_v2/fx/earth_impact.png",
+      "bytes": 1030172,
+      "format": ".png"
+    },
+    {
+      "path": "game/assets/elements_v2/fx/fire_impact.png",
+      "bytes": 1005835,
+      "format": ".png"
+    },
+    {
+      "path": "game/assets/elements_v2/fx/lightning_impact.png",
+      "bytes": 477332,
+      "format": ".png"
+    },
+    {
+      "path": "game/assets/elements_v2/fx/water_impact.png",
+      "bytes": 1581162,
+      "format": ".png"
+    },
+    {
+      "path": "game/assets/elements_v2/fx/wind_impact.png",
+      "bytes": 1388418,
+      "format": ".png"
+    },
+    {
+      "path": "game/assets/elements_v2/icons/combo_COMBO_01.svg",
+      "bytes": 953,
+      "format": ".svg"
+    },
+    {
+      "path": "game/assets/elements_v2/icons/combo_COMBO_02.svg",
+      "bytes": 892,
+      "format": ".svg"
+    },
+    {
+      "path": "game/assets/elements_v2/icons/combo_COMBO_03.svg",
+      "bytes": 959,
+      "format": ".svg"
+    },
+    {
+      "path": "game/assets/elements_v2/icons/combo_COMBO_04.svg",
+      "bytes": 943,
+      "format": ".svg"
+    },
+    {
+      "path": "game/assets/elements_v2/icons/combo_COMBO_05.svg",
+      "bytes": 1009,
+      "format": ".svg"
+    },
+    {
+      "path": "game/assets/elements_v2/icons/combo_COMBO_06.svg",
+      "bytes": 910,
+      "format": ".svg"
+    },
+    {
+      "path": "game/assets/elements_v2/icons/combo_COMBO_07.svg",
+      "bytes": 910,
+      "format": ".svg"
+    },
+    {
+      "path": "game/assets/elements_v2/icons/combo_COMBO_08.svg",
+      "bytes": 1001,
+      "format": ".svg"
+    },
+    {
+      "path": "game/assets/elements_v2/icons/combo_COMBO_09.svg",
+      "bytes": 922,
+      "format": ".svg"
+    },
+    {
+      "path": "game/assets/elements_v2/icons/combo_COMBO_10.svg",
+      "bytes": 908,
+      "format": ".svg"
+    },
+    {
+      "path": "game/assets/elements_v2/icons/combo_COMBO_11.svg",
+      "bytes": 1079,
+      "format": ".svg"
+    },
+    {
+      "path": "game/assets/elements_v2/icons/combo_COMBO_12.svg",
+      "bytes": 885,
+      "format": ".svg"
+    },
+    {
+      "path": "game/assets/elements_v2/icons/combo_COMBO_13.svg",
+      "bytes": 957,
+      "format": ".svg"
+    },
+    {
+      "path": "game/assets/elements_v2/icons/combo_COMBO_14.svg",
+      "bytes": 861,
+      "format": ".svg"
+    },
+    {
+      "path": "game/assets/elements_v2/icons/combo_COMBO_15.svg",
+      "bytes": 931,
+      "format": ".svg"
+    },
+    {
+      "path": "game/assets/elements_v2/icons/element_earth.svg",
+      "bytes": 496,
+      "format": ".svg"
+    },
+    {
+      "path": "game/assets/elements_v2/icons/element_fire.svg",
+      "bytes": 514,
+      "format": ".svg"
+    },
+    {
+      "path": "game/assets/elements_v2/icons/element_lightning.svg",
+      "bytes": 385,
+      "format": ".svg"
+    },
+    {
+      "path": "game/assets/elements_v2/icons/element_water.svg",
+      "bytes": 547,
+      "format": ".svg"
+    },
+    {
+      "path": "game/assets/elements_v2/icons/element_wind.svg",
+      "bytes": 503,
+      "format": ".svg"
+    },
+    {
+      "path": "game/assets/elements_v2/icons/mode_melee.svg",
+      "bytes": 485,
+      "format": ".svg"
+    },
+    {
+      "path": "game/assets/elements_v2/icons/mode_ranged.svg",
+      "bytes": 684,
+      "format": ".svg"
+    },
+    {
+      "path": "game/assets/elements_v2/icons/part_PART_E1.svg",
+      "bytes": 1076,
+      "format": ".svg"
+    },
+    {
+      "path": "game/assets/elements_v2/icons/part_PART_E2.svg",
+      "bytes": 997,
+      "format": ".svg"
+    },
+    {
+      "path": "game/assets/elements_v2/icons/part_PART_E3.svg",
+      "bytes": 985,
+      "format": ".svg"
+    },
+    {
+      "path": "game/assets/elements_v2/icons/part_PART_F1.svg",
+      "bytes": 964,
+      "format": ".svg"
+    },
+    {
+      "path": "game/assets/elements_v2/icons/part_PART_F2.svg",
+      "bytes": 886,
+      "format": ".svg"
+    },
+    {
+      "path": "game/assets/elements_v2/icons/part_PART_F3.svg",
+      "bytes": 971,
+      "format": ".svg"
+    },
+    {
+      "path": "game/assets/elements_v2/icons/part_PART_L1.svg",
+      "bytes": 1162,
+      "format": ".svg"
+    },
+    {
+      "path": "game/assets/elements_v2/icons/part_PART_L2.svg",
+      "bytes": 949,
+      "format": ".svg"
+    },
+    {
+      "path": "game/assets/elements_v2/icons/part_PART_L3.svg",
+      "bytes": 1071,
+      "format": ".svg"
+    },
+    {
+      "path": "game/assets/elements_v2/icons/part_PART_V1.svg",
+      "bytes": 924,
+      "format": ".svg"
+    },
+    {
+      "path": "game/assets/elements_v2/icons/part_PART_V2.svg",
+      "bytes": 855,
+      "format": ".svg"
+    },
+    {
+      "path": "game/assets/elements_v2/icons/part_PART_V3.svg",
+      "bytes": 982,
+      "format": ".svg"
+    },
+    {
+      "path": "game/assets/elements_v2/icons/part_PART_W1.svg",
+      "bytes": 878,
+      "format": ".svg"
+    },
+    {
+      "path": "game/assets/elements_v2/icons/part_PART_W2.svg",
+      "bytes": 900,
+      "format": ".svg"
+    },
+    {
+      "path": "game/assets/elements_v2/icons/part_PART_W3.svg",
+      "bytes": 1002,
+      "format": ".svg"
+    },
+    {
+      "path": "game/assets/elements_v2/icons/skill_E1.svg",
+      "bytes": 725,
+      "format": ".svg"
+    },
+    {
+      "path": "game/assets/elements_v2/icons/skill_E2.svg",
+      "bytes": 646,
+      "format": ".svg"
+    },
+    {
+      "path": "game/assets/elements_v2/icons/skill_E3.svg",
+      "bytes": 634,
+      "format": ".svg"
+    },
+    {
+      "path": "game/assets/elements_v2/icons/skill_F1.svg",
+      "bytes": 613,
+      "format": ".svg"
+    },
+    {
+      "path": "game/assets/elements_v2/icons/skill_F2.svg",
+      "bytes": 535,
+      "format": ".svg"
+    },
+    {
+      "path": "game/assets/elements_v2/icons/skill_F3.svg",
+      "bytes": 620,
+      "format": ".svg"
+    },
+    {
+      "path": "game/assets/elements_v2/icons/skill_L1.svg",
+      "bytes": 811,
+      "format": ".svg"
+    },
+    {
+      "path": "game/assets/elements_v2/icons/skill_L2.svg",
+      "bytes": 598,
+      "format": ".svg"
+    },
+    {
+      "path": "game/assets/elements_v2/icons/skill_L3.svg",
+      "bytes": 720,
+      "format": ".svg"
+    },
+    {
+      "path": "game/assets/elements_v2/icons/skill_V1.svg",
+      "bytes": 573,
+      "format": ".svg"
+    },
+    {
+      "path": "game/assets/elements_v2/icons/skill_V2.svg",
+      "bytes": 504,
+      "format": ".svg"
+    },
+    {
+      "path": "game/assets/elements_v2/icons/skill_V3.svg",
+      "bytes": 631,
+      "format": ".svg"
+    },
+    {
+      "path": "game/assets/elements_v2/icons/skill_W1.svg",
+      "bytes": 527,
+      "format": ".svg"
+    },
+    {
+      "path": "game/assets/elements_v2/icons/skill_W2.svg",
+      "bytes": 549,
+      "format": ".svg"
+    },
+    {
+      "path": "game/assets/elements_v2/icons/skill_W3.svg",
+      "bytes": 651,
+      "format": ".svg"
+    },
+    {
+      "path": "game/assets/elements_v2/weapons/baseball.png",
+      "bytes": 1172628,
+      "format": ".png"
+    },
+    {
+      "path": "game/assets/elements_v2/weapons/bat.png",
+      "bytes": 229326,
+      "format": ".png"
+    },
+    {
+      "path": "game/assets/elements_v2/weapons/dodgeball.png",
+      "bytes": 961941,
+      "format": ".png"
+    },
+    {
+      "path": "game/assets/elements_v2/weapons/pencil.png",
+      "bytes": 277652,
+      "format": ".png"
+    },
+    {
+      "path": "game/assets/elements_v2/weapons/sword.png",
+      "bytes": 283187,
+      "format": ".png"
+    },
+    {
+      "path": "game/assets/seoho_v1/icons/arrow.svg",
+      "bytes": 294,
+      "format": ".svg"
+    },
+    {
+      "path": "game/assets/seoho_v1/icons/book.svg",
+      "bytes": 381,
+      "format": ".svg"
+    },
+    {
+      "path": "game/assets/seoho_v1/icons/boots.svg",
+      "bytes": 363,
+      "format": ".svg"
+    },
+    {
+      "path": "game/assets/seoho_v1/icons/broom.svg",
+      "bytes": 391,
+      "format": ".svg"
+    },
+    {
+      "path": "game/assets/seoho_v1/icons/coin.svg",
+      "bytes": 403,
+      "format": ".svg"
+    },
+    {
+      "path": "game/assets/seoho_v1/icons/gift.svg",
+      "bytes": 411,
+      "format": ".svg"
+    },
+    {
+      "path": "game/assets/seoho_v1/icons/grabber.svg",
+      "bytes": 423,
+      "format": ".svg"
+    },
+    {
+      "path": "game/assets/seoho_v1/icons/handle.svg",
+      "bytes": 316,
+      "format": ".svg"
+    },
+    {
+      "path": "game/assets/seoho_v1/icons/heart.svg",
+      "bytes": 340,
+      "format": ".svg"
+    },
+    {
+      "path": "game/assets/seoho_v1/icons/map.svg",
+      "bytes": 421,
+      "format": ".svg"
+    },
+    {
+      "path": "game/assets/seoho_v1/icons/pass.svg",
+      "bytes": 410,
+      "format": ".svg"
+    },
+    {
+      "path": "game/assets/seoho_v1/icons/pinwheel.svg",
+      "bytes": 400,
+      "format": ".svg"
+    },
+    {
+      "path": "game/assets/seoho_v1/icons/seed.svg",
+      "bytes": 331,
+      "format": ".svg"
+    },
+    {
+      "path": "game/assets/seoho_v1/icons/shield.svg",
+      "bytes": 360,
+      "format": ".svg"
+    },
+    {
+      "path": "game/assets/seoho_v1/icons/shirt.svg",
+      "bytes": 356,
+      "format": ".svg"
+    },
+    {
+      "path": "game/assets/seoho_v1/icons/spark.svg",
+      "bytes": 318,
+      "format": ".svg"
+    },
+    {
+      "path": "game/assets/seoho_v1/icons/sun.svg",
+      "bytes": 350,
+      "format": ".svg"
+    },
+    {
+      "path": "game/assets/seoho_v1/icons/water.svg",
+      "bytes": 349,
+      "format": ".svg"
+    },
+    {
+      "path": "game/assets/seoho_v1/icons/watergun.svg",
+      "bytes": 419,
+      "format": ".svg"
+    },
+    {
+      "path": "game/assets/seoho_v1/icons/wind.svg",
+      "bytes": 324,
+      "format": ".svg"
+    },
+    {
+      "path": "game/assets/seoho_v1/pets/cat_idle.png",
+      "bytes": 871290,
+      "format": ".png"
+    },
+    {
+      "path": "game/assets/seoho_v1/pets/deer_idle.png",
+      "bytes": 767606,
+      "format": ".png"
+    },
+    {
+      "path": "game/assets/seoho_v1/pets/otter_idle.png",
+      "bytes": 766772,
+      "format": ".png"
+    },
+    {
+      "path": "game/assets/seoho_v1/pets/seal_idle.png",
+      "bytes": 619332,
+      "format": ".png"
+    },
+    {
+      "path": "game/assets/seoho_v1/pets/sparrow_idle.png",
+      "bytes": 717852,
+      "format": ".png"
+    },
+    {
+      "path": "game/assets/seoho_v1/pets/turtle_idle.png",
+      "bytes": 861663,
+      "format": ".png"
+    },
+    {
+      "path": "game/assets/sprites/enemy_elite.webp",
+      "bytes": 118,
+      "format": ".webp"
+    },
+    {
+      "path": "game/assets/sprites/enemy_imp.png",
+      "bytes": 219,
+      "format": ".png"
+    },
+    {
+      "path": "game/assets/sprites/enemy_spider.webp",
+      "bytes": 160,
+      "format": ".webp"
+    },
+    {
+      "path": "game/assets/sprites/enemy_wraith.webp",
+      "bytes": 106,
+      "format": ".webp"
+    },
+    {
+      "path": "game/assets/sprites/floor_ground.png",
+      "bytes": 109,
+      "format": ".png"
+    },
+    {
+      "path": "game/assets/sprites/gear/gear_hoya_melee_armor.png",
+      "bytes": 6725,
+      "format": ".png"
+    },
+    {
+      "path": "game/assets/sprites/gear/gear_hoya_melee_gloves.png",
+      "bytes": 6522,
+      "format": ".png"
+    },
+    {
+      "path": "game/assets/sprites/gear/gear_hoya_melee_helm.png",
+      "bytes": 5248,
+      "format": ".png"
+    },
+    {
+      "path": "game/assets/sprites/gear/gear_hoya_melee_necklace.png",
+      "bytes": 6529,
+      "format": ".png"
+    },
+    {
+      "path": "game/assets/sprites/gear/gear_hoya_melee_shoes.png",
+      "bytes": 6867,
+      "format": ".png"
+    },
+    {
+      "path": "game/assets/sprites/gear/gear_hoya_melee_weapon.png",
+      "bytes": 4475,
+      "format": ".png"
+    },
+    {
+      "path": "game/assets/sprites/gear/gear_hoya_ranged_armor.png",
+      "bytes": 5747,
+      "format": ".png"
+    },
+    {
+      "path": "game/assets/sprites/gear/gear_hoya_ranged_gloves.png",
+      "bytes": 10349,
+      "format": ".png"
+    },
+    {
+      "path": "game/assets/sprites/gear/gear_hoya_ranged_helm.png",
+      "bytes": 6391,
+      "format": ".png"
+    },
+    {
+      "path": "game/assets/sprites/gear/gear_hoya_ranged_necklace.png",
+      "bytes": 7116,
+      "format": ".png"
+    },
+    {
+      "path": "game/assets/sprites/gear/gear_hoya_ranged_shoes.png",
+      "bytes": 6705,
+      "format": ".png"
+    },
+    {
+      "path": "game/assets/sprites/gear/gear_hoya_ranged_weapon.png",
+      "bytes": 6193,
+      "format": ".png"
+    },
+    {
+      "path": "game/assets/sprites/gear/gear_minji_melee_armor.png",
+      "bytes": 6534,
+      "format": ".png"
+    },
+    {
+      "path": "game/assets/sprites/gear/gear_minji_melee_gloves.png",
+      "bytes": 6369,
+      "format": ".png"
+    },
+    {
+      "path": "game/assets/sprites/gear/gear_minji_melee_helm.png",
+      "bytes": 7145,
+      "format": ".png"
+    },
+    {
+      "path": "game/assets/sprites/gear/gear_minji_melee_necklace.png",
+      "bytes": 8163,
+      "format": ".png"
+    },
+    {
+      "path": "game/assets/sprites/gear/gear_minji_melee_shoes.png",
+      "bytes": 6400,
+      "format": ".png"
+    },
+    {
+      "path": "game/assets/sprites/gear/gear_minji_melee_weapon.png",
+      "bytes": 8148,
+      "format": ".png"
+    },
+    {
+      "path": "game/assets/sprites/gear/gear_minji_ranged_armor.png",
+      "bytes": 7842,
+      "format": ".png"
+    },
+    {
+      "path": "game/assets/sprites/gear/gear_minji_ranged_gloves.png",
+      "bytes": 6443,
+      "format": ".png"
+    },
+    {
+      "path": "game/assets/sprites/gear/gear_minji_ranged_helm.png",
+      "bytes": 5264,
+      "format": ".png"
+    },
+    {
+      "path": "game/assets/sprites/gear/gear_minji_ranged_necklace.png",
+      "bytes": 7350,
+      "format": ".png"
+    },
+    {
+      "path": "game/assets/sprites/gear/gear_minji_ranged_shoes.png",
+      "bytes": 9070,
+      "format": ".png"
+    },
+    {
+      "path": "game/assets/sprites/gear/gear_minji_ranged_weapon.png",
+      "bytes": 8762,
+      "format": ".png"
+    },
+    {
+      "path": "game/assets/sprites/heroes/hoya_attack_1.png",
+      "bytes": 21559,
+      "format": ".png"
+    },
+    {
+      "path": "game/assets/sprites/heroes/hoya_attack_2.png",
+      "bytes": 24398,
+      "format": ".png"
+    },
+    {
+      "path": "game/assets/sprites/heroes/hoya_attack_3.png",
+      "bytes": 21799,
+      "format": ".png"
+    },
+    {
+      "path": "game/assets/sprites/heroes/hoya_down_1.png",
+      "bytes": 17040,
+      "format": ".png"
+    },
+    {
+      "path": "game/assets/sprites/heroes/hoya_hurt_1.png",
+      "bytes": 13966,
+      "format": ".png"
+    },
+    {
+      "path": "game/assets/sprites/heroes/hoya_idle_1.png",
+      "bytes": 13966,
+      "format": ".png"
+    },
+    {
+      "path": "game/assets/sprites/heroes/hoya_jump_1.png",
+      "bytes": 15020,
+      "format": ".png"
+    },
+    {
+      "path": "game/assets/sprites/heroes/hoya_jump_2.png",
+      "bytes": 14927,
+      "format": ".png"
+    },
+    {
+      "path": "game/assets/sprites/heroes/hoya_ranged_1.png",
+      "bytes": 19538,
+      "format": ".png"
+    },
+    {
+      "path": "game/assets/sprites/heroes/hoya_ranged_2.png",
+      "bytes": 18207,
+      "format": ".png"
+    },
+    {
+      "path": "game/assets/sprites/heroes/hoya_ranged_3.png",
+      "bytes": 19356,
+      "format": ".png"
+    },
+    {
+      "path": "game/assets/sprites/heroes/hoya_ranged_4.png",
+      "bytes": 22009,
+      "format": ".png"
+    },
+    {
+      "path": "game/assets/sprites/heroes/hoya_ranged_5.png",
+      "bytes": 19181,
+      "format": ".png"
+    },
+    {
+      "path": "game/assets/sprites/heroes/hoya_ranged_6.png",
+      "bytes": 18546,
+      "format": ".png"
+    },
+    {
+      "path": "game/assets/sprites/heroes/hoya_ranged_down_1.png",
+      "bytes": 17716,
+      "format": ".png"
+    },
+    {
+      "path": "game/assets/sprites/heroes/hoya_ranged_hurt_1.png",
+      "bytes": 18501,
+      "format": ".png"
+    },
+    {
+      "path": "game/assets/sprites/heroes/hoya_ranged_idle_1.png",
+      "bytes": 17921,
+      "format": ".png"
+    },
+    {
+      "path": "game/assets/sprites/heroes/hoya_ranged_jump_1.png",
+      "bytes": 18669,
+      "format": ".png"
+    },
+    {
+      "path": "game/assets/sprites/heroes/hoya_ranged_jump_2.png",
+      "bytes": 19505,
+      "format": ".png"
+    },
+    {
+      "path": "game/assets/sprites/heroes/hoya_ranged_run_1.png",
+      "bytes": 19416,
+      "format": ".png"
+    },
+    {
+      "path": "game/assets/sprites/heroes/hoya_ranged_run_2.png",
+      "bytes": 19914,
+      "format": ".png"
+    },
+    {
+      "path": "game/assets/sprites/heroes/hoya_ranged_run_3.png",
+      "bytes": 19387,
+      "format": ".png"
+    },
+    {
+      "path": "game/assets/sprites/heroes/hoya_ranged_walk_1.png",
+      "bytes": 18334,
+      "format": ".png"
+    },
+    {
+      "path": "game/assets/sprites/heroes/hoya_ranged_walk_2.png",
+      "bytes": 17452,
+      "format": ".png"
+    },
+    {
+      "path": "game/assets/sprites/heroes/hoya_ranged_walk_3.png",
+      "bytes": 18507,
+      "format": ".png"
+    },
+    {
+      "path": "game/assets/sprites/heroes/hoya_run_1.png",
+      "bytes": 14663,
+      "format": ".png"
+    },
+    {
+      "path": "game/assets/sprites/heroes/hoya_run_2.png",
+      "bytes": 14396,
+      "format": ".png"
+    },
+    {
+      "path": "game/assets/sprites/heroes/hoya_run_3.png",
+      "bytes": 13811,
+      "format": ".png"
+    },
+    {
+      "path": "game/assets/sprites/heroes/hoya_walk_1.png",
+      "bytes": 15839,
+      "format": ".png"
+    },
+    {
+      "path": "game/assets/sprites/heroes/hoya_walk_2.png",
+      "bytes": 15614,
+      "format": ".png"
+    },
+    {
+      "path": "game/assets/sprites/heroes/hoya_walk_3.png",
+      "bytes": 15574,
+      "format": ".png"
+    },
+    {
+      "path": "game/assets/sprites/heroes/minji_attack_1.png",
+      "bytes": 20675,
+      "format": ".png"
+    },
+    {
+      "path": "game/assets/sprites/heroes/minji_attack_2.png",
+      "bytes": 21010,
+      "format": ".png"
+    },
+    {
+      "path": "game/assets/sprites/heroes/minji_attack_3.png",
+      "bytes": 20677,
+      "format": ".png"
+    },
+    {
+      "path": "game/assets/sprites/heroes/minji_down_1.png",
+      "bytes": 15828,
+      "format": ".png"
+    },
+    {
+      "path": "game/assets/sprites/heroes/minji_hurt_1.png",
+      "bytes": 17665,
+      "format": ".png"
+    },
+    {
+      "path": "game/assets/sprites/heroes/minji_idle_1.png",
+      "bytes": 16826,
+      "format": ".png"
+    },
+    {
+      "path": "game/assets/sprites/heroes/minji_jump_1.png",
+      "bytes": 17301,
+      "format": ".png"
+    },
+    {
+      "path": "game/assets/sprites/heroes/minji_ranged_1.png",
+      "bytes": 18090,
+      "format": ".png"
+    },
+    {
+      "path": "game/assets/sprites/heroes/minji_ranged_2.png",
+      "bytes": 18867,
+      "format": ".png"
+    },
+    {
+      "path": "game/assets/sprites/heroes/minji_ranged_3.png",
+      "bytes": 19224,
+      "format": ".png"
+    },
+    {
+      "path": "game/assets/sprites/heroes/minji_ranged_4.png",
+      "bytes": 18255,
+      "format": ".png"
+    },
+    {
+      "path": "game/assets/sprites/heroes/minji_ranged_5.png",
+      "bytes": 17249,
+      "format": ".png"
+    },
+    {
+      "path": "game/assets/sprites/heroes/minji_ranged_6.png",
+      "bytes": 18673,
+      "format": ".png"
+    },
+    {
+      "path": "game/assets/sprites/heroes/minji_ranged_down_1.png",
+      "bytes": 16927,
+      "format": ".png"
+    },
+    {
+      "path": "game/assets/sprites/heroes/minji_ranged_hurt_1.png",
+      "bytes": 18275,
+      "format": ".png"
+    },
+    {
+      "path": "game/assets/sprites/heroes/minji_ranged_idle_1.png",
+      "bytes": 17646,
+      "format": ".png"
+    },
+    {
+      "path": "game/assets/sprites/heroes/minji_run_1.png",
+      "bytes": 16786,
+      "format": ".png"
+    },
+    {
+      "path": "game/assets/sprites/heroes/minji_run_2.png",
+      "bytes": 16710,
+      "format": ".png"
+    },
+    {
+      "path": "game/assets/sprites/heroes/minji_run_3.png",
+      "bytes": 16516,
+      "format": ".png"
+    },
+    {
+      "path": "game/assets/sprites/heroes/minji_walk_1.png",
+      "bytes": 17800,
+      "format": ".png"
+    },
+    {
+      "path": "game/assets/sprites/heroes/minji_walk_2.png",
+      "bytes": 17310,
+      "format": ".png"
+    },
+    {
+      "path": "game/assets/sprites/heroes/minji_walk_3.png",
+      "bytes": 17490,
+      "format": ".png"
+    },
+    {
+      "path": "game/assets/sprites/player_knight.webp",
+      "bytes": 126,
+      "format": ".webp"
+    },
+    {
+      "path": "game/assets/sprites/prop_chest.webp",
+      "bytes": 150,
+      "format": ".webp"
+    },
+    {
+      "path": "game/assets/sprites/prop_rock.webp",
+      "bytes": 112,
+      "format": ".webp"
+    },
+    {
+      "path": "game/assets/sprites/prop_torch.webp",
+      "bytes": 156,
+      "format": ".webp"
+    },
+    {
+      "path": "game/assets/sprites/skills/earth_bigdirt_1.png",
+      "bytes": 55861,
+      "format": ".png"
+    },
+    {
+      "path": "game/assets/sprites/skills/earth_bigdirt_2.png",
+      "bytes": 72418,
+      "format": ".png"
+    },
+    {
+      "path": "game/assets/sprites/skills/earth_boulder_1.png",
+      "bytes": 51633,
+      "format": ".png"
+    },
+    {
+      "path": "game/assets/sprites/skills/earth_boulder_2.png",
+      "bytes": 52678,
+      "format": ".png"
+    },
+    {
+      "path": "game/assets/sprites/skills/earth_chain_ring.png",
+      "bytes": 69174,
+      "format": ".png"
+    },
+    {
+      "path": "game/assets/sprites/skills/earth_crack.png",
+      "bytes": 46142,
+      "format": ".png"
+    },
+    {
+      "path": "game/assets/sprites/skills/earth_dirt_1.png",
+      "bytes": 44807,
+      "format": ".png"
+    },
+    {
+      "path": "game/assets/sprites/skills/earth_dirt_2.png",
+      "bytes": 48013,
+      "format": ".png"
+    },
+    {
+      "path": "game/assets/sprites/skills/earth_dust_1.png",
+      "bytes": 12260,
+      "format": ".png"
+    },
+    {
+      "path": "game/assets/sprites/skills/earth_dust_2.png",
+      "bytes": 36168,
+      "format": ".png"
+    },
+    {
+      "path": "game/assets/sprites/skills/earth_dust_trail.png",
+      "bytes": 24807,
+      "format": ".png"
+    },
+    {
+      "path": "game/assets/sprites/skills/earth_mole_1.png",
+      "bytes": 31787,
+      "format": ".png"
+    },
+    {
+      "path": "game/assets/sprites/skills/earth_mole_2.png",
+      "bytes": 25969,
+      "format": ".png"
+    },
+    {
+      "path": "game/assets/sprites/skills/earth_molefield.png",
+      "bytes": 58816,
+      "format": ".png"
+    },
+    {
+      "path": "game/assets/sprites/skills/earth_stone_1.png",
+      "bytes": 20604,
+      "format": ".png"
+    },
+    {
+      "path": "game/assets/sprites/skills/earth_stone_2.png",
+      "bytes": 21722,
+      "format": ".png"
+    },
+    {
+      "path": "game/assets/sprites/skills/fire_boom_1.png",
+      "bytes": 30615,
+      "format": ".png"
+    },
+    {
+      "path": "game/assets/sprites/skills/fire_boom_2.png",
+      "bytes": 52337,
+      "format": ".png"
+    },
+    {
+      "path": "game/assets/sprites/skills/fire_boom_3.png",
+      "bytes": 39689,
+      "format": ".png"
+    },
+    {
+      "path": "game/assets/sprites/skills/fire_bottle.png",
+      "bytes": 33905,
+      "format": ".png"
+    },
+    {
+      "path": "game/assets/sprites/skills/fire_frocket.png",
+      "bytes": 38439,
+      "format": ".png"
+    },
+    {
+      "path": "game/assets/sprites/skills/fire_fwork_1.png",
+      "bytes": 15591,
+      "format": ".png"
+    },
+    {
+      "path": "game/assets/sprites/skills/fire_fwork_2.png",
+      "bytes": 66240,
+      "format": ".png"
+    },
+    {
+      "path": "game/assets/sprites/skills/fire_fwork_3.png",
+      "bytes": 32036,
+      "format": ".png"
+    },
+    {
+      "path": "game/assets/sprites/skills/fire_lava_1.png",
+      "bytes": 36761,
+      "format": ".png"
+    },
+    {
+      "path": "game/assets/sprites/skills/fire_lava_2.png",
+      "bytes": 43696,
+      "format": ".png"
+    },
+    {
+      "path": "game/assets/sprites/skills/fire_lava_3.png",
+      "bytes": 53698,
+      "format": ".png"
+    },
+    {
+      "path": "game/assets/sprites/skills/fire_puddle_1.png",
+      "bytes": 28514,
+      "format": ".png"
+    },
+    {
+      "path": "game/assets/sprites/skills/fire_puddle_2.png",
+      "bytes": 38446,
+      "format": ".png"
+    },
+    {
+      "path": "game/assets/sprites/skills/fire_puddle_3.png",
+      "bytes": 46512,
+      "format": ".png"
+    },
+    {
+      "path": "game/assets/sprites/skills/fire_rocket.png",
+      "bytes": 28493,
+      "format": ".png"
+    },
+    {
+      "path": "game/assets/sprites/skills/fire_volcano.png",
+      "bytes": 49217,
+      "format": ".png"
+    },
+    {
+      "path": "game/assets/sprites/skills/lightning_bee_1.png",
+      "bytes": 37905,
+      "format": ".png"
+    },
+    {
+      "path": "game/assets/sprites/skills/lightning_bee_2.png",
+      "bytes": 32064,
+      "format": ".png"
+    },
+    {
+      "path": "game/assets/sprites/skills/lightning_bigburst.png",
+      "bytes": 81157,
+      "format": ".png"
+    },
+    {
+      "path": "game/assets/sprites/skills/lightning_bigflash.png",
+      "bytes": 52433,
+      "format": ".png"
+    },
+    {
+      "path": "game/assets/sprites/skills/lightning_bolt_1.png",
+      "bytes": 24387,
+      "format": ".png"
+    },
+    {
+      "path": "game/assets/sprites/skills/lightning_bolt_2.png",
+      "bytes": 27827,
+      "format": ".png"
+    },
+    {
+      "path": "game/assets/sprites/skills/lightning_cloud.png",
+      "bytes": 52287,
+      "format": ".png"
+    },
+    {
+      "path": "game/assets/sprites/skills/lightning_flash.png",
+      "bytes": 34174,
+      "format": ".png"
+    },
+    {
+      "path": "game/assets/sprites/skills/lightning_hline.png",
+      "bytes": 8123,
+      "format": ".png"
+    },
+    {
+      "path": "game/assets/sprites/skills/lightning_hstinger.png",
+      "bytes": 38867,
+      "format": ".png"
+    },
+    {
+      "path": "game/assets/sprites/skills/lightning_spark.png",
+      "bytes": 15390,
+      "format": ".png"
+    },
+    {
+      "path": "game/assets/sprites/skills/lightning_stinger.png",
+      "bytes": 25301,
+      "format": ".png"
+    },
+    {
+      "path": "game/assets/sprites/skills/lightning_storm.png",
+      "bytes": 61086,
+      "format": ".png"
+    },
+    {
+      "path": "game/assets/sprites/skills/lightning_swarm.png",
+      "bytes": 53675,
+      "format": ".png"
+    },
+    {
+      "path": "game/assets/sprites/skills/lightning_tbolt_1.png",
+      "bytes": 56526,
+      "format": ".png"
+    },
+    {
+      "path": "game/assets/sprites/skills/lightning_tbolt_2.png",
+      "bytes": 49943,
+      "format": ".png"
+    },
+    {
+      "path": "game/assets/sprites/skills/support_S1.png",
+      "bytes": 76216,
+      "format": ".png"
+    },
+    {
+      "path": "game/assets/sprites/skills/support_S2.png",
+      "bytes": 91485,
+      "format": ".png"
+    },
+    {
+      "path": "game/assets/sprites/skills/support_S3.png",
+      "bytes": 81548,
+      "format": ".png"
+    },
+    {
+      "path": "game/assets/sprites/skills/support_S4.png",
+      "bytes": 78297,
+      "format": ".png"
+    },
+    {
+      "path": "game/assets/sprites/skills/support_S5.png",
+      "bytes": 65329,
+      "format": ".png"
+    },
+    {
+      "path": "game/assets/sprites/skills/support_S6.png",
+      "bytes": 85512,
+      "format": ".png"
+    },
+    {
+      "path": "game/assets/sprites/skills/support_S7.png",
+      "bytes": 123439,
+      "format": ".png"
+    },
+    {
+      "path": "game/assets/sprites/skills/support_S8.png",
+      "bytes": 83454,
+      "format": ".png"
+    },
+    {
+      "path": "game/assets/sprites/skills/water_balloon.png",
+      "bytes": 32726,
+      "format": ".png"
+    },
+    {
+      "path": "game/assets/sprites/skills/water_beam.png",
+      "bytes": 24415,
+      "format": ".png"
+    },
+    {
+      "path": "game/assets/sprites/skills/water_beam_tip.png",
+      "bytes": 20882,
+      "format": ".png"
+    },
+    {
+      "path": "game/assets/sprites/skills/water_kballoon.png",
+      "bytes": 59552,
+      "format": ".png"
+    },
+    {
+      "path": "game/assets/sprites/skills/water_ksplash_1.png",
+      "bytes": 45047,
+      "format": ".png"
+    },
+    {
+      "path": "game/assets/sprites/skills/water_ksplash_2.png",
+      "bytes": 63760,
+      "format": ".png"
+    },
+    {
+      "path": "game/assets/sprites/skills/water_ksplash_3.png",
+      "bytes": 60181,
+      "format": ".png"
+    },
+    {
+      "path": "game/assets/sprites/skills/water_rbeam.png",
+      "bytes": 28743,
+      "format": ".png"
+    },
+    {
+      "path": "game/assets/sprites/skills/water_rbeam_tip.png",
+      "bytes": 26857,
+      "format": ".png"
+    },
+    {
+      "path": "game/assets/sprites/skills/water_rspray_1.png",
+      "bytes": 71650,
+      "format": ".png"
+    },
+    {
+      "path": "game/assets/sprites/skills/water_rspray_2.png",
+      "bytes": 71486,
+      "format": ".png"
+    },
+    {
+      "path": "game/assets/sprites/skills/water_splash_1.png",
+      "bytes": 18633,
+      "format": ".png"
+    },
+    {
+      "path": "game/assets/sprites/skills/water_splash_2.png",
+      "bytes": 33896,
+      "format": ".png"
+    },
+    {
+      "path": "game/assets/sprites/skills/water_splash_3.png",
+      "bytes": 13781,
+      "format": ".png"
+    },
+    {
+      "path": "game/assets/sprites/skills/water_spray_1.png",
+      "bytes": 21832,
+      "format": ".png"
+    },
+    {
+      "path": "game/assets/sprites/skills/water_spray_2.png",
+      "bytes": 19492,
+      "format": ".png"
+    },
+    {
+      "path": "game/assets/sprites/skills/wind_boomerang_1.png",
+      "bytes": 39849,
+      "format": ".png"
+    },
+    {
+      "path": "game/assets/sprites/skills/wind_boomerang_2.png",
+      "bytes": 34863,
+      "format": ".png"
+    },
+    {
+      "path": "game/assets/sprites/skills/wind_burst.png",
+      "bytes": 21741,
+      "format": ".png"
+    },
+    {
+      "path": "game/assets/sprites/skills/wind_mboomerang_1.png",
+      "bytes": 61091,
+      "format": ".png"
+    },
+    {
+      "path": "game/assets/sprites/skills/wind_mboomerang_2.png",
+      "bytes": 43421,
+      "format": ".png"
+    },
+    {
+      "path": "game/assets/sprites/skills/wind_pull_line.png",
+      "bytes": 8989,
+      "format": ".png"
+    },
+    {
+      "path": "game/assets/sprites/skills/wind_ring.png",
+      "bytes": 51188,
+      "format": ".png"
+    },
+    {
+      "path": "game/assets/sprites/skills/wind_shadow.png",
+      "bytes": 5309,
+      "format": ".png"
+    },
+    {
+      "path": "game/assets/sprites/skills/wind_swirl.png",
+      "bytes": 16676,
+      "format": ".png"
+    },
+    {
+      "path": "game/assets/sprites/skills/wind_top_1.png",
+      "bytes": 40666,
+      "format": ".png"
+    },
+    {
+      "path": "game/assets/sprites/skills/wind_top_2.png",
+      "bytes": 41225,
+      "format": ".png"
+    },
+    {
+      "path": "game/assets/sprites/skills/wind_top_3.png",
+      "bytes": 41325,
+      "format": ".png"
+    },
+    {
+      "path": "game/assets/sprites/skills/wind_trail.png",
+      "bytes": 29596,
+      "format": ".png"
+    },
+    {
+      "path": "game/assets/sprites/skills/wind_typhoon_1.png",
+      "bytes": 63913,
+      "format": ".png"
+    },
+    {
+      "path": "game/assets/sprites/skills/wind_typhoon_2.png",
+      "bytes": 63994,
+      "format": ".png"
+    },
+    {
+      "path": "game/assets/sprites/skills/wind_typhoon_3.png",
+      "bytes": 64187,
+      "format": ".png"
+    },
+    {
+      "path": "game/assets/sprites/t1/boss_angry.png",
+      "bytes": 173043,
+      "format": ".png"
+    },
+    {
+      "path": "game/assets/sprites/t1/boss_calm.png",
+      "bytes": 148963,
+      "format": ".png"
+    },
+    {
+      "path": "game/assets/sprites/t1/en_baggy.png",
+      "bytes": 33467,
+      "format": ".png"
+    },
+    {
+      "path": "game/assets/sprites/t1/en_bottle.png",
+      "bytes": 32260,
+      "format": ".png"
+    },
+    {
+      "path": "game/assets/sprites/t1/en_buttbug.png",
+      "bytes": 48512,
+      "format": ".png"
+    },
+    {
+      "path": "game/assets/sprites/t1/en_fly.png",
+      "bytes": 39603,
+      "format": ".png"
+    },
+    {
+      "path": "game/assets/sprites/t1/en_foodwaste.png",
+      "bytes": 47742,
+      "format": ".png"
+    },
+    {
+      "path": "game/assets/sprites/t1/en_snackbag.png",
+      "bytes": 40663,
+      "format": ".png"
+    },
+    {
+      "path": "game/assets/sprites/t1/floor_concrete.webp",
+      "bytes": 137372,
+      "format": ".webp"
+    },
+    {
+      "path": "game/assets/sprites/t1/floor_dirt.webp",
+      "bytes": 113432,
+      "format": ".webp"
+    },
+    {
+      "path": "game/assets/sprites/t1/floor_trash.webp",
+      "bytes": 221916,
+      "format": ".webp"
+    },
+    {
+      "path": "game/assets/sprites/t1/fx_crack.png",
+      "bytes": 106733,
+      "format": ".png"
+    },
+    {
+      "path": "game/assets/sprites/t1/fx_shockring.png",
+      "bytes": 86089,
+      "format": ".png"
+    },
+    {
+      "path": "game/assets/sprites/t1/fx_trashball.png",
+      "bytes": 39334,
+      "format": ".png"
+    },
+    {
+      "path": "game/assets/sprites/t1/item_heart.png",
+      "bytes": 6566,
+      "format": ".png"
+    },
+    {
+      "path": "game/assets/sprites/t1/item_orb.png",
+      "bytes": 10064,
+      "format": ".png"
+    },
+    {
+      "path": "game/assets/sprites/t1/item_recycle.png",
+      "bytes": 10213,
+      "format": ".png"
+    },
+    {
+      "path": "game/assets/sprites/t1/item_sprout.png",
+      "bytes": 7302,
+      "format": ".png"
+    },
+    {
+      "path": "game/assets/sprites/t1/item_sprout_big.png",
+      "bytes": 6059,
+      "format": ".png"
+    },
+    {
+      "path": "game/assets/sprites/t1/item_star.png",
+      "bytes": 4527,
+      "format": ".png"
+    },
+    {
+      "path": "game/assets/sprites/t1/prop_bags.png",
+      "bytes": 37677,
+      "format": ".png"
+    },
+    {
+      "path": "game/assets/sprites/t1/prop_bench.png",
+      "bytes": 33329,
+      "format": ".png"
+    },
+    {
+      "path": "game/assets/sprites/t1/prop_bin_fallen.png",
+      "bytes": 41001,
+      "format": ".png"
+    },
+    {
+      "path": "game/assets/sprites/t1/prop_bins.png",
+      "bytes": 63976,
+      "format": ".png"
+    },
+    {
+      "path": "game/assets/sprites/t1/prop_litter.png",
+      "bytes": 30551,
+      "format": ".png"
+    },
+    {
+      "path": "game/assets/sprites/t1/prop_tire.png",
+      "bytes": 33073,
+      "format": ".png"
+    },
+    {
+      "path": "game/assets/sprites/t2/boss_angry.png",
+      "bytes": 157436,
+      "format": ".png"
+    },
+    {
+      "path": "game/assets/sprites/t2/boss_calm.png",
+      "bytes": 139135,
+      "format": ".png"
+    },
+    {
+      "path": "game/assets/sprites/t2/card_clean.jpg",
+      "bytes": 80309,
+      "format": ".jpg"
+    },
+    {
+      "path": "game/assets/sprites/t2/card_polluted.jpg",
+      "bytes": 71946,
+      "format": ".jpg"
+    },
+    {
+      "path": "game/assets/sprites/t2/en_bigdust.png",
+      "bytes": 59139,
+      "format": ".png"
+    },
+    {
+      "path": "game/assets/sprites/t2/en_dust.png",
+      "bytes": 38432,
+      "format": ".png"
+    },
+    {
+      "path": "game/assets/sprites/t2/en_gas.png",
+      "bytes": 38610,
+      "format": ".png"
+    },
+    {
+      "path": "game/assets/sprites/t2/en_gas_fire.png",
+      "bytes": 45016,
+      "format": ".png"
+    },
+    {
+      "path": "game/assets/sprites/t2/en_gas_windup.png",
+      "bytes": 42882,
+      "format": ".png"
+    },
+    {
+      "path": "game/assets/sprites/t2/en_germ.png",
+      "bytes": 49964,
+      "format": ".png"
+    },
+    {
+      "path": "game/assets/sprites/t2/en_germ2.png",
+      "bytes": 50418,
+      "format": ".png"
+    },
+    {
+      "path": "game/assets/sprites/t2/en_germ3.png",
+      "bytes": 51447,
+      "format": ".png"
+    },
+    {
+      "path": "game/assets/sprites/t2/en_germ_armed.png",
+      "bytes": 43831,
+      "format": ".png"
+    },
+    {
+      "path": "game/assets/sprites/t2/en_raincloud.png",
+      "bytes": 35335,
+      "format": ".png"
+    },
+    {
+      "path": "game/assets/sprites/t2/floor_factory.png",
+      "bytes": 177175,
+      "format": ".png"
+    },
+    {
+      "path": "game/assets/sprites/t2/floor_soot.png",
+      "bytes": 300780,
+      "format": ".png"
+    },
+    {
+      "path": "game/assets/sprites/t2/floor_steel.png",
+      "bytes": 333270,
+      "format": ".png"
+    },
+    {
+      "path": "game/assets/sprites/t2/fx_bomb.png",
+      "bytes": 23411,
+      "format": ".png"
+    },
+    {
+      "path": "game/assets/sprites/t2/fx_flame.png",
+      "bytes": 51535,
+      "format": ".png"
+    },
+    {
+      "path": "game/assets/sprites/t2/fx_smog.png",
+      "bytes": 76763,
+      "format": ".png"
+    },
+    {
+      "path": "game/assets/sprites/t2/fx_splat.png",
+      "bytes": 64367,
+      "format": ".png"
+    },
+    {
+      "path": "game/assets/sprites/t2/prop_chimney.png",
+      "bytes": 23490,
+      "format": ".png"
+    },
+    {
+      "path": "game/assets/sprites/t2/prop_cones.png",
+      "bytes": 31996,
+      "format": ".png"
+    },
+    {
+      "path": "game/assets/sprites/t2/prop_drums.png",
+      "bytes": 37523,
+      "format": ".png"
+    },
+    {
+      "path": "game/assets/sprites/t2/prop_pedestal.png",
+      "bytes": 20220,
+      "format": ".png"
+    },
+    {
+      "path": "game/assets/sprites/t2/prop_pipe.png",
+      "bytes": 28323,
+      "format": ".png"
+    },
+    {
+      "path": "game/assets/sprites/t2/prop_tree.png",
+      "bytes": 49503,
+      "format": ".png"
+    },
+    {
+      "path": "game/assets/sprites/t2/prop_valve.png",
+      "bytes": 19423,
+      "format": ".png"
+    },
+    {
+      "path": "game/assets/sprites/t3/boss_angry.png",
+      "bytes": 157326,
+      "format": ".png"
+    },
+    {
+      "path": "game/assets/sprites/t3/boss_calm.png",
+      "bytes": 121200,
+      "format": ".png"
+    },
+    {
+      "path": "game/assets/sprites/t3/card_clean.jpg",
+      "bytes": 105911,
+      "format": ".jpg"
+    },
+    {
+      "path": "game/assets/sprites/t3/card_polluted.jpg",
+      "bytes": 101736,
+      "format": ".jpg"
+    },
+    {
+      "path": "game/assets/sprites/t3/en_algae.png",
+      "bytes": 54647,
+      "format": ".png"
+    },
+    {
+      "path": "game/assets/sprites/t3/en_algae_small.png",
+      "bytes": 23882,
+      "format": ".png"
+    },
+    {
+      "path": "game/assets/sprites/t3/en_algae_swell.png",
+      "bytes": 56476,
+      "format": ".png"
+    },
+    {
+      "path": "game/assets/sprites/t3/en_bubble.png",
+      "bytes": 40198,
+      "format": ".png"
+    },
+    {
+      "path": "game/assets/sprites/t3/en_bubble_atk.png",
+      "bytes": 48369,
+      "format": ".png"
+    },
+    {
+      "path": "game/assets/sprites/t3/en_can.png",
+      "bytes": 34641,
+      "format": ".png"
+    },
+    {
+      "path": "game/assets/sprites/t3/en_can_fire.png",
+      "bytes": 38929,
+      "format": ".png"
+    },
+    {
+      "path": "game/assets/sprites/t3/en_net.png",
+      "bytes": 126510,
+      "format": ".png"
+    },
+    {
+      "path": "game/assets/sprites/t3/en_net_throw.png",
+      "bytes": 112436,
+      "format": ".png"
+    },
+    {
+      "path": "game/assets/sprites/t3/en_netmon.png",
+      "bytes": 39172,
+      "format": ".png"
+    },
+    {
+      "path": "game/assets/sprites/t3/en_netmon_pounce.png",
+      "bytes": 45358,
+      "format": ".png"
+    },
+    {
+      "path": "game/assets/sprites/t3/en_petri.png",
+      "bytes": 31028,
+      "format": ".png"
+    },
+    {
+      "path": "game/assets/sprites/t3/en_petri_fire.png",
+      "bytes": 36765,
+      "format": ".png"
+    },
+    {
+      "path": "game/assets/sprites/t3/en_petri_windup.png",
+      "bytes": 29368,
+      "format": ".png"
+    },
+    {
+      "path": "game/assets/sprites/t3/floor_bank.png",
+      "bytes": 321890,
+      "format": ".png"
+    },
+    {
+      "path": "game/assets/sprites/t3/floor_sewer.png",
+      "bytes": 237152,
+      "format": ".png"
+    },
+    {
+      "path": "game/assets/sprites/t3/floor_stream.png",
+      "bytes": 278226,
+      "format": ".png"
+    },
+    {
+      "path": "game/assets/sprites/t3/fx_algae.png",
+      "bytes": 76088,
+      "format": ".png"
+    },
+    {
+      "path": "game/assets/sprites/t3/fx_cola.png",
+      "bytes": 38118,
+      "format": ".png"
+    },
+    {
+      "path": "game/assets/sprites/t3/fx_foam.png",
+      "bytes": 57892,
+      "format": ".png"
+    },
+    {
+      "path": "game/assets/sprites/t3/fx_net.png",
+      "bytes": 74597,
+      "format": ".png"
+    },
+    {
+      "path": "game/assets/sprites/t3/fx_oil.png",
+      "bytes": 52603,
+      "format": ".png"
+    },
+    {
+      "path": "game/assets/sprites/t3/fx_wave.png",
+      "bytes": 54652,
+      "format": ".png"
+    },
+    {
+      "path": "game/assets/sprites/t3/prop_fish_caught.png",
+      "bytes": 25862,
+      "format": ".png"
+    },
+    {
+      "path": "game/assets/sprites/t3/prop_fish_free.png",
+      "bytes": 28169,
+      "format": ".png"
+    },
+    {
+      "path": "game/assets/sprites/t3/prop_reeds.png",
+      "bytes": 74834,
+      "format": ".png"
+    },
+    {
+      "path": "game/assets/sprites/t3/prop_rock.png",
+      "bytes": 26219,
+      "format": ".png"
+    },
+    {
+      "path": "game/assets/sprites/t3/prop_stones.png",
+      "bytes": 15854,
+      "format": ".png"
+    },
+    {
+      "path": "game/assets/sprites/t3/prop_trash.png",
+      "bytes": 42633,
+      "format": ".png"
+    },
+    {
+      "path": "game/assets/sprites/t4/boss_angry.png",
+      "bytes": 166333,
+      "format": ".png"
+    },
+    {
+      "path": "game/assets/sprites/t4/boss_calm.png",
+      "bytes": 155620,
+      "format": ".png"
+    },
+    {
+      "path": "game/assets/sprites/t4/boss_clean.png",
+      "bytes": 154236,
+      "format": ".png"
+    },
+    {
+      "path": "game/assets/sprites/t4/boss_slam.png",
+      "bytes": 122327,
+      "format": ".png"
+    },
+    {
+      "path": "game/assets/sprites/t4/card_clean.jpg",
+      "bytes": 116921,
+      "format": ".jpg"
+    },
+    {
+      "path": "game/assets/sprites/t4/card_polluted.jpg",
+      "bytes": 105886,
+      "format": ".jpg"
+    },
+    {
+      "path": "game/assets/sprites/t4/en_bulki.png",
+      "bytes": 64811,
+      "format": ".png"
+    },
+    {
+      "path": "game/assets/sprites/t4/en_bulki_jump.png",
+      "bytes": 47201,
+      "format": ".png"
+    },
+    {
+      "path": "game/assets/sprites/t4/en_bulki_throw.png",
+      "bytes": 71227,
+      "format": ".png"
+    },
+    {
+      "path": "game/assets/sprites/t4/en_burner.png",
+      "bytes": 34339,
+      "format": ".png"
+    },
+    {
+      "path": "game/assets/sprites/t4/en_burner_big.png",
+      "bytes": 39391,
+      "format": ".png"
+    },
+    {
+      "path": "game/assets/sprites/t4/en_burner_l.png",
+      "bytes": 27820,
+      "format": ".png"
+    },
+    {
+      "path": "game/assets/sprites/t4/en_burner_m.png",
+      "bytes": 30872,
+      "format": ".png"
+    },
+    {
+      "path": "game/assets/sprites/t4/en_burner_out.png",
+      "bytes": 28998,
+      "format": ".png"
+    },
+    {
+      "path": "game/assets/sprites/t4/en_burner_s.png",
+      "bytes": 38203,
+      "format": ".png"
+    },
+    {
+      "path": "game/assets/sprites/t4/en_dozer.png",
+      "bytes": 106937,
+      "format": ".png"
+    },
+    {
+      "path": "game/assets/sprites/t4/en_dozer_charge.png",
+      "bytes": 98185,
+      "format": ".png"
+    },
+    {
+      "path": "game/assets/sprites/t4/en_nutria.png",
+      "bytes": 36766,
+      "format": ".png"
+    },
+    {
+      "path": "game/assets/sprites/t4/en_nutria_guard.png",
+      "bytes": 36161,
+      "format": ".png"
+    },
+    {
+      "path": "game/assets/sprites/t4/en_saw.png",
+      "bytes": 41124,
+      "format": ".png"
+    },
+    {
+      "path": "game/assets/sprites/t4/en_saw_spin.png",
+      "bytes": 54154,
+      "format": ".png"
+    },
+    {
+      "path": "game/assets/sprites/t4/floor_burnt.webp",
+      "bytes": 245066,
+      "format": ".webp"
+    },
+    {
+      "path": "game/assets/sprites/t4/floor_logging.webp",
+      "bytes": 224854,
+      "format": ".webp"
+    },
+    {
+      "path": "game/assets/sprites/t4/floor_trail.webp",
+      "bytes": 256624,
+      "format": ".webp"
+    },
+    {
+      "path": "game/assets/sprites/t4/fx_dust.png",
+      "bytes": 40794,
+      "format": ".png"
+    },
+    {
+      "path": "game/assets/sprites/t4/fx_flames.png",
+      "bytes": 43514,
+      "format": ".png"
+    },
+    {
+      "path": "game/assets/sprites/t4/fx_puff.png",
+      "bytes": 29778,
+      "format": ".png"
+    },
+    {
+      "path": "game/assets/sprites/t4/fx_slam.png",
+      "bytes": 73869,
+      "format": ".png"
+    },
+    {
+      "path": "game/assets/sprites/t4/fx_tracks.png",
+      "bytes": 61861,
+      "format": ".png"
+    },
+    {
+      "path": "game/assets/sprites/t4/fx_trashball.png",
+      "bytes": 27983,
+      "format": ".png"
+    },
+    {
+      "path": "game/assets/sprites/t4/prop_burnt.png",
+      "bytes": 30650,
+      "format": ".png"
+    },
+    {
+      "path": "game/assets/sprites/t4/prop_camptrash.png",
+      "bytes": 29809,
+      "format": ".png"
+    },
+    {
+      "path": "game/assets/sprites/t4/prop_ember.png",
+      "bytes": 11432,
+      "format": ".png"
+    },
+    {
+      "path": "game/assets/sprites/t4/prop_pond.png",
+      "bytes": 89106,
+      "format": ".png"
+    },
+    {
+      "path": "game/assets/sprites/t4/prop_sprout.png",
+      "bytes": 18105,
+      "format": ".png"
+    },
+    {
+      "path": "game/assets/sprites/t4/prop_stump.png",
+      "bytes": 25879,
+      "format": ".png"
+    },
+    {
+      "path": "game/assets/sprites/ui/supply_gear_closed.png",
+      "bytes": 23724,
+      "format": ".png"
+    },
+    {
+      "path": "game/assets/sprites/ui/supply_gear_lid.png",
+      "bytes": 12853,
+      "format": ".png"
+    },
+    {
+      "path": "game/assets/sprites/ui/supply_gear_open.png",
+      "bytes": 20841,
+      "format": ".png"
+    },
+    {
+      "path": "game/assets/sprites/ui/supply_part_closed.png",
+      "bytes": 19344,
+      "format": ".png"
+    },
+    {
+      "path": "game/assets/sprites/ui/supply_part_lid.png",
+      "bytes": 15316,
+      "format": ".png"
+    },
+    {
+      "path": "game/assets/sprites/ui/supply_part_open.png",
+      "bytes": 15931,
+      "format": ".png"
+    },
+    {
+      "path": "game/assets/sprites/vfx/purify-v1.png",
+      "bytes": 199711,
+      "format": ".png"
+    },
+    {
+      "path": "game/assets/sprites/vfx/smog-v1.png",
+      "bytes": 187662,
+      "format": ".png"
+    },
+    {
+      "path": "game/assets/sprites/vfx/splash-v1.png",
+      "bytes": 134534,
+      "format": ".png"
+    },
+    {
+      "path": "game/assets/ui/jua-title.woff2",
+      "bytes": 46372,
+      "format": ".woff2"
+    },
+    {
+      "path": "game/assets/ui/jua-ui.woff2",
+      "bytes": 185036,
+      "format": ".woff2"
+    },
+    {
+      "path": "game/assets/ui/notice_ch4.jpg",
+      "bytes": 217759,
+      "format": ".jpg"
+    },
+    {
+      "path": "game/assets/ui/panel-border-thin.webp",
+      "bytes": 78,
+      "format": ".webp"
+    },
+    {
+      "path": "game/assets/ui/panel-border.webp",
+      "bytes": 98,
+      "format": ".webp"
+    },
+    {
+      "path": "game/assets/ui/title_emblem.webp",
+      "bytes": 171576,
+      "format": ".webp"
+    },
+    {
+      "path": "game/assets/ui/title_hoya.webp",
+      "bytes": 167994,
+      "format": ".webp"
+    },
+    {
+      "path": "game/assets/ui/title_landscape.jpg",
+      "bytes": 168233,
+      "format": ".jpg"
+    },
+    {
+      "path": "game/assets/ui/title_mascot.webp",
+      "bytes": 56818,
+      "format": ".webp"
+    },
+    {
+      "path": "game/assets/ui/title_minji.webp",
+      "bytes": 181452,
+      "format": ".webp"
+    },
+    {
+      "path": "game/assets/ui/title_portrait.jpg",
+      "bytes": 320164,
+      "format": ".jpg"
+    },
+    {
+      "path": "game/assets/ui2/bg_hq.jpg",
+      "bytes": 208355,
+      "format": ".jpg"
+    },
+    {
+      "path": "game/assets/ui2/emblem.webp",
+      "bytes": 206422,
+      "format": ".webp"
+    },
+    {
+      "path": "game/assets/ui2/icons/btn_check.webp",
+      "bytes": 43502,
+      "format": ".webp"
+    },
+    {
+      "path": "game/assets/ui2/icons/btn_close.webp",
+      "bytes": 45136,
+      "format": ".webp"
+    },
+    {
+      "path": "game/assets/ui2/icons/btn_help.webp",
+      "bytes": 45052,
+      "format": ".webp"
+    },
+    {
+      "path": "game/assets/ui2/icons/btn_next.webp",
+      "bytes": 43628,
+      "format": ".webp"
+    },
+    {
+      "path": "game/assets/ui2/icons/btn_prev.webp",
+      "bytes": 43076,
+      "format": ".webp"
+    },
+    {
+      "path": "game/assets/ui2/icons/btn_reroll.webp",
+      "bytes": 46878,
+      "format": ".webp"
+    },
+    {
+      "path": "game/assets/ui2/icons/cur_coin.webp",
+      "bytes": 54266,
+      "format": ".webp"
+    },
+    {
+      "path": "game/assets/ui2/icons/cur_crown.webp",
+      "bytes": 55682,
+      "format": ".webp"
+    },
+    {
+      "path": "game/assets/ui2/icons/cur_gift.webp",
+      "bytes": 54446,
+      "format": ".webp"
+    },
+    {
+      "path": "game/assets/ui2/icons/cur_pass.webp",
+      "bytes": 48654,
+      "format": ".webp"
+    },
+    {
+      "path": "game/assets/ui2/icons/cur_sprout.webp",
+      "bytes": 52920,
+      "format": ".webp"
+    },
+    {
+      "path": "game/assets/ui2/icons/cur_star.webp",
+      "bytes": 46454,
+      "format": ".webp"
+    },
+    {
+      "path": "game/assets/ui2/icons/el_earth.webp",
+      "bytes": 57046,
+      "format": ".webp"
+    },
+    {
+      "path": "game/assets/ui2/icons/el_fire.webp",
+      "bytes": 55250,
+      "format": ".webp"
+    },
+    {
+      "path": "game/assets/ui2/icons/el_lightning.webp",
+      "bytes": 55252,
+      "format": ".webp"
+    },
+    {
+      "path": "game/assets/ui2/icons/el_water.webp",
+      "bytes": 54338,
+      "format": ".webp"
+    },
+    {
+      "path": "game/assets/ui2/icons/el_wind.webp",
+      "bytes": 58402,
+      "format": ".webp"
+    },
+    {
+      "path": "game/assets/ui2/icons/fn_clean.webp",
+      "bytes": 46270,
+      "format": ".webp"
+    },
+    {
+      "path": "game/assets/ui2/icons/fn_lock.webp",
+      "bytes": 40144,
+      "format": ".webp"
+    },
+    {
+      "path": "game/assets/ui2/icons/fn_mission.webp",
+      "bytes": 46898,
+      "format": ".webp"
+    },
+    {
+      "path": "game/assets/ui2/icons/fn_news.webp",
+      "bytes": 43518,
+      "format": ".webp"
+    },
+    {
+      "path": "game/assets/ui2/icons/fn_pause.webp",
+      "bytes": 39570,
+      "format": ".webp"
+    },
+    {
+      "path": "game/assets/ui2/icons/fn_settings.webp",
+      "bytes": 43786,
+      "format": ".webp"
+    },
+    {
+      "path": "game/assets/ui2/icons/fn_sound_off.webp",
+      "bytes": 34970,
+      "format": ".webp"
+    },
+    {
+      "path": "game/assets/ui2/icons/fn_sound_on.webp",
+      "bytes": 39838,
+      "format": ".webp"
+    },
+    {
+      "path": "game/assets/ui2/icons/fn_time.webp",
+      "bytes": 47566,
+      "format": ".webp"
+    },
+    {
+      "path": "game/assets/ui2/icons/hud_weapon_ranged.png",
+      "bytes": 44689,
+      "format": ".png"
+    },
+    {
+      "path": "game/assets/ui2/icons/nav_adventure.webp",
+      "bytes": 51364,
+      "format": ".webp"
+    },
+    {
+      "path": "game/assets/ui2/icons/nav_book.webp",
+      "bytes": 67092,
+      "format": ".webp"
+    },
+    {
+      "path": "game/assets/ui2/icons/nav_friends.webp",
+      "bytes": 41880,
+      "format": ".webp"
+    },
+    {
+      "path": "game/assets/ui2/icons/nav_gear.webp",
+      "bytes": 47942,
+      "format": ".webp"
+    },
+    {
+      "path": "game/assets/ui2/icons/nav_parts.webp",
+      "bytes": 52898,
+      "format": ".webp"
+    },
+    {
+      "path": "game/assets/ui2/icons/nav_training.webp",
+      "bytes": 50976,
+      "format": ".webp"
+    },
+    {
+      "path": "game/assets/ui2/icons/slot_armor.webp",
+      "bytes": 60960,
+      "format": ".webp"
+    },
+    {
+      "path": "game/assets/ui2/icons/slot_gloves.webp",
+      "bytes": 45200,
+      "format": ".webp"
+    },
+    {
+      "path": "game/assets/ui2/icons/slot_helm.webp",
+      "bytes": 49396,
+      "format": ".webp"
+    },
+    {
+      "path": "game/assets/ui2/icons/slot_necklace.webp",
+      "bytes": 36750,
+      "format": ".webp"
+    },
+    {
+      "path": "game/assets/ui2/icons/slot_shoes.webp",
+      "bytes": 52452,
+      "format": ".webp"
+    },
+    {
+      "path": "game/assets/ui2/icons/slot_weapon.webp",
+      "bytes": 29170,
+      "format": ".webp"
+    },
+    {
+      "path": "game/assets/ui2/icons/stat_attack.webp",
+      "bytes": 47220,
+      "format": ".webp"
+    },
+    {
+      "path": "game/assets/ui2/icons/stat_hp.webp",
+      "bytes": 40210,
+      "format": ".webp"
+    },
+    {
+      "path": "game/assets/ui2/icons/stat_speed.webp",
+      "bytes": 44362,
+      "format": ".webp"
+    },
+    {
+      "path": "game/assets/ui2/icons/supply_closed.webp",
+      "bytes": 190456,
+      "format": ".webp"
+    },
+    {
+      "path": "game/assets/ui2/icons/supply_open.webp",
+      "bytes": 186262,
+      "format": ".webp"
+    },
+    {
+      "path": "game/assets/ui2/skills/earth_boulder_1.webp",
+      "bytes": 34450,
+      "format": ".webp"
+    },
+    {
+      "path": "game/assets/ui2/skills/earth_mole_1.webp",
+      "bytes": 21682,
+      "format": ".webp"
+    },
+    {
+      "path": "game/assets/ui2/skills/earth_molefield.webp",
+      "bytes": 39370,
+      "format": ".webp"
+    },
+    {
+      "path": "game/assets/ui2/skills/earth_stone_1.webp",
+      "bytes": 14330,
+      "format": ".webp"
+    },
+    {
+      "path": "game/assets/ui2/skills/fire_bottle.webp",
+      "bytes": 23502,
+      "format": ".webp"
+    },
+    {
+      "path": "game/assets/ui2/skills/fire_frocket.webp",
+      "bytes": 26872,
+      "format": ".webp"
+    },
+    {
+      "path": "game/assets/ui2/skills/fire_rocket.webp",
+      "bytes": 19288,
+      "format": ".webp"
+    },
+    {
+      "path": "game/assets/ui2/skills/fire_volcano.webp",
+      "bytes": 33974,
+      "format": ".webp"
+    },
+    {
+      "path": "game/assets/ui2/skills/lightning_bee_1.webp",
+      "bytes": 27272,
+      "format": ".webp"
+    },
+    {
+      "path": "game/assets/ui2/skills/lightning_cloud.webp",
+      "bytes": 34912,
+      "format": ".webp"
+    },
+    {
+      "path": "game/assets/ui2/skills/lightning_storm.webp",
+      "bytes": 39650,
+      "format": ".webp"
+    },
+    {
+      "path": "game/assets/ui2/skills/lightning_swarm.webp",
+      "bytes": 38346,
+      "format": ".webp"
+    },
+    {
+      "path": "game/assets/ui2/skills/manifest.json",
+      "bytes": 8389,
+      "format": ".json"
+    },
+    {
+      "path": "game/assets/ui2/skills/support_S1.webp",
+      "bytes": 50698,
+      "format": ".webp"
+    },
+    {
+      "path": "game/assets/ui2/skills/support_S2.webp",
+      "bytes": 60404,
+      "format": ".webp"
+    },
+    {
+      "path": "game/assets/ui2/skills/support_S3.webp",
+      "bytes": 52976,
+      "format": ".webp"
+    },
+    {
+      "path": "game/assets/ui2/skills/support_S4.webp",
+      "bytes": 54384,
+      "format": ".webp"
+    },
+    {
+      "path": "game/assets/ui2/skills/support_S5.webp",
+      "bytes": 44108,
+      "format": ".webp"
+    },
+    {
+      "path": "game/assets/ui2/skills/support_S6.webp",
+      "bytes": 56706,
+      "format": ".webp"
+    },
+    {
+      "path": "game/assets/ui2/skills/support_S7.webp",
+      "bytes": 80778,
+      "format": ".webp"
+    },
+    {
+      "path": "game/assets/ui2/skills/support_S8.webp",
+      "bytes": 52776,
+      "format": ".webp"
+    },
+    {
+      "path": "game/assets/ui2/skills/water_balloon.webp",
+      "bytes": 22772,
+      "format": ".webp"
+    },
+    {
+      "path": "game/assets/ui2/skills/water_beam_tip.webp",
+      "bytes": 14808,
+      "format": ".webp"
+    },
+    {
+      "path": "game/assets/ui2/skills/water_kballoon.webp",
+      "bytes": 41398,
+      "format": ".webp"
+    },
+    {
+      "path": "game/assets/ui2/skills/water_rbeam_tip.webp",
+      "bytes": 19582,
+      "format": ".webp"
+    },
+    {
+      "path": "game/assets/ui2/skills/wind_boomerang_1.webp",
+      "bytes": 27856,
+      "format": ".webp"
+    },
+    {
+      "path": "game/assets/ui2/skills/wind_mboomerang_1.webp",
+      "bytes": 41446,
+      "format": ".webp"
+    },
+    {
+      "path": "game/assets/ui2/skills/wind_top_1.webp",
+      "bytes": 30948,
+      "format": ".webp"
+    },
+    {
+      "path": "game/assets/ui2/skills/wind_typhoon_1.webp",
+      "bytes": 49144,
+      "format": ".webp"
+    }
+  ],
+  "references": {
+    "game/assets/elements_v2/weapons/baseball.png": [
+      "game/src/assets.js"
+    ],
+    "game/assets/elements_v2/weapons/bat.png": [
+      "game/src/assets.js"
+    ],
+    "game/assets/elements_v2/weapons/dodgeball.png": [
+      "game/src/assets.js"
+    ],
+    "game/assets/elements_v2/weapons/pencil.png": [
+      "game/src/assets.js"
+    ],
+    "game/assets/elements_v2/weapons/sword.png": [
+      "game/src/assets.js"
+    ],
+    "game/assets/seoho_v1/pets/cat_idle.png": [
+      "game/src/assets.js"
+    ],
+    "game/assets/seoho_v1/pets/deer_idle.png": [
+      "game/src/assets.js"
+    ],
+    "game/assets/seoho_v1/pets/otter_idle.png": [
+      "game/src/assets.js"
+    ],
+    "game/assets/seoho_v1/pets/seal_idle.png": [
+      "game/src/assets.js"
+    ],
+    "game/assets/seoho_v1/pets/sparrow_idle.png": [
+      "game/src/assets.js"
+    ],
+    "game/assets/seoho_v1/pets/turtle_idle.png": [
+      "game/src/assets.js"
+    ],
+    "game/assets/sprites/floor_ground.png": [
+      "game/src/assets.js",
+      "game/src/assets.js"
+    ],
+    "game/assets/sprites/gear/gear_hoya_melee_armor.png": [
+      "game/src/assets.js"
+    ],
+    "game/assets/sprites/gear/gear_hoya_melee_gloves.png": [
+      "game/src/assets.js"
+    ],
+    "game/assets/sprites/gear/gear_hoya_melee_helm.png": [
+      "game/src/assets.js"
+    ],
+    "game/assets/sprites/gear/gear_hoya_melee_necklace.png": [
+      "game/src/assets.js"
+    ],
+    "game/assets/sprites/gear/gear_hoya_melee_shoes.png": [
+      "game/src/assets.js"
+    ],
+    "game/assets/sprites/gear/gear_hoya_melee_weapon.png": [
+      "game/src/assets.js"
+    ],
+    "game/assets/sprites/gear/gear_hoya_ranged_armor.png": [
+      "game/src/assets.js"
+    ],
+    "game/assets/sprites/gear/gear_hoya_ranged_gloves.png": [
+      "game/src/assets.js"
+    ],
+    "game/assets/sprites/gear/gear_hoya_ranged_helm.png": [
+      "game/src/assets.js"
+    ],
+    "game/assets/sprites/gear/gear_hoya_ranged_necklace.png": [
+      "game/src/assets.js"
+    ],
+    "game/assets/sprites/gear/gear_hoya_ranged_shoes.png": [
+      "game/src/assets.js"
+    ],
+    "game/assets/sprites/gear/gear_hoya_ranged_weapon.png": [
+      "game/src/assets.js"
+    ],
+    "game/assets/sprites/gear/gear_minji_melee_armor.png": [
+      "game/src/assets.js"
+    ],
+    "game/assets/sprites/gear/gear_minji_melee_gloves.png": [
+      "game/src/assets.js"
+    ],
+    "game/assets/sprites/gear/gear_minji_melee_helm.png": [
+      "game/src/assets.js"
+    ],
+    "game/assets/sprites/gear/gear_minji_melee_necklace.png": [
+      "game/src/assets.js"
+    ],
+    "game/assets/sprites/gear/gear_minji_melee_shoes.png": [
+      "game/src/assets.js"
+    ],
+    "game/assets/sprites/gear/gear_minji_melee_weapon.png": [
+      "game/src/assets.js"
+    ],
+    "game/assets/sprites/gear/gear_minji_ranged_armor.png": [
+      "game/src/assets.js"
+    ],
+    "game/assets/sprites/gear/gear_minji_ranged_gloves.png": [
+      "game/src/assets.js"
+    ],
+    "game/assets/sprites/gear/gear_minji_ranged_helm.png": [
+      "game/src/assets.js"
+    ],
+    "game/assets/sprites/gear/gear_minji_ranged_necklace.png": [
+      "game/src/assets.js"
+    ],
+    "game/assets/sprites/gear/gear_minji_ranged_shoes.png": [
+      "game/src/assets.js"
+    ],
+    "game/assets/sprites/gear/gear_minji_ranged_weapon.png": [
+      "game/src/assets.js"
+    ],
+    "game/assets/sprites/heroes/hoya_attack_1.png": [
+      "game/src/assets.js",
+      "game/src/assets.js"
+    ],
+    "game/assets/sprites/heroes/hoya_attack_2.png": [
+      "game/src/assets.js",
+      "game/src/assets.js"
+    ],
+    "game/assets/sprites/heroes/hoya_attack_3.png": [
+      "game/src/assets.js",
+      "game/src/assets.js"
+    ],
+    "game/assets/sprites/heroes/hoya_down_1.png": [
+      "game/src/assets.js",
+      "game/src/assets.js"
+    ],
+    "game/assets/sprites/heroes/hoya_hurt_1.png": [
+      "game/src/assets.js",
+      "game/src/assets.js"
+    ],
+    "game/assets/sprites/heroes/hoya_idle_1.png": [
+      "game/src/assets.js",
+      "game/src/assets.js",
+      "game/index.html",
+      "game/index.html"
+    ],
+    "game/assets/sprites/heroes/hoya_jump_1.png": [
+      "game/src/assets.js",
+      "game/src/assets.js"
+    ],
+    "game/assets/sprites/heroes/hoya_jump_2.png": [
+      "game/src/assets.js",
+      "game/src/assets.js"
+    ],
+    "game/assets/sprites/heroes/hoya_ranged_1.png": [
+      "game/src/assets.js",
+      "game/src/assets.js"
+    ],
+    "game/assets/sprites/heroes/hoya_ranged_2.png": [
+      "game/src/assets.js",
+      "game/src/assets.js"
+    ],
+    "game/assets/sprites/heroes/hoya_ranged_3.png": [
+      "game/src/assets.js",
+      "game/src/assets.js"
+    ],
+    "game/assets/sprites/heroes/hoya_ranged_4.png": [
+      "game/src/assets.js",
+      "game/src/assets.js"
+    ],
+    "game/assets/sprites/heroes/hoya_ranged_5.png": [
+      "game/src/assets.js",
+      "game/src/assets.js"
+    ],
+    "game/assets/sprites/heroes/hoya_ranged_6.png": [
+      "game/src/assets.js",
+      "game/src/assets.js"
+    ],
+    "game/assets/sprites/heroes/hoya_ranged_down_1.png": [
+      "game/src/assets.js",
+      "game/src/assets.js"
+    ],
+    "game/assets/sprites/heroes/hoya_ranged_hurt_1.png": [
+      "game/src/assets.js",
+      "game/src/assets.js"
+    ],
+    "game/assets/sprites/heroes/hoya_ranged_idle_1.png": [
+      "game/src/assets.js",
+      "game/src/assets.js"
+    ],
+    "game/assets/sprites/heroes/hoya_ranged_jump_1.png": [
+      "game/src/assets.js",
+      "game/src/assets.js"
+    ],
+    "game/assets/sprites/heroes/hoya_ranged_jump_2.png": [
+      "game/src/assets.js",
+      "game/src/assets.js"
+    ],
+    "game/assets/sprites/heroes/hoya_ranged_run_1.png": [
+      "game/src/assets.js",
+      "game/src/assets.js"
+    ],
+    "game/assets/sprites/heroes/hoya_ranged_run_2.png": [
+      "game/src/assets.js",
+      "game/src/assets.js"
+    ],
+    "game/assets/sprites/heroes/hoya_ranged_run_3.png": [
+      "game/src/assets.js",
+      "game/src/assets.js"
+    ],
+    "game/assets/sprites/heroes/hoya_ranged_walk_1.png": [
+      "game/src/assets.js",
+      "game/src/assets.js"
+    ],
+    "game/assets/sprites/heroes/hoya_ranged_walk_2.png": [
+      "game/src/assets.js",
+      "game/src/assets.js"
+    ],
+    "game/assets/sprites/heroes/hoya_ranged_walk_3.png": [
+      "game/src/assets.js",
+      "game/src/assets.js"
+    ],
+    "game/assets/sprites/heroes/hoya_run_1.png": [
+      "game/src/assets.js",
+      "game/src/assets.js"
+    ],
+    "game/assets/sprites/heroes/hoya_run_2.png": [
+      "game/src/assets.js",
+      "game/src/assets.js"
+    ],
+    "game/assets/sprites/heroes/hoya_run_3.png": [
+      "game/src/assets.js",
+      "game/src/assets.js"
+    ],
+    "game/assets/sprites/heroes/hoya_walk_1.png": [
+      "game/src/assets.js",
+      "game/src/assets.js"
+    ],
+    "game/assets/sprites/heroes/hoya_walk_2.png": [
+      "game/src/assets.js",
+      "game/src/assets.js"
+    ],
+    "game/assets/sprites/heroes/hoya_walk_3.png": [
+      "game/src/assets.js",
+      "game/src/assets.js"
+    ],
+    "game/assets/sprites/heroes/minji_attack_1.png": [
+      "game/src/assets.js",
+      "game/src/assets.js"
+    ],
+    "game/assets/sprites/heroes/minji_attack_2.png": [
+      "game/src/assets.js",
+      "game/src/assets.js"
+    ],
+    "game/assets/sprites/heroes/minji_attack_3.png": [
+      "game/src/assets.js",
+      "game/src/assets.js"
+    ],
+    "game/assets/sprites/heroes/minji_down_1.png": [
+      "game/src/assets.js",
+      "game/src/assets.js"
+    ],
+    "game/assets/sprites/heroes/minji_hurt_1.png": [
+      "game/src/assets.js",
+      "game/src/assets.js"
+    ],
+    "game/assets/sprites/heroes/minji_idle_1.png": [
+      "game/src/assets.js",
+      "game/src/assets.js",
+      "game/index.html"
+    ],
+    "game/assets/sprites/heroes/minji_jump_1.png": [
+      "game/src/assets.js",
+      "game/src/assets.js"
+    ],
+    "game/assets/sprites/heroes/minji_ranged_1.png": [
+      "game/src/assets.js",
+      "game/src/assets.js"
+    ],
+    "game/assets/sprites/heroes/minji_ranged_2.png": [
+      "game/src/assets.js",
+      "game/src/assets.js"
+    ],
+    "game/assets/sprites/heroes/minji_ranged_3.png": [
+      "game/src/assets.js",
+      "game/src/assets.js"
+    ],
+    "game/assets/sprites/heroes/minji_ranged_4.png": [
+      "game/src/assets.js",
+      "game/src/assets.js"
+    ],
+    "game/assets/sprites/heroes/minji_ranged_5.png": [
+      "game/src/assets.js",
+      "game/src/assets.js"
+    ],
+    "game/assets/sprites/heroes/minji_ranged_6.png": [
+      "game/src/assets.js",
+      "game/src/assets.js"
+    ],
+    "game/assets/sprites/heroes/minji_ranged_down_1.png": [
+      "game/src/assets.js",
+      "game/src/assets.js"
+    ],
+    "game/assets/sprites/heroes/minji_ranged_hurt_1.png": [
+      "game/src/assets.js",
+      "game/src/assets.js"
+    ],
+    "game/assets/sprites/heroes/minji_ranged_idle_1.png": [
+      "game/src/assets.js",
+      "game/src/assets.js"
+    ],
+    "game/assets/sprites/heroes/minji_run_1.png": [
+      "game/src/assets.js",
+      "game/src/assets.js"
+    ],
+    "game/assets/sprites/heroes/minji_run_2.png": [
+      "game/src/assets.js",
+      "game/src/assets.js"
+    ],
+    "game/assets/sprites/heroes/minji_run_3.png": [
+      "game/src/assets.js",
+      "game/src/assets.js"
+    ],
+    "game/assets/sprites/heroes/minji_walk_1.png": [
+      "game/src/assets.js",
+      "game/src/assets.js"
+    ],
+    "game/assets/sprites/heroes/minji_walk_2.png": [
+      "game/src/assets.js",
+      "game/src/assets.js"
+    ],
+    "game/assets/sprites/heroes/minji_walk_3.png": [
+      "game/src/assets.js",
+      "game/src/assets.js"
+    ],
+    "game/assets/sprites/skills/earth_bigdirt_1.png": [
+      "game/src/assets.js"
+    ],
+    "game/assets/sprites/skills/earth_bigdirt_2.png": [
+      "game/src/assets.js"
+    ],
+    "game/assets/sprites/skills/earth_boulder_1.png": [
+      "game/src/assets.js"
+    ],
+    "game/assets/sprites/skills/earth_boulder_2.png": [
+      "game/src/assets.js"
+    ],
+    "game/assets/sprites/skills/earth_chain_ring.png": [
+      "game/src/assets.js"
+    ],
+    "game/assets/sprites/skills/earth_crack.png": [
+      "game/src/assets.js"
+    ],
+    "game/assets/sprites/skills/earth_dirt_1.png": [
+      "game/src/assets.js"
+    ],
+    "game/assets/sprites/skills/earth_dirt_2.png": [
+      "game/src/assets.js"
+    ],
+    "game/assets/sprites/skills/earth_dust_1.png": [
+      "game/src/assets.js"
+    ],
+    "game/assets/sprites/skills/earth_dust_2.png": [
+      "game/src/assets.js"
+    ],
+    "game/assets/sprites/skills/earth_dust_trail.png": [
+      "game/src/assets.js"
+    ],
+    "game/assets/sprites/skills/earth_mole_1.png": [
+      "game/src/assets.js"
+    ],
+    "game/assets/sprites/skills/earth_mole_2.png": [
+      "game/src/assets.js"
+    ],
+    "game/assets/sprites/skills/earth_molefield.png": [
+      "game/src/assets.js"
+    ],
+    "game/assets/sprites/skills/earth_stone_1.png": [
+      "game/src/assets.js"
+    ],
+    "game/assets/sprites/skills/earth_stone_2.png": [
+      "game/src/assets.js"
+    ],
+    "game/assets/sprites/skills/fire_boom_1.png": [
+      "game/src/assets.js"
+    ],
+    "game/assets/sprites/skills/fire_boom_2.png": [
+      "game/src/assets.js"
+    ],
+    "game/assets/sprites/skills/fire_boom_3.png": [
+      "game/src/assets.js"
+    ],
+    "game/assets/sprites/skills/fire_bottle.png": [
+      "game/src/assets.js"
+    ],
+    "game/assets/sprites/skills/fire_frocket.png": [
+      "game/src/assets.js"
+    ],
+    "game/assets/sprites/skills/fire_fwork_1.png": [
+      "game/src/assets.js"
+    ],
+    "game/assets/sprites/skills/fire_fwork_2.png": [
+      "game/src/assets.js"
+    ],
+    "game/assets/sprites/skills/fire_fwork_3.png": [
+      "game/src/assets.js"
+    ],
+    "game/assets/sprites/skills/fire_lava_1.png": [
+      "game/src/assets.js"
+    ],
+    "game/assets/sprites/skills/fire_lava_2.png": [
+      "game/src/assets.js"
+    ],
+    "game/assets/sprites/skills/fire_lava_3.png": [
+      "game/src/assets.js"
+    ],
+    "game/assets/sprites/skills/fire_puddle_1.png": [
+      "game/src/assets.js"
+    ],
+    "game/assets/sprites/skills/fire_puddle_2.png": [
+      "game/src/assets.js"
+    ],
+    "game/assets/sprites/skills/fire_puddle_3.png": [
+      "game/src/assets.js"
+    ],
+    "game/assets/sprites/skills/fire_rocket.png": [
+      "game/src/assets.js"
+    ],
+    "game/assets/sprites/skills/fire_volcano.png": [
+      "game/src/assets.js"
+    ],
+    "game/assets/sprites/skills/lightning_bee_1.png": [
+      "game/src/assets.js"
+    ],
+    "game/assets/sprites/skills/lightning_bee_2.png": [
+      "game/src/assets.js"
+    ],
+    "game/assets/sprites/skills/lightning_bigburst.png": [
+      "game/src/assets.js"
+    ],
+    "game/assets/sprites/skills/lightning_bigflash.png": [
+      "game/src/assets.js"
+    ],
+    "game/assets/sprites/skills/lightning_bolt_1.png": [
+      "game/src/assets.js"
+    ],
+    "game/assets/sprites/skills/lightning_bolt_2.png": [
+      "game/src/assets.js"
+    ],
+    "game/assets/sprites/skills/lightning_cloud.png": [
+      "game/src/assets.js"
+    ],
+    "game/assets/sprites/skills/lightning_flash.png": [
+      "game/src/assets.js"
+    ],
+    "game/assets/sprites/skills/lightning_hline.png": [
+      "game/src/assets.js"
+    ],
+    "game/assets/sprites/skills/lightning_hstinger.png": [
+      "game/src/assets.js"
+    ],
+    "game/assets/sprites/skills/lightning_spark.png": [
+      "game/src/assets.js"
+    ],
+    "game/assets/sprites/skills/lightning_stinger.png": [
+      "game/src/assets.js"
+    ],
+    "game/assets/sprites/skills/lightning_storm.png": [
+      "game/src/assets.js"
+    ],
+    "game/assets/sprites/skills/lightning_swarm.png": [
+      "game/src/assets.js"
+    ],
+    "game/assets/sprites/skills/lightning_tbolt_1.png": [
+      "game/src/assets.js"
+    ],
+    "game/assets/sprites/skills/lightning_tbolt_2.png": [
+      "game/src/assets.js"
+    ],
+    "game/assets/sprites/skills/support_S1.png": [
+      "game/src/assets.js"
+    ],
+    "game/assets/sprites/skills/support_S2.png": [
+      "game/src/assets.js"
+    ],
+    "game/assets/sprites/skills/support_S3.png": [
+      "game/src/assets.js"
+    ],
+    "game/assets/sprites/skills/support_S4.png": [
+      "game/src/assets.js"
+    ],
+    "game/assets/sprites/skills/support_S5.png": [
+      "game/src/assets.js"
+    ],
+    "game/assets/sprites/skills/support_S6.png": [
+      "game/src/assets.js"
+    ],
+    "game/assets/sprites/skills/support_S7.png": [
+      "game/src/assets.js"
+    ],
+    "game/assets/sprites/skills/support_S8.png": [
+      "game/src/assets.js"
+    ],
+    "game/assets/sprites/skills/water_balloon.png": [
+      "game/src/assets.js"
+    ],
+    "game/assets/sprites/skills/water_beam.png": [
+      "game/src/assets.js"
+    ],
+    "game/assets/sprites/skills/water_beam_tip.png": [
+      "game/src/assets.js"
+    ],
+    "game/assets/sprites/skills/water_kballoon.png": [
+      "game/src/assets.js"
+    ],
+    "game/assets/sprites/skills/water_ksplash_1.png": [
+      "game/src/assets.js"
+    ],
+    "game/assets/sprites/skills/water_ksplash_2.png": [
+      "game/src/assets.js"
+    ],
+    "game/assets/sprites/skills/water_ksplash_3.png": [
+      "game/src/assets.js"
+    ],
+    "game/assets/sprites/skills/water_rbeam.png": [
+      "game/src/assets.js"
+    ],
+    "game/assets/sprites/skills/water_rbeam_tip.png": [
+      "game/src/assets.js"
+    ],
+    "game/assets/sprites/skills/water_rspray_1.png": [
+      "game/src/assets.js"
+    ],
+    "game/assets/sprites/skills/water_rspray_2.png": [
+      "game/src/assets.js"
+    ],
+    "game/assets/sprites/skills/water_splash_1.png": [
+      "game/src/assets.js"
+    ],
+    "game/assets/sprites/skills/water_splash_2.png": [
+      "game/src/assets.js"
+    ],
+    "game/assets/sprites/skills/water_splash_3.png": [
+      "game/src/assets.js"
+    ],
+    "game/assets/sprites/skills/water_spray_1.png": [
+      "game/src/assets.js"
+    ],
+    "game/assets/sprites/skills/water_spray_2.png": [
+      "game/src/assets.js"
+    ],
+    "game/assets/sprites/skills/wind_boomerang_1.png": [
+      "game/src/assets.js"
+    ],
+    "game/assets/sprites/skills/wind_boomerang_2.png": [
+      "game/src/assets.js"
+    ],
+    "game/assets/sprites/skills/wind_burst.png": [
+      "game/src/assets.js"
+    ],
+    "game/assets/sprites/skills/wind_mboomerang_1.png": [
+      "game/src/assets.js"
+    ],
+    "game/assets/sprites/skills/wind_mboomerang_2.png": [
+      "game/src/assets.js"
+    ],
+    "game/assets/sprites/skills/wind_pull_line.png": [
+      "game/src/assets.js"
+    ],
+    "game/assets/sprites/skills/wind_ring.png": [
+      "game/src/assets.js"
+    ],
+    "game/assets/sprites/skills/wind_shadow.png": [
+      "game/src/assets.js"
+    ],
+    "game/assets/sprites/skills/wind_swirl.png": [
+      "game/src/assets.js"
+    ],
+    "game/assets/sprites/skills/wind_top_1.png": [
+      "game/src/assets.js"
+    ],
+    "game/assets/sprites/skills/wind_top_2.png": [
+      "game/src/assets.js"
+    ],
+    "game/assets/sprites/skills/wind_top_3.png": [
+      "game/src/assets.js"
+    ],
+    "game/assets/sprites/skills/wind_trail.png": [
+      "game/src/assets.js"
+    ],
+    "game/assets/sprites/skills/wind_typhoon_1.png": [
+      "game/src/assets.js"
+    ],
+    "game/assets/sprites/skills/wind_typhoon_2.png": [
+      "game/src/assets.js"
+    ],
+    "game/assets/sprites/skills/wind_typhoon_3.png": [
+      "game/src/assets.js"
+    ],
+    "game/assets/sprites/t1/boss_angry.png": [
+      "game/src/assets.js",
+      "game/src/assets.js"
+    ],
+    "game/assets/sprites/t1/boss_calm.png": [
+      "game/src/assets.js",
+      "game/src/assets.js"
+    ],
+    "game/assets/sprites/t1/en_baggy.png": [
+      "game/src/assets.js",
+      "game/src/assets.js"
+    ],
+    "game/assets/sprites/t1/en_bottle.png": [
+      "game/src/assets.js",
+      "game/src/assets.js"
+    ],
+    "game/assets/sprites/t1/en_buttbug.png": [
+      "game/src/assets.js",
+      "game/src/assets.js"
+    ],
+    "game/assets/sprites/t1/en_fly.png": [
+      "game/src/assets.js",
+      "game/src/assets.js"
+    ],
+    "game/assets/sprites/t1/en_foodwaste.png": [
+      "game/src/assets.js",
+      "game/src/assets.js"
+    ],
+    "game/assets/sprites/t1/en_snackbag.png": [
+      "game/src/assets.js",
+      "game/src/assets.js"
+    ],
+    "game/assets/sprites/t1/fx_crack.png": [
+      "game/src/assets.js",
+      "game/src/assets.js"
+    ],
+    "game/assets/sprites/t1/fx_shockring.png": [
+      "game/src/assets.js",
+      "game/src/assets.js"
+    ],
+    "game/assets/sprites/t1/fx_trashball.png": [
+      "game/src/assets.js",
+      "game/src/assets.js"
+    ],
+    "game/assets/sprites/t1/item_heart.png": [
+      "game/src/assets.js",
+      "game/src/assets.js"
+    ],
+    "game/assets/sprites/t1/item_orb.png": [
+      "game/src/assets.js",
+      "game/src/assets.js"
+    ],
+    "game/assets/sprites/t1/item_recycle.png": [
+      "game/src/assets.js",
+      "game/src/assets.js"
+    ],
+    "game/assets/sprites/t1/item_sprout.png": [
+      "game/src/assets.js",
+      "game/src/assets.js"
+    ],
+    "game/assets/sprites/t1/item_sprout_big.png": [
+      "game/src/assets.js",
+      "game/src/assets.js"
+    ],
+    "game/assets/sprites/t1/item_star.png": [
+      "game/src/assets.js",
+      "game/src/assets.js"
+    ],
+    "game/assets/sprites/t1/prop_bags.png": [
+      "game/src/assets.js",
+      "game/src/assets.js"
+    ],
+    "game/assets/sprites/t1/prop_bench.png": [
+      "game/src/assets.js",
+      "game/src/assets.js"
+    ],
+    "game/assets/sprites/t1/prop_bin_fallen.png": [
+      "game/src/assets.js",
+      "game/src/assets.js"
+    ],
+    "game/assets/sprites/t1/prop_bins.png": [
+      "game/src/assets.js",
+      "game/src/assets.js"
+    ],
+    "game/assets/sprites/t1/prop_litter.png": [
+      "game/src/assets.js",
+      "game/src/assets.js"
+    ],
+    "game/assets/sprites/t1/prop_tire.png": [
+      "game/src/assets.js",
+      "game/src/assets.js"
+    ],
+    "game/assets/sprites/t2/boss_angry.png": [
+      "game/src/assets.js",
+      "game/src/assets.js"
+    ],
+    "game/assets/sprites/t2/boss_calm.png": [
+      "game/src/assets.js",
+      "game/src/assets.js"
+    ],
+    "game/assets/sprites/t2/card_clean.jpg": [
+      "game/src/assets.js",
+      "game/src/rework.css",
+      "game/src/ui-v2.css"
+    ],
+    "game/assets/sprites/t2/card_polluted.jpg": [
+      "game/src/assets.js",
+      "game/src/rework.css",
+      "game/src/ui-v2.css"
+    ],
+    "game/assets/sprites/t2/en_bigdust.png": [
+      "game/src/assets.js",
+      "game/src/assets.js"
+    ],
+    "game/assets/sprites/t2/en_dust.png": [
+      "game/src/assets.js",
+      "game/src/assets.js"
+    ],
+    "game/assets/sprites/t2/en_gas.png": [
+      "game/src/assets.js",
+      "game/src/assets.js"
+    ],
+    "game/assets/sprites/t2/en_gas_fire.png": [
+      "game/src/assets.js",
+      "game/src/assets.js"
+    ],
+    "game/assets/sprites/t2/en_gas_windup.png": [
+      "game/src/assets.js",
+      "game/src/assets.js"
+    ],
+    "game/assets/sprites/t2/en_germ.png": [
+      "game/src/assets.js",
+      "game/src/assets.js"
+    ],
+    "game/assets/sprites/t2/en_germ2.png": [
+      "game/src/assets.js",
+      "game/src/assets.js"
+    ],
+    "game/assets/sprites/t2/en_germ3.png": [
+      "game/src/assets.js",
+      "game/src/assets.js"
+    ],
+    "game/assets/sprites/t2/en_germ_armed.png": [
+      "game/src/assets.js",
+      "game/src/assets.js"
+    ],
+    "game/assets/sprites/t2/en_raincloud.png": [
+      "game/src/assets.js",
+      "game/src/assets.js"
+    ],
+    "game/assets/sprites/t2/floor_factory.png": [
+      "game/src/assets.js",
+      "game/src/assets.js"
+    ],
+    "game/assets/sprites/t2/floor_soot.png": [
+      "game/src/assets.js",
+      "game/src/assets.js"
+    ],
+    "game/assets/sprites/t2/floor_steel.png": [
+      "game/src/assets.js",
+      "game/src/assets.js"
+    ],
+    "game/assets/sprites/t2/fx_bomb.png": [
+      "game/src/assets.js",
+      "game/src/assets.js"
+    ],
+    "game/assets/sprites/t2/fx_flame.png": [
+      "game/src/assets.js",
+      "game/src/assets.js"
+    ],
+    "game/assets/sprites/t2/fx_smog.png": [
+      "game/src/assets.js",
+      "game/src/assets.js"
+    ],
+    "game/assets/sprites/t2/fx_splat.png": [
+      "game/src/assets.js",
+      "game/src/assets.js"
+    ],
+    "game/assets/sprites/t2/prop_chimney.png": [
+      "game/src/assets.js",
+      "game/src/assets.js"
+    ],
+    "game/assets/sprites/t2/prop_cones.png": [
+      "game/src/assets.js",
+      "game/src/assets.js"
+    ],
+    "game/assets/sprites/t2/prop_drums.png": [
+      "game/src/assets.js",
+      "game/src/assets.js"
+    ],
+    "game/assets/sprites/t2/prop_pedestal.png": [
+      "game/src/assets.js",
+      "game/src/assets.js"
+    ],
+    "game/assets/sprites/t2/prop_pipe.png": [
+      "game/src/assets.js",
+      "game/src/assets.js"
+    ],
+    "game/assets/sprites/t2/prop_tree.png": [
+      "game/src/assets.js",
+      "game/src/assets.js"
+    ],
+    "game/assets/sprites/t2/prop_valve.png": [
+      "game/src/assets.js",
+      "game/src/assets.js"
+    ],
+    "game/assets/sprites/t3/boss_angry.png": [
+      "game/src/assets.js",
+      "game/src/assets.js"
+    ],
+    "game/assets/sprites/t3/boss_calm.png": [
+      "game/src/assets.js",
+      "game/src/assets.js"
+    ],
+    "game/assets/sprites/t3/card_clean.jpg": [
+      "game/src/assets.js",
+      "game/src/rework.css",
+      "game/src/ui-v2.css"
+    ],
+    "game/assets/sprites/t3/card_polluted.jpg": [
+      "game/src/assets.js",
+      "game/src/rework.css",
+      "game/src/ui-v2.css"
+    ],
+    "game/assets/sprites/t3/en_algae.png": [
+      "game/src/assets.js"
+    ],
+    "game/assets/sprites/t3/en_algae_small.png": [
+      "game/src/assets.js"
+    ],
+    "game/assets/sprites/t3/en_algae_swell.png": [
+      "game/src/assets.js"
+    ],
+    "game/assets/sprites/t3/en_bubble.png": [
+      "game/src/assets.js",
+      "game/src/assets.js"
+    ],
+    "game/assets/sprites/t3/en_bubble_atk.png": [
+      "game/src/assets.js",
+      "game/src/assets.js"
+    ],
+    "game/assets/sprites/t3/en_can.png": [
+      "game/src/assets.js",
+      "game/src/assets.js"
+    ],
+    "game/assets/sprites/t3/en_can_fire.png": [
+      "game/src/assets.js",
+      "game/src/assets.js"
+    ],
+    "game/assets/sprites/t3/en_net.png": [
+      "game/src/assets.js",
+      "game/src/assets.js"
+    ],
+    "game/assets/sprites/t3/en_net_throw.png": [
+      "game/src/assets.js",
+      "game/src/assets.js"
+    ],
+    "game/assets/sprites/t3/en_netmon.png": [
+      "game/src/assets.js",
+      "game/src/assets.js"
+    ],
+    "game/assets/sprites/t3/en_netmon_pounce.png": [
+      "game/src/assets.js",
+      "game/src/assets.js"
+    ],
+    "game/assets/sprites/t3/en_petri.png": [
+      "game/src/assets.js",
+      "game/src/assets.js"
+    ],
+    "game/assets/sprites/t3/en_petri_fire.png": [
+      "game/src/assets.js",
+      "game/src/assets.js"
+    ],
+    "game/assets/sprites/t3/en_petri_windup.png": [
+      "game/src/assets.js",
+      "game/src/assets.js"
+    ],
+    "game/assets/sprites/t3/floor_bank.png": [
+      "game/src/assets.js",
+      "game/src/assets.js"
+    ],
+    "game/assets/sprites/t3/floor_sewer.png": [
+      "game/src/assets.js",
+      "game/src/assets.js"
+    ],
+    "game/assets/sprites/t3/floor_stream.png": [
+      "game/src/assets.js",
+      "game/src/assets.js"
+    ],
+    "game/assets/sprites/t3/fx_algae.png": [
+      "game/src/assets.js"
+    ],
+    "game/assets/sprites/t3/fx_cola.png": [
+      "game/src/assets.js",
+      "game/src/assets.js"
+    ],
+    "game/assets/sprites/t3/fx_foam.png": [
+      "game/src/assets.js",
+      "game/src/assets.js"
+    ],
+    "game/assets/sprites/t3/fx_net.png": [
+      "game/src/assets.js",
+      "game/src/assets.js"
+    ],
+    "game/assets/sprites/t3/fx_oil.png": [
+      "game/src/assets.js",
+      "game/src/assets.js"
+    ],
+    "game/assets/sprites/t3/fx_wave.png": [
+      "game/src/assets.js",
+      "game/src/assets.js"
+    ],
+    "game/assets/sprites/t3/prop_fish_caught.png": [
+      "game/src/assets.js",
+      "game/src/assets.js"
+    ],
+    "game/assets/sprites/t3/prop_fish_free.png": [
+      "game/src/assets.js",
+      "game/src/assets.js"
+    ],
+    "game/assets/sprites/t3/prop_reeds.png": [
+      "game/src/assets.js",
+      "game/src/assets.js"
+    ],
+    "game/assets/sprites/t3/prop_rock.png": [
+      "game/src/assets.js",
+      "game/src/assets.js"
+    ],
+    "game/assets/sprites/t3/prop_stones.png": [
+      "game/src/assets.js",
+      "game/src/assets.js"
+    ],
+    "game/assets/sprites/t3/prop_trash.png": [
+      "game/src/assets.js",
+      "game/src/assets.js"
+    ],
+    "game/assets/sprites/t4/boss_angry.png": [
+      "game/src/assets.js",
+      "game/src/assets.js"
+    ],
+    "game/assets/sprites/t4/boss_calm.png": [
+      "game/src/assets.js",
+      "game/src/assets.js"
+    ],
+    "game/assets/sprites/t4/boss_clean.png": [
+      "game/src/assets.js",
+      "game/src/assets.js"
+    ],
+    "game/assets/sprites/t4/boss_slam.png": [
+      "game/src/assets.js",
+      "game/src/assets.js"
+    ],
+    "game/assets/sprites/t4/card_clean.jpg": [
+      "game/src/assets.js",
+      "game/src/rework.css",
+      "game/src/ui-v2.css"
+    ],
+    "game/assets/sprites/t4/card_polluted.jpg": [
+      "game/src/assets.js",
+      "game/src/rework.css",
+      "game/src/ui-v2.css"
+    ],
+    "game/assets/sprites/t4/en_bulki.png": [
+      "game/src/assets.js",
+      "game/src/assets.js"
+    ],
+    "game/assets/sprites/t4/en_bulki_jump.png": [
+      "game/src/assets.js",
+      "game/src/assets.js"
+    ],
+    "game/assets/sprites/t4/en_bulki_throw.png": [
+      "game/src/assets.js",
+      "game/src/assets.js"
+    ],
+    "game/assets/sprites/t4/en_burner.png": [
+      "game/src/assets.js",
+      "game/src/assets.js"
+    ],
+    "game/assets/sprites/t4/en_burner_big.png": [
+      "game/src/assets.js",
+      "game/src/assets.js"
+    ],
+    "game/assets/sprites/t4/en_burner_l.png": [
+      "game/src/assets.js",
+      "game/src/assets.js"
+    ],
+    "game/assets/sprites/t4/en_burner_m.png": [
+      "game/src/assets.js",
+      "game/src/assets.js"
+    ],
+    "game/assets/sprites/t4/en_burner_out.png": [
+      "game/src/assets.js",
+      "game/src/assets.js"
+    ],
+    "game/assets/sprites/t4/en_burner_s.png": [
+      "game/src/assets.js",
+      "game/src/assets.js"
+    ],
+    "game/assets/sprites/t4/en_dozer.png": [
+      "game/src/assets.js",
+      "game/src/assets.js"
+    ],
+    "game/assets/sprites/t4/en_dozer_charge.png": [
+      "game/src/assets.js",
+      "game/src/assets.js"
+    ],
+    "game/assets/sprites/t4/en_nutria.png": [
+      "game/src/assets.js",
+      "game/src/assets.js"
+    ],
+    "game/assets/sprites/t4/en_nutria_guard.png": [
+      "game/src/assets.js",
+      "game/src/assets.js"
+    ],
+    "game/assets/sprites/t4/en_saw.png": [
+      "game/src/assets.js",
+      "game/src/assets.js"
+    ],
+    "game/assets/sprites/t4/en_saw_spin.png": [
+      "game/src/assets.js",
+      "game/src/assets.js"
+    ],
+    "game/assets/sprites/t4/fx_dust.png": [
+      "game/src/assets.js",
+      "game/src/assets.js"
+    ],
+    "game/assets/sprites/t4/fx_flames.png": [
+      "game/src/assets.js",
+      "game/src/assets.js"
+    ],
+    "game/assets/sprites/t4/fx_puff.png": [
+      "game/src/assets.js",
+      "game/src/assets.js"
+    ],
+    "game/assets/sprites/t4/fx_slam.png": [
+      "game/src/assets.js",
+      "game/src/assets.js"
+    ],
+    "game/assets/sprites/t4/fx_tracks.png": [
+      "game/src/assets.js",
+      "game/src/assets.js"
+    ],
+    "game/assets/sprites/t4/fx_trashball.png": [
+      "game/src/assets.js",
+      "game/src/assets.js"
+    ],
+    "game/assets/sprites/t4/prop_burnt.png": [
+      "game/src/assets.js",
+      "game/src/assets.js"
+    ],
+    "game/assets/sprites/t4/prop_camptrash.png": [
+      "game/src/assets.js",
+      "game/src/assets.js"
+    ],
+    "game/assets/sprites/t4/prop_ember.png": [
+      "game/src/assets.js",
+      "game/src/assets.js"
+    ],
+    "game/assets/sprites/t4/prop_pond.png": [
+      "game/src/assets.js",
+      "game/src/assets.js"
+    ],
+    "game/assets/sprites/t4/prop_sprout.png": [
+      "game/src/assets.js",
+      "game/src/assets.js"
+    ],
+    "game/assets/sprites/t4/prop_stump.png": [
+      "game/src/assets.js",
+      "game/src/assets.js"
+    ],
+    "game/assets/sprites/ui/supply_gear_closed.png": [
+      "game/src/assets.js"
+    ],
+    "game/assets/sprites/ui/supply_gear_lid.png": [
+      "game/src/assets.js"
+    ],
+    "game/assets/sprites/ui/supply_gear_open.png": [
+      "game/src/assets.js"
+    ],
+    "game/assets/sprites/ui/supply_part_closed.png": [
+      "game/src/assets.js"
+    ],
+    "game/assets/sprites/ui/supply_part_lid.png": [
+      "game/src/assets.js"
+    ],
+    "game/assets/sprites/ui/supply_part_open.png": [
+      "game/src/assets.js"
+    ],
+    "game/assets/sprites/vfx/purify-v1.png": [
+      "game/src/assets.js",
+      "game/src/assets.js"
+    ],
+    "game/assets/sprites/vfx/smog-v1.png": [
+      "game/src/assets.js",
+      "game/src/assets.js"
+    ],
+    "game/assets/sprites/vfx/splash-v1.png": [
+      "game/src/assets.js",
+      "game/src/assets.js"
+    ],
+    "game/assets/ui/notice_ch4.jpg": [
+      "game/src/assets.js",
+      "game/src/main.js"
+    ],
+    "game/assets/ui/title_landscape.jpg": [
+      "game/src/assets.js",
+      "game/src/rework.css",
+      "game/src/rework.css",
+      "game/src/rework.css",
+      "game/src/ui-v2.css",
+      "game/src/ui-v2.css",
+      "game/index.html",
+      "game/index.html"
+    ],
+    "game/assets/ui/title_portrait.jpg": [
+      "game/src/assets.js",
+      "game/index.html"
+    ],
+    "game/assets/ui2/bg_hq.jpg": [
+      "game/src/assets.js",
+      "game/src/ui-v2.css"
+    ],
+    "game/assets/ui2/icons/hud_weapon_ranged.png": [
+      "game/src/assets.js"
+    ],
+    "game/assets/seoho_v1/icons/arrow.svg": [
+      "game/src/assets.js",
+      "game/src/rework-ui.js"
+    ],
+    "game/assets/seoho_v1/icons/book.svg": [
+      "game/src/assets.js",
+      "game/src/rework-ui.js"
+    ],
+    "game/assets/seoho_v1/icons/boots.svg": [
+      "game/src/assets.js",
+      "game/src/rework-ui.js"
+    ],
+    "game/assets/seoho_v1/icons/broom.svg": [
+      "game/src/assets.js",
+      "game/src/rework-ui.js"
+    ],
+    "game/assets/seoho_v1/icons/coin.svg": [
+      "game/src/assets.js",
+      "game/src/rework-ui.js"
+    ],
+    "game/assets/seoho_v1/icons/gift.svg": [
+      "game/src/assets.js",
+      "game/src/rework-ui.js"
+    ],
+    "game/assets/seoho_v1/icons/grabber.svg": [
+      "game/src/assets.js",
+      "game/src/rework-ui.js"
+    ],
+    "game/assets/seoho_v1/icons/handle.svg": [
+      "game/src/assets.js",
+      "game/src/rework-ui.js"
+    ],
+    "game/assets/seoho_v1/icons/heart.svg": [
+      "game/src/assets.js",
+      "game/src/rework-ui.js"
+    ],
+    "game/assets/seoho_v1/icons/map.svg": [
+      "game/src/assets.js",
+      "game/src/rework-ui.js"
+    ],
+    "game/assets/seoho_v1/icons/pass.svg": [
+      "game/src/assets.js",
+      "game/src/rework-ui.js"
+    ],
+    "game/assets/seoho_v1/icons/pinwheel.svg": [
+      "game/src/assets.js",
+      "game/src/rework-ui.js"
+    ],
+    "game/assets/seoho_v1/icons/seed.svg": [
+      "game/src/assets.js",
+      "game/src/rework-ui.js"
+    ],
+    "game/assets/seoho_v1/icons/shield.svg": [
+      "game/src/assets.js",
+      "game/src/rework-ui.js"
+    ],
+    "game/assets/seoho_v1/icons/shirt.svg": [
+      "game/src/assets.js",
+      "game/src/rework-ui.js"
+    ],
+    "game/assets/seoho_v1/icons/spark.svg": [
+      "game/src/assets.js",
+      "game/src/rework-ui.js"
+    ],
+    "game/assets/seoho_v1/icons/sun.svg": [
+      "game/src/assets.js",
+      "game/src/rework-ui.js"
+    ],
+    "game/assets/seoho_v1/icons/water.svg": [
+      "game/src/assets.js",
+      "game/src/rework-ui.js"
+    ],
+    "game/assets/seoho_v1/icons/watergun.svg": [
+      "game/src/assets.js",
+      "game/src/rework-ui.js"
+    ],
+    "game/assets/seoho_v1/icons/wind.svg": [
+      "game/src/assets.js",
+      "game/src/rework-ui.js"
+    ],
+    "game/assets/elements_v2/icons/combo_COMBO_01.svg": [
+      "game/src/assets.js",
+      "game/src/rework-ui.js"
+    ],
+    "game/assets/elements_v2/icons/combo_COMBO_02.svg": [
+      "game/src/assets.js",
+      "game/src/rework-ui.js"
+    ],
+    "game/assets/elements_v2/icons/combo_COMBO_03.svg": [
+      "game/src/assets.js",
+      "game/src/rework-ui.js"
+    ],
+    "game/assets/elements_v2/icons/combo_COMBO_04.svg": [
+      "game/src/assets.js",
+      "game/src/rework-ui.js"
+    ],
+    "game/assets/elements_v2/icons/combo_COMBO_05.svg": [
+      "game/src/assets.js",
+      "game/src/rework-ui.js"
+    ],
+    "game/assets/elements_v2/icons/combo_COMBO_06.svg": [
+      "game/src/assets.js",
+      "game/src/rework-ui.js"
+    ],
+    "game/assets/elements_v2/icons/combo_COMBO_07.svg": [
+      "game/src/assets.js",
+      "game/src/rework-ui.js"
+    ],
+    "game/assets/elements_v2/icons/combo_COMBO_08.svg": [
+      "game/src/assets.js",
+      "game/src/rework-ui.js"
+    ],
+    "game/assets/elements_v2/icons/combo_COMBO_09.svg": [
+      "game/src/assets.js",
+      "game/src/rework-ui.js"
+    ],
+    "game/assets/elements_v2/icons/combo_COMBO_10.svg": [
+      "game/src/assets.js",
+      "game/src/rework-ui.js"
+    ],
+    "game/assets/elements_v2/icons/combo_COMBO_11.svg": [
+      "game/src/assets.js",
+      "game/src/rework-ui.js"
+    ],
+    "game/assets/elements_v2/icons/combo_COMBO_12.svg": [
+      "game/src/assets.js",
+      "game/src/rework-ui.js"
+    ],
+    "game/assets/elements_v2/icons/combo_COMBO_13.svg": [
+      "game/src/assets.js",
+      "game/src/rework-ui.js"
+    ],
+    "game/assets/elements_v2/icons/combo_COMBO_14.svg": [
+      "game/src/assets.js",
+      "game/src/rework-ui.js"
+    ],
+    "game/assets/elements_v2/icons/combo_COMBO_15.svg": [
+      "game/src/assets.js",
+      "game/src/rework-ui.js"
+    ],
+    "game/assets/elements_v2/icons/element_earth.svg": [
+      "game/src/assets.js",
+      "game/src/rework-ui.js"
+    ],
+    "game/assets/elements_v2/icons/element_fire.svg": [
+      "game/src/assets.js",
+      "game/src/rework-ui.js"
+    ],
+    "game/assets/elements_v2/icons/element_lightning.svg": [
+      "game/src/assets.js",
+      "game/src/rework-ui.js"
+    ],
+    "game/assets/elements_v2/icons/element_water.svg": [
+      "game/src/assets.js",
+      "game/src/rework-ui.js"
+    ],
+    "game/assets/elements_v2/icons/element_wind.svg": [
+      "game/src/assets.js",
+      "game/src/rework-ui.js"
+    ],
+    "game/assets/elements_v2/icons/mode_melee.svg": [
+      "game/src/assets.js",
+      "game/src/rework-ui.js"
+    ],
+    "game/assets/elements_v2/icons/mode_ranged.svg": [
+      "game/src/assets.js",
+      "game/src/rework-ui.js"
+    ],
+    "game/assets/elements_v2/icons/part_PART_E1.svg": [
+      "game/src/assets.js",
+      "game/src/rework-ui.js"
+    ],
+    "game/assets/elements_v2/icons/part_PART_E2.svg": [
+      "game/src/assets.js",
+      "game/src/rework-ui.js"
+    ],
+    "game/assets/elements_v2/icons/part_PART_E3.svg": [
+      "game/src/assets.js",
+      "game/src/rework-ui.js"
+    ],
+    "game/assets/elements_v2/icons/part_PART_F1.svg": [
+      "game/src/assets.js",
+      "game/src/rework-ui.js"
+    ],
+    "game/assets/elements_v2/icons/part_PART_F2.svg": [
+      "game/src/assets.js",
+      "game/src/rework-ui.js"
+    ],
+    "game/assets/elements_v2/icons/part_PART_F3.svg": [
+      "game/src/assets.js",
+      "game/src/rework-ui.js"
+    ],
+    "game/assets/elements_v2/icons/part_PART_L1.svg": [
+      "game/src/assets.js",
+      "game/src/rework-ui.js"
+    ],
+    "game/assets/elements_v2/icons/part_PART_L2.svg": [
+      "game/src/assets.js",
+      "game/src/rework-ui.js"
+    ],
+    "game/assets/elements_v2/icons/part_PART_L3.svg": [
+      "game/src/assets.js",
+      "game/src/rework-ui.js"
+    ],
+    "game/assets/elements_v2/icons/part_PART_V1.svg": [
+      "game/src/assets.js",
+      "game/src/rework-ui.js"
+    ],
+    "game/assets/elements_v2/icons/part_PART_V2.svg": [
+      "game/src/assets.js",
+      "game/src/rework-ui.js"
+    ],
+    "game/assets/elements_v2/icons/part_PART_V3.svg": [
+      "game/src/assets.js",
+      "game/src/rework-ui.js"
+    ],
+    "game/assets/elements_v2/icons/part_PART_W1.svg": [
+      "game/src/assets.js",
+      "game/src/rework-ui.js"
+    ],
+    "game/assets/elements_v2/icons/part_PART_W2.svg": [
+      "game/src/assets.js",
+      "game/src/rework-ui.js"
+    ],
+    "game/assets/elements_v2/icons/part_PART_W3.svg": [
+      "game/src/assets.js",
+      "game/src/rework-ui.js"
+    ],
+    "game/assets/elements_v2/icons/skill_E1.svg": [
+      "game/src/assets.js",
+      "game/src/rework-ui.js"
+    ],
+    "game/assets/elements_v2/icons/skill_E2.svg": [
+      "game/src/assets.js",
+      "game/src/rework-ui.js"
+    ],
+    "game/assets/elements_v2/icons/skill_E3.svg": [
+      "game/src/assets.js",
+      "game/src/rework-ui.js"
+    ],
+    "game/assets/elements_v2/icons/skill_F1.svg": [
+      "game/src/assets.js",
+      "game/src/rework-ui.js"
+    ],
+    "game/assets/elements_v2/icons/skill_F2.svg": [
+      "game/src/assets.js",
+      "game/src/rework-ui.js"
+    ],
+    "game/assets/elements_v2/icons/skill_F3.svg": [
+      "game/src/assets.js",
+      "game/src/rework-ui.js"
+    ],
+    "game/assets/elements_v2/icons/skill_L1.svg": [
+      "game/src/assets.js",
+      "game/src/rework-ui.js"
+    ],
+    "game/assets/elements_v2/icons/skill_L2.svg": [
+      "game/src/assets.js",
+      "game/src/rework-ui.js"
+    ],
+    "game/assets/elements_v2/icons/skill_L3.svg": [
+      "game/src/assets.js",
+      "game/src/rework-ui.js"
+    ],
+    "game/assets/elements_v2/icons/skill_V1.svg": [
+      "game/src/assets.js",
+      "game/src/rework-ui.js"
+    ],
+    "game/assets/elements_v2/icons/skill_V2.svg": [
+      "game/src/assets.js",
+      "game/src/rework-ui.js"
+    ],
+    "game/assets/elements_v2/icons/skill_V3.svg": [
+      "game/src/assets.js",
+      "game/src/rework-ui.js"
+    ],
+    "game/assets/elements_v2/icons/skill_W1.svg": [
+      "game/src/assets.js",
+      "game/src/rework-ui.js"
+    ],
+    "game/assets/elements_v2/icons/skill_W2.svg": [
+      "game/src/assets.js",
+      "game/src/rework-ui.js"
+    ],
+    "game/assets/elements_v2/icons/skill_W3.svg": [
+      "game/src/assets.js",
+      "game/src/rework-ui.js"
+    ],
+    "game/assets/ui2/icons/btn_check.webp": [
+      "game/src/assets.js",
+      "game/src/ui2-art.js"
+    ],
+    "game/assets/ui2/icons/btn_close.webp": [
+      "game/src/assets.js",
+      "game/src/ui2-art.js"
+    ],
+    "game/assets/ui2/icons/btn_help.webp": [
+      "game/src/assets.js",
+      "game/src/ui2-art.js"
+    ],
+    "game/assets/ui2/icons/btn_next.webp": [
+      "game/src/assets.js",
+      "game/src/ui2-art.js"
+    ],
+    "game/assets/ui2/icons/btn_prev.webp": [
+      "game/src/assets.js",
+      "game/src/ui2-art.js"
+    ],
+    "game/assets/ui2/icons/btn_reroll.webp": [
+      "game/src/assets.js",
+      "game/src/ui2-art.js"
+    ],
+    "game/assets/ui2/icons/cur_coin.webp": [
+      "game/src/assets.js",
+      "game/src/main.js",
+      "game/src/ui2-art.js"
+    ],
+    "game/assets/ui2/icons/cur_crown.webp": [
+      "game/src/assets.js",
+      "game/src/ui2-art.js"
+    ],
+    "game/assets/ui2/icons/cur_gift.webp": [
+      "game/src/assets.js",
+      "game/src/main.js",
+      "game/src/ui2-art.js"
+    ],
+    "game/assets/ui2/icons/cur_pass.webp": [
+      "game/src/assets.js",
+      "game/src/main.js",
+      "game/src/ui2-art.js"
+    ],
+    "game/assets/ui2/icons/cur_sprout.webp": [
+      "game/src/assets.js",
+      "game/src/ui2-art.js"
+    ],
+    "game/assets/ui2/icons/cur_star.webp": [
+      "game/src/assets.js",
+      "game/src/ui2-art.js"
+    ],
+    "game/assets/ui2/icons/el_earth.webp": [
+      "game/src/assets.js",
+      "game/src/ui2-art.js"
+    ],
+    "game/assets/ui2/icons/el_fire.webp": [
+      "game/src/assets.js",
+      "game/src/ui2-art.js"
+    ],
+    "game/assets/ui2/icons/el_lightning.webp": [
+      "game/src/assets.js",
+      "game/src/ui2-art.js"
+    ],
+    "game/assets/ui2/icons/el_water.webp": [
+      "game/src/assets.js",
+      "game/src/ui2-art.js"
+    ],
+    "game/assets/ui2/icons/el_wind.webp": [
+      "game/src/assets.js",
+      "game/src/ui2-art.js"
+    ],
+    "game/assets/ui2/icons/fn_clean.webp": [
+      "game/src/assets.js",
+      "game/src/ui2-art.js"
+    ],
+    "game/assets/ui2/icons/fn_lock.webp": [
+      "game/src/assets.js",
+      "game/src/ui2-art.js",
+      "game/src/ui-v2.css"
+    ],
+    "game/assets/ui2/icons/fn_mission.webp": [
+      "game/src/assets.js",
+      "game/src/ui2-art.js"
+    ],
+    "game/assets/ui2/icons/fn_news.webp": [
+      "game/src/assets.js",
+      "game/src/ui2-art.js"
+    ],
+    "game/assets/ui2/icons/fn_pause.webp": [
+      "game/src/assets.js",
+      "game/src/ui2-art.js"
+    ],
+    "game/assets/ui2/icons/fn_settings.webp": [
+      "game/src/assets.js",
+      "game/src/ui2-art.js"
+    ],
+    "game/assets/ui2/icons/fn_sound_off.webp": [
+      "game/src/assets.js",
+      "game/src/ui2-art.js"
+    ],
+    "game/assets/ui2/icons/fn_sound_on.webp": [
+      "game/src/assets.js",
+      "game/src/ui2-art.js"
+    ],
+    "game/assets/ui2/icons/fn_time.webp": [
+      "game/src/assets.js",
+      "game/src/ui2-art.js",
+      "game/src/ui-v2.css"
+    ],
+    "game/assets/ui2/icons/nav_adventure.webp": [
+      "game/src/assets.js",
+      "game/src/ui2-art.js"
+    ],
+    "game/assets/ui2/icons/nav_book.webp": [
+      "game/src/assets.js",
+      "game/src/ui2-art.js"
+    ],
+    "game/assets/ui2/icons/nav_friends.webp": [
+      "game/src/assets.js",
+      "game/src/ui2-art.js"
+    ],
+    "game/assets/ui2/icons/nav_gear.webp": [
+      "game/src/assets.js",
+      "game/src/ui2-art.js"
+    ],
+    "game/assets/ui2/icons/nav_parts.webp": [
+      "game/src/assets.js",
+      "game/src/ui2-art.js"
+    ],
+    "game/assets/ui2/icons/nav_training.webp": [
+      "game/src/assets.js",
+      "game/src/ui2-art.js"
+    ],
+    "game/assets/ui2/icons/slot_armor.webp": [
+      "game/src/assets.js",
+      "game/src/ui2-art.js"
+    ],
+    "game/assets/ui2/icons/slot_gloves.webp": [
+      "game/src/assets.js",
+      "game/src/ui2-art.js"
+    ],
+    "game/assets/ui2/icons/slot_helm.webp": [
+      "game/src/assets.js",
+      "game/src/ui2-art.js"
+    ],
+    "game/assets/ui2/icons/slot_necklace.webp": [
+      "game/src/assets.js",
+      "game/src/ui2-art.js"
+    ],
+    "game/assets/ui2/icons/slot_shoes.webp": [
+      "game/src/assets.js",
+      "game/src/ui2-art.js"
+    ],
+    "game/assets/ui2/icons/slot_weapon.webp": [
+      "game/src/assets.js",
+      "game/src/ui2-art.js"
+    ],
+    "game/assets/ui2/icons/stat_attack.webp": [
+      "game/src/assets.js",
+      "game/src/ui2-art.js"
+    ],
+    "game/assets/ui2/icons/stat_hp.webp": [
+      "game/src/assets.js",
+      "game/src/ui2-art.js"
+    ],
+    "game/assets/ui2/icons/stat_speed.webp": [
+      "game/src/assets.js",
+      "game/src/ui2-art.js"
+    ],
+    "game/assets/ui2/icons/supply_closed.webp": [
+      "game/src/assets.js",
+      "game/src/rework-ui.js",
+      "game/src/ui2-art.js"
+    ],
+    "game/assets/ui2/icons/supply_open.webp": [
+      "game/src/assets.js",
+      "game/src/rework-ui.js",
+      "game/src/ui2-art.js"
+    ],
+    "game/assets/ui2/skills/earth_boulder_1.webp": [
+      "game/src/assets.js",
+      "game/src/ui2-art.js"
+    ],
+    "game/assets/ui2/skills/earth_mole_1.webp": [
+      "game/src/assets.js",
+      "game/src/ui2-art.js"
+    ],
+    "game/assets/ui2/skills/earth_molefield.webp": [
+      "game/src/assets.js",
+      "game/src/ui2-art.js"
+    ],
+    "game/assets/ui2/skills/earth_stone_1.webp": [
+      "game/src/assets.js",
+      "game/src/ui2-art.js"
+    ],
+    "game/assets/ui2/skills/fire_bottle.webp": [
+      "game/src/assets.js",
+      "game/src/ui2-art.js"
+    ],
+    "game/assets/ui2/skills/fire_frocket.webp": [
+      "game/src/assets.js",
+      "game/src/ui2-art.js"
+    ],
+    "game/assets/ui2/skills/fire_rocket.webp": [
+      "game/src/assets.js",
+      "game/src/ui2-art.js"
+    ],
+    "game/assets/ui2/skills/fire_volcano.webp": [
+      "game/src/assets.js",
+      "game/src/ui2-art.js"
+    ],
+    "game/assets/ui2/skills/lightning_bee_1.webp": [
+      "game/src/assets.js",
+      "game/src/ui2-art.js"
+    ],
+    "game/assets/ui2/skills/lightning_cloud.webp": [
+      "game/src/assets.js",
+      "game/src/ui2-art.js"
+    ],
+    "game/assets/ui2/skills/lightning_storm.webp": [
+      "game/src/assets.js",
+      "game/src/ui2-art.js"
+    ],
+    "game/assets/ui2/skills/lightning_swarm.webp": [
+      "game/src/assets.js",
+      "game/src/ui2-art.js"
+    ],
+    "game/assets/ui2/skills/support_S1.webp": [
+      "game/src/assets.js",
+      "game/src/ui2-art.js"
+    ],
+    "game/assets/ui2/skills/support_S2.webp": [
+      "game/src/assets.js",
+      "game/src/ui2-art.js"
+    ],
+    "game/assets/ui2/skills/support_S3.webp": [
+      "game/src/assets.js",
+      "game/src/ui2-art.js"
+    ],
+    "game/assets/ui2/skills/support_S4.webp": [
+      "game/src/assets.js",
+      "game/src/ui2-art.js"
+    ],
+    "game/assets/ui2/skills/support_S5.webp": [
+      "game/src/assets.js",
+      "game/src/ui2-art.js"
+    ],
+    "game/assets/ui2/skills/support_S6.webp": [
+      "game/src/assets.js",
+      "game/src/ui2-art.js"
+    ],
+    "game/assets/ui2/skills/support_S7.webp": [
+      "game/src/assets.js",
+      "game/src/ui2-art.js"
+    ],
+    "game/assets/ui2/skills/support_S8.webp": [
+      "game/src/assets.js",
+      "game/src/ui2-art.js"
+    ],
+    "game/assets/ui2/skills/water_balloon.webp": [
+      "game/src/assets.js",
+      "game/src/ui2-art.js"
+    ],
+    "game/assets/ui2/skills/water_beam_tip.webp": [
+      "game/src/assets.js",
+      "game/src/ui2-art.js"
+    ],
+    "game/assets/ui2/skills/water_kballoon.webp": [
+      "game/src/assets.js",
+      "game/src/ui2-art.js"
+    ],
+    "game/assets/ui2/skills/water_rbeam_tip.webp": [
+      "game/src/assets.js",
+      "game/src/ui2-art.js"
+    ],
+    "game/assets/ui2/skills/wind_boomerang_1.webp": [
+      "game/src/assets.js",
+      "game/src/ui2-art.js"
+    ],
+    "game/assets/ui2/skills/wind_mboomerang_1.webp": [
+      "game/src/assets.js",
+      "game/src/ui2-art.js"
+    ],
+    "game/assets/ui2/skills/wind_top_1.webp": [
+      "game/src/assets.js",
+      "game/src/ui2-art.js"
+    ],
+    "game/assets/ui2/skills/wind_typhoon_1.webp": [
+      "game/src/assets.js",
+      "game/src/ui2-art.js"
+    ],
+    "game/assets/sprites/player_knight.webp": [
+      "game/src/assets.js"
+    ],
+    "game/assets/sprites/enemy_wraith.webp": [
+      "game/src/assets.js"
+    ],
+    "game/assets/sprites/enemy_spider.webp": [
+      "game/src/assets.js"
+    ],
+    "game/assets/sprites/enemy_elite.webp": [
+      "game/src/assets.js"
+    ],
+    "game/assets/sprites/prop_torch.webp": [
+      "game/src/assets.js"
+    ],
+    "game/assets/sprites/prop_rock.webp": [
+      "game/src/assets.js"
+    ],
+    "game/assets/sprites/prop_chest.webp": [
+      "game/src/assets.js"
+    ],
+    "game/assets/sprites/t1/floor_dirt.webp": [
+      "game/src/assets.js",
+      "game/src/rework-ui.js",
+      "game/src/rework-ui.js"
+    ],
+    "game/assets/sprites/t1/floor_concrete.webp": [
+      "game/src/assets.js",
+      "game/src/rework-ui.js",
+      "game/src/rework-ui.js"
+    ],
+    "game/assets/sprites/t1/floor_trash.webp": [
+      "game/src/assets.js",
+      "game/src/rework-ui.js",
+      "game/src/rework-ui.js"
+    ],
+    "game/assets/sprites/t4/floor_burnt.webp": [
+      "game/src/assets.js",
+      "game/src/main.js",
+      "game/src/rework-ui.js",
+      "game/src/rework-ui.js"
+    ],
+    "game/assets/sprites/t4/floor_logging.webp": [
+      "game/src/assets.js",
+      "game/src/main.js",
+      "game/src/rework-ui.js",
+      "game/src/rework-ui.js"
+    ],
+    "game/assets/sprites/t4/floor_trail.webp": [
+      "game/src/assets.js",
+      "game/src/main.js",
+      "game/src/rework-ui.js",
+      "game/src/rework-ui.js"
+    ],
+    "game/assets/ui/panel-border.webp": [
+      "game/src/assets.js",
+      "game/index.html",
+      "game/index.html"
+    ],
+    "game/assets/ui/panel-border-thin.webp": [
+      "game/src/assets.js",
+      "game/index.html"
+    ],
+    "game/assets/ui2/emblem.webp": [
+      "game/src/rework-ui.js",
+      "game/src/ui2-art.js"
+    ],
+    "game/assets/ui/title_emblem.webp": [
+      "game/src/rework-ui.js",
+      "game/index.html",
+      "game/index.html"
+    ],
+    "game/assets/ui/title_hoya.webp": [
+      "game/src/rework-ui.js",
+      "game/index.html"
+    ],
+    "game/assets/ui/title_mascot.webp": [
+      "game/src/rework-ui.js",
+      "game/index.html",
+      "game/index.html"
+    ],
+    "game/assets/ui/title_minji.webp": [
+      "game/src/rework-ui.js",
+      "game/index.html"
+    ]
+  },
+  "unreferenced": [
+    {
+      "path": "game/assets/elements_v2/fx/earth_impact.png",
+      "bytes": 1030172,
+      "format": ".png"
+    },
+    {
+      "path": "game/assets/elements_v2/fx/fire_impact.png",
+      "bytes": 1005835,
+      "format": ".png"
+    },
+    {
+      "path": "game/assets/elements_v2/fx/lightning_impact.png",
+      "bytes": 477332,
+      "format": ".png"
+    },
+    {
+      "path": "game/assets/elements_v2/fx/water_impact.png",
+      "bytes": 1581162,
+      "format": ".png"
+    },
+    {
+      "path": "game/assets/elements_v2/fx/wind_impact.png",
+      "bytes": 1388418,
+      "format": ".png"
+    },
+    {
+      "path": "game/assets/sprites/enemy_imp.png",
+      "bytes": 219,
+      "format": ".png"
+    }
+  ],
+  "method": "Static literals plus existing-file expansion of dynamic asset path templates; all runtime JS, CSS, index and admin scanned. Dynamic expansion is conservative, not a proof every file is requested."
+}
