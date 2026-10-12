@@ -18,20 +18,20 @@
   .abs { position: absolute; }
 
   /* 머리 0~86mm : 키 비주얼 */
-  .hero { position: absolute; left: 0; top: 0; width: 210mm; height: 86mm; overflow: hidden; background: #130a1e; }
-  .hero .key { position: absolute; left: 0; top: 0; width: 210mm; height: 86mm; object-fit: cover; object-position: center 58%; }
-  .hero .veil { position: absolute; inset: 0; background: linear-gradient(90deg, rgba(20,8,30,.90) 0%, rgba(20,8,30,.78) 38%, rgba(20,8,30,.15) 62%, rgba(20,8,30,0) 100%); }
+  .hero { position: absolute; left: 0; top: 0; width: 210mm; height: 142mm; overflow: hidden; background: radial-gradient(120mm 90mm at 30% 40%, #4a1a0c 0%, #1d0b12 60%, #120812 100%); }
+  .hero .key { position: absolute; right: 7mm; top: 4mm; width: 92mm; height: 132mm; object-fit: cover; object-position: center center; border-radius: 4mm; box-shadow: 0 2mm 6mm #000a; border: .6mm solid #ffb36b55; }
+  .hero .veil { position: absolute; inset: 0; background: radial-gradient(80mm 60mm at 85% 70%, rgba(255,120,30,.18), transparent 70%); pointer-events: none; }
   .hero .wave { position: absolute; left: 0; bottom: -.3mm; width: 210mm; height: 12mm; }
   .brand { left: var(--safe); top: 8mm; display: flex; align-items: center; gap: 2.6mm; }
   .brand img { width: 14mm; height: 14mm; object-fit: contain; }
   .brand b { font-family: "Jua", sans-serif; font-weight: normal; color: #fff; font-size: 15pt; text-shadow: 0 .5mm 0 #3a0e00; }
   .brand .new { font-family: "Jua", sans-serif; background: var(--sun); color: #5a3a00; font-size: 11pt; padding: .4mm 3mm; border-radius: 99px; box-shadow: 0 .6mm 0 #b98a00; }
-  .title { left: var(--safe); top: 26mm; width: 118mm; }
+  .title { left: var(--safe); top: 30mm; width: 98mm; }
   .title .chap { display: inline-block; font-family: "Jua", sans-serif; font-size: 18pt; color: var(--deep); background: var(--sun); padding: .3mm 3.5mm; border-radius: 3mm; box-shadow: 0 .8mm 0 #b98a00; }
-  .title h1 { margin: 1.5mm 0 0; font-size: 44pt; line-height: 1.05; color: #fff; text-shadow: 0 0 6mm rgba(255,120,30,.9), 0 1mm 0 #3a0e00; }
-  .title p { margin: 2mm 0 0; font-size: 11.5pt; line-height: 1.45; color: #ffe9d6; text-shadow: 0 .3mm 1mm #000; }
+  .title h1 { margin: 2mm 0 0; font-size: 46pt; line-height: 1.05; color: #fff; text-shadow: 0 0 6mm rgba(255,120,30,.9), 0 1mm 0 #3a0e00; }
+  .title p { margin: 4mm 0 0; font-size: 12pt; line-height: 1.45; color: #ffe9d6; text-shadow: 0 .3mm 1mm #000; }
   .title p b { color: var(--sun); font-weight: normal; font-family: "Jua", sans-serif; }
-  .boss-tag { right: 10mm; top: 66mm; font-family: "Jua", sans-serif; color: #fff; background: #3a0e00e6; border: .5mm solid #ffb36b99; border-radius: 3mm; padding: .5mm 3mm .7mm; text-align: center; line-height: 1.15; }
+  .boss-tag { right: 10mm; top: 124mm; font-family: "Jua", sans-serif; color: #fff; background: #3a0e00e6; border: .5mm solid #ffb36b99; border-radius: 3mm; padding: .5mm 3mm .7mm; text-align: center; line-height: 1.15; }
   .boss-tag small { display: block; font-size: 8pt; color: var(--sun); }
   .boss-tag span { font-size: 12.5pt; }
 
@@ -43,28 +43,29 @@
   .line { flex: 1; height: 1mm; border-radius: 1mm; background: repeating-linear-gradient(90deg, #f0b48a 0 3mm, transparent 3mm 5mm); }
 
   /* 몬스터 89~137mm */
-  .monsters { top: 89mm; }
+  .monsters { top: 145mm; }
   .mgrid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 2.4mm; }
-  .mcard { position: relative; height: 40mm; background: #fff; border: .5mm solid #f0c9ad; border-radius: 3.5mm; padding: 1.6mm 1.6mm 1.8mm; text-align: center; box-shadow: 0 .8mm 0 #f0c9ad; }
-  .mcard .pic { height: 18mm; display: flex; align-items: flex-end; justify-content: center; }
-  .mcard .pic img { max-height: 18mm; max-width: 28mm; object-fit: contain; }
+  .mcard { position: relative; height: 36mm; background: #fff; border: .5mm solid #f0c9ad; border-radius: 3.5mm; padding: 1.6mm 1.6mm 1.8mm; text-align: center; box-shadow: 0 .8mm 0 #f0c9ad; }
+  .mcard .pic { height: 15mm; display: flex; align-items: flex-end; justify-content: center; }
+  .mcard .pic img { max-height: 15mm; max-width: 28mm; object-fit: contain; }
   .mcard h3 { margin: 1.2mm 0 .5mm; font-size: 11.5pt; color: var(--deep); line-height: 1.1; white-space: nowrap; }
-  .mcard p { margin: 0; font-size: 8pt; line-height: 1.36; color: #5a3f30; }
+  .mcard p { margin: 0; font-size: 7.6pt; line-height: 1.3; color: #5a3f30; }
   .mcard.mid { border-color: #8a5a3a; box-shadow: 0 .8mm 0 #8a5a3a; background: linear-gradient(180deg, #f6ebe2, #fff 45%); }
   .mcard .badge { position: absolute; top: -2.2mm; left: 50%; transform: translateX(-50%); font-family: "Jua", sans-serif; font-size: 8pt; white-space: nowrap; background: #3a2418; color: #ffe27a; padding: .2mm 2.2mm; border-radius: 99px; }
 
   /* 맵 140~252mm */
-  .maps { top: 140mm; }
-  .mapgrid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 3mm; }
+  .maps { top: 192mm; }
+  .mapgrid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 2.2mm; }
   .map { background: #fff; border-radius: 3.5mm; overflow: hidden; border: .5mm solid #f0c9ad; box-shadow: 0 .8mm 0 #f0c9ad; }
   .map .shot { position: relative; line-height: 0; }
   .map .shot img { display: block; width: 100%; height: auto; }
   .map .no { position: absolute; left: 1.6mm; top: 1.6mm; line-height: 1.2; font-family: "Jua", sans-serif; font-size: 10pt; color: #fff; background: var(--ember); border: .5mm solid #ffd9b8; border-radius: 50% 50% 50% 2mm; padding: .3mm 2mm; }
-  .map .cap { height: 8.6mm; padding: 1.3mm 2.2mm 0; line-height: 1.25; white-space: nowrap; }
-  .map .cap b { font-family: "Jua", sans-serif; font-weight: normal; font-size: 11pt; color: var(--deep); margin-right: 1.4mm; }
-  .map .cap span { font-size: 8pt; color: #6b4a3a; }
+  .map .cap { height: 10.5mm; padding: 1mm 1.8mm 0; line-height: 1.2; }
+  .map .cap b { display: block; font-family: "Jua", sans-serif; font-weight: normal; font-size: 10pt; color: var(--deep); }
+  .map .cap span { font-size: 7.2pt; color: #6b4a3a; }
   .map.boss-map { border-color: #c0392b; box-shadow: 0 .8mm 0 #c0392b; }
   .map.boss-map .no { background: #c0392b; }
+  .hero .mission { position: absolute; left: var(--safe); top: 86mm; width: 98mm; height: 44mm; }
   .mission { border-radius: 3.5mm; padding: 2.4mm 2.6mm; background: linear-gradient(160deg, #fff7d6, #ffe9a8); border: .6mm solid #e0b53c; box-shadow: 0 .8mm 0 #e0b53c; display: flex; flex-direction: column; justify-content: space-between; text-align: center; }
   .mission small { font-family: "Jua", sans-serif; color: #b36b00; font-size: 9pt; }
   .mission h3 { margin: .3mm 0 0; font-size: 12pt; line-height: 1.2; color: #6b3a00; }
@@ -104,6 +105,9 @@
     </div>
     <div class="abs boss-tag"><small>4-5 대왕</small><span>산불 거인</span></div>
     <svg class="wave" viewBox="0 0 210 12" preserveAspectRatio="none"><path d="M0 6 C 18 1, 34 1, 52 6 S 88 11, 105 6 S 140 1, 158 6 S 192 11, 210 6 V12 H0 Z" fill="#fff1e3"/></svg>
+    <div class="mission"><small>새 임무</small><h3>타는 불씨를 꺼 주세요!</h3>
+      <div class="fish"><img src="../../game/assets/sprites/t4/prop_ember.png" alt=""><i>➜</i><img src="../../game/assets/sprites/t4/prop_sprout.png" alt=""></div>
+      <p>불씨 옆에 서면 꺼지고 새싹이 돋아요. 불씨 5개를 끄면 거인이 약해져요.</p></div>
   </section>
 
   <section class="sec monsters">
@@ -125,9 +129,6 @@
       <div class="map"><div class="shot"><img src="4장_포스터_그림/map_4-3.jpg" alt=""><span class="no">4-3</span></div><div class="cap"><b>외래종 습격</b><span>뉴트몬 떼 + 불도저 등장</span></div></div>
       <div class="map"><div class="shot"><img src="4장_포스터_그림/map_4-4.jpg" alt=""><span class="no">4-4</span></div><div class="cap"><b>산불</b><span>불키가 쓰레기를 던져요</span></div></div>
       <div class="map boss-map"><div class="shot"><img src="4장_포스터_그림/map_4-5.jpg" alt=""><span class="no">4-5</span></div><div class="cap"><b>숲의 심장</b><span>산불 거인과 한판 승부</span></div></div>
-      <div class="mission"><small>새 임무</small><h3>타는 불씨를<br>꺼 주세요!</h3>
-        <div class="fish"><img src="../../game/assets/sprites/t4/prop_ember.png" alt=""><i>➜</i><img src="../../game/assets/sprites/t4/prop_sprout.png" alt=""></div>
-        <p>불씨 옆에 서면 꺼지고 새싹이 돋아요.<br>불씨 5개를 끄면 거인이 약해져요.</p></div>
     </div>
   </section>
 
