@@ -5,6 +5,7 @@
 import sys
 from pathlib import Path
 import numpy as np
+from cut_webp import save_webp
 from PIL import Image
 from scipy import ndimage
 
@@ -17,7 +18,7 @@ SRC = ROOT / "이미지 에셋" / "효과_01_대왕기술.png"
 OUT = ROOT / "game" / "assets" / "sprites" / "t1"
 # 왼쪽부터 (이름, 긴 변 px, 부드러운 키). 금 간 땅은 가장자리가 마젠타와 섞여 번지므로(갈색+마젠타 선형 혼합)
 # (R+B)/2-G 를 갈색(≈5)~마젠타(≈255) 사이 직선으로 알파를 매겨 번진 분홍·초록 테를 없앤다.
-NAMES = [("fx_trashball.png", 128, False), ("fx_shockring.png", 256, False), ("fx_crack.png", 256, True)]
+NAMES = [("fx_trashball.webp", 128, False), ("fx_shockring.webp", 256, False), ("fx_crack.webp", 256, True)]
 
 def main():
     rgb = np.asarray(Image.open(SRC).convert("RGB"))
@@ -39,7 +40,7 @@ def main():
         im = Image.fromarray(frame, "RGBA").convert("RGBa")
         s = side / max(im.width, im.height)
         im = im.resize((max(1, round(im.width * s)), max(1, round(im.height * s))), Image.LANCZOS).convert("RGBA")
-        im.save(OUT / name, optimize=True)
+        save_webp(im, OUT / name)
         print(name, im.size)
 
 if __name__ == "__main__":

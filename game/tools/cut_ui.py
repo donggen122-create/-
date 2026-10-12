@@ -10,6 +10,7 @@ import math
 import subprocess
 from pathlib import Path
 import numpy as np
+from cut_webp import save_webp
 from PIL import Image, ImageFilter, ImageDraw
 
 ROOT = Path(__file__).resolve().parents[2]
@@ -42,7 +43,8 @@ def normalize_skills(output):
             if name: used.setdefault(name,[]).append(f'{kind}:{id}')
     prepared=[]; manifest={}
     for name,ids in sorted(used.items()):
-        source=ROOT/f'game/assets/sprites/skills/{name}.png'
+        source=ROOT/f'game/assets/sprites/skills/{name}.webp'
+        if not source.exists(): source=source.with_suffix('.png')
         im=Image.open(source).convert('RGBA'); box=im.getchannel('A').getbbox()
         if not box: raise ValueError(f'Empty skill sprite: {source}')
         crop=im.crop(box); side=math.ceil(max(crop.size)/.88)
@@ -50,7 +52,7 @@ def normalize_skills(output):
         prepared.append((name,out))
         manifest[name]={'source':source.relative_to(ROOT).as_posix(),'used_by':ids,'source_size':list(im.size),'alpha_box':list(box),'copy_size':[side,side]}
     dest=output/'skills'; dest.mkdir(parents=True,exist_ok=True)
-    for name,im in prepared: im.save(dest/(name+'.png'),optimize=True)
+    for name,im in prepared: save_webp(im, dest/(name+'.webp'))
     (dest/'manifest.json').write_text(json.dumps(manifest,ensure_ascii=False,indent=2)+'\n',encoding='utf-8',newline='\n')
     print(f'Normalized {len(prepared)} referenced skill/support/evolution sprites without upscaling')
 
@@ -181,8 +183,8 @@ def main():
     icons=args.output/'icons'; icons.mkdir(parents=True,exist_ok=True)
     files=[]
     for name,im in prepared:
-        path=(args.output if name=='emblem' else icons)/(name+'.png'); im.save(path,optimize=True); files.append(path)
-    if bg is not None: bg.save(args.output/'bg_hq.jpg',quality=80,optimize=True)
+        path=(args.output if name=='emblem' else icons)/(name+'.webp'); save_webp(im, path); files.append(path)
+    if bg is not None: save_webp(bg, args.output/'bg_hq.webp')
     new_names={name for names in NEW_SHEETS.values() for name in names}
     dest=ROOT/'docs/codex/preview/ui3_icons.jpg'; dest.parent.mkdir(parents=True,exist_ok=True); preview([f for f in files if f.stem in new_names],dest)
     normalize_skills(args.output)

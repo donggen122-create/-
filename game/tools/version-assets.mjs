@@ -9,14 +9,16 @@ export function stampAssetVersions(root = game) {
   if (!version) throw new Error('ASSET_VERSION missing');
   for (const name of ['index.html','src/rework.css','src/ui-v2.css']) {
     const file = path.join(root,name), text = fs.readFileSync(file,'utf8');
-    const stamped = text.replace(/((?:\.\/|\.\.\/)assets\/[\w./-]+\.(?:png|jpg|svg|woff2|mp3|ogg))(?:\?v=[\w.-]+)?/g, `$1?v=${version}`);
+    // D owns image paths in index.html; preserve its font/audio URLs byte for byte.
+    const extensions = name === 'index.html' ? 'webp|png|jpg|svg' : 'webp|png|jpg|svg|woff2|mp3|ogg';
+    const stamped = text.replace(new RegExp(`((?:\\./|\\.\\./)assets/[\\w./-]+\\.(?:${extensions}))(?:\\?v=[\\w.-]+)?`, 'g'), `$1?v=${version}`);
     if (text !== stamped) fs.writeFileSync(file, stamped);
   }
 }
 // Version immutable literal URLs in generated copies, including result markup owned by session A.
 // Source files outside B's edit scope stay untouched.
 export function versionStaticContent(text, version) {
-  return text.replace(/((?:\.\/|\.\.\/)assets\/[\w./-]+\.(?:png|jpg|svg|woff2|mp3|ogg))(?:\?v=[\w.-]+)?/g, `$1?v=${version}`);
+  return text.replace(/((?:\.\/|\.\.\/)assets\/[\w./-]+\.(?:webp|png|jpg|svg|woff2|mp3|ogg))(?:\?v=[\w.-]+)?/g, `$1?v=${version}`);
 }
 const main=process.argv[1] && path.resolve(process.argv[1]) === fileURLToPath(import.meta.url);
 if (main && process.argv[2] === '--hash') {

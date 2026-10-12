@@ -4,6 +4,7 @@
 # 사용: python game/tools/cut_heroes_bat.py   (미리보기: game/assets_src/kids/preview_<hero>_ranged.png)
 from pathlib import Path
 import numpy as np
+from cut_webp import save_webp
 from PIL import Image
 from scipy import ndimage
 import sys
@@ -112,8 +113,8 @@ def main():
             x = int(round(canvas_w / 2 - fc)); y = CANVAS_H - FOOT_PAD - im.height
             if y < 0: raise RuntimeError(f"{hero}/{anim}{n}: 프레임 높이 {im.height} > 캔버스 {CANVAS_H}")
             canvas.paste(im, (x, y))
-            fn = f"{hero}_{anim}_{n}.png"
-            canvas.save(OUT / fn); manifest.append(fn); cells_prev.append(canvas)
+            fn = f"{hero}_{anim}_{n}.webp"
+            save_webp(canvas, OUT / fn); manifest.append(fn); cells_prev.append(canvas)
         pv = Image.new("RGBA", (canvas_w * len(cells_prev), CANVAS_H), (90, 90, 100, 255))
         for i, c in enumerate(cells_prev): pv.alpha_composite(c, (i * canvas_w, 0))
         pv = pv.resize((pv.width * 2, pv.height * 2), Image.NEAREST)

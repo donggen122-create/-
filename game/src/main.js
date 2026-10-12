@@ -284,7 +284,7 @@ const sgElements=createElementCombat({U,getPlayer:()=>player,getEnemies:()=>enem
 const sgWeapon=createWeaponCombat({U,getPlayer:()=>player,getEnemies:()=>enemies,getBoss:()=>boss,getProfile:()=>sgRunProfile,damage:sgDamage,images:ELEMENT_WEAPONS,sound:()=>playSfx('attack',.12),getMods:sgMods,
   getHostileShots:()=>sgHostileShots,onSpecial:(key)=>sgGearCount(key)});
 const SG_LOCAL=['localhost','127.0.0.1','[::1]'].includes(location.hostname);
-const sgPetImages=Object.fromEntries(Object.keys(R.PETS).map(id=>[id,loadImage(`./assets/seoho_v1/pets/${id}_idle.png`,true)]));
+const sgPetImages=Object.fromEntries(Object.keys(R.PETS).map(id=>[id,loadImage(`./assets/seoho_v1/pets/${id}_idle.webp`,true)]));
 
 function upLv(id) { return save.upgrades[id] || 0; }
 function upValue(id) { return 0; }
@@ -5603,7 +5603,7 @@ function sgMaybeGuidance(){
 function sgChapter4Notice(p,hideKey){
   // Every close path (button, backdrop, Escape, go) persists for this account/device.
   sgUI.dialog.addEventListener('close',()=>{try{localStorage.setItem(hideKey,'1');}catch(e){}},{once:true});
-  const open=R.stageUnlocked(p,'CH16'),img=n=>`<img src="${assetURL(`./assets/sprites/t4/${n}.png`)}" alt="">`;
+  const open=R.stageUnlocked(p,'CH16'),img=n=>`<img src="${assetURL(`./assets/sprites/t4/${n}.webp`)}" alt="">`;
   sgUI.openDialog(`<div class="sg-update sg-update-ch4"><span class="sg-update-tag">NEW 업데이트</span><h2>${isUI2()?art2('fn_news'):''}4장 「불타는 숲」 오픈!</h2>
     <img class="sg-update-art" src="${assetURL('./assets/ui/notice_ch4.jpg')}" alt="4장 불타는 숲">
     <template class="sg-update-foes-template"><div class="sg-update-foes">${['en_burner_m','en_saw','en_nutria','en_dozer','en_bulki','boss_calm'].map(img).join('')}</div></template>
@@ -6183,7 +6183,7 @@ async function sgSettle(pending,leaving=false){
     if(document.documentElement.classList.contains('ui2')){   // UI v2(docs/46): 별 줄을 큰 별 + 보상 타일로, 제목은 성공·실패 색 리본
       const top=elResultTable.querySelector('tr:first-child>td');elResult.dataset.win=r.cleared?'1':'0';
       if(top){top.className='ui2-res-top';top.removeAttribute('style');
-        top.innerHTML=`<div class="ui2-stars">${[0,1,2].map(i=>`<i class="${i<w.stars?'on':''}">${art2('cur_star')}</i>`).join('')}</div>${dn?`<div class="ui2-res-sub">${dn} 난이도${r.cleared?' 성공':' 도전'}</div>`:''}<div class="ui2-res-tiles"><span><img src="./assets/ui2/icons/cur_coin.png" alt=""/><b>+${w.coins}</b><small>코인</small></span><span><img src="./assets/ui2/icons/cur_gift.png" alt=""/><b>+${w.gifts}</b><small>보급권</small></span><span><img src="./assets/ui2/icons/cur_pass.png" alt=""/><b>${r.passes.remaining}</b><small>이용권 남음</small></span></div>`;}
+        top.innerHTML=`<div class="ui2-stars">${[0,1,2].map(i=>`<i class="${i<w.stars?'on':''}">${art2('cur_star')}</i>`).join('')}</div>${dn?`<div class="ui2-res-sub">${dn} 난이도${r.cleared?' 성공':' 도전'}</div>`:''}<div class="ui2-res-tiles"><span><img src="./assets/ui2/icons/cur_coin.webp" alt=""/><b>+${w.coins}</b><small>코인</small></span><span><img src="./assets/ui2/icons/cur_gift.webp" alt=""/><b>+${w.gifts}</b><small>보급권</small></span><span><img src="./assets/ui2/icons/cur_pass.webp" alt=""/><b>${r.passes.remaining}</b><small>이용권 남음</small></span></div>`;}
     }
     if(!r.cleared){
       const row=document.createElement('tr'),cell=document.createElement('td');cell.colSpan=2;

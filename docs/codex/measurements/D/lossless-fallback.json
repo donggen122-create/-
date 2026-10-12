@@ -1,0 +1,51 @@
+{
+  "initialDiagnosticSamples": 8,
+  "gameplayExact": 8,
+  "canvasFailures": [
+    {
+      "stage": "CH05",
+      "seed": 10808,
+      "exact": false,
+      "equivalent": false,
+      "changedPixels": 12499,
+      "maxChannelDelta": 3
+    },
+    {
+      "stage": "CH10",
+      "seed": 10808,
+      "exact": false,
+      "equivalent": false,
+      "changedPixels": 720235,
+      "maxChannelDelta": 24
+    },
+    {
+      "stage": "CH13",
+      "seed": 10808,
+      "exact": false,
+      "equivalent": false,
+      "changedPixels": 781068,
+      "maxChannelDelta": 17
+    },
+    {
+      "stage": "CH15",
+      "seed": 10808,
+      "exact": false,
+      "equivalent": false,
+      "changedPixels": 789299,
+      "maxChannelDelta": 13
+    }
+  ],
+  "reason": "Stop diagnostic once multiple chapters prove lossy floors violate canvas tolerance; conservatively restore every lossy gameplay floor before full final 16-sample replay",
+  "files": [
+    "game/assets/sprites/t1/floor_concrete.png",
+    "game/assets/sprites/t1/floor_dirt.png",
+    "game/assets/sprites/t2/floor_factory.png",
+    "game/assets/sprites/t2/floor_soot.png",
+    "game/assets/sprites/t2/floor_steel.png",
+    "game/assets/sprites/t3/floor_bank.png",
+    "game/assets/sprites/t3/floor_sewer.png",
+    "game/assets/sprites/t3/floor_stream.png",
+    "game/assets/sprites/t4/floor_logging.png",
+    "game/assets/sprites/t4/floor_trail.png"
+  ]
+}

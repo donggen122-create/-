@@ -1,0 +1,94 @@
+TAP version 13
+# Subtest: each chapter includes all enemy frames, props, floors and boss effects, including chapter 3 shared shot
+ok 1 - each chapter includes all enemy frames, props, floors and boss effects, including chapter 3 shared shot
+  ---
+  duration_ms: 32.2322
+  type: 'test'
+  ...
+# Subtest: common effect manifest covers every original/UI2 effect file
+ok 2 - common effect manifest covers every original/UI2 effect file
+  ---
+  duration_ms: 1.4029
+  type: 'test'
+  ...
+# Subtest: HTML/CSS versions match the one asset version and static headers survive sync
+ok 3 - HTML/CSS versions match the one asset version and static headers survive sync
+  ---
+  duration_ms: 2.6074
+  type: 'test'
+  ...
+# Subtest: D converted and retained image references exist and match the explicit PNG/JPG allowlist
+ok 4 - D converted and retained image references exist and match the explicit PNG/JPG allowlist
+  ---
+  duration_ms: 258.8826
+  type: 'test'
+  ...
+# Subtest: WebP version stamping is idempotent and preserves query/hash and data URI content
+ok 5 - WebP version stamping is idempotent and preserves query/hash and data URI content
+  ---
+  duration_ms: 0.3263
+  type: 'test'
+  ...
+# Subtest: URL stamping is idempotent, keeps data URIs intact and versions generated result literals
+ok 6 - URL stamping is idempotent, keeps data URIs intact and versions generated result literals
+  ---
+  duration_ms: 0.1631
+  type: 'test'
+  ...
+# Subtest: single-file modules include every local dependency before its importer
+ok 7 - single-file modules include every local dependency before its importer
+  ---
+  duration_ms: 14.17
+  type: 'test'
+  ...
+# Subtest: single-file build handles WebP in the MIME map, asset table and each static URL pass
+ok 8 - single-file build handles WebP in the MIME map, asset table and each static URL pass
+  ---
+  duration_ms: 0.6687
+  type: 'test'
+  ...
+# Subtest: UI 1 keeps legacy SVG markup and does not preload UI 2 art
+ok 9 - UI 1 keeps legacy SVG markup and does not preload UI 2 art
+  ---
+  duration_ms: 1.9469
+  type: 'test'
+  ...
+# Subtest: UI 2 uses context-specific art and all 44 preload icons exist
+ok 10 - UI 2 uses context-specific art and all 44 preload icons exist
+  ---
+  duration_ms: 9.1814
+  type: 'test'
+  ...
+# Subtest: UI 1 keeps original skill paths and symbol text; UI 2 has every referenced copy
+ok 11 - UI 1 keeps original skill paths and symbol text; UI 2 has every referenced copy
+  ---
+  duration_ms: 8.62
+  type: 'test'
+  ...
+# Subtest: UI 2 supply stages do not expose grade or celebration until party
+ok 12 - UI 2 supply stages do not expose grade or celebration until party
+  ---
+  duration_ms: 1.3629
+  type: 'test'
+  ...
+# Subtest: training still shows calculated cost and disables every unaffordable action
+ok 13 - training still shows calculated cost and disables every unaffordable action
+  ---
+  duration_ms: 0.2883
+  type: 'test'
+  ...
+# Subtest: maximum training replaces the meters with three ribbons and keeps actions disabled
+ok 14 - maximum training replaces the meters with three ribbons and keeps actions disabled
+  ---
+  duration_ms: 0.2212
+  type: 'test'
+  ...
+1..14
+# tests 14
+# suites 0
+# pass 14
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 406.3932

@@ -4,6 +4,7 @@
 import sys
 from pathlib import Path
 import numpy as np
+from cut_webp import save_webp
 from PIL import Image
 from scipy import ndimage
 
@@ -19,10 +20,10 @@ OUT = ROOT / "game" / "assets" / "ui"
 # 바깥 채움 문턱(flood): 값이 있으면 '키 성분 > 문턱'인 픽셀 중 이미지 가장자리와 이어진 영역을 전부 투명으로.
 #   배경에서 캐릭터 쪽으로 번지는 옅은 빛무리(새싹 뒤 분홍 글로우)를 지우되, 안쪽에 갇힌 분홍(볼)은 남긴다.
 JOBS = [
-    ("주인공 배경.jpg", "magenta", "title_hoya.png", 560, (40, 170), None),
-    ("여주인공 세로.jpg", "green", "title_minji.png", 560, (40, 170), None),
-    ("마스코트.jpg", "magenta", "title_emblem.png", 320, (60, 170), None),   # 파일명은 '마스코트'지만 내용은 무궁화 '서호' 배지(엠블럼). 분홍 꽃잎 보호
-    ("등불.jpg", "magenta", "title_mascot.png", 260, (30, 120), 8),        # 새싹 지구 마스코트
+    ("주인공 배경.jpg", "magenta", "title_hoya.webp", 560, (40, 170), None),
+    ("여주인공 세로.jpg", "green", "title_minji.webp", 560, (40, 170), None),
+    ("마스코트.jpg", "magenta", "title_emblem.webp", 320, (60, 170), None),   # 파일명은 '마스코트'지만 내용은 무궁화 '서호' 배지(엠블럼). 분홍 꽃잎 보호
+    ("등불.jpg", "magenta", "title_mascot.webp", 260, (30, 120), 8),        # 새싹 지구 마스코트
 ]
 
 def magenta_keyness(rgb):
@@ -57,7 +58,7 @@ def main():
         im = Image.fromarray(frame, "RGBA").convert("RGBa")
         scale = out_h / im.height
         im = im.resize((max(1, round(im.width * scale)), out_h), Image.LANCZOS).convert("RGBA")
-        im.save(OUT / out_name, optimize=True)
+        save_webp(im, OUT / out_name)
         print(out_name, im.size, round((OUT / out_name).stat().st_size / 1024), "KB")
 
 if __name__ == "__main__":

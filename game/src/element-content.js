@@ -1,6 +1,6 @@
 // 원소 스킬 체계 v3 (탕탕특공대 방식, 2026-09-22 밤 — docs/22_원소_스킬_체계_기획.md) · 2026-09-23 밀도 조정(5분 안에 진화 2~3회)
 // 원소 스킬 10(원소당 2) · 지원품 8 · 진화 10(스킬 Lv.3 + 짝 지원품) · 파츠 10(스킬당 1, 로비 성장)
-// 그림: game/assets/sprites/skills/<원소>_<이름>.png (사용자 Gemini 시트 → tools/cut_skills.py)
+// 그림: game/assets/sprites/skills/<원소>_<이름>.webp (사용자 Gemini 시트 → tools/cut_skills.py)
 // 브라우저·서버(guardian.js)가 같이 쓰는 순수 데이터. 이름은 초등학생용 쉬운 말.
 const ELEMENT_DATA = [
   { id: "fire", name: "불", title: "화염", color: "#FF6A2A", role: "폭발과 불바다" },

@@ -1,0 +1,15 @@
+checked size 1280x720
+checked size 1280x800
+checked size 1024x768
+checked size 820x1180
+checked size 768x1024
+checked size 375x667
+checked size 360x640
+1280x720: OK
+1280x800: OK
+1024x768: OK
+820x1180: OK
+768x1024: OK
+375x667: OK
+360x640: OK
+total issues 0

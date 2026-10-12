@@ -1,0 +1,98 @@
+[
+  {
+    "kind": "effect",
+    "source": "game/assets/sprites/skills/fire_boom_1.png",
+    "target": "game/assets/sprites/skills/fire_boom_1.png",
+    "candidate": "docs/codex/measurements/D/candidates/effect.webp",
+    "captureEngine": "Chromium screenshot, quantized 256 colors",
+    "crop": [
+      0,
+      0,
+      186,
+      186
+    ],
+    "zoom": 2.6881720430107525,
+    "bytes": 35368,
+    "preview": "docs/codex/preview/D_webp_effect.png"
+  },
+  {
+    "kind": "weapon",
+    "source": "game/assets/elements_v2/weapons/baseball.png",
+    "target": "game/assets/elements_v2/weapons/baseball.png",
+    "candidate": "docs/codex/measurements/D/candidates/weapon.webp",
+    "captureEngine": "Chromium screenshot, quantized 256 colors",
+    "crop": [
+      499,
+      553,
+      699,
+      753
+    ],
+    "zoom": 2.5,
+    "bytes": 49967,
+    "preview": "docs/codex/preview/D_webp_weapon.png"
+  },
+  {
+    "kind": "friend",
+    "source": "game/assets/seoho_v1/pets/otter_idle.png",
+    "target": "game/assets/seoho_v1/pets/otter_idle.png",
+    "candidate": "docs/codex/measurements/D/candidates/friend.webp",
+    "captureEngine": "Chromium screenshot, quantized 256 colors",
+    "crop": [
+      499,
+      538,
+      699,
+      738
+    ],
+    "zoom": 2.5,
+    "bytes": 69396,
+    "preview": "docs/codex/preview/D_webp_friend.png"
+  },
+  {
+    "kind": "boss",
+    "source": "game/assets/sprites/t4/boss_angry.png",
+    "target": "game/assets/sprites/t4/boss_angry.png",
+    "candidate": "docs/codex/measurements/D/candidates/boss.webp",
+    "captureEngine": "Chromium screenshot, quantized 256 colors",
+    "crop": [
+      54,
+      50,
+      254,
+      250
+    ],
+    "zoom": 2.5,
+    "bytes": 73991,
+    "preview": "docs/codex/preview/D_webp_boss.png"
+  },
+  {
+    "kind": "icon",
+    "source": "game/assets/ui2/icons/cur_coin.png",
+    "target": "game/assets/ui2/icons/cur_coin.webp",
+    "candidate": null,
+    "captureEngine": "Chromium screenshot, quantized 256 colors",
+    "crop": [
+      28,
+      27,
+      228,
+      227
+    ],
+    "zoom": 2.5,
+    "bytes": 53931,
+    "preview": "docs/codex/preview/D_webp_icon.png"
+  },
+  {
+    "kind": "floor",
+    "source": "game/assets/sprites/t1/floor_dirt.png",
+    "target": "game/assets/sprites/t1/floor_dirt.webp",
+    "candidate": null,
+    "captureEngine": "Chromium screenshot, quantized 256 colors",
+    "crop": [
+      124,
+      124,
+      324,
+      324
+    ],
+    "zoom": 2.5,
+    "bytes": 48528,
+    "preview": "docs/codex/preview/D_webp_floor.png"
+  }
+]

@@ -20,7 +20,7 @@ function DataUri($p) {
     throw "에셋 파일이 없음: $p"
   }
   $ext = [System.IO.Path]::GetExtension($p).ToLower()
-  $mime = @{ ".png" = "image/png"; ".ogg" = "audio/ogg"; ".mp3" = "audio/mpeg"; ".jpg" = "image/jpeg"; ".woff2" = "font/woff2"; ".svg" = "image/svg+xml" }[$ext]
+  $mime = @{ ".webp" = "image/webp"; ".png" = "image/png"; ".ogg" = "audio/ogg"; ".mp3" = "audio/mpeg"; ".jpg" = "image/jpeg"; ".woff2" = "font/woff2"; ".svg" = "image/svg+xml" }[$ext]
   if (-not $mime) { throw "알 수 없는 에셋 형식: $p" }
   return "data:$mime;base64," + [Convert]::ToBase64String([System.IO.File]::ReadAllBytes($p))
 }
@@ -38,13 +38,13 @@ foreach ($dir in @("seoho_v1", "elements_v2", "sprites", "ui", "ui2", "audio")) 
   $base = Join-Path $root "assets\$dir"
   if (-not (Test-Path $base)) { continue }
   foreach ($f in (Get-ChildItem $base -Recurse -File)) {
-    if ($f.Extension -notin @('.png','.jpg','.svg','.woff2','.ogg','.mp3')) { continue }
+    if ($f.Extension -notin @('.webp','.png','.jpg','.svg','.woff2','.ogg','.mp3')) { continue }
     $rel = $f.FullName.Substring((Join-Path $root "assets").Length + 1).Replace("\", "/")
     [void]$assetMap.AppendLine('"' + $rel + '": "' + (DataUri $f.FullName) + '",')
   }
 }
 [void]$assetMap.AppendLine("};")
-[void]$assetMap.AppendLine('var __asset = function (p) { return __ASSETS[p.split("?")[0]] || ("./assets/" + p); };')
+[void]$assetMap.AppendLine('var __asset = function (p) { var key=p.split("?")[0]; return __ASSETS[key] || __ASSETS[key.replace(/\.webp$/, ".png")] || __ASSETS[key.replace(/\.webp$/, ".jpg")] || ("./assets/" + p); };')
 [void]$sb.Append($assetMap.ToString())
 
 foreach ($name in $order) {
@@ -62,12 +62,12 @@ foreach ($name in $order) {
   })
   # Static URLs can appear in ordinary JS strings AND HTML inside templates.
   # Replace the URL itself, preserving quotes and the surrounding string type.
-  $src = [regex]::Replace($src, '\./assets/((?:[\w\-]+/)+[\w.\-]+\.(?:png|jpg|woff2|svg))(?:\?v=[\w.-]+)?', {
+  $src = [regex]::Replace($src, '\./assets/((?:[\w\-]+/)+[\w.\-]+\.(?:webp|png|jpg|woff2|svg))(?:\?v=[\w.-]+)?', {
     param($m) return (DataUri (Join-Path $root ("assets\" + $m.Groups[1].Value.Replace("/", "\"))))
   })
   # 템플릿 문자열 안의 ./assets/seoho_v1/…, elements_v2/…, sprites/heroes/…, ./assets/${폴더식}/icons/… → ${__asset(`…`)}
   # 경로 뒤쪽은 ${…} 식(안에 따옴표가 있을 수 있음) 또는 따옴표·공백·$ 가 아닌 글자들로 이어진다
-  $src = [regex]::Replace($src, '(?:\./)?assets/((?:seoho_v1|elements_v2|sprites/heroes|sprites/skills|sprites/gear|sprites/ui|sprites|ui2|ui|\$\{[^}]*\})/(?:\$\{[^}]*\}|[^`"''\s$])*)', {
+  $src = [regex]::Replace($src, '\./assets/((?:seoho_v1|elements_v2|sprites/heroes|sprites/skills|sprites/gear|sprites/ui|sprites|ui2|ui|\$\{[^}]*\})/(?:\$\{[^}]*\}|[^`"''\s$])*)', {
     param($m) return '${__asset(`' + $m.Groups[1].Value + '`)}'
   })
 
@@ -105,7 +105,7 @@ if ($js -match '</script') { throw "스크립트 안에 </script 문자열이 �
 # index.html: 모듈 스크립트 태그를 합친 스크립트로 교체, CSS·img의 에셋 경로를 data URI로
 $html = ReadText (Join-Path $root "index.html")
 # ./assets/ui/x.png, ./assets/sprites/heroes/x.png 처럼 하위 폴더가 있는 경로도 통째로 잡는다
-$html = [regex]::Replace($html, '\./assets/((?:[\w\-]+/)+[\w.\-]+\.(?:png|ogg|jpg|woff2|svg))(?:\?v=[\w.-]+)?', {
+$html = [regex]::Replace($html, '\./assets/((?:[\w\-]+/)+[\w.\-]+\.(?:webp|png|ogg|jpg|woff2|svg))(?:\?v=[\w.-]+)?', {
   param($m) return (DataUri (Join-Path $root ("assets\" + $m.Groups[1].Value.Replace("/", "\"))))
 })
 # Codex 개편 CSS(rework.css)는 <link>로 붙어 있으므로 인라인 <style>로 바꾼다(안의 ../assets/ 경로도 data URI)
@@ -113,7 +113,7 @@ foreach ($stylesheet in @("rework", "ui-v2", "story")) {
   $cssTag = '<link rel="stylesheet" href="./src/' + $stylesheet + '.css" />'
   if (-not $html.Contains($cssTag)) { throw "index.html에서 $stylesheet CSS 태그를 찾지 못함" }
   $css = ReadText (Join-Path $root "src\$stylesheet.css")
-  $css = [regex]::Replace($css, '\.\./assets/((?:[\w\-]+/)+[\w.\-]+\.(?:png|ogg|jpg|woff2|svg))(?:\?v=[\w.-]+)?', {
+  $css = [regex]::Replace($css, '\.\./assets/((?:[\w\-]+/)+[\w.\-]+\.(?:webp|png|ogg|jpg|woff2|svg))(?:\?v=[\w.-]+)?', {
     param($m) return (DataUri (Join-Path $root ("assets\" + $m.Groups[1].Value.Replace("/", "\"))))
   })
   if ($css -match '</style') { throw "rework.css 안에 </style 문자열이 있어 인라인 불가" }

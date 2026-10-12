@@ -1,0 +1,14 @@
+{
+  "webp": {
+    "maxChannelDelta": 0,
+    "meanChannelDelta": 0.0,
+    "changedPixelRatio": 0.0,
+    "alphaExact": true
+  },
+  "retainedPNG": {
+    "maxChannelDelta": 0,
+    "meanChannelDelta": 0.0,
+    "changedPixelRatio": 0.0,
+    "alphaExact": true
+  }
+}
