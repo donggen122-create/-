@@ -136,7 +136,8 @@ with sync_playwright() as pw:
  api('/api/title',{'title':'village'},token=tokens[0]);ok('earned cosmetic title displayed',api('/api/ranking',token=tokens[0])['top'][0]['title']=='쓰레기 마을 수호대')
  api('/api/title',{'title':'forest'},token=tokens[0],expected=400)
  # Normal flags retain rewards; only impossible values hold currency.
- for litter,held in [(7,False),(13,True)]:
+ # Litter bound is the storage clamp 99 (normal runs collect 22-38): flag above 99, hold above 198.
+ for litter,held in [(120,False),(250,True)]:
   start=api('/api/play/start',{'requestId':str(uuid.uuid4()),'stage':'CH01','clientVersion':2},token=qa[0])
   event=api('/api/play/finish',{'requestId':str(uuid.uuid4()),'runId':start['runId'],'cleared':True,'seconds':300,'litter':litter,'hpFraction':1,'kills':1},token=qa[0])
   ok('anomaly '+str(litter)+' held='+str(held),bool(event.get('held'))==held and bool(event['flags']) and (event['reward']['coins']==0 if held else event['reward']['coins']>0))
