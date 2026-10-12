@@ -176,15 +176,15 @@ export const SPECIAL_TRAITS = {
 export const STAGES = [
   // 2026-09-23 밀도 조정: 적은 더 많이(density ×1.5 → 사용자 요청으로 다시 ×1.3 = 원래의 약 2배), 체력은 조금 낮게(×0.85) → 스킬로 쓸어버리는 맛
   { id:'CH01', name:'과자봉지 골목', goal:'떨어진 쓰레기 3개 줍기', target:3, enemyHp:.72, enemyAtk:.85, density:1.55, tip:'새싹을 모으면 새로운 도구를 골라요.', story:'과자봉지가 바람에 날아다녀! 골목부터 함께 치워 볼까?', unlock:'처음 성공하면 코인 120개 더!' },
-  { id:'CH02', name:'분리수거 놀이터', goal:'떨어진 쓰레기 4개 줍기', target:4, enemyHp:.8, enemyAtk:.92, density:1.75, tip:'도구 3단계 + 짝꿍 도움 1단계 = 자동 합체!', story:'병과 봉지가 뒤섞였어. 차근차근 모아 보자!', unlock:'처음 성공하면 쭉쭉 집게 열림' },
-  { id:'CH03', name:'바람 부는 공원', goal:'떨어진 쓰레기 5개 줍기', target:5, enemyHp:.87, enemyAtk:1, density:1.95, tip:'위험한 빨간 표시가 보이면 옆으로 피해요.', story:'공원에서 동물 친구가 기다리고 있어!', unlock:'처음 성공하면 첫 동물 친구 선택' },
-  { id:'CH04', name:'다시 피는 꽃길', goal:'떨어진 쓰레기 6개 줍기', target:6, enemyHp:.94, enemyAtk:1.07, density:2.05, tip:'어려우면 쉬움으로 다시 도전해요.', story:'꽃이 다시 자라도록 깨끗한 길을 만들자!', unlock:'처음 성공하면 톡톡 씨앗 열림' },
+  { id:'CH02', name:'분리수거 놀이터', goal:'떨어진 쓰레기 4개 줍기', target:4, enemyHp:.8, enemyAtk:.92, density:1.75, tip:'도구 3단계 + 짝꿍 도움 1단계 = 자동 합체!', story:'빨리 가 보고 싶어! 병과 봉지가 뒤섞였대. 차근차근 모아 보자!', unlock:'처음 성공하면 쭉쭉 집게 열림' },
+  { id:'CH03', name:'바람 부는 공원', goal:'떨어진 쓰레기 5개 줍기', target:5, enemyHp:.87, enemyAtk:1, density:1.95, tip:'위험한 빨간 표시가 보이면 옆으로 피해요.', story:'가 보자! 공원에서 동물 친구가 기다리고 있어!', unlock:'처음 성공하면 첫 동물 친구 선택' },
+  { id:'CH04', name:'다시 피는 꽃길', goal:'떨어진 쓰레기 6개 줍기', target:6, enemyHp:.94, enemyAtk:1.07, density:2.05, tip:'어려우면 쉬움으로 다시 도전해요.', story:'가자! 수호대! 꽃이 다시 자라도록 깨끗한 길을 만들자!', unlock:'처음 성공하면 톡톡 씨앗 열림' },
   { id:'CH05', name:'쓰레기 대장 구출', goal:'떨어진 쓰레기 5개 줍기', target:5, enemyHp:1.0, enemyAtk:1.12, density:2.1, tip:'쓰레기를 5개 모으면 대장도 약해져요!', story:'대장은 쓰레기 때문에 괴로워하고 있어. 함께 깨끗하게 해 주자!', unlock:'새싹 도구 + 새 친구 선택 + 선물 상자 열림' },
   // 2장 「대기오염 공장 지대」(2026-09-24 사용자, themes.js T2_*): 목표는 가스가 새는 밸브 잠그기(1장의 쓰레기 줍기 자리). 1-5를 성공하면 열린다.
   { id:'CH06', name:'매캐한 공단 입구', goal:'가스가 새는 밸브 3개 잠그기', target:3, enemyHp:1.15, enemyAtk:1.2, density:2.0, tip:'', story:'공장 굴뚝에서 시커먼 매연이 뿜어져! 새는 밸브부터 잠가 보자.', unlock:'' },
-  { id:'CH07', name:'굴뚝 골목', goal:'가스가 새는 밸브 4개 잠그기', target:4, enemyHp:1.25, enemyAtk:1.26, density:2.1, tip:'', story:'입이 빨개진 가스몬은 곧 불을 뿜어! 옆으로 피하자.', unlock:'' },
-  { id:'CH08', name:'가스 탱크 공장', goal:'가스가 새는 밸브 5개 잠그기', target:5, enemyHp:1.35, enemyAtk:1.32, density:2.15, tip:'', story:'바닥에 세균몬이 숨어 있어. 가까이 가기 전에 멀리서 공격!', unlock:'' },
-  { id:'CH09', name:'매연 도로', goal:'가스가 새는 밸브 6개 잠그기', target:6, enemyHp:1.45, enemyAtk:1.38, density:2.2, tip:'', story:'산성비 구름몬이 빗방울을 떨어뜨려. 표시를 보고 피하자!', unlock:'' },
+  { id:'CH07', name:'굴뚝 골목', goal:'가스가 새는 밸브 4개 잠그기', target:4, enemyHp:1.25, enemyAtk:1.26, density:2.1, tip:'', story:'가자! 입이 빨개진 가스몬은 곧 불을 뿜어! 옆으로 피하자.', unlock:'' },
+  { id:'CH08', name:'가스 탱크 공장', goal:'가스가 새는 밸브 5개 잠그기', target:5, enemyHp:1.35, enemyAtk:1.32, density:2.15, tip:'', story:'해 보자! 바닥에 세균몬이 숨어 있어. 가까이 가기 전에 멀리서 공격!', unlock:'' },
+  { id:'CH09', name:'매연 도로', goal:'가스가 새는 밸브 6개 잠그기', target:6, enemyHp:1.45, enemyAtk:1.38, density:2.2, tip:'', story:'가자! 수호대! 산성비 구름몬이 빗방울을 떨어뜨려. 표시를 보고 피하자!', unlock:'' },
   { id:'CH10', name:'굴뚝 대왕의 공장', goal:'가스가 새는 밸브 5개 잠그기', target:5, enemyHp:1.5, enemyAtk:1.42, density:2.2, tip:'', story:'파이프로 된 굴뚝 가스 대왕이 나타났어! 밸브를 잠가 대왕을 약하게 만들자.', unlock:'' },
   // 3장 「오염된 하천」(2026-09-30, themes.js T3_*·학생 하천 몬스터): 목표는 비닐 고리에 걸린 물고기 구하기(물고기 옆에 서면 풀려남). 2-5를 성공하면 열린다.
   // 적 체력·공격: ① 2026-09-30 사용자 "챕터 3는 기존 1,2 챕터보다 모든 적들의 능력치를 전부 50% 상향" → 같은 자리 2장 단계 × 1.5
