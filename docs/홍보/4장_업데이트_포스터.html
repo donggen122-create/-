@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<title>4장 업데이트 포스터</title>
+<!-- 서호팡팡수호대 4장 「불타는 숲」 업데이트 홍보 포스터(A4 세로, 2026-10-12). 3장 포스터와 같은 틀.
+     머리 그림은 Codex 그림 모델이 그린 키 비주얼(4장_포스터_그림_codex.png), 몬스터·소품은 게임 파일, 맵은 격리 서버 캡처.
+     인쇄 안전 영역 9mm. 구역(mm): 머리 0~86 · 몬스터 89~137 · 맵 140~252 · 아래 띠 260~297. -->
+<link href="https://fonts.googleapis.com/css2?family=Gowun+Dodum&family=Jua&display=swap" rel="stylesheet">
+<style>
+  @page { size: A4; margin: 0; }
+  * { box-sizing: border-box; }
+  :root { --deep: #5a1a00; --ember: #e2561f; --leaf: #4f8f5c; --sun: #ffd23f; --ink: #3a2418; --safe: 9mm; }
+  html, body { margin: 0; padding: 0; background: #fff; }
+  body { font-family: "Gowun Dodum", "Jua", sans-serif; color: var(--ink); word-break: keep-all; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  h1, h2, h3 { font-family: "Jua", sans-serif; font-weight: normal; }
+  .page { position: relative; width: 210mm; height: 297mm; overflow: hidden; background: linear-gradient(180deg, #fff1e3 0%, #fbf3e4 55%, #f3efdf 100%); }
+  .abs { position: absolute; }
+
+  /* 머리 0~86mm : 키 비주얼 */
+  .hero { position: absolute; left: 0; top: 0; width: 210mm; height: 86mm; overflow: hidden; background: #130a1e; }
+  .hero .key { position: absolute; left: 0; top: 0; width: 210mm; height: 86mm; object-fit: cover; object-position: center 58%; }
+  .hero .veil { position: absolute; inset: 0; background: linear-gradient(90deg, rgba(20,8,30,.90) 0%, rgba(20,8,30,.78) 38%, rgba(20,8,30,.15) 62%, rgba(20,8,30,0) 100%); }
+  .hero .wave { position: absolute; left: 0; bottom: -.3mm; width: 210mm; height: 12mm; }
+  .brand { left: var(--safe); top: 8mm; display: flex; align-items: center; gap: 2.6mm; }
+  .brand img { width: 14mm; height: 14mm; object-fit: contain; }
+  .brand b { font-family: "Jua", sans-serif; font-weight: normal; color: #fff; font-size: 15pt; text-shadow: 0 .5mm 0 #3a0e00; }
+  .brand .new { font-family: "Jua", sans-serif; background: var(--sun); color: #5a3a00; font-size: 11pt; padding: .4mm 3mm; border-radius: 99px; box-shadow: 0 .6mm 0 #b98a00; }
+  .title { left: var(--safe); top: 26mm; width: 118mm; }
+  .title .chap { display: inline-block; font-family: "Jua", sans-serif; font-size: 18pt; color: var(--deep); background: var(--sun); padding: .3mm 3.5mm; border-radius: 3mm; box-shadow: 0 .8mm 0 #b98a00; }
+  .title h1 { margin: 1.5mm 0 0; font-size: 44pt; line-height: 1.05; color: #fff; text-shadow: 0 0 6mm rgba(255,120,30,.9), 0 1mm 0 #3a0e00; }
+  .title p { margin: 2mm 0 0; font-size: 11.5pt; line-height: 1.45; color: #ffe9d6; text-shadow: 0 .3mm 1mm #000; }
+  .title p b { color: var(--sun); font-weight: normal; font-family: "Jua", sans-serif; }
+  .boss-tag { right: 10mm; top: 66mm; font-family: "Jua", sans-serif; color: #fff; background: #3a0e00e6; border: .5mm solid #ffb36b99; border-radius: 3mm; padding: .5mm 3mm .7mm; text-align: center; line-height: 1.15; }
+  .boss-tag small { display: block; font-size: 8pt; color: var(--sun); }
+  .boss-tag span { font-size: 12.5pt; }
+
+  .sec { position: absolute; left: var(--safe); width: calc(210mm - 2 * var(--safe)); }
+  .sec-head { display: flex; align-items: center; gap: 2.4mm; height: 8mm; margin-bottom: 2.2mm; }
+  .sec-head h2 { margin: 0; font-size: 17pt; color: var(--deep); white-space: nowrap; }
+  .pill { font-family: "Jua", sans-serif; font-size: 9.5pt; color: #fff; background: var(--ember); padding: .3mm 2.6mm; border-radius: 99px; white-space: nowrap; }
+  .pill.star { background: #fff4c7; color: #7a4f00; border: .4mm dashed #e0b53c; }
+  .line { flex: 1; height: 1mm; border-radius: 1mm; background: repeating-linear-gradient(90deg, #f0b48a 0 3mm, transparent 3mm 5mm); }
+
+  /* 몬스터 89~137mm */
+  .monsters { top: 89mm; }
+  .mgrid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 2.4mm; }
+  .mcard { position: relative; height: 40mm; background: #fff; border: .5mm solid #f0c9ad; border-radius: 3.5mm; padding: 1.6mm 1.6mm 1.8mm; text-align: center; box-shadow: 0 .8mm 0 #f0c9ad; }
+  .mcard .pic { height: 18mm; display: flex; align-items: flex-end; justify-content: center; }
+  .mcard .pic img { max-height: 18mm; max-width: 28mm; object-fit: contain; }
+  .mcard h3 { margin: 1.2mm 0 .5mm; font-size: 11.5pt; color: var(--deep); line-height: 1.1; white-space: nowrap; }
+  .mcard p { margin: 0; font-size: 8pt; line-height: 1.36; color: #5a3f30; }
+  .mcard.mid { border-color: #8a5a3a; box-shadow: 0 .8mm 0 #8a5a3a; background: linear-gradient(180deg, #f6ebe2, #fff 45%); }
+  .mcard .badge { position: absolute; top: -2.2mm; left: 50%; transform: translateX(-50%); font-family: "Jua", sans-serif; font-size: 8pt; white-space: nowrap; background: #3a2418; color: #ffe27a; padding: .2mm 2.2mm; border-radius: 99px; }
+
+  /* 맵 140~252mm */
+  .maps { top: 140mm; }
+  .mapgrid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 3mm; }
+  .map { background: #fff; border-radius: 3.5mm; overflow: hidden; border: .5mm solid #f0c9ad; box-shadow: 0 .8mm 0 #f0c9ad; }
+  .map .shot { position: relative; line-height: 0; }
+  .map .shot img { display: block; width: 100%; height: auto; }
+  .map .no { position: absolute; left: 1.6mm; top: 1.6mm; line-height: 1.2; font-family: "Jua", sans-serif; font-size: 10pt; color: #fff; background: var(--ember); border: .5mm solid #ffd9b8; border-radius: 50% 50% 50% 2mm; padding: .3mm 2mm; }
+  .map .cap { height: 8.6mm; padding: 1.3mm 2.2mm 0; line-height: 1.25; white-space: nowrap; }
+  .map .cap b { font-family: "Jua", sans-serif; font-weight: normal; font-size: 11pt; color: var(--deep); margin-right: 1.4mm; }
+  .map .cap span { font-size: 8pt; color: #6b4a3a; }
+  .map.boss-map { border-color: #c0392b; box-shadow: 0 .8mm 0 #c0392b; }
+  .map.boss-map .no { background: #c0392b; }
+  .mission { border-radius: 3.5mm; padding: 2.4mm 2.6mm; background: linear-gradient(160deg, #fff7d6, #ffe9a8); border: .6mm solid #e0b53c; box-shadow: 0 .8mm 0 #e0b53c; display: flex; flex-direction: column; justify-content: space-between; text-align: center; }
+  .mission small { font-family: "Jua", sans-serif; color: #b36b00; font-size: 9pt; }
+  .mission h3 { margin: .3mm 0 0; font-size: 12pt; line-height: 1.2; color: #6b3a00; }
+  .mission .fish { display: flex; align-items: center; justify-content: center; gap: 1.2mm; }
+  .mission .fish img { height: 13mm; width: auto; }
+  .mission .fish i { font-style: normal; font-family: "Jua", sans-serif; font-size: 14pt; color: #c07a00; }
+  .mission p { margin: 0; font-size: 8pt; line-height: 1.3; color: #6b4a10; }
+
+  /* 아래 260~297mm */
+  .foot-wave { position: absolute; left: 0; top: 253mm; width: 210mm; height: 8mm; }
+  .foot { position: absolute; left: 0; top: 260.5mm; width: 210mm; height: 36.5mm; background: linear-gradient(180deg, #e2561f, #8a2a0a); }
+  .foot-in { position: absolute; left: var(--safe); right: var(--safe); top: 262mm; height: 26mm; display: flex; align-items: center; gap: 3.5mm; color: #fff; }
+  .foot-in .kids { display: flex; align-items: flex-end; gap: .5mm; height: 24mm; }
+  .foot-in .kids img { height: 23mm; width: auto; }
+  .foot-in .kids img.deer { height: 16mm; }
+  .foot-in .go { flex: 1; min-width: 0; }
+  .foot-in .go small { display: block; font-size: 9pt; color: #ffe3d2; }
+  .foot-in .go b { display: block; font-family: "Jua", sans-serif; font-weight: normal; font-size: 19pt; line-height: 1.2; white-space: nowrap; text-shadow: 0 .7mm 0 #3a0e00; }
+  .foot-in .go b em { font-style: normal; color: var(--sun); }
+  .foot-in .go span { display: block; font-size: 8pt; color: #ffe3d2; margin-top: .4mm; }
+  .foot-in .qr { background: #fff; border-radius: 2.5mm; padding: 1.3mm 1.3mm 1mm; text-align: center; }
+  .foot-in .qr img { width: 18mm; height: 18mm; display: block; }
+  .foot-in .qr small { display: block; font-family: "Jua", sans-serif; color: var(--deep); font-size: 7.5pt; margin-top: .4mm; line-height: 1.2; }
+</style>
+</head>
+<body>
+<div class="page">
+
+  <section class="hero">
+    <img class="key" src="4장_포스터_그림_codex.png" alt="">
+    <div class="veil"></div>
+    <div class="abs brand"><img src="../../game/assets/ui/title_emblem.webp" alt=""><b>서호팡팡수호대</b><span class="new">NEW 업데이트</span></div>
+    <div class="abs title">
+      <span class="chap">4장 오픈!</span>
+      <h1>불타는 숲</h1>
+      <p>버려진 캠핑 버너, 꺼지지 않은 불씨, 마구 베어 낸 나무로 뒷산이 아파요.<br><b>불씨를 끄고 산불 거인을 정화해요!</b></p>
+    </div>
+    <div class="abs boss-tag"><small>4-5 대왕</small><span>산불 거인</span></div>
+    <svg class="wave" viewBox="0 0 210 12" preserveAspectRatio="none"><path d="M0 6 C 18 1, 34 1, 52 6 S 88 11, 105 6 S 140 1, 158 6 S 192 11, 210 6 V12 H0 Z" fill="#fff1e3"/></svg>
+  </section>
+
+  <section class="sec monsters">
+    <div class="sec-head"><h2>새로운 몬스터 등장!</h2><span class="pill">숲 몬스터 5종</span><span class="pill star">✏️ 우리 학교 디자인팀이 만들었어요</span><span class="line"></span></div>
+    <div class="mgrid">
+      <div class="mcard"><div class="pic"><img src="../../game/assets/sprites/t4/en_burner.webp" alt=""></div><h3>버너몬</h3><p>버려진 캠핑 버너. 불꽃이 커졌다 꺼졌다, 꺼질 때가 기회!</p></div>
+      <div class="mcard"><div class="pic"><img src="../../game/assets/sprites/t4/en_saw.webp" alt=""></div><h3>톱니몬</h3><p>버려진 톱날이 데굴데굴. 빨간 원이 생기면 원 밖으로!</p></div>
+      <div class="mcard"><div class="pic"><img src="../../game/assets/sprites/t4/en_nutria.webp" alt=""></div><h3>뉴트몬</h3><p>풀어놓은 외래종 떼. 이빨을 딱딱 부딪칠 땐 옆에서 공격!</p></div>
+      <div class="mcard"><div class="pic"><img src="../../game/assets/sprites/t4/en_bulki.webp" alt=""></div><h3>불키</h3><p>불꽃 몽키! 불붙은 쓰레기를 던지고 쿵 내려찍어요.</p></div>
+      <div class="mcard mid"><span class="badge">중간 보스</span><div class="pic"><img src="../../game/assets/sprites/t4/en_dozer.webp" alt=""></div><h3>와르르 불도저</h3><p>숲을 밀어 버리는 불도저! 빨간 길에서 옆으로 비켜요.</p></div>
+    </div>
+  </section>
+
+  <section class="sec maps">
+    <div class="sec-head"><h2>새로운 맵 5곳</h2><span class="pill">4-1 ~ 4-5</span><span class="line"></span></div>
+    <div class="mapgrid">
+      <div class="map"><div class="shot"><img src="4장_포스터_그림/map_4-1.jpg" alt=""><span class="no">4-1</span></div><div class="cap"><b>등산로 입구</b><span>버너몬이 불씨를 퍼뜨려요</span></div></div>
+      <div class="map"><div class="shot"><img src="4장_포스터_그림/map_4-2.jpg" alt=""><span class="no">4-2</span></div><div class="cap"><b>벌목장</b><span>톱니몬이 데굴데굴</span></div></div>
+      <div class="map"><div class="shot"><img src="4장_포스터_그림/map_4-3.jpg" alt=""><span class="no">4-3</span></div><div class="cap"><b>외래종 습격</b><span>뉴트몬 떼 + 불도저 등장</span></div></div>
+      <div class="map"><div class="shot"><img src="4장_포스터_그림/map_4-4.jpg" alt=""><span class="no">4-4</span></div><div class="cap"><b>산불</b><span>불키가 쓰레기를 던져요</span></div></div>
+      <div class="map boss-map"><div class="shot"><img src="4장_포스터_그림/map_4-5.jpg" alt=""><span class="no">4-5</span></div><div class="cap"><b>숲의 심장</b><span>산불 거인과 한판 승부</span></div></div>
+      <div class="mission"><small>새 임무</small><h3>타는 불씨를<br>꺼 주세요!</h3>
+        <div class="fish"><img src="../../game/assets/sprites/t4/prop_ember.png" alt=""><i>➜</i><img src="../../game/assets/sprites/t4/prop_sprout.png" alt=""></div>
+        <p>불씨 옆에 서면 꺼지고 새싹이 돋아요.<br>불씨 5개를 끄면 거인이 약해져요.</p></div>
+    </div>
+  </section>
+
+  <svg class="foot-wave" viewBox="0 0 210 8" preserveAspectRatio="none"><path d="M0 5 C 20 1, 36 1, 54 5 S 90 9, 106 5 S 142 1, 160 5 S 194 9, 210 5 V8 H0 Z" fill="#e2561f"/></svg>
+  <div class="foot"></div>
+  <div class="foot-in">
+    <div class="kids"><img src="../../game/assets/ui/title_hoya.webp" alt="호야"><img src="../../game/assets/ui/title_minji.webp" alt="민지"><img class="deer" src="../../game/assets/seoho_v1/pets/deer_idle.webp" alt="아기사슴"></div>
+    <div class="go"><small>3장 구정물 대왕을 정화하면 4장이 열려요 · 새로 생긴 랭킹·명예의 전당도 확인!</small><b>불타는 숲을 구하러 <em>출동!</em></b><span>🌱 불씨는 꼭 끄고, 산에서는 불을 쓰지 않아요 — 서호초 학생 개발팀과 함께 만드는 우리 학교 게임</span></div>
+    <div class="qr"><img src="4장_포스터_그림/qr.png" alt="게임 주소 QR"><small>찍고 바로 출동</small></div>
+  </div>
+</div>
+</body>
+</html>
