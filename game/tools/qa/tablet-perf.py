@@ -81,12 +81,24 @@ def seed_js(seed):
 def source_routes(ctx, ref):
     if not ref:
         return
-    # Only repository source; assets are unchanged by this audit.
+    # Repository source from the reference commit. Assets normally come from the working tree,
+    # but when the reference code asks for a file the tree no longer has (e.g. a PNG that has
+    # since become WebP), serve that file from the reference commit too, so the old build runs.
     names = subprocess.check_output(['git', 'ls-tree', '-r', '--name-only', ref, 'game/src'], cwd=ROOT, text=True).splitlines()
     for name in names:
         if name.endswith(('.js', '.css')):
             content = subprocess.check_output(['git', 'show', f'{ref}:{name}'], cwd=ROOT)
             ctx.route(BASE + '/' + name.removeprefix('game/') + '*', lambda route, request, body=content, n=name: route.fulfill(body=body, content_type='text/css' if n.endswith('.css') else 'application/javascript'))
+    ref_assets = set(subprocess.check_output(['git', 'ls-tree', '-r', '--name-only', ref, 'game/assets'], cwd=ROOT, text=True).splitlines())
+    mime = {'.png': 'image/png', '.jpg': 'image/jpeg', '.jpeg': 'image/jpeg', '.webp': 'image/webp', '.svg': 'image/svg+xml', '.mp3': 'audio/mpeg', '.ogg': 'audio/ogg', '.json': 'application/json', '.woff2': 'font/woff2'}
+    def reference_asset(route, request):
+        rel = urlsplit(request.url).path.lstrip('/')          # assets/...
+        name = 'game/' + rel
+        if (ROOT / name).exists() or name not in ref_assets:
+            return route.fallback()
+        body = subprocess.check_output(['git', 'show', f'{ref}:{name}'], cwd=ROOT)
+        route.fulfill(body=body, content_type=mime.get(Path(name).suffix.lower(), 'application/octet-stream'))
+    ctx.route(BASE + '/assets/**', reference_asset)
 
 
 def context(b, dev, ref=None, replay=False):
