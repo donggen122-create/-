@@ -14,6 +14,7 @@
 | dist_web/share/ | 협업용 공개 사본. 비밀값·학생 정보 넣지 않기 |
 | dist_single/ | 생성한 단일 파일판. git 제외, 서버판과 별도 검사 필요 |
 | data/, docs/ | 원 기획 CSV·JSON·문서·활동지·결정 근거 |
+| [docs/48_CLAUDE_md_날짜_기록_보관.md](docs/48_CLAUDE_md_날짜_기록_보관.md) | CLAUDE.md에서 옮긴 옛 날짜별 기록(원문 보관) |
 | docs/codex/ | 작업지시·보고·공개 가능한 익명 캡처 |
 | tests/, game/tools/qa/ | 규칙·서버 검사와 격리 브라우저 점검 |
 | 이미지 에셋/ | 사용자 그림 원본. 학생 이름이 있는 활동지 원본은 공개 저장소에 넣지 않기 |
