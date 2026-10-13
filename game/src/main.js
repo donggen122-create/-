@@ -55,6 +55,7 @@ const elLevelup = document.getElementById("levelup");
 const elResult = document.getElementById("result");
 const elCardRow = document.getElementById("card-row");
 const elHpbar = document.getElementById("hpbar");
+const elInfiniteHp = document.getElementById("hpbar-infinite-label");
 const elXpbar = document.getElementById("xpbar");
 const elLvl = document.getElementById("lvl");
 const elTimer = document.getElementById("timer");
@@ -2830,6 +2831,7 @@ function takeDamage(raw,source=null) {
 }
 
 function applyContactDamage(rawAtk, enemy = null) {
+  if (sgIsSkillTest()) return;
   if (SG_LOCAL && window.__debugGod) return;
   if (player.invulnT > 0) return;
   if (sgGear.stealUntil > runTime && sgGear.sp.steal === 3) return;   // 전설 도루: 달리는 1초 동안 부딪히지 않음
@@ -2849,7 +2851,7 @@ function applyContactDamage(rawAtk, enemy = null) {
 // 적이 일으키는 폭발 — 플레이어를 다치게 한다(자폭 균류 등)
 function enemyExplodeAt(x, y, radiusPx, dmg, color,source) {
   blasts.push({ x, y, radius: radiusPx, life: 0.35, maxLife: 0.35, color: color || "#8fe06a" });
-  if (dist(player.x, player.y, x, y) <= radiusPx + 0.4 * U && player.invulnT <= 0 && !(SG_LOCAL && window.__debugGod)) {
+  if (!sgIsSkillTest() && dist(player.x, player.y, x, y) <= radiusPx + 0.4 * U && player.invulnT <= 0 && !(SG_LOCAL && window.__debugGod)) {
     runStats.hurtBlast = (runStats.hurtBlast || 0) + takeDamage(dmg,source||sgDamageSource('explosion','hazard'));
     player.invulnT = 0.3; player.hitFlashT = 0.25;
     floatingTexts.push({ x: player.x, y: player.y - 20, text: `-${Math.round(dmg)}`, life: 0.7, vy: -30, color: "#ff6060", scale: 0 });
@@ -3236,6 +3238,7 @@ function resolveBossPattern(pat) {
 function normalizeAngle(a) { while (a > Math.PI) a -= Math.PI * 2; while (a < -Math.PI) a += Math.PI * 2; return a; }
 
 function applyBossHit(dmg,source=sgBossSource()) {
+  if (sgIsSkillTest()) return;
   if (SG_LOCAL && window.__debugGod) return;
   if (player.invulnT > 0) return;
   const taken = takeDamage(dmg * (sgGear.sp.cheer === 3 ? 0.8 : 1),source);   // 장비 응원(전설): 대왕 공격 피해 -20%
@@ -5038,7 +5041,9 @@ function draw() {
 // ---------- HUD ----------
 function updateHud() {
   if (mode === "menu" || !player) return;
-  setWidth(elHpbar, `${Math.max(0, (player.hp / player.hpMax) * 100).toFixed(1)}%`);
+  const infiniteHp = sgIsSkillTest();
+  elInfiniteHp.hidden = !infiniteHp;
+  setWidth(elHpbar, infiniteHp ? "100%" : `${Math.max(0, (player.hp / player.hpMax) * 100).toFixed(1)}%`);
   setWidth(elXpbar, runCfg.rework && player.sgChoices>=runCfg.cardCap ? "100%" : `${Math.min(100, (player.xp / xpNeedFor(player.lvl)) * 100).toFixed(1)}%`);
   if(!runCfg.rework)setText(elLvl, `Lv.${player.lvl}${player.revives > 0 ? ` 💗${player.revives}` : ""}${player.shield > 1 ? ` 🛡${Math.round(player.shield)}` : ""}`);
   // 제한 시간 모드는 남은 시간, 그 외는 경과 시간
@@ -5774,6 +5779,7 @@ function sgThreatTick(dt){
 // 2장 적 행동(themes.js T2_ENEMIES, 2026-09-24): 가스몬 불 뿜기 · 세균몬 지뢰 · 산성비 구름몬 산성비. 모두 예고(빨개짐·부풂·빗방울 표시) 뒤에 판정.
 let sgAcid=[];
 function sgEnemyHit(dmg,source=sgDamageSource('zone','hazard')){                      // 적 기술(불·터짐·산성비) 피해: 보스 기술처럼 맞은 뒤 0.3초 무적
+  if(sgIsSkillTest())return;
   if(SG_LOCAL&&window.__debugGod)return;if(player.invulnT>0)return;
   const taken=takeDamage(dmg,source);runStats.hurtBlast=(runStats.hurtBlast||0)+taken;player.invulnT=.3;player.hitFlashT=.25;
   floatingTexts.push({x:player.x,y:player.y-20,text:`-${Math.round(taken)}`,life:.7,vy:-30,color:'#ff6060',scale:0});

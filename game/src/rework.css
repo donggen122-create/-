@@ -765,6 +765,8 @@ html.ui2 #guardian-lobby .sg-skill-test .sg-heading :is(p,.sg-eyebrow){color:var
 @media(max-width:480px){.sg-rank-dialog{padding:12px;}.sg-rank-tabs{grid-template-columns:repeat(2,minmax(0,1fr));}.sg-rank-list li{grid-template-columns:35px minmax(0,1fr) 77px;gap:5px;font-size:13px;}.sg-rank-button{padding:6px;font-size:12px;}}
 
 /* 속성 시험의 누적 피해: 전투 조작 버튼 아래, 결과는 표만 스크롤하고 계속 버튼을 남긴다. */
+#hpbar-infinite-label{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-family:Arial,sans-serif;font-size:18px;font-weight:700;line-height:1;color:#fff;text-shadow:0 1px 2px #000;pointer-events:none;}
+#hpbar-infinite-label[hidden]{display:none!important;}
 #sg-damage-live{position:fixed;top:calc(110px + env(safe-area-inset-top,0px));right:8px;z-index:9;width:min(200px,52vw);box-sizing:border-box;border:1px solid #b7d4ed;border-radius:10px;background:rgba(14,31,50,.91);color:#fff;box-shadow:0 2px 7px #0004;font-size:12px;line-height:1.45;}
 #sg-damage-live[hidden]{display:none!important}
 #sg-damage-live summary{cursor:pointer;padding:7px 9px;overflow-wrap:anywhere;min-height:34px;}
