@@ -98,7 +98,7 @@ export function createElementCombat({ U = 32, getPlayer, getEnemies, getBoss = (
   function hit(id, e, coef, at = player(), knock = 0) {
     if (!e || e.hp <= 0 || coef <= 0) return;
     const amount = Math.max(0, player().atk || 30) * coef * level(id) * elementDamageMultiplier(getProfile(), id) * (mods().dmgMul || 1) * sizeDmg(id);
-    damage(e, amount, { x: e.x - at.x, y: e.y - at.y }, knock, element(id));   // 5번째 인자 = 원소(어려움의 저항 적 판정)
+    damage(e, amount, { x: e.x - at.x, y: e.y - at.y }, knock, element(id), id);   // 원소 저항 + 실제 피해 집계 출처(기본/진화 스킬 별도)
     if (e.hp <= 0) aliveCache = null;
     stats.hits[id] = (stats.hits[id] || 0) + 1; stats.damage[id] = (stats.damage[id] || 0) + amount;
   }

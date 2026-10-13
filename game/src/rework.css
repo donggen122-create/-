@@ -550,6 +550,14 @@
 .sg-test-types button{display:flex;flex-direction:column;align-items:center;gap:2px;padding:12px 6px;border-radius:14px;border:3px solid #d5dde2;background:#fff;color:#2a2418;white-space:nowrap}
 .sg-test-types button.on{border-color:#2f5597;background:#eaf2fb}.sg-test-types button.done b::after{content:" ✔"}
 .sg-test-types b{font-size:20px}.sg-test-types span{font-size:15px}.sg-test-types small{font-size:12px;color:#4d4436}
+/* 속성 파츠 시험: 기존 시험 카드 안에서 허용 스킬과 등급별 출동 횟수를 보여 준다. */
+.sg-test-element{min-width:0}.sg-test-element>small{color:#6b5a3a;font-size:13px}.sg-test-element h2{display:flex;align-items:center;gap:8px;margin:3px 0 10px;font-size:26px}.sg-test-element h2>.sg-icon{width:36px;height:36px}
+.sg-test-skill-list{display:grid;gap:8px}.sg-test-skill-list>div{display:flex;align-items:center;gap:8px;min-width:0}.sg-test-skill-list .sg-icon{width:40px;height:40px;flex:none}.sg-test-skill-list span{min-width:0}.sg-test-skill-list b,.sg-test-skill-list small{display:block;overflow-wrap:anywhere}.sg-test-skill-list small{font-size:12px;color:#4d4436}
+.sg-test-skill-grades{grid-template-columns:repeat(4,minmax(0,1fr))}.sg-test-skill-grades button{min-width:0;white-space:normal}.sg-skill-test .sg-test-start{white-space:normal;line-height:1.45}.sg-skill-test .sg-heading h1{overflow-wrap:anywhere}
+.sg-skill-test :is(.sg-test-card,.sg-test-rules){color:#2a2418}
+html.ui2 #guardian-lobby .sg-skill-test :is(.sg-test-card,.sg-test-rules) :is(h2,h3){color:#2a2418!important;text-shadow:none!important}
+html.ui2 #guardian-lobby .sg-skill-test .sg-heading :is(p,.sg-eyebrow){color:var(--txt-dim)!important}
+@media(max-width:640px){.sg-test-skill-grades{grid-template-columns:repeat(2,minmax(0,1fr))}.sg-skill-test .sg-test-start{font-size:18px}}
 @media (max-width:640px){.sg-test-card{grid-template-columns:1fr}.sg-test-grades{grid-template-columns:repeat(2,1fr)}}
 /* ---- 3장 「오염된 하천」(2026-09-30): 개울 물빛 파랑 · 갈대 초록 · 모래 베이지. 단계 번호는 물방울, 길은 물결 점선, 출동 그림은 사용자 마을 카드(오염된 개울 → 3-5 정화 후 맑은 개울과 수달) ---- */
 #guardian-lobby .sg-chapter-chip.sg-chip-3.on{background:#dcf0f1!important}
@@ -755,3 +763,26 @@
 .sg-rank-message{font-size:13px;color:#286d53;}
 .sg-rank-held{font-size:14px;text-align:center;color:#d6e7e6;}
 @media(max-width:480px){.sg-rank-dialog{padding:12px;}.sg-rank-tabs{grid-template-columns:repeat(2,minmax(0,1fr));}.sg-rank-list li{grid-template-columns:35px minmax(0,1fr) 77px;gap:5px;font-size:13px;}.sg-rank-button{padding:6px;font-size:12px;}}
+
+/* 속성 시험의 누적 피해: 전투 조작 버튼 아래, 결과는 표만 스크롤하고 계속 버튼을 남긴다. */
+#sg-damage-live{position:fixed;top:calc(110px + env(safe-area-inset-top,0px));right:8px;z-index:9;width:min(200px,52vw);box-sizing:border-box;border:1px solid #b7d4ed;border-radius:10px;background:rgba(14,31,50,.91);color:#fff;box-shadow:0 2px 7px #0004;font-size:12px;line-height:1.45;}
+#sg-damage-live[hidden]{display:none!important}
+#sg-damage-live summary{cursor:pointer;padding:7px 9px;overflow-wrap:anywhere;min-height:34px;}
+.sg-damage-live-body{padding:0 9px 8px;max-height:min(35dvh,240px);overflow-y:auto;}
+.sg-damage-live-row{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:6px;padding:4px 0;border-top:1px solid #ffffff2b;}
+.sg-damage-live-row>:first-child{min-width:0;overflow-wrap:anywhere;white-space:normal;}.sg-damage-live-row>:last-child{text-align:right;white-space:nowrap;font-variant-numeric:tabular-nums;}
+#result:has(#sg-damage-summary)>.frame{display:flex;flex-direction:column;min-width:0;max-width:94vw;max-height:calc(100dvh - 70px);box-sizing:border-box;}
+#result:has(#sg-damage-summary) #result-title,#result:has(#sg-damage-summary) #btn-continue{flex:none;}
+#result:has(#sg-damage-summary) #result-table{display:block;flex:0 1 auto;min-height:0;max-height:56dvh;overflow-x:hidden;overflow-y:auto;overscroll-behavior:contain;}
+#result:has(#sg-damage-summary) #result-table>tbody,#result:has(#sg-damage-summary) #result-table>tr{display:table;width:100%;table-layout:fixed;}
+#result-table>tbody>tr>td:has(#sg-damage-summary),#result-table>tr>td:has(#sg-damage-summary){width:auto!important;min-width:0;}
+#sg-damage-summary{min-width:0;max-width:100%;text-align:left;white-space:normal;}
+#sg-damage-summary h3{font-size:16px;margin:8px 0 5px;}#sg-damage-summary p{font-size:12px;line-height:1.5;margin:5px 0;overflow-wrap:anywhere;}
+#result #sg-damage-summary .sg-damage-skills{width:100%;table-layout:fixed;border-collapse:collapse;margin:8px 0;}
+#result #sg-damage-summary .sg-damage-skills :is(th,td){padding:5px 4px!important;white-space:normal!important;overflow-wrap:anywhere;font-size:12px!important;text-align:right;border-bottom:1px solid #899eae55;font-variant-numeric:tabular-nums;}
+#result #sg-damage-summary .sg-damage-skills :is(th,td):first-child{width:46%!important;text-align:left;}
+#result #sg-damage-summary .sg-damage-skills :is(th,td):nth-child(2){width:31%;}#result #sg-damage-summary .sg-damage-skills :is(th,td):nth-child(3){width:23%;}
+#sg-damage-summary details{margin:7px 0;font-size:12px;}#sg-damage-summary summary{cursor:pointer;padding:6px 0;white-space:normal;}
+.sg-damage-monsters{max-height:30dvh;overflow-y:auto;min-width:0;overflow-wrap:anywhere;}.sg-damage-monsters>div{padding:6px 0;border-top:1px solid #899eae55;white-space:normal;}
+@media(max-width:400px){#sg-damage-live{font-size:11px;}#result #sg-damage-summary .sg-damage-skills :is(th,td){font-size:11px!important;padding:4px 3px!important;}}
+@media(max-width:760px){#sg-damage-live{top:calc(134px + env(safe-area-inset-top,0px));}}

@@ -303,7 +303,13 @@ async function admin(request, env, sub, method) {
         // 장비 시험: 세트(근거리·원거리)별 판 수·성공 수(판 기록의 test.type)
         const byType = { melee: { n: 0, won: 0 }, ranged: { n: 0, won: 0 } };
         for (const r of (await env.DB.prepare("SELECT json_extract(result,'$.test.type') ty, COUNT(*) n, SUM(status='test_won') won FROM play_runs WHERE user_id=? AND started_at>=? GROUP BY ty").bind(row.id, Number(testMode.since) || 0).all()).results) if (byType[r.ty]) byType[r.ty] = { n: r.n, won: r.won || 0 };
-        row.test = { kind: testMode.kind || "pet", pet: testMode.pet || null, grade: testMode.grade ?? null, byType }; }
+        row.test = { kind: testMode.kind || "pet", pet: testMode.pet || null, grade: testMode.grade ?? null, byType };
+        if(testMode.kind==='skill'){
+          const byGrade={1:{n:0,won:0},2:{n:0,won:0},3:{n:0,won:0},4:{n:0,won:0}};
+          for(const r of (await env.DB.prepare("SELECT json_extract(result,'$.test.grade') gr,COUNT(*) n,SUM(status='test_won') won FROM play_runs WHERE user_id=? AND started_at>=? AND json_extract(result,'$.test.kind')='skill' GROUP BY gr").bind(row.id,Number(testMode.since)||0).all()).results)if(byGrade[r.gr])byGrade[r.gr]={n:r.n,won:r.won||0};
+          row.test={kind:'skill',element:testMode.element,grade:testMode.grade,perGrade:5,byGrade};Object.assign(row.passes,{perGrade:5,byGrade});
+        }
+      }
       row.energy = row.passes.remaining;
       delete row.guardian_state; delete row.base_used; delete row.bonus_granted; delete row.bonus_used;
     }

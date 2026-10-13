@@ -422,9 +422,21 @@ export function gearTestProfile(base,{grade=1,gearType='melee',hero,training=GEA
  p.testMode={kind:'gear',grade:g,stage,difficulty,passes:clampInt(passes,0,500),perType:clampInt(perType,1,250),since:Math.max(0,Number(since)||0)};
  return p;
 }
-export const testGrade=p=>!p?.testMode?-1:p.testMode.kind==='gear'?gearGrade(p,p.equippedGear?.weapon):cardGrade(petCopies(p,p.testMode.pet));
+// 속성별 파츠 등급 비교: 기본 스킬 2개와 진화 2개만, 등급마다 5판, 정확히 5분.
+export const SKILL_TEST={training:20,gearGrade:1,stage:'CH03',difficulty:'normal',duration:300,passes:20,perGrade:5};
+export function skillTestProfile(base,{element='fire',grade:partGrade=1,hero,since=0}={}){
+ if(!own(ELEMENTS,element))throw new Error('불·물·바람·흙·번개 중에서 골라 주세요.');
+ if(!Number.isInteger(partGrade)||partGrade<1||partGrade>4)throw new Error('파츠 등급은 레어·유니크·에픽·전설 중에서 골라 주세요.');
+ const p=gearTestProfile(base,{grade:SKILL_TEST.gearGrade,gearType:'melee',hero,training:SKILL_TEST.training,stage:SKILL_TEST.stage,difficulty:SKILL_TEST.difficulty,passes:SKILL_TEST.passes,since});
+ p.gear=Object.fromEntries(Object.entries(p.gear).filter(([id])=>GEAR[id].type==='melee'));
+ const ids=Object.keys(PARTS).filter(id=>PARTS[id].element===element);
+ p.parts=Object.fromEntries(ids.map(id=>[id,{copies:GRADE_COPIES[partGrade],level:1}]));p.equippedParts=ids;
+ p.testMode={kind:'skill',element,grade:partGrade,stage:SKILL_TEST.stage,difficulty:SKILL_TEST.difficulty,passes:SKILL_TEST.passes,perGrade:SKILL_TEST.perGrade,since:Math.max(0,Number(since)||0)};
+ return p;
+}
+export const testGrade=p=>!p?.testMode?-1:p.testMode.kind==='skill'?p.testMode.grade:p.testMode.kind==='gear'?gearGrade(p,p.equippedGear?.weapon):cardGrade(petCopies(p,p.testMode.pet));
 // 출동할 때 판 기록에 같이 남기는 시험 조건(등급별 성공률을 서버 기록으로 다시 볼 수 있게)
-export const testInfo=p=>p?.testMode?{kind:p.testMode.kind||'pet',...(p.testMode.kind==='gear'?{type:p.weaponMode==='ranged'?'ranged':'melee'}:{pet:p.testMode.pet}),grade:testGrade(p)}:null;
+export const testInfo=p=>p?.testMode?{kind:p.testMode.kind||'pet',...(p.testMode.kind==='skill'?{element:p.testMode.element,partLevel:1,training:SKILL_TEST.training,gearGrade:SKILL_TEST.gearGrade,stage:SKILL_TEST.stage,difficulty:SKILL_TEST.difficulty,duration:SKILL_TEST.duration}:p.testMode.kind==='gear'?{type:p.weaponMode==='ranged'?'ranged':'melee'}:{pet:p.testMode.pet}),grade:testGrade(p)}:null;
 // 개수 상한 없음(2차): 금 뒤에 남는 개수도 그대로 쌓는다. 금 파츠는 고르는 목록·원소 보급에서 빠지므로 "코인 60개" 낭비가 없다.
 export function addPart(p,id,qty=1){
  if(!own(PARTS,id))throw new Error('없는 파츠예요.');
@@ -442,6 +454,8 @@ export function pendingPet(p){if(!p)return null;if(maxClear(p)>=3&&!p.milestones
 export function completeRun(profile,{stage,cleared,seconds,litter=0,hpFraction=0,bossSeconds=Infinity,skillIds=[],fusionIds=[],supportIds=[],equippedPartIds=null,pet=undefined,difficulty=difficultyOf(profile),day=null}) {
  const p=migratePets(profile),index=Number(stage.slice(2)),st=STAGES[index-1],diff=DIFFICULTIES[difficulty]||DIFFICULTIES.easy;
  if(!st)throw new Error('없는 단계예요.');
+ // 측정 판은 play_runs에만 남긴다. 성장·미션·사용 통계·일반 보상을 섞지 않는다.
+ if(p.testMode?.kind==='skill')return {profile:p,reward:{coins:0,petCoinPct:0,gifts:0,missions:[],stars:0,first:false,partActivity:[],stageGift:null,difficulty:SKILL_TEST.difficulty,goal:false,notes:[]}};
  const first=cleared&&!p.stages[stage]?.cleared,intro=['CH01','CH02'].includes(stage)&&!p.stages[stage]?.cleared;
  const goal=cleared&&litter>=st.target;
  const base=120+10*(index-1),mult=COIN_MULT[difficulty]??1;
@@ -487,8 +501,14 @@ export function action(profile,a,rng=Math.random,ctx={}){
  // 시험 계정: 친구 등급 바꾸기·그 친구 고르기만. 출동 전 같은 값의 설정 저장(바뀌는 것 없음)은 그대로 둔다.
  if(p.testMode){
   const same=a.kind==='settings'&&(a.difficulty??p.difficulty)===p.difficulty&&(a.weaponMode??p.weaponMode)===p.weaponMode&&(a.hero??p.hero)===p.hero;
-  const gearTest=p.testMode.kind==='gear';
-  check(gearTest?(a.kind==='test-gear-type'||same):(a.kind==='test-pet-grade'||(a.kind==='pet'&&a.id===p.testMode.pet)||same),gearTest?'시험 계정에서는 장비 종류(근거리·원거리)만 바꿀 수 있어요.':'시험 계정에서는 친구 등급만 바꿀 수 있어요.');
+  const gearTest=p.testMode.kind==='gear',skillTest=p.testMode.kind==='skill';
+  check(skillTest?(a.kind==='test-skill-grade'||same):gearTest?(a.kind==='test-gear-type'||same):(a.kind==='test-pet-grade'||(a.kind==='pet'&&a.id===p.testMode.pet)||same),skillTest?'측정 계정에서는 파츠 등급만 바꿀 수 있어요.':gearTest?'시험 계정에서는 장비 종류(근거리·원거리)만 바꿀 수 있어요.':'시험 계정에서는 친구 등급만 바꿀 수 있어요.');
+  if(a.kind==='test-skill-grade'){
+   const g=Number(a.grade);check(Number.isInteger(g)&&g>=1&&g<=4,'파츠 등급은 레어·유니크·에픽·전설 중에서 골라 주세요.');
+   const ids=Object.keys(PARTS).filter(id=>PARTS[id].element===p.testMode.element);
+   p.parts=Object.fromEntries(ids.map(id=>[id,{copies:GRADE_COPIES[g],level:1}]));p.equippedParts=ids;p.testMode.grade=g;
+   return {profile:p,message:`${ELEMENTS[p.testMode.element].name} 파츠를 ${GRADE_NAMES[g]}${g===3?'으로':'로'} 바꿨어요.`};
+  }
   if(a.kind==='test-gear-type'){
    check(a.type==='melee'||a.type==='ranged','근거리·원거리 중에서 골라 주세요.');
    p.weaponMode=a.type;p.equippedGear=Object.fromEntries(GEAR_SLOTS.map(s=>[s,`${p.hero}_${a.type}_${s}`]));
@@ -591,9 +611,35 @@ export function action(profile,a,rng=Math.random,ctx={}){
 }
 // ---------- 판 안 카드 규칙 (탕탕특공대 방식): 스킬 4칸(Lv.5) + 지원품 4칸(Lv.3), 스킬 Lv.5 + 짝 지원품 → 진화 ----------
 function validState(state){state.consumed ||= [];state.fusionCount ||= 0;state.supports ||= {};state.partnerOffers ||= {};return state;}
-const evoReady=(skills,state,skillId)=>{const evo=EVO_OF[skillId];if(!evo||!skills[skillId]||skills[skillId].lv<RUN_RULES.maxSkillLevel)return null;const need=COMBOS[evo].support;return state.supports[need]?evo:null;};
+// Private context binds the actual profile to a run; a forged card or state.testMode cannot widen it.
+const runCardContexts=new WeakMap();
+export function bindRunCardContext(profile,state={}){
+ validState(state);
+ if(profile?.testMode?.kind==='skill'){
+  const element=profile.testMode.element;
+  if(!own(ELEMENTS,element))throw new Error('측정 속성을 확인해 주세요.');
+  const old=runCardContexts.get(state);if(old&&old.element!==element)throw new Error('도전 중에는 측정 속성을 바꿀 수 없어요.');
+  runCardContexts.set(state,{element});
+ }
+ return state;
+}
+const evoReady=(skills,state,skillId)=>{const evo=EVO_OF[skillId];if(!evo||!skills[skillId]||skills[skillId].lv<RUN_RULES.maxSkillLevel)return null;const need=COMBOS[evo].support;return runCardContexts.has(state)||state.supports[need]?evo:null;};
+function skillTestCards(element,skills,state){
+ const ids=Object.keys(SKILLS).filter(id=>SKILLS[id].element===element),allowed=new Set(ids.flatMap(id=>[id,EVO_OF[id]]));
+ if(Object.keys(state.supports).length||Object.keys(skills).some(id=>!allowed.has(id))||ids.some(id=>skills[id]&&skills[EVO_OF[id]]))throw new Error('측정 스킬 구성을 확인해 주세요.');
+ const cards=[];
+ for(const id of ids){
+  if(skills[EVO_OF[id]])continue;
+  if(!skills[id])cards.push({kind:'skill-new',id,weight:1.6});
+  else if(skills[id].lv<RUN_RULES.maxSkillLevel)cards.push({kind:'skill-up',id,weight:3.5});
+  else cards.push({kind:'evolve',id:EVO_OF[id],weight:10});
+ }
+ return cards;
+}
 export function cardPool(p,skills,state={}){
- validState(state);const cards=[],count=Object.keys(skills).length,supports=state.supports,scount=Object.keys(supports).length;
+ bindRunCardContext(p,state);
+ const test=runCardContexts.get(state);if(test)return skillTestCards(test.element,skills,state);
+ const cards=[],count=Object.keys(skills).length,supports=state.supports,scount=Object.keys(supports).length;
  // 가진 스킬 키우기를 우선(5분 안에 진화 2~3회). 새 스킬은 2개까지는 잘 나오고 그 뒤로는 드물게
  for(const id of Object.keys(SKILLS)){
   const owned=skills[id];
@@ -633,6 +679,7 @@ export function cardChoices(p,skills,state={},hpFraction=1,rng=Math.random){
   if(!candidates.length)candidates=pool;
   takeWeighted(candidates,pool,selected,rng);
  }
+ if(runCardContexts.has(state))return selected;
  if(hpFraction<.45){
   if(selected.length<3)selected.push({kind:'heal'});
   else{const replace=selected.findLastIndex(c=>c.kind!=='evolve');if(replace>=0)selected[replace]={kind:'heal'};}
@@ -647,6 +694,8 @@ function takeWeighted(candidates,pool,selected,rng){
 }
 export function applyRunCard(skills,state,card){
  validState(state);
+ const test=runCardContexts.get(state);
+ if(test&&!skillTestCards(test.element,skills,state).some(c=>c.kind===card.kind&&c.id===card.id))throw new Error('측정에서 고를 수 없는 카드예요.');
  if(card.kind==='heal')return {healed:.2,shielded:0};if(card.kind==='shield')return {healed:0,shielded:.12};
  if(card.kind==='skill-new'&&SKILLS[card.id]&&!skills[card.id]&&Object.keys(skills).length<RUN_RULES.skillSlots){skills[card.id]={lv:1,cd:0};return {skill:card.id};}
  if(card.kind==='skill-up'&&SKILLS[card.id]&&skills[card.id]?.lv<RUN_RULES.maxSkillLevel){skills[card.id].lv++;return {levelUp:card.id};}

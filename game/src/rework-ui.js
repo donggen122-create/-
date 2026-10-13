@@ -143,6 +143,7 @@ export class GuardianUI {
   }
   // 밸런스 시험 계정 로비(2026-09-29): 친구 1마리의 등급만 바꾸고 1-5 어려움만 출동. 다른 조작은 서버도 막는다(rework-core action).
   renderTest(p,passes,user){
+    if(p.testMode.kind==='skill'){this.renderSkillTest(p,passes,user);return;}
     if(p.testMode.kind==='gear'){this.renderGearTest(p,passes,user);return;}
     const pet=p.testMode.pet,d=R.PETS[pet],g=R.testGrade(p),rate=R.PET_GRADE_RATE[Math.max(0,g)];this.stage=p.testMode.stage;
     this.root.innerHTML=versionMarkup(`<header class="sg-header"><div class="sg-brand">${icon('element_wind')}<span>서호팡팡<small>시험 계정</small></span></div><div class="sg-wallet"><button data-do="passes" aria-label="시험 이용권 안내">${icon('pass')}<b>${passes?.remaining??'…'}</b><span>${passes?.test?`/ ${passes.total} 시험 이용권`:'이용권'}</span></button></div>${!ui2()?'<button class="sg-rank-button" data-do="ranking">??</button>':''}<button class="sg-account" data-do="account" aria-label="계정">${esc(this.displayName())} 님</button></header>
@@ -181,6 +182,24 @@ export class GuardianUI {
     const p=this.state().profile;if(!p?.testMode)return;const pet=p.testMode.pet,now=R.testGrade(p);
     this.openDialog(`<h2>${esc(R.PETS[pet].name)} 등급 고르기</h2><p>고르면 바로 바뀌어요. 기록표에 적은 등급과 같은지 꼭 확인해요.</p><div class="sg-test-grades">${R.GRADE_NAMES.map((n,i)=>`<button data-test-grade="${i}" class="sg-grade-${i} ${i===now?'on':''}"><b>${esc(n)}</b><small>카드 ${R.CARD_COPIES[i]}장 · 힘 ${Math.round(R.PET_GRADE_RATE[i]*100)}%</small></button>`).join('')}</div><button data-close>닫기</button>`);
     this.dialog.querySelectorAll('[data-test-grade]').forEach(b=>b.onclick=async()=>{this.dialog.close();await this.perform({kind:'test-pet-grade',grade:Number(b.dataset.testGrade)});});
+  }
+  renderSkillTest(p,passes,user){
+    const t=p.testMode,g=Math.max(1,Math.min(4,Number(t.grade)||1)),per=passes?.perGrade??t.perGrade??5,by=passes?.byGrade||{},grades=[1,2,3,4];this.stage=t.stage||'CH03';
+    const element=t.element,skills=entries(R.SKILLS).filter(([,s])=>s.element===element),done=Number(by[g]?.n)||0,left=Math.max(0,per-done),allDone=grades.every(k=>(Number(by[k]?.n)||0)>=per),next=grades.find(k=>(Number(by[k]?.n)||0)<per),ready=!!passes?.byGrade,total=passes?.total??20;
+    const label=R.stageLabel(this.stage),diffName=({easy:'쉬움',normal:'보통',hard:'어려움'})[t.difficulty]||'보통';
+    this.root.innerHTML=versionMarkup(`<header class="sg-header"><div class="sg-brand">${icon(`element_${element}`)}<span>서호팡팡<small>시험 계정</small></span></div><div class="sg-wallet"><button data-do="passes" aria-label="시험 이용권 안내">${icon('pass')}<b>${passes?.remaining??'…'}</b><span>/ ${total} 시험 이용권</span></button></div><button class="sg-account" data-do="account" aria-label="계정">${esc(this.displayName())} 님</button></header>
+    <main class="sg-main sg-test sg-skill-test" aria-live="polite">
+      <div class="sg-heading"><div><span class="sg-eyebrow">밸런스팀 시험 계정</span><h1>속성 파츠 데미지 조사</h1><p>${label} · ${diffName} · 한 판 5분<br>레어부터 전설까지, 네 등급을 ${per}판씩 비교해요.</p></div></div>
+      <section class="sg-test-card">
+        <div class="sg-test-element"><small>내가 맡은 속성</small><h2>${icon(`element_${element}`)}${esc(elementName(element))}</h2><div class="sg-test-skill-list">${skills.map(([id,s])=>`<div>${skillIcon(id)}<span><b>${esc(s.name)}</b><small>진화 → ${esc(R.COMBOS[R.EVO_OF[id]]?.name||'')}</small></span></div>`).join('')}</div></div>
+        <div class="sg-test-grade"><small>지금 파츠 등급</small><b class="sg-grade-${g}">${esc(R.GRADE_NAMES[g])}</b><span>두 파츠 모두 레벨 1</span><span>아래 단추로 등급을 골라요.</span></div>
+      </section>
+      <section class="sg-test-types sg-test-skill-grades" aria-label="파츠 등급 고르기">${grades.map(k=>{const n=Number(by[k]?.n)||0;return `<button data-test-skill-grade="${k}" class="${k===g?'on':''} ${n>=per?'done':''}" aria-pressed="${k===g}"><b>${esc(R.GRADE_NAMES[k])}</b><span>${n} / ${per}판 출동</span><small>${k===g?'현재 등급 · ':''}${n>=per?'완료':n?'진행 중':'시작 전'}</small></button>`;}).join('')}</section>
+      <section class="sg-test-rules"><h3>같은 조건으로 비교해요</h3><ul><li>${esc(elementName(element))} 스킬만 공격해요. 기본 무기·친구·지원품 공격은 없어요.</li><li>기본 스킬을 3단계로 올리면 진화 카드를 고를 수 있어요. 짝 지원품은 필요 없어요.</li><li>파츠는 레벨 1, 훈련은 모두 20단계, 근거리 장비는 레어로 같아요. 파츠 등급만 바꿔요.</li><li>체력이 줄지 않아 5분 동안 끝까지 측정해요. 끝나면 결과의 데미지를 기록해요.</li><li>등급마다 ${per}판, 총 ${total}판이에요. 중간에 끝내도 1판을 써요. 다음 날에도 다시 채워지지 않아요.</li></ul></section>
+      <select id="sg-difficulty" style="display:none" aria-hidden="true"><option value="${esc(t.difficulty||'normal')}" selected>${diffName}</option></select><select id="sg-weapon-mode" style="display:none" aria-hidden="true"><option value="melee" selected>근거리</option></select>
+      ${!ready?'<button class="sg-primary sg-start sg-test-start" disabled>시험 기록 불러오는 중</button>':allDone?`<button class="sg-primary sg-start sg-test-start" data-do="passes">${total}판을 모두 했어요. 기록표를 확인해요!</button>`:passes.remaining<=0?'<button class="sg-primary sg-start sg-test-start" data-do="passes">시험 이용권을 모두 썼어요</button>':left>0?`<button class="sg-primary sg-start sg-test-start" data-do="start">5분 측정 시작 · ${esc(R.GRADE_NAMES[g])} (${done+1} / ${per}판째)</button>`:`<button class="sg-primary sg-start sg-test-start" data-test-skill-grade="${next}">${esc(R.GRADE_NAMES[g])} ${per}판 끝! ${esc(R.GRADE_NAMES[next])}로 바꿔요</button>`}
+    </main>`);
+    if(this.busy)this.root.querySelectorAll('button,select').forEach(b=>b.disabled=true);
   }
   nextTask(p){
     const available=R.selectableParts(p).length;
@@ -601,6 +620,7 @@ export class GuardianUI {
     if(b.dataset.gearSlot){this.gearSlotDialog(b.dataset.gearSlot);return;}
     if(b.dataset.gearSet){this.gearSetDialog(b.dataset.gearSet);return;}
     if(b.dataset.do==='test-grade'){this.testGradeDialog();return;}
+    if(b.dataset.testSkillGrade){const grade=Number(b.dataset.testSkillGrade);if(p?.testMode?.kind==='skill'&&Number.isInteger(grade)&&grade>=1&&grade<=4&&grade!==p.testMode.grade)await this.perform({kind:'test-skill-grade',grade});return;}
     if(b.dataset.testType){if(b.dataset.testType!==this.state().profile?.weaponMode)await this.perform({kind:'test-gear-type',type:b.dataset.testType});return;}
     if(b.dataset.do==='gear-bag'){this.gearBagDialog();return;}
     if(b.dataset.do==='hard-ready'){this.hardReadyDialog(this.stage);return;}
@@ -611,6 +631,7 @@ export class GuardianUI {
     if(b.dataset.do==='draw-gear'){await this.perform({kind:'draw-gear',...(b.dataset.times==='5'?{times:5}:{})});return;}
     if(b.dataset.do==='gear-help'){this.gearHelp();return;}
     if(b.dataset.reset){this.resetDialog(b.dataset.reset);return;}
+    if(b.dataset.do==='passes'&&p?.testMode?.kind==='skill'){const total=passes?.total??20,remaining=passes?.remaining??0;this.notify(`시험 이용권 ${remaining}장 남음`,`네 등급을 ${passes?.perGrade??5}판씩, 모두 ${total}판 비교해요. 지금까지 ${total-remaining}판 출동했어요. 중간에 끝내도 1판을 쓰고, 다음 날에도 다시 채워지지 않아요.`);return;}
     if(b.dataset.do==='passes'&&passes?.test){this.notify(`시험 이용권 ${passes.remaining}장 남음`,`시험 계정은 모두 ${passes.total}장이에요(지금까지 ${passes.used}장 사용). 출동할 때마다 1장을 써요. 성공·실패·중간에 끝내기 모두 같아요. 다음 날이 되어도 다시 채워지지 않아요.`);return;}
     if(b.dataset.do==='passes'){const ev=passes?.event;this.notify(ev?`${ev.title} · 오늘 이용권 ${ev.dailyTotal}장`:'매일 아침 이용권 10장',`${ev?ev.message+'\n':''}${R.PASS_NOTICE} 지금 기본 ${passes?.baseRemaining??0}장, 추가 ${passes?.bonusRemaining??0}장(${ev?`추석 이벤트 ${ev.bonus}장·`:''}선생님 지급)이 남았어요. 추가 이용권도 다음 아침 8시에 사라져요.`);return;}
     if(b.dataset.do==='account'){

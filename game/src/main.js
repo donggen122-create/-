@@ -39,6 +39,7 @@ import { STAGES_PER_THEME, stageInfo } from "./themes.js";
 import * as R from "./rework-core.js";
 import { GuardianUI, icon as sgIcon } from "./rework-ui.js";
 import { createElementCombat, distanceComparator } from "./element-combat.js";
+import { createDamageTracker, effectiveHpDamage, validateDamageSummary, DAMAGE_TARGET_NAMES } from './damage-summary.js';
 import { createWeaponCombat } from "./weapon-effects.js";
 import { ELEMENT_WEAPONS } from "./assets.js";
 import { installReworkContent } from "./rework-content.js";
@@ -158,13 +159,19 @@ let save = ECO.migrateSave(loadSave());
 let sgState={profile:null,passes:null,user:null,active:null,error:null}, sgUI=null;
 let sgRunToken=null,sgServerDuration=0,sgSettling=false,sgRunProfile=null,sgRunSets={};
 let sgHostileShots=[];
+const sgDamageLog=createDamageTracker();
+const sgIsSkillTest=()=>sgRunProfile?.testMode?.kind==='skill';
 // source = 스킬 원소('fire'…) 또는 기본 무기('weapon'). 어려움의 특별한 적: 원소 방패는 그 원소 피해 25%만, 단단 갑옷은 원소 스킬 피해 50%(기본 무기는 그대로)
-const sgDamage=(target,raw,dir={x:0,y:0},knock=0,source=null)=>{
+const sgDamage=(target,raw,dir={x:0,y:0},knock=0,source=null,skillId=null)=>{
   if(target.hp<=0)return;
   const mul=target.sgTrait==='resist'&&source===target.sgResist?.25:target.sgTrait==='armor'&&source&&source!=='weapon'?.5:1;
   target.sgHurtAt=runTime;
+  const before=target.hp;
   dealDamageToTarget(target,raw*mul,target===boss,dir,knock,mul<1);
+  const dealt=effectiveHpDamage(before,target.hp);
+  sgDamageLog.record(skillId||source||'other',target===boss?bossDef?.id:target.typeId,dealt,runTime);
   if(source==='weapon'&&target.hp<=0&&sgGear.sp.absorb)sgGearAbsorb();
+  return dealt;
 };
 // 지원품(판 안 카드) 효과: 통합 스탯 키로 합산(stat()에서 더함). 스킬 엔진·기본 무기에는 mods로 전달
 function sgSupportStat(key){let v=0;const sup=player?.sgRun?.supports;if(sup)for(const id in sup){const d=R.SUPPORTS[id];if(d&&d.stat===key)v+=R.supportValue(id,sup[id].lv);}if(sgRunProfile){v+=R.petBuff(sgRunProfile,key);if(key==='intervalPct')v+=R.petIntervalCut(R.petBuff(sgRunProfile,'atkSpeedPct')+(sgPet.hasteUntil>runTime?.25:0));}return v;}   // 지원품 + 동물 친구 버프(야옹이 공격 속도·바람 질주는 공격 간격으로 바꿔 더함)
@@ -1438,7 +1445,7 @@ function newRun(chapterId, modeId = "M01") {
   floatingTexts = [];
   hitFx = [];
   deathFx = [];
-  themeFx.reset();sgElements.reset();sgWeapon.reset();sgHostileShots=[];sgAcid=[];sgPuddles=[];sgNets=[];sgFish=[];sgFires=[];sgT4Balls=[];sgT4Booms=[];sgT4Marks=[];sgSprouts=[];
+  themeFx.reset();sgElements.reset();sgWeapon.reset();sgDamageLog.reset(sgIsSkillTest()?sgRunProfile.testMode.element:null);sgHostileShots=[];sgAcid=[];sgPuddles=[];sgNets=[];sgFish=[];sgFires=[];sgT4Balls=[];sgT4Booms=[];sgT4Marks=[];sgSprouts=[];
   beams = [];
   strikes = [];
   blasts = [];
@@ -2316,7 +2323,7 @@ function updateOrbit(dt) {
   }
 }
 
-function updateSkills(dt) { sgWeapon.update(dt); sgElements.update(dt); sgThreatTick(dt); sgT2Tick(dt); sgT3Tick(dt); sgT4Tick(dt); sgGearTick(dt); }
+function updateSkills(dt) { if(!sgIsSkillTest())sgWeapon.update(dt); sgElements.update(dt); sgThreatTick(dt); sgT2Tick(dt); sgT3Tick(dt); sgT4Tick(dt); sgGearTick(dt); }
 const ATTACK_ANIM_S = 0.3, JUMP_ANIM_S = 0.7;
 
 // dir: 넉백 방향(정규화 전 벡터), knock: 넉백 세기(u)
@@ -2800,6 +2807,7 @@ function updateEnemies(dt) {
 
 // 플레이어 피해 수신 순서(docs/06 §7.5): 회피 → 피해감소 → 보호막 → 체력
 function takeDamage(raw,source=null) {
+  if(sgIsSkillTest())return 0; // 5분 동안 같은 시간으로 측정하는 시험 전용 모드.
   if (Math.random() < Math.min(0.3, stat("dodgePct"))) {           // 회피 상한 30%
     floatingTexts.push({ x: player.x, y: player.y - 24, text: "회피", life: 0.5, vy: -30, scale: 0, color: "#9ad8ff" });
     return 0;
@@ -5560,7 +5568,7 @@ sgUI=new GuardianUI(elMenu,{
   getState:()=>sgState,news:()=>sgChapter4Notice(sgState.profile,sgStorageKey('ch4-notice-hide')),start:sgStart,action:sgAction,refresh:sgRefresh,abandon:sgAbandon,sfx:playSynth,
   logout:async()=>{await cloud.logout();sgState={profile:null,passes:null,user:null,active:null,error:null};elTitle.classList.remove('hidden');refreshTitle();sgUI.render();}
 });
-for(const id of ['sg-objective','sg-run-tools']){const el=document.createElement('div');el.id=id;document.body.append(el);}
+for(const id of ['sg-objective','sg-run-tools','sg-damage-live']){const el=document.createElement('div');el.id=id;if(id==='sg-damage-live')el.hidden=true;document.body.append(el);}
 sgUI.render();
 if(SG_LOCAL)window.__sgUI=sgUI;   // 로컬 확인용(보급 연출 결과별 캡처 등)
 sgUI.dialog.addEventListener('close',()=>queueMicrotask(sgMaybeGuidance));
@@ -5704,6 +5712,7 @@ function sgRunConfig(stage){
 function sgChooseCards(reroll=false){
   mode='levelup';keys.clear();touchJoy.active=false;
   currentCards=R.cardChoices(sgRunProfile,player.skills,player.sgRun,player.hp/player.hpMax);
+  if(sgIsSkillTest()&&!currentCards.length){player.pendingLevels=0;player.sgChoices=runCfg.cardCap;mode='playing';elLevelup.classList.add('hidden');return;}
   elCardRow.innerHTML='';
   for(const c of currentCards){const b=document.createElement('button');b.className='card';b.innerHTML=sgCardHTML(c);b.dataset.kind=c.kind;{const el=c.kind==='evolve'?'#ffb81e':c.kind==='support-new'||c.kind==='support-up'?'#d9a23a':c.kind==='heal'?'#ff6b75':c.kind==='shield'?'#66c3ff':R.ELEMENTS[R.SKILLS[c.id]?.element]?.color;if(el)b.style.setProperty('--el',el);}/* UI v2: 카드 머리 색(원소·진화·지원품) */b.onclick=()=>{if(mode!=='levelup')return;playSfx('cardSelect',.45);sgApplyCard(c);closeLevelUp();};elCardRow.append(b);}
   document.getElementById('lv-ops').innerHTML=`<button class="op big-op" id="op-reroll" ${player.rerolls>0?'':'disabled'}>${isUI2()?art2('btn_reroll')+' ':''}다시 고르기 · ${player.rerolls}번 남음</button><span class="lv-pending">지금은 시간이 멈춰 있어요.</span>`;
@@ -5713,14 +5722,15 @@ function sgChooseCards(reroll=false){
 function sgCardHTML(c){
   if(c.kind==='heal')return `${sgIcon('heart')}<span class="tag">회복</span><h3>체력 채우기</h3><p>최대 체력의 20%를 채워요.</p>`;
   if(c.kind==='shield')return `${sgIcon('shield')}<span class="tag">보호</span><h3>방패 충전</h3><p>체력의 12%만큼 보호막을 얻어요. 겹쳐 쌓이지 않아요.</p>`;
-  if(c.kind==='evolve'){const d=R.COMBOS[c.id];return `${sgSkillImg(d,'sg-evo-icon')}<span class="tag evo">진화 · ${R.SKILLS[d.skill].name} + ${R.SUPPORTS[d.support].name}</span><h3>${d.name}</h3><p>${d.desc}</p><b>훨씬 크고 강해져요!</b>`;}
+  if(c.kind==='evolve'){const d=R.COMBOS[c.id];return `${sgSkillImg(d,'sg-evo-icon')}<span class="tag evo">진화 · ${R.SKILLS[d.skill].name}${sgIsSkillTest()?' 3단계':` + ${R.SUPPORTS[d.support].name}`}</span><h3>${d.name}</h3><p>${d.desc}</p><b>훨씬 크고 강해져요!</b>`;}
   if(c.kind==='support-new'||c.kind==='support-up'){const d=R.SUPPORTS[c.id],lv=player.sgRun.supports[c.id]?.lv||0,pair=Object.values(R.COMBOS).filter(x=>x.support===c.id).map(x=>`${R.SKILLS[x.skill].name}${player.skills[x.skill]?' '+symbol2('btn_check','✓'):''}`).join(' / ');
     return `${sgSkillImg(d)}<span class="tag">${isUI2()&&d.element?sgIcon(`element_${d.element}`):''}지원품 · ${lv+1}/3단계</span><h3>${d.name}</h3><p>${d.desc}<br/><b>${d.label(lv+1)}</b></p><small>진화 짝<br/><b>${pair}</b></small>`;}
   const d=R.SKILLS[c.id],lv=player.skills[c.id]?.lv||0,partners=R.SKILL_PARTNERS[c.id].map(id=>`${R.SUPPORTS[id].name}${player.sgRun.supports[id]?' '+symbol2('btn_check','✓'):''}`).join(' / ');
-  return `${sgSkillImg(d)}<span class="tag">${isUI2()?sgIcon(`element_${d.element}`):''}${R.ELEMENTS[d.element].name} · ${lv+1}/${R.RUN_RULES.maxSkillLevel}단계</span><h3>${d.name}</h3><p>${lv?d.levels[lv-1]:d.desc}</p><small>${R.RUN_RULES.maxSkillLevel}단계 + 짝 지원품이면 진화<br/><b>${partners}</b></small>${R.hasPart(sgRunProfile,c.id)?`<small class="sg-on sg-my-part">${sgSkillImg(d)} 내 파츠 · ${R.PARTS['PART_'+c.id].name}</small>`:''}`;
+  return `${sgSkillImg(d)}<span class="tag">${isUI2()?sgIcon(`element_${d.element}`):''}${R.ELEMENTS[d.element].name} · ${lv+1}/${R.RUN_RULES.maxSkillLevel}단계</span><h3>${d.name}</h3><p>${lv?d.levels[lv-1]:d.desc}</p><small>${sgIsSkillTest()?'3단계가 되면 진화할 수 있어요.':`${R.RUN_RULES.maxSkillLevel}단계 + 짝 지원품이면 진화<br/><b>${partners}</b>`}</small>${R.hasPart(sgRunProfile,c.id)?`<small class="sg-on sg-my-part">${sgSkillImg(d)} 내 파츠 · ${R.PARTS['PART_'+c.id].name}</small>`:''}`;
 }
 function sgApplyCard(c){
   const result=R.applyRunCard(player.skills,player.sgRun,c);player.sgChoices++;
+  if(sgIsSkillTest()&&(result.skill||result.fusion))sgDamageLog.acquire(result.skill||result.fusion,runTime);
   if(result.healed)player.hp=Math.min(player.hpMax,player.hp+player.hpMax*result.healed);
   if(result.shielded)player.shield=Math.max(player.shield,player.hpMax*result.shielded);
   if(c.kind==='skill-new'&&!player.sgUsedSkills.includes(c.id))player.sgUsedSkills.push(c.id);
@@ -6137,26 +6147,67 @@ function sgGrowthTick(dt){
     decor.push({x:player.x+Math.cos(a)*3.8*U,y:player.y+Math.sin(a)*3.8*U,sprite:skin().litter,h:skin().litterH,litter:true,flicker:0,opened:false});
   }
 }
+let sgDamageHudSecond=-1;
+function sgDamageHud(active){
+  const el=document.getElementById('sg-damage-live');if(!el)return;
+  el.hidden=!active||!sgIsSkillTest();if(el.hidden){sgDamageHudSecond=-1;return;}
+  const second=Math.floor(runTime);if(second===sgDamageHudSecond)return;sgDamageHudSecond=second;
+  const data=sgDamageLog.snapshot(runTime);if(!data)return;
+  if(!el.firstChild){
+    const details=document.createElement('details'),summary=document.createElement('summary'),body=document.createElement('div');body.className='sg-damage-live-body';
+    details.append(summary,body);el.append(details);
+  }
+  el.querySelector('summary').textContent=`스킬 누적 피해 · ${Math.round(data.total).toLocaleString()}`;
+  const body=el.querySelector('.sg-damage-live-body');body.replaceChildren();
+  for(const row of data.skills){const line=document.createElement('div'),label=document.createElement('span'),value=document.createElement('b');line.className='sg-damage-live-row';label.textContent=(R.SKILLS[row.id]||R.COMBOS[row.id]).name;value.textContent=Math.round(row.damage).toLocaleString();line.append(label,value);body.append(line);}
+}
+function sgRenderDamageResult(input,test){
+  if(test?.kind!=='skill')return;
+  document.getElementById('sg-damage-summary')?.closest('tr')?.remove();
+  const data=validateDamageSummary(input,{seconds:input?.seconds,element:test.element});if(!data)return;
+  const tr=document.createElement('tr'),td=document.createElement('td'),section=document.createElement('section');td.colSpan=2;section.id='sg-damage-summary';
+  const heading=document.createElement('h3');heading.textContent=`${R.ELEMENTS[test.element].name} · ${R.GRADE_NAMES[test.grade]} 파츠 · ${Math.floor(data.seconds/60)}분 ${Math.floor(data.seconds%60)}초`;
+  const total=document.createElement('p');total.className='sg-damage-total';total.textContent=`스킬 누적 피해 합계 ${Math.round(data.total).toLocaleString()}`;
+  const note=document.createElement('p');note.className='sg-damage-note';note.textContent='몬스터의 실제 체력 감소를 합했어요. 남은 체력을 넘는 피해는 제외해요. 기본과 진화는 따로 기록해요.';
+  const table=document.createElement('table');table.className='sg-damage-skills';
+  const thead=document.createElement('thead'),hr=document.createElement('tr');
+  for(const title of ['스킬','누적 피해','습득 시각']){const th=document.createElement('th');th.textContent=title;hr.append(th);}thead.append(hr);table.append(thead);
+  const tbody=document.createElement('tbody');
+  const acquired=at=>at===null?'미습득':`${Math.floor(at/60)}:${String(Math.floor(at%60)).padStart(2,'0')}`;
+  for(const row of data.skills){const r=document.createElement('tr');r.dataset.damageSkill=row.id;for(const value of [(R.SKILLS[row.id]||R.COMBOS[row.id]).name,Math.round(row.damage).toLocaleString(),acquired(row.acquiredAt)]){const c=document.createElement('td');c.textContent=value;r.append(c);}tbody.append(r);}table.append(tbody);
+  section.append(heading,total,note,table);
+  const details=document.createElement('details'),summary=document.createElement('summary'),monsters=document.createElement('div');summary.textContent='몬스터 종류별 보기';monsters.className='sg-damage-monsters';
+  const ids=[...new Set(data.skills.flatMap(s=>s.targets.map(t=>t.id)))];
+  for(const id of ids){const block=document.createElement('div'),name=document.createElement('h4');name.textContent=DAMAGE_TARGET_NAMES[id];block.append(name);
+    for(const row of data.skills){const line=document.createElement('div');line.textContent=`${(R.SKILLS[row.id]||R.COMBOS[row.id]).name}: ${Math.round(row.targets.find(t=>t.id===id)?.damage||0).toLocaleString()}`;block.append(line);}monsters.append(block);}
+  if(!ids.length)monsters.textContent='아직 맞힌 몬스터가 없어요.';
+  details.append(summary,monsters);section.append(details);
+  if(data.otherDamage>0){const warning=document.createElement('p');warning.textContent=`별도 피해 ${Math.round(data.otherDamage).toLocaleString()} · 시험 조건을 선생님과 확인해 주세요.`;section.append(warning);}
+  td.append(section);tr.append(td);(elResultTable.tBodies?.[0]||elResultTable).append(tr);
+}
 let sgHudSignature='';
 function sgHud(){
   const active=player&&mode==='playing'; // Keep battle overlays behind selection and pause dialogs.
   const objective=document.getElementById('sg-objective'),tools=document.getElementById('sg-run-tools');
+  sgDamageHud(active);
   if(!active){setText(objective,'');if(tools.childNodes.length)tools.replaceChildren();sgHudSignature='';return;}
   const st=R.STAGES[chapter.index],n=runStats.litter||0;
   const hard=runMods.special>0;
   setText(objective,runTime<10?'PC: 방향키 · WASD / 모바일: 화면을 끌어 이동해요':hard&&runTime<22?'어려움 ★★★ · 방패를 든 적에게는 방패 색깔 원소가 잘 안 통해요. 다른 원소나 기본 무기로 공격해요!':`${skin().goal} ${Math.min(n,st.target)}/${st.target}${n>=st.target?' ✔ 코인 +30':''} · ${runCfg.bossPhase?'대장을 깨끗하게 해 주세요!':st.tip}`);
+  if(sgIsSkillTest())setText(objective,`${R.ELEMENTS[sgRunProfile.testMode.element].name} · ${R.GRADE_NAMES[sgRunProfile.testMode.grade]} 파츠 · 5분 피해 측정`);
   // Main HUD owns the timer so it is not overwritten twice in one frame.
   setText(elLvl,`성장 ${Math.min(runCfg.cardCap,player.sgChoices||0)}/${runCfg.cardCap}${player.shield>1?' · 방패':''}`);
+  if(sgIsSkillTest())setText(elLvl,`파츠 ${R.GRADE_NAMES[sgRunProfile.testMode.grade]}`);
   // Main HUD also owns the XP bar.
   const sup=player.sgRun.supports||{};
   const signature=sgRunProfile.weaponMode+'|'+Object.entries(player.skills).map(([id,v])=>id+':'+v.lv).join(',')+'|'+Object.entries(sup).map(([id,v])=>id+':'+v.lv).join(',');
   if(signature===sgHudSignature)return;sgHudSignature=signature;
-  const html=`<span title="기본 무기">${isUI2()?art2(sgRunProfile.weaponMode==='ranged'?'hud_weapon_ranged':'slot_weapon'):sgIcon('mode_'+sgRunProfile.weaponMode)}기본</span>`
+  const html=(sgIsSkillTest()?'':`<span title="기본 무기">${isUI2()?art2(sgRunProfile.weaponMode==='ranged'?'hud_weapon_ranged':'slot_weapon'):sgIcon('mode_'+sgRunProfile.weaponMode)}기본</span>`)
     +Object.entries(player.skills).map(([id,v])=>{const d=R.SKILLS[id]||R.COMBOS[id];return `<span class="${R.COMBOS[id]?'sg-evo':''}" title="${d.name}">${sgSkillImg(d)}${R.COMBOS[id]?'진화':`${v.lv}/${R.RUN_RULES.maxSkillLevel}`}</span>`;}).join('')
-    +Array.from({length:Math.max(0,R.RUN_RULES.skillSlots-Object.keys(player.skills).length)},()=>'<span class="sg-empty-slot">＋</span>').join('')
+    +Array.from({length:Math.max(0,(sgIsSkillTest()?2:R.RUN_RULES.skillSlots)-Object.keys(player.skills).length)},()=>'<span class="sg-empty-slot">＋</span>').join('')
     +`<span class="sg-hud-gap"></span>`
     +Object.entries(sup).map(([id,v])=>{const d=R.SUPPORTS[id];return `<span class="sg-support" title="${d.name}">${sgSkillImg(d)}${v.lv}/3</span>`;}).join('')
-    +Array.from({length:Math.max(0,R.RUN_RULES.supportSlots-Object.keys(sup).length)},()=>'<span class="sg-empty-slot sg-support">＋</span>').join('');
+    +Array.from({length:sgIsSkillTest()?0:Math.max(0,R.RUN_RULES.supportSlots-Object.keys(sup).length)},()=>'<span class="sg-empty-slot sg-support">＋</span>').join('');
   tools.innerHTML=html;layoutHud();
 }
 function sgEnd(cleared,leaving=false){
@@ -6164,6 +6215,7 @@ function sgEnd(cleared,leaving=false){
   mode='result';sgSettling=true;elBossLabel.textContent='';keys.clear();touchJoy.active=false;
   elLevelup.classList.add('hidden');elPause.classList.add('hidden');elResult.classList.remove('hidden');
   const pending={requestId:crypto.randomUUID(),runId,cleared,seconds:Math.min(360,runTime),litter:runStats.litter||0,hpFraction:player.hp/player.hpMax,bossSeconds:runCfg.bossPhase?Math.max(0,runTime-runCfg.timeLimitS):null,skillIds:player.sgUsedSkills,fusionIds:player.sgUsedFusions,supportIds:player.sgUsedSupports||[],partEffects:sgElements.snapshot().parts,revives:runStats.revives||0};
+  if(sgIsSkillTest()){pending.damageSummary=sgDamageLog.snapshot(runTime);pending.seconds=Math.min(300,Math.round(runTime*100)/100);}
   const perf=R.perfSummary(sgFramePerf,{w:innerWidth,h:innerHeight,dpr:devicePixelRatio||1,dev:R.perfDevice({ua:navigator.userAgent,coarse:matchMedia('(pointer: coarse)').matches,w:innerWidth,h:innerHeight}),q:renderQuality.level,ratio:renderQuality.ratio,sec:runTime});
   if(perf)pending.perf=perf;if(!cleared&&player.hp<=0&&sgLastHit)pending.cause={...sgLastHit};
   sgFramePerf=null;sgPerfActive=false;
@@ -6175,6 +6227,7 @@ window.addEventListener('pagehide',()=>{if(cloud.loggedIn&&runId&&!sgSettling&&[
 async function sgSettle(pending,leaving=false){
   const btn=document.getElementById('btn-continue');btn.disabled=true;elResultTitle.textContent='모험을 기록하는 중…';
   elResultTable.innerHTML='<tr><td>잠깐만 기다려 주세요. 결과와 이용권을 확인하고 있어요.</td></tr>';
+  sgRenderDamageResult(pending.damageSummary,sgRunProfile?.testMode);
   try{
     const r=await sgPost('/play/finish',pending,leaving?{keepalive:true}:{});sgKeepPending('result',null);sgApplyServer({...r,active:null});
     sgHardLoss=!r.cleared&&r.reward?.difficulty==='hard'?(r.stage||null):null;   // 어려움 실패 → 로비로 돌아가면 준비 권장치 안내
@@ -6198,6 +6251,12 @@ async function sgSettle(pending,leaving=false){
       name.textContent=d.name;help.textContent=!activity.active?`${sgObj(R.SKILLS[d.skill].name)} 안 골라 이번 판에는 쉬었어요`:times?`기능이 ${times}번 발동했어요`:'스킬을 골랐어요 · 이번 판에는 추가 기능 발동 기록이 없어요';
       row.append(name,help);elResultTable.append(row);
     }
+    if(r.test?.kind==='skill'){
+      elResultTitle.textContent=r.cleared?'5분 피해 측정 완료!':'중단한 측정 기록';
+      elResultTable.innerHTML=`<tr><td>시험 진행</td><td>${r.passes.used} / ${r.passes.total}판 · 남은 ${r.passes.remaining}판</td></tr>`;
+      sgRenderDamageResult(r.damageSummary||pending.damageSummary,r.test);
+      if(!r.cleared){const row=document.createElement('tr'),cell=document.createElement('td');cell.colSpan=2;cell.textContent='5분을 마치지 못한 판이에요. 5분 기록과 구분해 적어요.';row.append(cell);elResultTable.append(row);}
+    }
     playSfx('goldReward',.5);btn.textContent=R.pendingPet(r.profile)?'새 친구 만나러 가기':'마을로 돌아가기';btn.disabled=false;sgSettling=false;
   }catch(e){
     // 30분 넘게 멈춘 판은 서버가 이미 정리했다(보상 없음·이용권 그대로). 다시 해도 같은 답이므로 결과 화면에 갇히지 않게 바로 돌아가게 한다.
@@ -6210,5 +6269,6 @@ async function sgSettle(pending,leaving=false){
     elResultTitle.textContent='결과를 안전하게 보관했어요';elResultTable.innerHTML='<tr><td id="sg-result-error"></td></tr><tr><td><button id="sg-retry-result">결과 확인 다시 하기</button></td></tr>';
     document.getElementById('sg-result-error').textContent=e.message;
     document.getElementById('sg-retry-result').onclick=()=>sgSettle(pending);
+    sgRenderDamageResult(pending.damageSummary,sgRunProfile?.testMode);
   }
 }

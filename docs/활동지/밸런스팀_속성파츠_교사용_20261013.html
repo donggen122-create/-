@@ -1,0 +1,90 @@
+<!DOCTYPE html><html lang="ko"><head><meta charset="utf-8"><title>밸런스팀 속성 파츠 피해량 교사용</title><link href="https://fonts.googleapis.com/css2?family=Jua&family=Gowun+Dodum&display=swap" rel="stylesheet"><style>
+
+  @page { size: A4; margin: 0; }
+  * { box-sizing: border-box; }
+  :root { --ink: #1d2a30; --soft: #5b6b72; --line: #9fb3bb; --faint: #eef4f6; --accent: #2a6f93;
+          --g0: #ededed; --g1: #ddebf7; --g2: #e4dfec; --g3: #fce4d6; --g4: #fff2cc; }
+  html, body { margin: 0; padding: 0; background: #fff; color: var(--ink); }
+  body { font-family: "Gowun Dodum", "Malgun Gothic", sans-serif; font-size: 10.8pt; line-height: 1.4; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  .page { width: 210mm; height: 297mm; padding: 10mm 12mm 9mm; overflow: hidden; break-after: page; display: flex; flex-direction: column; gap: 3.4mm; }
+  .page:last-child { break-after: auto; }
+  h1, h2, b.j, .j { font-family: "Jua", "Malgun Gothic", sans-serif; font-weight: normal; }
+  .top { display: flex; justify-content: space-between; align-items: center; font-size: 9pt; color: var(--soft); }
+  .tag { border: 1.2px solid var(--accent); color: var(--accent); border-radius: 99px; padding: .2mm 3mm; font-family: "Jua", sans-serif; font-size: 10pt; }
+  h1 { margin: 0; font-size: 23pt; line-height: 1.15; }
+  h1 small { font-size: 12pt; color: var(--soft); margin-left: 2mm; }
+  h2 { margin: 0; font-size: 13.5pt; display: flex; align-items: center; gap: 2mm; }
+  .num { flex: none; width: 7mm; height: 7mm; border-radius: 50%; border: 1.6px solid var(--accent); color: var(--accent); display: grid; place-items: center; font-size: 11pt; }
+  .hint { font-family: "Gowun Dodum", sans-serif; font-size: 9.2pt; color: var(--soft); margin-left: 1mm; }
+  .info { display: flex; gap: 6mm; font-size: 11pt; align-items: flex-end; }
+  .info span { white-space: nowrap; }
+  .blank { display: inline-block; border-bottom: 1.1px solid var(--ink); height: 5mm; vertical-align: bottom; }
+  .chk { display: inline-block; width: 3.8mm; height: 3.8mm; border: 1.3px solid var(--ink); border-radius: .8mm; vertical-align: -.6mm; margin-right: 1mm; }
+  .pets { display: grid; grid-template-columns: repeat(4, 1fr); gap: 2.5mm; }
+  .pets div { border: 1.3px solid var(--line); border-radius: 2.5mm; padding: 1.6mm 2.5mm; font-size: 10pt; }
+  .pets b { font-family: "Jua", sans-serif; font-weight: normal; font-size: 12pt; }
+  .pets small { display: block; color: var(--soft); font-size: 8.8pt; }
+  .steps { display: grid; grid-template-columns: repeat(4, 1fr); gap: 2.5mm; }
+  .steps div { background: var(--faint); border-radius: 2.5mm; padding: 2mm 2.6mm; font-size: 9.8pt; line-height: 1.35; }
+  .steps b { font-family: "Jua", sans-serif; font-weight: normal; color: var(--accent); font-size: 11.5pt; display: block; }
+  table { width: 100%; border-collapse: collapse; table-layout: fixed; }
+  th, td { border: 1.2px solid var(--line); padding: 1mm; text-align: center; vertical-align: middle; }
+  th { font-family: "Jua", sans-serif; font-weight: normal; background: var(--accent); color: #fff; font-size: 10.5pt; }
+  .rec td { height: 15mm; font-size: 10pt; }
+  .rec td.g { font-family: "Jua", sans-serif; font-size: 13pt; }
+  .rec td.g small { display: block; font-family: "Gowun Dodum", sans-serif; font-size: 8pt; color: var(--soft); }
+  .rec td.box { position: relative; }
+  .rec td.box i { position: absolute; left: 1.2mm; top: .6mm; font-style: normal; font-size: 7.5pt; color: #9aa7ad; }
+  .rec td.sum { font-size: 10pt; }
+  .rec td.sum u, .rec td.rate u { display: inline-block; width: 9mm; border-bottom: 1px solid var(--ink); text-decoration: none; height: 5mm; }
+  .rec tr.ex td { background: #f7f9fa; color: #8a969c; font-style: italic; height: 10mm; }
+  .calc { font-size: 10pt; background: var(--faint); border-radius: 2.5mm; padding: 1.8mm 3mm; }
+  .calc code { font-family: "Jua", sans-serif; background: #fff; border: 1px solid var(--line); border-radius: 1.5mm; padding: .2mm 2mm; }
+  .two { display: grid; grid-template-columns: 1.05fr 1fr; gap: 5mm; }
+  .chart { display: grid; grid-template-columns: 10mm repeat(5, 1fr); }
+  .chart .axis { display: flex; flex-direction: column; justify-content: space-between; font-size: 7.8pt; color: var(--soft); text-align: right; padding-right: 1.2mm; height: 40mm; margin-top: -1.5mm; }
+  .chart .col { display: flex; flex-direction: column; }
+  .chart .area { height: 40mm; border-left: 1px solid #e3eaed; background-image: repeating-linear-gradient(to top, #cfdbe0 0 1px, transparent 1px 8mm); border-bottom: 1.4px solid var(--ink); position: relative; }
+  .chart .area::after { content: ""; position: absolute; left: 25%; right: 25%; top: 0; bottom: 0; border: 1px dashed #b9c7cd; }
+  .chart .lab { text-align: center; font-family: "Jua", sans-serif; font-size: 9.6pt; margin-top: .6mm; border-radius: 1.2mm; }
+  .fill { display: flex; flex-direction: column; gap: 2.4mm; font-size: 10.3pt; }
+  .fill div { display: flex; align-items: flex-end; gap: 1.3mm; flex-wrap: wrap; }
+  .fill u { text-decoration: none; border-bottom: 1px solid var(--ink); height: 5mm; display: inline-block; }
+  .foot { margin-top: auto; display: flex; justify-content: space-between; font-size: 8.8pt; color: var(--soft); border-top: 1px dashed var(--line); padding-top: 1.3mm; }
+  /* 2쪽 */
+  .team td { height: 13mm; font-size: 10pt; }
+  .team td.n { font-family: "Jua", sans-serif; font-size: 12pt; }
+  .team td.n small { display: block; font-family: "Gowun Dodum", sans-serif; font-size: 8pt; color: var(--soft); }
+  .team td u { display: inline-block; width: 11mm; border-bottom: 1px solid var(--ink); text-decoration: none; height: 5mm; }
+  .team tr.best td { background: #f6fafb; }
+  .prop td { height: 13mm; font-size: 10pt; text-align: left; padding: 1mm 2mm; }
+  .prop tr.ex td { background: #f7f9fa; color: #8a969c; font-style: italic; height: 9mm; }
+  .ruler { font-size: 10pt; border-left: 3px solid var(--accent); padding: 1mm 3mm; background: #f6fafb; }
+
+.page{overflow:visible}.page>*{flex-shrink:0}.recordpage{gap:1.5mm}.recordpage h1 small{font-size:11pt}
+.pets .skillblank{height:6mm;border-bottom:1px solid var(--ink);display:block;margin-top:1mm}.pets small{font-size:9pt}
+.rec td{height:6.5mm;font-size:10pt}.rec td.g{font-size:11.5pt}.rec th{font-size:10pt;padding:.7mm}.steps div{font-size:9.5pt;padding:1.6mm 2.2mm}.steps b{font-size:11pt}
+.tiny{font-size:9pt;color:var(--soft)}.recordpage .calc{font-size:9.6pt;padding:1.5mm 2.5mm}.recordpage .foot{font-size:8.6pt}
+.summarypage{gap:2.5mm}.summarypage h1{font-size:22pt}.summarypage .team td{height:8.2mm}.summarypage .avg td{height:10mm}.summarypage .avg th{font-size:9.6pt;line-height:1.3}.summarypage .team th{font-size:10pt}
+.summarypage .chart{grid-template-columns:15mm repeat(4,1fr)}.summarypage .chart .axis{font-size:8.5pt}.axis u{display:block;width:11mm;border-bottom:1px solid var(--line);text-decoration:none;height:3mm}.summarypage .two{grid-template-columns:1.05fr 1fr;gap:4mm}.summarypage .fill{font-size:10pt;gap:1.8mm}.summarypage .prop td{height:11mm}.summarypage .calc{font-size:9.5pt}.summarypage .ruler{font-size:9.6pt}.inlineblank{display:inline-block;height:4mm;border-bottom:1px solid var(--ink);vertical-align:bottom;min-width:16mm}
+.teacher{font-size:10.4pt;gap:1.7mm}.teacher h1{font-size:23pt}.teacher p{margin:0}.teacher .team td{height:10mm;font-size:10pt}.teacher .team th{font-size:10.2pt}.teacher .steps{grid-template-columns:1fr 1fr}.teacher .steps div{font-size:10pt;padding:2.5mm 3mm}.teacher .steps b{font-size:12pt}.teacher .ruler{font-size:10pt}.teacher .fill{gap:1.7mm;font-size:10.2pt}.teacher .skills td{height:11mm;font-size:10pt}.teacher .skills th{font-size:10pt}
+@media screen{body{background:#dde6ea}.page{background:white;margin:16px auto;box-shadow:0 2px 12px #687b8533}}@media print{.page{margin:0;box-shadow:none}}
+</style></head><body>
+<section class="page teacher">
+<div class="top"><span>서호팡팡수호대 · 밸런스팀 교사용 운영안</span><span class="tag">속성 파츠 · 실제 피해량</span></div>
+<h1>등급별 5판, 한 속성당 20판</h1>
+<div class="ruler"><b class="j">시작 전 확인</b> 시험 계정의 속성·등급과 결과의 네 스킬 피해 표시를 확인한 뒤 시작하세요.</div>
+<div><h2><span class="num">1</span>실험 조건을 고정합니다</h2>
+<table class="team" style="margin-top:1.4mm"><colgroup><col style="width:31mm"><col></colgroup><tbody><tr><td class="n">전투 조건</td><td style="text-align:left">시험 전용 CH03(1-3) · 보통 · 전투 시간 5:00 · 훈련 20</td></tr><tr><td class="n">장비·파츠</td><td style="text-align:left">장비 레어 · 친구 없음 · 해당 속성 파츠 2개 레벨 1 고정<br>두 파츠를 같은 등급으로: 레어 → 유니크 → 에픽 → 전설(노말 제외)</td></tr><tr><td class="n">허용 스킬</td><td style="text-align:left">해당 속성의 기본 2개 습득·강화, 진화 2개까지만<br>다른 속성·지원품 카드 없음 · 기본 무기 공격 없음</td></tr><tr><td class="n">완주 조건</td><td style="text-align:left">받는 피해 없음. 살아남기 점수 대신 5분 동안의 피해량 측정</td></tr></tbody></table></div>
+<div><h2><span class="num">2</span>활동지 A·B·C·D 이름표</h2>
+<table class="team skills" style="margin-top:1.4mm"><colgroup><col style="width:15mm"><col><col><col><col></colgroup><thead><tr><th>속성</th><th>A 기본 1</th><th>B 기본 2</th><th>C 진화 1</th><th>D 진화 2</th></tr></thead><tbody><tr><td>불</td><td>불꽃병</td><td>로켓폭죽</td><td>화산폭탄</td><td>불꽃놀이로켓</td></tr><tr><td>물</td><td>물풍선</td><td>물대포</td><td>왕물풍선</td><td>무지개물대포</td></tr><tr><td>바람</td><td>바람부메랑</td><td>회오리팽이</td><td>자석부메랑</td><td>태풍팽이</td></tr><tr><td>흙</td><td>돌멩이던지기</td><td>두더지지뢰</td><td>바위굴리기</td><td>두더지폭탄밭</td></tr><tr><td>번개</td><td>번개구름</td><td>찌릿벌</td><td>천둥번개구름</td><td>벌떼소환</td></tr></tbody></table></div>
+<div><h2><span class="num">3</span>수업 시간과 기록을 나눕니다</h2>
+<div class="steps" style="margin-top:1.4mm"><div><b>모두 완주하면 전투 100분</b>5분 × 4등급 × 5판 = 100분입니다. 성장 카드 선택, 기록, 휴식 시간은 별도이며 여러 차시에 나눠 진행합니다.</div><div><b>등급마다 출동 5판으로 제한</b>접속 중단도 1판을 씁니다. 중단과 실제 시간을 남기고 5분 완료판과 섞지 않습니다. 자동 보충은 없습니다.</div></div></div>
+<div><h2><span class="num">4</span>결과 숫자는 이렇게 읽습니다</h2>
+<div class="fill" style="margin-top:1.4mm"><div>• 네 줄은 각 기본·진화 스킬이 <b>몬스터 체력을 실제로 줄인 양의 합</b>입니다.</div><div>• 치명타·방어·저항을 반영하고, 남은 체력을 넘는 피해는 빼서 셉니다.</div><div>• 기본은 A+B, 진화는 C+D로 따로 합산합니다. 전체는 A+B+C+D입니다.</div><div>• 0은 그대로 기록합니다. 미습득·미진화였는지도 전투 기록에서 확인합니다.</div><div>• 종이의 날짜·속성·등급·판번호를 전투 기록과 맞추고, 필요하면 몬스터 종류별 피해 내역을 함께 조회합니다.</div></div></div>
+<div><h2><span class="num">5</span>진화 시각 차이도 함께 살펴봅니다</h2>
+<p style="margin-top:1.4mm">평균은 <b>5분 완료판만 합산해 실제 완료판수로 나눕니다</b>(0판은 -). <b>습득·진화 시각과 강화 순서</b>도 확인하세요. 진화가 늦으면 사용 시간이 짧으므로 총피해 차이를 등급이나 스킬 위력 차이로 바로 단정하지 않습니다.</p>
+<div class="ruler" style="margin-top:2mm"><b class="j">제출·추가 실험</b> 한 속성당 학생용 2쪽. 미측정 값은 0으로 채우지 않습니다.<br>관리자 「속성 스킬 시험 설정」에서 속성을 배정합니다.<br>추가 20판은 기존 기록을 보관한 뒤 새 시험으로 설정합니다(학생 재설정 금지).</div><p class="tiny" style="margin-top:1mm">test1 불 · test2 물 · test3 바람 · test4 흙 / 번개: 기록 보존 후 기존 계정 하나의 속성 변경, 후속 20판.</p></div>
+<div class="foot"><span>학생용은 기존 친구 성공률 활동지의 개인 기록 → 팀 정리 흐름을 재사용했습니다.</span><span>교사용 1 / 1 · 2026-10-13</span></div>
+</section>
+</body></html>
