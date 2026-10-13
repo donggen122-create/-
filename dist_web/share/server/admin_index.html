@@ -64,6 +64,11 @@
   .stats-rate span {position:relative;}
   .stats-stopped td {background:#fff1d0;} .stats-stopped td:nth-child(6) {color:#ad451b;}
   #stage-stats-panel td.stats-causes {white-space:normal;min-width:120px;max-width:240px;}
+  #dlg-skill-test {width:min(440px,calc(100vw - 24px));max-width:440px;max-height:calc(100dvh - 24px);overflow-y:auto;}
+  #dlg-skill-test select {font:inherit;padding:7px;border:2px solid var(--line);border-radius:10px;background:#fff;color:var(--ink);}
+  #dlg-skill-test .skill-confirm {display:flex;align-items:flex-start;gap:8px;font-size:13px;line-height:1.5;}
+  #dlg-skill-test .skill-confirm input {flex:none;margin-top:4px;}
+  #dlg-skill-test ul {padding-left:20px;font-size:13px;line-height:1.6;}
 </style>
 </head>
 <body>
@@ -158,11 +163,23 @@
   <div class="row"><input id="d-note" placeholder="메모" style="width:100%" /></div>
   <div class="row" style="justify-content:flex-end"><button id="d-cancel">취소</button><button class="primary" id="d-ok">지급</button></div>
 </dialog>
+<dialog id="dlg-skill-test" aria-labelledby="skill-test-title">
+  <h3 id="skill-test-title">속성 스킬 시험 설정</h3>
+  <p class="note">대상: <b id="skill-test-who"></b> · 관리자 전용</p>
+  <div class="row"><label for="skill-test-element">맡을 속성</label><select id="skill-test-element"></select></div>
+  <p class="note" id="skill-test-skills"></p>
+  <ul><li>1-3 보통 · 한 판 5분 · 받는 피해 없음</li><li>해당 속성 파츠 2개 · 레벨 1 · 레어부터 시작</li><li>레어·유니크·에픽·전설 각각 5판, 총 20판</li><li>훈련 모두 20단계 · 레어 근거리 장비 · 친구 없음</li><li>해당 속성만 공격 · 기본 스킬 3단계 뒤 지원품 없이 진화</li></ul>
+  <p class="note">현재 캐릭터로 진행합니다. 설정하면 파츠·장비·친구·훈련·재화가 시험 조건으로 바뀌고, 이번 시험의 20판을 새로 시작합니다. 지난 판 기록은 남습니다.</p>
+  <label class="skill-confirm"><input id="skill-test-confirm" type="checkbox"><span>이 시험 계정을 위 조건으로 다시 설정하는 것을 확인했습니다.</span></label>
+  <p class="err" id="skill-test-error" role="alert"></p>
+  <div class="row" style="justify-content:flex-end"><button id="skill-test-cancel">취소</button><button class="primary" id="skill-test-save" disabled>시험 설정 적용</button></div>
+</dialog>
 <div class="toast" id="toast"></div>
 
 <script type="module">
 import {installStageStats} from "./stage-stats.js";
 import {installRankingAdmin} from "./ranking.js";
+import {ELEMENTS, SKILLS, COMBOS, EVO_OF, TEST_ACCOUNT_RE, GRADE_NAMES} from "../src/rework-core.js";
 const $ = (s) => document.querySelector(s);
 const TOKEN_STORE = "seoho_admin_token", ROLE_STORE = "seoho_admin_role";
 let TOKEN = sessionStorage.getItem(TOKEN_STORE) || "";
@@ -272,7 +289,7 @@ function render() {
       <td class="id"><span class="dot" ${ONLINE.has(u.id) ? "" : "hidden"}></span>${esc(u.display_id)}</td>
       <td>${fmt(u.created_at)}</td><td>${fmt(lastSeen(u))}</td><td>${fmt(u.saved_at)}</td>
       <td>${num(u.runs)}</td><td>${num(u.clears)}</td><td><b>${stageLabel(u.best_stage)}</b></td><td>${num(u.acc_level) || "-"}</td>
-      <td>${num(u.gold).toLocaleString()}</td><td>${u.gifts == null ? '-' : num(u.gifts)}</td><td>${num(u.dust)}</td><td>${u.passes?.test ? `시험 ${num(u.passes.remaining)} / ${num(u.passes.total)}${u.test?.kind === 'gear' ? `<br><small title="성공/판">근거리 ${num(u.test.byType?.melee?.won)}/${num(u.test.byType?.melee?.n)} · 원거리 ${num(u.test.byType?.ranged?.won)}/${num(u.test.byType?.ranged?.n)}</small>` : ''}` : `${num(u.passes?.baseRemaining)} + ${num(u.passes?.bonusRemaining)} 추가`}</td>
+      <td>${num(u.gold).toLocaleString()}</td><td>${u.gifts == null ? '-' : num(u.gifts)}</td><td>${num(u.dust)}</td><td>${u.passes?.test ? `시험 ${num(u.passes.remaining)} / ${num(u.passes.total)}${u.test?.kind === 'gear' ? `<br><small title="성공/판">근거리 ${num(u.test.byType?.melee?.won)}/${num(u.test.byType?.melee?.n)} · 원거리 ${num(u.test.byType?.ranged?.won)}/${num(u.test.byType?.ranged?.n)}</small>` : u.test?.kind === 'skill' ? `<br><small>${esc(ELEMENTS[u.test.element]?.name || '')} 속성 · 현재 ${esc(GRADE_NAMES[u.test.grade] || '')}<br>${[1,2,3,4].map(g=>`${esc(GRADE_NAMES[g])} ${num((u.test.byGrade || u.passes.byGrade)?.[g]?.n)}/${num(u.passes.perGrade || 5)}`).join(' · ')}</small>` : ''}` : `${num(u.passes?.baseRemaining)} + ${num(u.passes?.bonusRemaining)} 추가`}</td>
       <td>${num(u.pending_grants) ? `<b style="color:var(--blue)">${u.pending_grants}</b>` : ""}</td>
       <td>${u.hero === "hoya" ? "호야" : u.hero === "minji" ? "민지" : "-"}</td>
       <td class="acts">
@@ -280,6 +297,7 @@ function render() {
         <button class="sm" data-act="lock">${u.locked ? "풀기" : "잠금"}</button>
         <button class="sm" data-act="grant">선물</button>
         <button class="sm" data-act="hero" title="잘못 고른 캐릭터를 바꿔 줘요(장비가 없을 때만)">캐릭터</button>
+        ${isOwner() && TEST_ACCOUNT_RE.test(u.id) ? '<button class="sm" data-act="skill-test">속성 스킬 시험 설정</button>' : ''}
         ${isOwner() ? `<button class="sm danger" data-act="reset">초기화</button>
         <button class="sm danger" data-act="del">삭제</button>` : ""}
       </td>
@@ -322,6 +340,36 @@ $("#btn-grant-all").addEventListener("click", async () => {
 
 // 지급은 요청 번호(requestId)를 붙여 보내므로 응답이 끊겨 다시 눌러도 두 번 지급되지 않는다(Codex 개편)
 let grantTarget = null, grantBusy = false;
+let skillTestTarget = null, skillTestBusy = false;
+$("#skill-test-element").innerHTML = Object.values(ELEMENTS).filter(e=>e.id!=="neutral").map(e=>`<option value="${esc(e.id)}">${esc(e.name)}</option>`).join("");
+function updateSkillTestNames() {
+  const element = $("#skill-test-element").value;
+  $("#skill-test-skills").textContent = Object.values(SKILLS).filter(s=>s.element===element).map(s=>`${s.name} → ${COMBOS[EVO_OF[s.id]]?.name || ""}`).join(" / ");
+}
+function openSkillTest(u) {
+  if (!isOwner() || !TEST_ACCOUNT_RE.test(u.id) || skillTestBusy) return;
+  skillTestTarget = u;
+  $("#skill-test-who").textContent = u.display_id;
+  $("#skill-test-element").value = ELEMENTS[u.test?.element] ? u.test.element : "fire";
+  $("#skill-test-confirm").checked = false; $("#skill-test-save").disabled = true;
+  $("#skill-test-error").textContent = ""; updateSkillTestNames(); $("#dlg-skill-test").showModal();
+}
+$("#skill-test-element").addEventListener("change", updateSkillTestNames);
+$("#skill-test-confirm").addEventListener("change", () => {$("#skill-test-save").disabled = skillTestBusy || !$("#skill-test-confirm").checked;});
+$("#skill-test-cancel").addEventListener("click", () => {if (!skillTestBusy) $("#dlg-skill-test").close();});
+$("#dlg-skill-test").addEventListener("cancel", e => {if (skillTestBusy) e.preventDefault();});
+$("#skill-test-save").addEventListener("click", async () => {
+  if (!isOwner() || !skillTestTarget || !TEST_ACCOUNT_RE.test(skillTestTarget.id) || !$("#skill-test-confirm").checked || skillTestBusy) return;
+  const target = skillTestTarget, testElement = $("#skill-test-element").value;
+  if (!ELEMENTS[testElement]) return;
+  skillTestBusy = true; $("#skill-test-error").textContent = "";
+  for (const id of ["#skill-test-save", "#skill-test-cancel", "#skill-test-element", "#skill-test-confirm"]) $(id).disabled = true;
+  try {
+    await api("test-profile", {id:target.id, testElement, grade:1, training:20, passes:20, perGrade:5, stage:"CH03", difficulty:"normal"});
+    $("#dlg-skill-test").close(); toast(`${target.display_id} 속성 스킬 시험을 설정했어요`); await load();
+  } catch (e) {$("#skill-test-error").textContent = e.message;}
+  finally {skillTestBusy = false; for (const id of ["#skill-test-cancel", "#skill-test-element", "#skill-test-confirm"]) $(id).disabled = false; $("#skill-test-save").disabled = !$("#skill-test-confirm").checked;}
+});
 async function grantSafe(payload) {
   if (grantBusy) throw new Error("지급 결과를 확인하고 있어요.");
   const signature = JSON.stringify(payload), key = "seoho_pending_admin_grant";
@@ -352,6 +400,8 @@ $("#tbl").addEventListener("click", async (e) => {
       const next = u.hero === "minji" ? "hoya" : "minji", label = next === "minji" ? "민지" : "호야";
       if (!confirm(`${name}의 캐릭터를 ${label}(으)로 바꿀까요? 첫 무료 무기는 새 캐릭터 무기로 바꿔 줘요. 장비를 더 모은 학생은 바꿀 수 없어요.`)) return;
       await api("set-hero", { id, hero: next }); toast(`${name} → ${label}`); await load();
+    } else if (btn.dataset.act === "skill-test") {
+      openSkillTest(u);
     } else if (btn.dataset.act === "grant") {
       grantTarget = u; $("#dlg-grant-who").textContent = name; for (const k of ["#d-gold", "#d-energy", "#d-gifts"]) $(k).value = 0; $("#dlg-grant").showModal();
     } else if ((btn.dataset.act === "reset" || btn.dataset.act === "del") && !isOwner()) {

@@ -1,9 +1,10 @@
 import { validatePerf, validateCause } from './run-telemetry.js';
 import { inspectRun } from './anomaly.js';
 import { ensureRankingSchema } from './ranking-schema.js';
-import { VERSION, SKILLS, COMBOS, SUPPORTS, runParts, action, completeRun, stageUnlocked, difficultyOf, hardGate, hardGateText, durationFor, superTestProfile, testModeProfile, gearTestProfile, testGrade, testInfo, stageLabel, STAGES, PETS, TEST_ACCOUNT_RE, needsPetMigration, migratePets } from '../../game/src/rework-core.js';
+import { VERSION, SKILLS, COMBOS, SUPPORTS, ELEMENTS, SKILL_TEST, runParts, action, completeRun, stageUnlocked, difficultyOf, hardGate, hardGateText, durationFor, superTestProfile, testModeProfile, gearTestProfile, skillTestProfile, testGrade, testInfo, stageLabel, STAGES, PETS, TEST_ACCOUNT_RE, needsPetMigration, migratePets } from '../../game/src/rework-core.js';
 import { migrateLegacy } from './legacy-migration.js';
 import { migrateProfileV2, needsPartsRepair, repairObsoleteParts, PARTS_FIX_SNAPSHOT } from './profile-migration-v2.js';
+import { validateDamageSummary, damageSkillIds } from '../../game/src/damage-summary.js';
 
 export const DAILY_PASSES = 10;
 export const PETS_FIX_SNAPSHOT = 2002;   // 스냅숏 키(친구 4종 개편 전 원본). 프로필 버전이 아니다.
@@ -38,7 +39,12 @@ async function testPassStatus(db,id,profile,now=Date.now()){
     byType={melee:{n:0,won:0},ranged:{n:0,won:0}};
     for(const r of (await db.prepare("SELECT json_extract(result,'$.test.type') ty,COUNT(*) n,SUM(status='test_won') won FROM play_runs WHERE user_id=? AND started_at>=? GROUP BY ty").bind(id,Number(t.since)||0).all()).results)if(byType[r.ty])byType[r.ty]={n:r.n,won:r.won||0};
   }
-  return {test:true,total,used,remaining,baseRemaining:remaining,bonusRemaining:0,day:dayKey(now),resetAt:null,serverNow:now,dailyLimit:total,event:null,...(byType?{perType:Number(t.perType),byType}:{})};
+  let byGrade=null;
+  if(t.kind==='skill'){
+    byGrade=Object.fromEntries([1,2,3,4].map(g=>[g,{n:0,won:0}]));
+    for(const r of (await db.prepare("SELECT json_extract(result,'$.test.grade') grade,COUNT(*) n,SUM(status='test_won') won FROM play_runs WHERE user_id=? AND started_at>=? AND json_extract(result,'$.test.kind')='skill' GROUP BY grade").bind(id,Number(t.since)||0).all()).results)if(byGrade[r.grade])byGrade[r.grade]={n:r.n,won:r.won||0};
+  }
+  return {test:true,total,used,remaining,baseRemaining:remaining,bonusRemaining:0,day:dayKey(now),resetAt:null,serverNow:now,dailyLimit:total,event:null,...(byType?{perType:Number(t.perType),byType}:{}),...(byGrade?{perGrade:SKILL_TEST.perGrade,byGrade}:{})};
 }
 const reply=(data,status=200)=>Response.json(data,{status,headers:{'Cache-Control':'no-store'}});
 const uuid=s=>typeof s==='string'&&/^[a-zA-Z0-9_-]{12,80}$/.test(s);
@@ -124,12 +130,13 @@ export async function guardianAPI(request,env,user,path,now=Date.now()){
       const {profile,revision}=await getProfile(db,id);let result;
       // 별 = 출동할 때의 난이도(정산은 프로필의 difficulty를 읽음) → 도전 중에는 난이도를 못 바꾼다(2026-09-23)
       if(b.kind==='settings'&&b.difficulty!==undefined&&b.difficulty!==profile.difficulty&&await db.prepare("SELECT 1 FROM play_runs WHERE user_id=? AND status='active'").bind(id).first())return reply({error:'도전 중에는 난이도를 바꿀 수 없어요. 먼저 도전을 마무리해 주세요.',code:'ACTIVE_RUN'},409);
+      if(b.kind==='test-skill-grade'&&await db.prepare("SELECT 1 FROM play_runs WHERE user_id=? AND status='active'").bind(id).first())return reply({error:'측정 중에는 파츠 등급을 바꿀 수 없어요. 먼저 측정을 마무리해 주세요.',code:'ACTIVE_RUN'},409);
       // 게임 날짜(아침 8시 기준)는 서버가 넣는다(코인 교환 하루 1번). 보급 차례가 어긋나면 409 DRAW_MODE — 아무것도 바뀌지 않음.
       try{result=action(profile,b,Math.random,{day:dayKey(now)});}catch(e){return e.code==='DRAW_MODE'?reply({error:e.message,code:e.code,mode:e.mode},409):reply({error:e.message},400);}
       // 결과 카드(draw)까지 함께 저장해 같은 요청이 다시 오면(재접속) 같은 결과를 다시 보여 준다.
       const event=JSON.stringify({message:result.message,...(result.draw?{draw:result.draw}:{})});
       const r=await db.batch([
-        db.prepare('UPDATE guardian_profiles SET state=?,revision=revision+1 WHERE user_id=? AND revision=? AND NOT EXISTS(SELECT 1 FROM guardian_operations WHERE user_id=? AND id=?)').bind(JSON.stringify(result.profile),id,revision,id,b.requestId),
+        db.prepare('UPDATE guardian_profiles SET state=?,revision=revision+1 WHERE user_id=? AND revision=? AND NOT EXISTS(SELECT 1 FROM guardian_operations WHERE user_id=? AND id=?) AND (?=0 OR NOT EXISTS(SELECT 1 FROM play_runs WHERE user_id=? AND status=\'active\'))').bind(JSON.stringify(result.profile),id,revision,id,b.requestId,b.kind==='test-skill-grade'?1:0,id),
         db.prepare('INSERT INTO guardian_operations(user_id,id,result,created_at) SELECT ?,?,?,? WHERE changes()=1').bind(id,b.requestId,event,now),
       ]);
       if(r[0].meta.changes)return reply({message:result.message,...(result.draw?{draw:result.draw}:{}),...await status(db,id,now)});
@@ -140,7 +147,7 @@ export async function guardianAPI(request,env,user,path,now=Date.now()){
     await expireOldRuns(db,id,now);
     const old=await db.prepare('SELECT * FROM play_runs WHERE id=? AND user_id=?').bind(b.requestId,id).first();
     if(old)return old.status==='active'?reply({runId:old.id,duration:old.duration,...await status(db,id,now)}):reply({error:'이미 끝난 도전이에요.'},409);
-    const {profile}=await getProfile(db,id);
+    const {profile,revision}=await getProfile(db,id);
     if(!stageUnlocked(profile,b.stage))return reply({error:'앞 단계를 먼저 성공해 주세요.'},400);
     if(profile.testMode&&(b.stage!==profile.testMode.stage||difficultyOf(profile)!==profile.testMode.difficulty))return reply({error:`시험 계정은 ${stageLabel(profile.testMode.stage)} ${({easy:'쉬움',normal:'보통',hard:'어려움'})[profile.testMode.difficulty]||''}만 할 수 있어요.`,code:'TEST_MODE'},409);
     if(difficultyOf(profile)==='hard'){const g=hardGate(profile,b.stage);if(!g.open)return reply({error:`어려움은 아직 잠겨 있어요 · ${hardGateText(g)}`,code:'HARD_LOCKED',gate:g},409);}   // 어려움 최소 기준(HARD_MIN)
@@ -152,11 +159,20 @@ export async function guardianAPI(request,env,user,path,now=Date.now()){
         const ps=await testPassStatus(db,id,profile,now),name=info.type==='melee'?'근거리':'원거리';
         if((ps.byType?.[info.type]?.n||0)>=Number(t.perType))return reply({error:`${name} ${Number(t.perType)}판을 모두 했어요. 다른 장비로 바꿔 주세요.`,code:'TEST_TYPE_DONE',passes:ps},409);
       }
+      if(t.kind==='skill'){
+        const ps=await testPassStatus(db,id,profile,now);
+        if((ps.byGrade?.[info.grade]?.n||0)>=SKILL_TEST.perGrade)return reply({error:'이 파츠 등급의 5판을 모두 했어요. 다른 등급을 골라 주세요.',code:'TEST_GRADE_DONE',passes:ps},409);
+      }
       const tr=await db.batch([
         db.prepare("UPDATE play_runs SET status='expired',settled_at=? WHERE user_id=? AND status='active' AND started_at<?").bind(now,id,now-1800000),
-        db.prepare("INSERT INTO play_runs(id,user_id,stage,started_at,duration,result) SELECT ?,?,?,?,?,? WHERE (SELECT COUNT(*) FROM play_runs WHERE user_id=? AND started_at>=?)<? AND NOT EXISTS(SELECT 1 FROM play_runs WHERE user_id=? AND status='active')").bind(b.requestId,id,b.stage,now,duration,loadout,id,Number(t.since)||0,Number(t.passes)||0,id),
+        // Grade quota and profile revision are checked in the same INSERT as the total quota.
+        db.prepare("INSERT INTO play_runs(id,user_id,stage,started_at,duration,result) SELECT ?,?,?,?,?,? WHERE (SELECT COUNT(*) FROM play_runs WHERE user_id=? AND started_at>=?)<? AND NOT EXISTS(SELECT 1 FROM play_runs WHERE user_id=? AND status='active') AND (?=0 OR ((SELECT COUNT(*) FROM play_runs WHERE user_id=? AND started_at>=? AND json_extract(result,'$.test.kind')='skill' AND json_extract(result,'$.test.grade')=?)<? AND EXISTS(SELECT 1 FROM guardian_profiles WHERE user_id=? AND revision=?)))").bind(b.requestId,id,b.stage,now,duration,loadout,id,Number(t.since)||0,Number(t.passes)||0,id,t.kind==='skill'?1:0,id,Number(t.since)||0,info.grade,SKILL_TEST.perGrade,id,revision),
       ]);
-      if(!tr[1].meta.changes){const active=await db.prepare("SELECT id,stage FROM play_runs WHERE user_id=? AND status='active'").bind(id).first();return reply({error:active?'진행 중인 도전이 있어요. 먼저 마무리해 주세요.':`시험 이용권 ${Number(t.passes)||0}장을 모두 썼어요. 선생님께 말씀해 주세요.`,code:active?'ACTIVE_RUN':'TEST_PASSES',active,passes:await testPassStatus(db,id,profile,now)},409);}
+      if(!tr[1].meta.changes){
+        const active=await db.prepare("SELECT id,stage FROM play_runs WHERE user_id=? AND status='active'").bind(id).first(),ps=await testPassStatus(db,id,profile,now);
+        const code=active?'ACTIVE_RUN':ps.remaining<=0?'TEST_PASSES':t.kind==='skill'&&(ps.byGrade?.[info.grade]?.n||0)>=SKILL_TEST.perGrade?'TEST_GRADE_DONE':'PROFILE_CHANGED';
+        return reply({error:active?'진행 중인 도전이 있어요. 먼저 마무리해 주세요.':code==='TEST_GRADE_DONE'?'이 파츠 등급의 5판을 모두 했어요. 다른 등급을 골라 주세요.':code==='PROFILE_CHANGED'?'측정 조건이 바뀌었어요. 다시 출동해 주세요.':`시험 이용권 ${Number(t.passes)||0}장을 모두 썼어요. 선생님께 말씀해 주세요.`,code,active,passes:ps},409);
+      }
       return reply({runId:b.requestId,duration,...await status(db,id,now)});
     }
     const r=await db.batch([
@@ -179,16 +195,25 @@ export async function guardianAPI(request,env,user,path,now=Date.now()){
       if(!Number.isFinite(b.seconds)||b.seconds<0)return reply({error:'도전 시간이 올바르지 않아요.'},400);
       const seconds=Math.min(360,testClock?b.seconds:Math.min(b.seconds,elapsed+2));
       if(cleared&&(seconds+3<run.duration||seconds>360))return reply({error:'도전 결과를 확인할 수 없어요.'},400);
+      const started=run.result?JSON.parse(run.result):null;
+      const skillTest=started?.test?.kind==='skill';
+      if(skillTest&&cleared&&(seconds<299.99||(!testClock&&elapsed+.05<300)))return reply({error:'피해 측정은 5분을 모두 마쳐야 해요.'},400);
+      const damageSummary=skillTest?validateDamageSummary(b.damageSummary,{seconds,element:started.test.element}):null;
+      if(skillTest&&!damageSummary)return reply({error:'스킬 피해 기록을 확인할 수 없어요. 결과 확인을 다시 눌러 주세요.'},400);
       const {profile,revision}=await getProfile(db,id);
       if(cleared)await grantPassEvent(db,id,now);   // 이벤트 날 정산일의 이벤트 이용권(없으면 넣음)
       const skillIds=Array.isArray(b.skillIds)?b.skillIds.filter(s=>SKILLS[s]).slice(0,15):[];
       const fusionIds=Array.isArray(b.fusionIds)?b.fusionIds.filter(s=>COMBOS[s]).slice(0,4):[];
       const supportIds=Array.isArray(b.supportIds)?b.supportIds.filter(s=>SUPPORTS[s]).slice(0,8):[];
+      if(skillTest){
+        const allowed=new Set(damageSkillIds(started.test.element));
+        if(skillIds.some(s=>!allowed.has(s))||fusionIds.some(s=>!allowed.has(s))||supportIds.length||damageSummary.otherDamage>0)return reply({error:'시험에서 정한 속성 스킬만 사용할 수 있어요.'},400);
+      }
       const loadout=run.result?JSON.parse(run.result).loadout:null,equippedPartIds=loadout?.equippedParts??null;
       const pet=loadout&&Object.hasOwn(loadout,'pet')?loadout.pet:undefined;   // 출동할 때의 친구(코인 +%). 배포 전에 시작한 도전은 지금 친구
       const result=completeRun(profile,{day:dayKey(now),equippedPartIds,pet,stage:run.stage,cleared,seconds,litter:Math.max(0,Math.min(99,Math.floor(Number(b.litter)||0))),hpFraction:Math.max(0,Math.min(1,Number(b.hpFraction)||0)),bossSeconds:Number.isFinite(b.bossSeconds)&&b.bossSeconds>=0?b.bossSeconds:Infinity,skillIds,fusionIds,supportIds});
-      const started=run.result?JSON.parse(run.result):null;
       const event={reward:result.reward,cleared,stage:run.stage,runId,charged:profile.testMode?1:cleared?1:0,...(started?.test?{test:started.test}:{})};   // test = 출동할 때의 시험 조건(등급)
+      if(damageSummary)event.damageSummary=damageSummary;
       const inspection=inspectRun(run.stage,b,run.duration);
       if(Number.isInteger(b.kills)&&b.kills>=0)event.kills=b.kills;
       event.litter=Math.max(0,Math.min(99,Math.floor(Number(b.litter)||0)));
@@ -246,10 +271,17 @@ export async function guardianAdmin(request,env,sub,method,now=Date.now()){
     if(b.difficulty!==undefined&&!['easy','normal','hard'].includes(b.difficulty))return reply({error:'difficulty는 easy·normal·hard 중 하나예요.'},400);
     if(b.stage!==undefined&&!STAGES.some(s=>s.id===b.stage))return reply({error:'stage는 CH01 같은 단계 아이디예요.'},400);
     if(b.testPet!==undefined&&!Object.hasOwn(PETS,b.testPet))return reply({error:'testPet은 turtle·cat·otter·deer 중 하나예요.'},400);
-    const grade=b.grade===undefined?0:Number(b.grade);
+    if(b.testElement!==undefined){
+      if(!Object.hasOwn(ELEMENTS,b.testElement))return reply({error:'testElement는 fire·water·wind·earth·lightning 중 하나예요.'},400);
+      if(b.testGear!==undefined||b.testPet!==undefined)return reply({error:'속성·장비·친구 시험은 하나만 골라 주세요.'},400);
+      for(const [key,value] of Object.entries({stage:SKILL_TEST.stage,difficulty:SKILL_TEST.difficulty,training:SKILL_TEST.training,gearGrade:SKILL_TEST.gearGrade,level:1,passes:SKILL_TEST.passes,perGrade:SKILL_TEST.perGrade}))if(b[key]!==undefined&&b[key]!==value)return reply({error:`속성 측정의 ${key} 조건은 고정이에요.`},400);
+    }
+    const grade=b.grade===undefined?(b.testElement!==undefined?1:0):Number(b.grade);
     if(!(Number.isInteger(grade)&&grade>=0&&grade<=4))return reply({error:'grade는 0(노말)~4(전설)예요.'},400);
-    const next=b.testGear!==undefined?gearTestProfile(profile,{gearType:b.testGear,hero:b.hero,grade,since:now,...(b.difficulty!==undefined?{difficulty:b.difficulty}:{}),...(b.stage!==undefined?{stage:b.stage}:{}),...(Number.isInteger(b.passes)&&b.passes>=0&&b.passes<=500?{passes:b.passes}:{}),...(Number.isInteger(b.perType)&&b.perType>=1&&b.perType<=250?{perType:b.perType}:{}),...(Number.isInteger(b.training)&&b.training>=1&&b.training<=100?{training:b.training}:{})}):b.testPet!==undefined?testModeProfile(profile,{pet:b.testPet,grade,since:now,...(Number.isInteger(b.passes)&&b.passes>=0&&b.passes<=500?{passes:b.passes}:{}),...(Number.isInteger(b.training)&&b.training>=1&&b.training<=100?{training:b.training}:{}),...(Number.isInteger(b.gearGrade)&&b.gearGrade>=0&&b.gearGrade<=4?{gearGrade:b.gearGrade}:{})}):superTestProfile(profile,{training:Number(b.training)||100,copies:Number(b.copies)||80,level:Number(b.level)||10});
-    await db.prepare('UPDATE guardian_profiles SET state=?,revision=revision+1 WHERE user_id=?').bind(JSON.stringify(next),id).run();
+    if(b.testElement!==undefined&&grade===0)return reply({error:'속성 측정은 레어(1)부터 전설(4)까지예요.'},400);
+    const next=b.testElement!==undefined?skillTestProfile(profile,{element:b.testElement,hero:b.hero,grade,since:now}):b.testGear!==undefined?gearTestProfile(profile,{gearType:b.testGear,hero:b.hero,grade,since:now,...(b.difficulty!==undefined?{difficulty:b.difficulty}:{}),...(b.stage!==undefined?{stage:b.stage}:{}),...(Number.isInteger(b.passes)&&b.passes>=0&&b.passes<=500?{passes:b.passes}:{}),...(Number.isInteger(b.perType)&&b.perType>=1&&b.perType<=250?{perType:b.perType}:{}),...(Number.isInteger(b.training)&&b.training>=1&&b.training<=100?{training:b.training}:{})}):b.testPet!==undefined?testModeProfile(profile,{pet:b.testPet,grade,since:now,...(Number.isInteger(b.passes)&&b.passes>=0&&b.passes<=500?{passes:b.passes}:{}),...(Number.isInteger(b.training)&&b.training>=1&&b.training<=100?{training:b.training}:{}),...(Number.isInteger(b.gearGrade)&&b.gearGrade>=0&&b.gearGrade<=4?{gearGrade:b.gearGrade}:{})}):superTestProfile(profile,{training:Number(b.training)||100,copies:Number(b.copies)||80,level:Number(b.level)||10});
+    const changed=await db.prepare("UPDATE guardian_profiles SET state=?,revision=revision+1 WHERE user_id=? AND (?=0 OR NOT EXISTS(SELECT 1 FROM play_runs WHERE user_id=? AND status='active'))").bind(JSON.stringify(next),id,b.testElement!==undefined||profile.testMode?.kind==='skill'?1:0,id).run();
+    if(!changed.meta.changes)return reply({error:'진행 중인 도전을 먼저 마무리해 주세요.',code:'ACTIVE_RUN'},409);
     return reply({ok:true,id,training:next.training,parts:Object.keys(next.parts).length,stages:Object.keys(next.stages).filter(k=>next.stages[k].cleared).length,petCopies:next.petCopies,hero:next.hero,gearGrade:testGrade(next),testMode:next.testMode||null});
   }
   // 캐릭터(성별) 바꾸기: 가입 때 고정된 캐릭터를 선생님이 한 번 바꿔 준다 — 장비가 하나도 없을 때만(장비는 성별마다 달라서)
