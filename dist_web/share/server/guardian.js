@@ -27,22 +27,22 @@ export async function grantPassEvent(db,id,now=Date.now()){
   await db.prepare('INSERT OR IGNORE INTO play_admin_grants(request_id,user_id,day,passes,gold,note,created_at) VALUES(?,?,?,?,0,?,?)').bind(`event-${ev.id}-${day}`,id,day,ev.bonus,ev.note,now).run();
   return ev;
 }
-// 시험 계정(testMode, 관리자가 켬) 이용권(2026-09-29 사용자 "25장만, 24시간 지나도 초기화 안 됨, 중간 종료도 돌려주지 않음"):
-//  testMode.since 뒤에 시작한 판 수가 쓴 장수(성공·실패·중간 종료·오래 멈춤 모두 1장). 날마다 채워지는 이용권·이벤트·선생님 추가 지급과 따로다.
+// 시험 계정(testMode, 관리자가 켬) 이용권(2026-09-29 사용자 "25장만, 24시간 지나도 초기화 안 됨"):
+//  testMode.since 뒤에 시작한 판 수가 쓴 장수(성공·실패 1장). 2026-10-14 사용자 "중간에 나가면 실패 말고 무효": 중간에 나간 판(test_void)·오래 멈춘 판(expired)은 이용권·등급별·세트별 판 수에 넣지 않는다. 날마다 채워지는 이용권·이벤트·선생님 추가 지급과 따로다.
 async function testPassStatus(db,id,profile,now=Date.now()){
   const t=profile.testMode,total=Number(t.passes)||0;
-  const used=(await db.prepare('SELECT COUNT(*) c FROM play_runs WHERE user_id=? AND started_at>=?').bind(id,Number(t.since)||0).first())?.c||0;
+  const used=(await db.prepare("SELECT COUNT(*) c FROM play_runs WHERE user_id=? AND started_at>=? AND status NOT IN ('test_void','expired')").bind(id,Number(t.since)||0).first())?.c||0;
   const remaining=Math.max(0,total-used);
   // 세트(근거리·원거리)마다 perType판(장비 시험): 판 기록의 test.type으로 세트별 판 수·성공 수를 센다
   let byType=null;
   if(t.perType){
     byType={melee:{n:0,won:0},ranged:{n:0,won:0}};
-    for(const r of (await db.prepare("SELECT json_extract(result,'$.test.type') ty,COUNT(*) n,SUM(status='test_won') won FROM play_runs WHERE user_id=? AND started_at>=? GROUP BY ty").bind(id,Number(t.since)||0).all()).results)if(byType[r.ty])byType[r.ty]={n:r.n,won:r.won||0};
+    for(const r of (await db.prepare("SELECT json_extract(result,'$.test.type') ty,COUNT(*) n,SUM(status='test_won') won FROM play_runs WHERE user_id=? AND started_at>=? AND status NOT IN ('test_void','expired') GROUP BY ty").bind(id,Number(t.since)||0).all()).results)if(byType[r.ty])byType[r.ty]={n:r.n,won:r.won||0};
   }
   let byGrade=null;
   if(t.kind==='skill'){
     byGrade=Object.fromEntries([1,2,3,4].map(g=>[g,{n:0,won:0}]));
-    for(const r of (await db.prepare("SELECT json_extract(result,'$.test.grade') grade,COUNT(*) n,SUM(status='test_won') won FROM play_runs WHERE user_id=? AND started_at>=? AND json_extract(result,'$.test.kind')='skill' GROUP BY grade").bind(id,Number(t.since)||0).all()).results)if(byGrade[r.grade])byGrade[r.grade]={n:r.n,won:r.won||0};
+    for(const r of (await db.prepare("SELECT json_extract(result,'$.test.grade') grade,COUNT(*) n,SUM(status='test_won') won FROM play_runs WHERE user_id=? AND started_at>=? AND status NOT IN ('test_void','expired') AND json_extract(result,'$.test.kind')='skill' GROUP BY grade").bind(id,Number(t.since)||0).all()).results)if(byGrade[r.grade])byGrade[r.grade]={n:r.n,won:r.won||0};
   }
   return {test:true,total,used,remaining,baseRemaining:remaining,bonusRemaining:0,day:dayKey(now),resetAt:null,serverNow:now,dailyLimit:total,event:null,...(byType?{perType:Number(t.perType),byType}:{}),...(byGrade?{perGrade:SKILL_TEST.perGrade,byGrade}:{})};
 }
@@ -166,7 +166,7 @@ export async function guardianAPI(request,env,user,path,now=Date.now()){
       const tr=await db.batch([
         db.prepare("UPDATE play_runs SET status='expired',settled_at=? WHERE user_id=? AND status='active' AND started_at<?").bind(now,id,now-1800000),
         // Grade quota and profile revision are checked in the same INSERT as the total quota.
-        db.prepare("INSERT INTO play_runs(id,user_id,stage,started_at,duration,result) SELECT ?,?,?,?,?,? WHERE (SELECT COUNT(*) FROM play_runs WHERE user_id=? AND started_at>=?)<? AND NOT EXISTS(SELECT 1 FROM play_runs WHERE user_id=? AND status='active') AND (?=0 OR ((SELECT COUNT(*) FROM play_runs WHERE user_id=? AND started_at>=? AND json_extract(result,'$.test.kind')='skill' AND json_extract(result,'$.test.grade')=?)<? AND EXISTS(SELECT 1 FROM guardian_profiles WHERE user_id=? AND revision=?)))").bind(b.requestId,id,b.stage,now,duration,loadout,id,Number(t.since)||0,Number(t.passes)||0,id,t.kind==='skill'?1:0,id,Number(t.since)||0,info.grade,SKILL_TEST.perGrade,id,revision),
+        db.prepare("INSERT INTO play_runs(id,user_id,stage,started_at,duration,result) SELECT ?,?,?,?,?,? WHERE (SELECT COUNT(*) FROM play_runs WHERE user_id=? AND started_at>=? AND status NOT IN ('test_void','expired'))<? AND NOT EXISTS(SELECT 1 FROM play_runs WHERE user_id=? AND status='active') AND (?=0 OR ((SELECT COUNT(*) FROM play_runs WHERE user_id=? AND started_at>=? AND status NOT IN ('test_void','expired') AND json_extract(result,'$.test.kind')='skill' AND json_extract(result,'$.test.grade')=?)<? AND EXISTS(SELECT 1 FROM guardian_profiles WHERE user_id=? AND revision=?)))").bind(b.requestId,id,b.stage,now,duration,loadout,id,Number(t.since)||0,Number(t.passes)||0,id,t.kind==='skill'?1:0,id,Number(t.since)||0,info.grade,SKILL_TEST.perGrade,id,revision),
       ]);
       if(!tr[1].meta.changes){
         const active=await db.prepare("SELECT id,stage FROM play_runs WHERE user_id=? AND status='active'").bind(id).first(),ps=await testPassStatus(db,id,profile,now);
@@ -191,6 +191,7 @@ export async function guardianAPI(request,env,user,path,now=Date.now()){
       if(run.status==='expired')return reply({error:'오래 멈춘 도전이 종료되었어요. 이용권은 쓰지 않았어요.',code:'EXPIRED'},409);
       if(run.status!=='active')return reply({...JSON.parse(run.result),...await status(db,id,now)});
       const elapsed=Math.max(0,(now-run.started_at)/1000),cleared=b.cleared===true;
+      const left=b.left===true&&!cleared;   // 판 도중 나감(창 닫기·나가기 단추). 시험 계정이면 무효(test_void)
       if(cleared&&elapsed+3<run.duration&&!testClock)return reply({error:'도전 시간이 아직 끝나지 않았어요.'},400);
       if(!Number.isFinite(b.seconds)||b.seconds<0)return reply({error:'도전 시간이 올바르지 않아요.'},400);
       const seconds=Math.min(360,testClock?b.seconds:Math.min(b.seconds,elapsed+2));
@@ -212,7 +213,8 @@ export async function guardianAPI(request,env,user,path,now=Date.now()){
       const loadout=run.result?JSON.parse(run.result).loadout:null,equippedPartIds=loadout?.equippedParts??null;
       const pet=loadout&&Object.hasOwn(loadout,'pet')?loadout.pet:undefined;   // 출동할 때의 친구(코인 +%). 배포 전에 시작한 도전은 지금 친구
       const result=completeRun(profile,{day:dayKey(now),equippedPartIds,pet,stage:run.stage,cleared,seconds,litter:Math.max(0,Math.min(99,Math.floor(Number(b.litter)||0))),hpFraction:Math.max(0,Math.min(1,Number(b.hpFraction)||0)),bossSeconds:Number.isFinite(b.bossSeconds)&&b.bossSeconds>=0?b.bossSeconds:Infinity,skillIds,fusionIds,supportIds});
-      const event={reward:result.reward,cleared,stage:run.stage,runId,charged:profile.testMode?1:cleared?1:0,...(started?.test?{test:started.test}:{})};   // test = 출동할 때의 시험 조건(등급)
+      const voided=!!profile.testMode&&left;
+      const event={reward:result.reward,cleared,stage:run.stage,runId,charged:voided?0:profile.testMode?1:cleared?1:0,...(voided?{void:true}:{}),...(left?{left:true}:{}),...(started?.test?{test:started.test}:{})};   // test = 출동할 때의 시험 조건(등급)
       if(damageSummary)event.damageSummary=damageSummary;
       const inspection=inspectRun(run.stage,b,run.duration);
       if(Number.isInteger(b.kills)&&b.kills>=0)event.kills=b.kills;
@@ -231,7 +233,7 @@ export async function guardianAPI(request,env,user,path,now=Date.now()){
         const r=await db.batch([
           db.prepare('INSERT OR IGNORE INTO play_days(user_id,day) VALUES(?,?)').bind(id,dayKey(now)),
           db.prepare("UPDATE guardian_profiles SET state=?,revision=revision+1 WHERE user_id=? AND revision=? AND EXISTS(SELECT 1 FROM play_runs WHERE id=? AND user_id=? AND status='active')").bind(JSON.stringify(result.profile),id,revision,runId,id),
-          db.prepare("UPDATE play_runs SET status=?,settled_at=?,settlement_day=?,result=?,flagged=? WHERE id=? AND user_id=? AND status='active' AND changes()=1").bind(cleared?(profile.testMode?'test_won':'won'):'lost',now,dayKey(now),JSON.stringify(event),inspection.flags.length?1:0,runId,id),
+          db.prepare("UPDATE play_runs SET status=?,settled_at=?,settlement_day=?,result=?,flagged=? WHERE id=? AND user_id=? AND status='active' AND changes()=1").bind(cleared?(profile.testMode?'test_won':'won'):voided?'test_void':'lost',now,dayKey(now),JSON.stringify(event),inspection.flags.length?1:0,runId,id),
         ]);
         if(r[2].meta.changes)return reply({...event,...await status(db,id,now)});
       }catch(e){if(String(e).includes('NO_PLAY_PASSES'))return reply({error:'오늘 이용권이 없어요.',code:'NO_PASSES'},409);throw e;}
