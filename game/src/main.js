@@ -1566,8 +1566,8 @@ function quitRun(toTitle) {
 
   if (mode !== "paused" && mode !== "playing") return;
   elPause.classList.add("hidden");
-  mode = "playing";                 // endRun은 진행 중인 판을 정리한다
-  endRun(false);
+  mode = "playing";                 // 진행 중인 판을 정리한다(나가기 = left, 시험 계정은 무효)
+  sgEnd(false,false,true);
   if (false) {
     elResult.classList.add("hidden");
     refreshMenuMeta();
@@ -5660,7 +5660,7 @@ async function sgAction(payload){
 // 판 도중 나간 도전 정리: 실패로 마무리(이용권 그대로·코인 없음). 이미 끝났거나 30분이 지나 서버가 정리한 도전이면 그대로 넘어간다.
 async function sgAbandon(){
   const active=sgState.active;if(!active)return;
-  try{const r=await sgPost('/play/finish',{requestId:crypto.randomUUID(),runId:active.id,cleared:false,seconds:0,litter:0});sgApplyServer({...r,active:null});}
+  try{const r=await sgPost('/play/finish',{requestId:crypto.randomUUID(),runId:active.id,cleared:false,seconds:0,litter:0,left:true});sgApplyServer({...r,active:null});}
   catch(e){if(e.data?.code!=='EXPIRED'&&e.status!==404)throw e;sgApplyServer(await cloud.request('/guardian'));}
 }
 // 같은 브라우저의 다른 창이 그 도전을 하는 중인지 묻는다(대답이 없으면 나간 도전).
@@ -6216,7 +6216,7 @@ function sgHud(){
     +Array.from({length:sgIsSkillTest()?0:Math.max(0,R.RUN_RULES.supportSlots-Object.keys(sup).length)},()=>'<span class="sg-empty-slot sg-support">＋</span>').join('');
   tools.innerHTML=html;layoutHud();
 }
-function sgEnd(cleared,leaving=false){
+function sgEnd(cleared,leaving=false,left=false){
   if(sgSettling||mode==='result')return;
   mode='result';sgSettling=true;elBossLabel.textContent='';keys.clear();touchJoy.active=false;
   elLevelup.classList.add('hidden');elPause.classList.add('hidden');elResult.classList.remove('hidden');
@@ -6224,12 +6224,13 @@ function sgEnd(cleared,leaving=false){
   if(sgIsSkillTest()){pending.damageSummary=sgDamageLog.snapshot(runTime);pending.seconds=Math.min(300,Math.round(runTime*100)/100);}
   const perf=R.perfSummary(sgFramePerf,{w:innerWidth,h:innerHeight,dpr:devicePixelRatio||1,dev:R.perfDevice({ua:navigator.userAgent,coarse:matchMedia('(pointer: coarse)').matches,w:innerWidth,h:innerHeight}),q:renderQuality.level,ratio:renderQuality.ratio,sec:runTime});
   if(perf)pending.perf=perf;if(!cleared&&player.hp<=0&&sgLastHit)pending.cause={...sgLastHit};
+  if(left&&!cleared)pending.left=true;   // 판 도중 나감 — 시험 계정은 서버가 무효로 센다
   sgFramePerf=null;sgPerfActive=false;
   sgKeepPending('result',pending);sgSettle(pending,leaving);
 }
 // 판 도중 창을 닫거나 새로고침·뒤로 가기로 나가면 그 판을 바로 실패로 정리한다(일시정지 → 나가기와 같음: 이용권 그대로, 버틴 시간만큼 실패 코인).
 // 창이 닫혀도 요청이 가도록 keepalive로 보내고, 못 보냈으면 보관한 결과를 다음에 들어올 때 보낸다(sgRefresh).
-window.addEventListener('pagehide',()=>{if(cloud.loggedIn&&runId&&!sgSettling&&['playing','levelup','paused'].includes(mode))sgEnd(false,true);});
+window.addEventListener('pagehide',()=>{if(cloud.loggedIn&&runId&&!sgSettling&&['playing','levelup','paused'].includes(mode))sgEnd(false,true,true);});
 async function sgSettle(pending,leaving=false){
   const btn=document.getElementById('btn-continue');btn.disabled=true;elResultTitle.textContent='모험을 기록하는 중…';
   elResultTable.innerHTML='<tr><td>잠깐만 기다려 주세요. 결과와 이용권을 확인하고 있어요.</td></tr>';
@@ -6237,7 +6238,7 @@ async function sgSettle(pending,leaving=false){
   try{
     const r=await sgPost('/play/finish',pending,leaving?{keepalive:true}:{});sgKeepPending('result',null);sgApplyServer({...r,active:null});
     sgHardLoss=!r.cleared&&r.reward?.difficulty==='hard'?(r.stage||null):null;   // 어려움 실패 → 로비로 돌아가면 준비 권장치 안내
-    const w=r.reward,dn=R.DIFFICULTIES[w.difficulty]?.name;elResultTitle.textContent=r.cleared?'우리 마을이 반짝반짝!':'멋진 도전이었어요!';
+    const w=r.reward,dn=R.DIFFICULTIES[w.difficulty]?.name;elResultTitle.textContent=r.cleared?'우리 마을이 반짝반짝!':r.void?'무효 처리했어요':'멋진 도전이었어요!';
     elResultTable.innerHTML=`<tr><td colspan="2" style="text-align:center;font-size:28px;color:#ffd16e">${'★'.repeat(w.stars)}${'☆'.repeat(3-w.stars)}${dn?`<div style="font-size:13px;color:#cfe3ee">${dn} 난이도${r.cleared?` 성공 → 별 ${w.stars}개`:''}</div>`:''}</td></tr><tr><td>코인</td><td>+${w.coins}${w.goal?' (환경 목표 +30 포함)':''}${w.petCoinPct>0?` · 친구 코인 +${Math.round(w.petCoinPct*1000)/10}%`:''}</td></tr><tr><td>보급권</td><td>+${w.gifts}${w.stageGift?.capped?' · 오늘 이 단계는 2번 다 받았어요. 다른 단계에 도전해 봐요!':w.stageGift?(w.stageGift.left?` · 오늘 이 단계 ${w.stageGift.left}번 더`:' · 오늘 이 단계 보급권은 여기까지! 다른 단계는 또 받아요'):''}</td></tr><tr><td>미션</td><td>${w.missions?.length?`완료! 보급권 +${w.missions.reduce((n,m)=>n+m.gifts,0)} · ${w.missions.map(m=>m.name).join(', ')}`:'오늘의 미션은 모험 화면에서 확인해요'}</td></tr><tr><td>이용권</td><td>${r.charged?'1장 사용':'그대로!'} · ${r.passes.remaining}장 남음</td></tr><tr><td colspan="2"><div class="sg-settlement">${r.cleared?(w.notes.join('<br/>')||'코인으로 훈련하고 파츠 레벨을 올려 보세요.'):'실패해도 이용권은 줄지 않아요. 조금 쉬었다가 다시 도전해요.'}<br/>${R.STAGES.find(s=>s.id===r.stage).tip}</div></td></tr>`;
     if(document.documentElement.classList.contains('ui2')){   // UI v2(docs/46): 별 줄을 큰 별 + 보상 타일로, 제목은 성공·실패 색 리본
       const top=elResultTable.querySelector('tr:first-child>td');elResult.dataset.win=r.cleared?'1':'0';

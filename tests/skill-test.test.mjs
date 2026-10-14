@@ -149,3 +149,24 @@ test('measurement finish rejects short/invalid/mixed-element records; valid summ
  const retry=await api(env,'/play/finish',{...finish,cleared:false,damageSummary:{...good,total:999}},start+500000);
  assert.deepEqual(retry.damageSummary,good);assert.equal(retry.cleared,true);assert.equal(retry.passes.used,1);assert.equal(retry.passes.byGrade[1].won,1);
 });
+
+const damageAt=sec=>{const t=createDamageTracker();t.reset('fire');t.acquire('F1',0);t.record('F1',Object.keys(DAMAGE_TARGET_NAMES)[0],12.5,1);return t.snapshot(sec);};
+test('test accounts: leaving mid-run is void (no pass, not counted); dying stays a counted failure; expired runs are not counted',async()=>{
+ const env=await setup();let now=start;
+ const s1=await api(env,'/play/start',{requestId:uid(),stage:'CH03'},now);assert.equal(s1.status,200,s1.error);
+ const left=await api(env,'/play/finish',{requestId:uid(),runId:s1.runId,cleared:false,seconds:40,litter:0,hpFraction:.8,left:true,skillIds:['F1'],damageSummary:damageAt(40)},now+40000);
+ assert.equal(left.status,200,left.error);assert.equal(left.void,true);assert.equal(left.charged,0);
+ assert.equal(env.DB.sql.prepare('SELECT status FROM play_runs WHERE id=?').get(s1.runId).status,'test_void');
+ assert.equal(left.passes.used,0);assert.deepEqual(left.passes.byGrade[1],{n:0,won:0});
+ now+=100000;
+ const s2=await api(env,'/play/start',{requestId:uid(),stage:'CH03'},now);assert.equal(s2.status,200,s2.error);
+ const died=await api(env,'/play/finish',{requestId:uid(),runId:s2.runId,cleared:false,seconds:60,litter:0,hpFraction:0,skillIds:['F1'],damageSummary:damageAt(60)},now+60000);
+ assert.equal(died.status,200,died.error);assert.ok(!died.void);assert.equal(env.DB.sql.prepare('SELECT status FROM play_runs WHERE id=?').get(s2.runId).status,'lost');
+ assert.equal(died.passes.used,1);assert.deepEqual(died.passes.byGrade[1],{n:1,won:0});
+ now+=100000;
+ const s3=await api(env,'/play/start',{requestId:uid(),stage:'CH03'},now);assert.equal(s3.status,200,s3.error);
+ const later=await api(env,'/guardian',undefined,now+1900000);   // 30분 넘게 멈춘 판 → expired, 세지 않음
+ const s4=await api(env,'/play/start',{requestId:uid(),stage:'CH03'},now+1900000);assert.equal(s4.status,200,s4.error);
+ assert.equal(env.DB.sql.prepare('SELECT status FROM play_runs WHERE id=?').get(s3.runId).status,'expired');
+ assert.equal(s4.passes.used,2,'expired run is not counted (died + active run only)');
+});

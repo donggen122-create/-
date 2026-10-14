@@ -161,7 +161,7 @@ test('장비 시험 계정: 친구 없음 · 등급 고정 · 근거리 10판 + 
   const rows=env.DB.sql.prepare("SELECT json_extract(result,'$.test.type') ty,json_extract(result,'$.test.grade') g,COUNT(*) n,SUM(status='test_won') won FROM play_runs WHERE user_id='test' GROUP BY ty ORDER BY ty").all();
   assert.deepEqual(rows.map(r=>[r.ty,r.g,r.n,r.won]),[['melee',3,10,4],['ranged',3,10,1]],'판 기록에 세트·등급이 남는다');
 });
-test('시험 계정 이용권: 25장만(출동마다 1장 · 성공·실패·중간 종료 모두), 하루에 10번 넘게 성공해도 막히지 않고, 다음 날에도 다시 채워지지 않는다',async()=>{
+test('시험 계정 이용권: 25장만(출동마다 1장 · 성공·실패, 30분 멈춘 판은 무효로 돌려줌 2026-10-14), 하루에 10번 넘게 성공해도 막히지 않고, 다음 날에도 다시 채워지지 않는다',async()=>{
   const env=await setup();const p=R.testModeProfile(R.freshProfile(),{pet:'turtle',since:start-1000});
   env.DB.sql.prepare('INSERT INTO guardian_profiles(user_id,state,revision) VALUES(?,?,0) ON CONFLICT(user_id) DO UPDATE SET state=excluded.state').run('test',JSON.stringify(p));
   assert.equal((await api(env,'/guardian')).passes.remaining,25);
@@ -169,10 +169,11 @@ test('시험 계정 이용권: 25장만(출동마다 1장 · 성공·실패·중
   const go=async(cleared,finish=true)=>{const s=await api(env,'/play/start',{requestId:uid(),stage:'CH05'},now);assert.equal(s.status,200,s.error);if(finish){const f=await api(env,'/play/finish',{requestId:uid(),runId:s.runId,cleared,seconds:cleared?240:100},now+(cleared?240000:100000));assert.equal(f.status,200,f.error);assert.equal(f.charged,1);}now+=400000;return s;};
   for(let i=0;i<12;i++)await go(true);   // 같은 날 12번 성공(일일 10장 규칙에 막히지 않음)
   for(let i=0;i<5;i++)await go(false);   // 실패도 1장씩
-  const left=await go(false,false);assert.equal(left.passes.remaining,7);   // 중간에 나가기(끝내지 않음)도 1장
+  const left=await go(false,false);assert.equal(left.passes.remaining,7);   // 진행 중인 판은 1장으로 센다
   const q=await api(env,'/play/start',{requestId:uid(),stage:'CH05'},now);assert.equal(q.code,'ACTIVE_RUN');
-  now+=1900000;   // 30분 넘게 멈춘 판은 정리되지만 돌려주지 않는다
-  for(let i=0;i<7;i++)await go(false);
+  now+=1900000;   // 30분 넘게 멈춘 판은 정리되고 무효(이용권 돌려줌, 2026-10-14 사용자)
+  assert.equal((await api(env,'/guardian',undefined,now)).passes.remaining,8);
+  for(let i=0;i<8;i++)await go(false);
   const blocked=await api(env,'/play/start',{requestId:uid(),stage:'CH05'},now);assert.equal(blocked.status,409);assert.equal(blocked.code,'TEST_PASSES');assert.equal(blocked.passes.remaining,0);
   const nextDay=await api(env,'/play/start',{requestId:uid(),stage:'CH05'},now+2*86400000);assert.equal(nextDay.code,'TEST_PASSES','다음 날에도 다시 채워지지 않음');
   assert.equal(env.DB.sql.prepare("SELECT COUNT(*) c FROM play_runs WHERE user_id='test' AND status='test_won'").get().c,12);
